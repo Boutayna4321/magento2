@@ -26,11 +26,18 @@ This repository contains the source code for the Magento 2.4.8 project along wit
 
 ## Prerequisites
 
-1. **Docker Desktop** (or Docker Engine) installed
-2. **Docker Compose** plugin (included with Docker Desktop)
+1. **Docker Desktop** (or Docker Engine on Linux, Docker Desktop on macOS/Windows)
+2. **Docker Compose** plugin (included with Docker Desktop 4.0+)
 3. **Magento Marketplace account** (free) — get your keys at [developer.adobe.com](https://developer.adobe.com/commerce/marketplace/)
 
+### Windows prerequisites
+- **Docker Desktop for Windows** with WSL 2 backend
+- **Git Bash** (comes with Git for Windows) **or** **PowerShell 7+**
+- Use the `.ps1` scripts in `scripts/` instead of the `.sh` scripts
+
 ## Setup for new team members
+
+### Linux / macOS
 
 ```bash
 # 1. Clone the repository
@@ -43,6 +50,20 @@ cp .env.example .env
 # 3. Start Docker containers and install Magento
 chmod +x scripts/install.sh
 ./scripts/install.sh
+```
+
+### Windows (PowerShell)
+
+```powershell
+# 1. Clone the repository
+git clone https://github.com/Boutayna4321/magento2.git
+cd magento2
+
+# 2. Copy the environment template
+copy .env.example .env
+
+# 3. Start Docker containers and install Magento
+.\scripts\install.ps1
 ```
 
 When prompted for Magento auth keys, paste your Marketplace **Public Key** and **Private Key**. The script will:
@@ -63,6 +84,7 @@ When prompted for Magento auth keys, paste your Marketplace **Public Key** and *
 
 ## Useful commands
 
+### Linux / macOS
 | Command                    | Description              |
 |----------------------------|--------------------------|
 | `scripts/start.sh`         | Start containers         |
@@ -70,6 +92,15 @@ When prompted for Magento auth keys, paste your Marketplace **Public Key** and *
 | `scripts/magento-cli.sh`   | Run Magento CLI command  |
 
 Example: `./scripts/magento-cli.sh cache:flush`
+
+### Windows (PowerShell)
+| Command                    | Description              |
+|----------------------------|--------------------------|
+| `.\scripts\start.ps1`      | Start containers         |
+| `.\scripts\stop.ps1`       | Stop containers          |
+| `.\scripts\magento-cli.ps1`| Run Magento CLI command  |
+
+Example: `.\scripts\magento-cli.ps1 cache:flush`
 
 ## Restoring from a backup
 
