@@ -35,3 +35,6 @@ src/phpserver/
 
 # Composer
 src/auth.json
+
+# Environment files
+.env
