@@ -1,0 +1,9 @@
+<?php
+/** @var \Cartware\LegalPages\Block\Detail $block */
+$page = $block->getPage();
+?>
+<article class="cartware-legal-detail">
+    <h1 class="cartware-legal-title"><?= $block->escapeHtml($page->getTitle()) ?></h1>
+    <div class="cartware-legal-content"><?= $block->escapeHtml($page->getContent()) ?></div>
+    <p><a href="<?= $block->escapeUrl($block->getUrl('legal')) ?>"><?= $block->escapeHtml(__('Back to legal pages')) ?></a></p>
+</article>

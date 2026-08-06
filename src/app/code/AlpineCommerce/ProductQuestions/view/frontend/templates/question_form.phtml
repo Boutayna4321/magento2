@@ -1,0 +1,23 @@
+<?php
+/** @var \AlpineCommerce\ProductQuestions\Block\Frontend\QuestionForm $block */
+if (!$block->isLoggedIn()):
+    ?>
+    <p class="login-prompt-form"><?= $block->escapeHtml(__('Please log in to ask a question.')) ?></p>
+<?php return; endif; ?>
+
+<div class="product-question-form" id="ask-question">
+    <h3><?= $block->escapeHtml(__('Ask a Question')) ?></h3>
+    <div class="question-form-content">
+        <div class="field">
+            <label for="question-text"><?= $block->escapeHtml(__('Your Question')) ?> <span class="required">*</span></label>
+            <textarea name="question" id="question-text" class="input-text" rows="3" required></textarea>
+        </div>
+        <input type="hidden" name="product_id" value="<?= $block->escapeHtml($block->getProductId()) ?>"/>
+        <div class="actions">
+            <button type="button" class="action primary" id="submit-question">
+                <span><?= $block->escapeHtml(__('Submit Question')) ?></span>
+            </button>
+        </div>
+        <p class="note"><?= $block->escapeHtml(__('Your question will be visible after approval.')) ?></p>
+    </div>
+</div>

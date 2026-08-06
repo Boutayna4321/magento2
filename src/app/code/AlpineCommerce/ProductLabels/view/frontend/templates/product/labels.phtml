@@ -1,0 +1,6 @@
+<?php /** @var $block AlpineCommerce\ProductLabels\Block\Product\Labels */ ?>
+<?php $product = $block->getProduct(); ?>
+<?php if ($product): ?>
+    <?php echo $block->getLabelsHtml($product); ?>
+<?php endif; ?>
+<?php /* DEBUG: template loaded */ ?>

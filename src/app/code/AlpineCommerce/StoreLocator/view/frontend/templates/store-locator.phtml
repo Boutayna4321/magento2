@@ -1,0 +1,57 @@
+<?php /** @var $block \AlpineCommerce\StoreLocator\Block\StoreLocator */ ?>
+<?php $stores = $block->getStores(); ?>
+<div class="store-locator-page" data-mage-init='{"AlpineCommerce_StoreLocator/js/store-locator": {}}'>
+    <h1><?= $block->escapeHtml(__('Find a Store')) ?></h1>
+    <p><?= $block->escapeHtml(__('Visit us in one of our stores and discover our products.')) ?></p>
+
+    <?php if ($stores->getSize()): ?>
+        <div class="store-locator-filter">
+            <label class="label" for="store-locator-search">
+                <span><?= $block->escapeHtml(__('Search by store name or city')) ?></span>
+            </label>
+            <input id="store-locator-search" class="input-text" type="search"
+                   placeholder="<?= $block->escapeHtmlAttr(__('Search stores')) ?>" autocomplete="off" />
+            <p class="store-locator-result-count" aria-live="polite"></p>
+        </div>
+        <div class="store-locator-list">
+            <?php foreach ($stores as $store): ?>
+                <?php
+                $searchText = implode(' ', array_filter([
+                    $store->getName(), $store->getStreet(), $store->getCity(),
+                    $store->getRegion(), $store->getPostcode(), $store->getCountryId(),
+                ]));
+                ?>
+                <article class="store-card" data-store-search="<?= $block->escapeHtmlAttr(mb_strtolower($searchText)) ?>">
+                    <h2><?= $block->escapeHtml($store->getName()) ?></h2>
+                    <address>
+                        <?= $block->escapeHtml($store->getStreet()) ?><br>
+                        <?= $block->escapeHtml(trim($store->getPostcode() . ' ' . $store->getCity())) ?><br>
+                        <?= $block->escapeHtml(trim($store->getRegion() . ', ' . $store->getCountryId(), ', ')) ?>
+                    </address>
+
+                    <?php if ($store->getPhone()): ?>
+                        <p><strong><?= $block->escapeHtml(__('Phone:')) ?></strong>
+                            <a href="tel:<?= $block->escapeHtmlAttr($store->getPhone()) ?>"><?= $block->escapeHtml($store->getPhone()) ?></a>
+                        </p>
+                    <?php endif; ?>
+
+                    <?php if ($store->getOpeningHours()): ?>
+                        <div class="store-card-hours">
+                            <strong><?= $block->escapeHtml(__('Opening Hours:')) ?></strong>
+                            <div><?= nl2br($block->escapeHtml($store->getOpeningHours())) ?></div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($store->getLatitude() !== null && $store->getLongitude() !== null): ?>
+                        <?php $mapUrl = 'https://www.google.com/maps?q=' . rawurlencode($store->getLatitude() . ',' . $store->getLongitude()); ?>
+                        <p class="store-card-map"><a href="<?= $block->escapeUrl($mapUrl) ?>" target="_blank" rel="noopener noreferrer">
+                            <?= $block->escapeHtml(__('View on Map')) ?></a></p>
+                    <?php endif; ?>
+                </article>
+            <?php endforeach; ?>
+        </div>
+        <p class="store-locator-no-results" hidden><?= $block->escapeHtml(__('No stores match your search.')) ?></p>
+    <?php else: ?>
+        <p><?= $block->escapeHtml(__('No stores available at the moment.')) ?></p>
+    <?php endif; ?>
+</div>

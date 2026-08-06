@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Cartware\LegalPages\Api\Data\LegalPageInterface"
+                type="Cartware\LegalPages\Model\LegalPage"/>
+    <preference for="Cartware\LegalPages\Api\Data\LegalPageSearchResultsInterface"
+                type="Cartware\LegalPages\Model\LegalPageSearchResults"/>
+    <preference for="Cartware\LegalPages\Api\LegalPageRepositoryInterface"
+                type="Cartware\LegalPages\Model\LegalPageRepository"/>
+    <preference for="Cartware\LegalPages\Api\LegalPageRestInterface"
+                type="Cartware\LegalPages\Model\Rest\LegalPageRestService"/>
+
+    <virtualType name="legal_page_listing_data_source"
+                 type="Cartware\LegalPages\Ui\DataProvider\ListingDataProvider">
+        <arguments>
+            <argument name="name" xsi:type="string">legal_page_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">page_id</argument>
+            <argument name="requestFieldName" xsi:type="string">page_id</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="legal_page_form_data_source"
+                 type="Cartware\LegalPages\Ui\DataProvider\FormDataProvider">
+        <arguments>
+            <argument name="name" xsi:type="string">legal_page_form_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">page_id</argument>
+            <argument name="requestFieldName" xsi:type="string">page_id</argument>
+        </arguments>
+    </virtualType>
+</config>

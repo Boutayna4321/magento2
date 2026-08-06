@@ -1,0 +1,74 @@
+root $MAGE_ROOT;
+
+index index.php;
+autoindex off;
+
+# Serve the Magento app
+location / {
+    try_files $uri $uri/ /index.php$is_args$args;
+}
+
+# Serve pub static files directly
+location /static/ {
+    expires max;
+    access_log off;
+    add_header Cache-Control "public, immutable";
+    try_files $uri =404;
+}
+
+# Serve pub media files
+location /media/ {
+    try_files $uri $uri/ /get.php$is_args$args;
+}
+
+location /static/version/ {
+    rewrite ^/static/version[^/]+/(.*)$ /static/$1 last;
+}
+
+location /media/version/ {
+    rewrite ^/media/version[^/]+/(.*)$ /media/$1 last;
+}
+
+# PHP handler
+location ~ ^/(index|get|static|errors/report|errors/503|favicon)\.php$ {
+    try_files $uri =404;
+    gzip off;
+    fastcgi_pass php:9000;
+    fastcgi_intercept_errors on;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    include fastcgi_params;
+}
+
+# Deny access to sensitive files
+location ~* \.(env|htaccess|git|svn)$ {
+    deny all;
+}
+
+location ~* \.php$ {
+    if ($request_uri !~ "^/((pub/)?(errors/setup|static|favicon\.ico))") {
+        return 301 /index.php;
+    }
+}
+
+# Security headers
+add_header X-Frame-Options "SAMEORIGIN";
+add_header X-Content-Type-Options "nosniff";
+add_header X-XSS-Protection "1; mode=block";
+
+gzip on;
+gzip_vary on;
+gzip_proxied any;
+gzip_comp_level 6;
+gzip_types
+    text/plain
+    text/css
+    text/xml
+    text/javascript
+    application/json
+    application/javascript
+    application/x-javascript
+    application/xml
+    application/xml+rss
+    application/vnd.ms-fontobject
+    font/opentype;

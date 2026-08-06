@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">blog_category_listing.blog_category_listing_data_source</item>
+            <item name="deps" xsi:type="string">blog_category_listing.blog_category_listing_data_source</item>
+        </item>
+        <item name="spinner" xsi:type="string">blog_category_columns</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="add">
+                <url path="blog/category/new"/>
+                <class>primary</class>
+                <label translate="true">Add New Category</label>
+            </button>
+        </buttons>
+        <spinner>blog_category_columns</spinner>
+        <deps>blog_category_listing.blog_category_listing_data_source</deps>
+    </settings>
+    <dataSource name="blog_category_listing_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+                <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                <item name="storageConfig" xsi:type="array">
+                    <item name="indexField" xsi:type="string">category_id</item>
+                </item>
+            </item>
+            <item name="config" xsi:type="array">
+                <item name="dataProvider" xsi:type="string">blog_category_listing_data_source</item>
+            </item>
+        </argument>
+        <settings>
+            <filterUrlParams>
+                <param name="category_id">*</param>
+            </filterUrlParams>
+            <primaryDataSource>blog_category_listing.blog_category_listing_data_source</primaryDataSource>
+        </settings>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="blog_category_columns">
+        <column name="category_id">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="name">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Name</label>
+            </settings>
+        </column>
+        <column name="url_key">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">URL Key</label>
+            </settings>
+        </column>
+        <column name="sort_order">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Sort Order</label>
+            </settings>
+        </column>
+        <column name="is_active" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Status</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="AlpineCommerce\Blog\Ui\Component\Listing\Column\CategoryActions">
+            <settings>
+                <indexField>category_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

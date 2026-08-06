@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="alphacommerce_euvat_validation" resource="default" engine="innodb"
+           comment="EU VAT Validation Results" charset="utf8mb4" collation="utf8mb4_general_ci">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <column xsi:type="varchar" name="country_id" nullable="false" length="2"
+                comment="Country Code"/>
+        <column xsi:type="varchar" name="vat_number" nullable="false" length="255"
+                comment="VAT Number"/>
+        <column xsi:type="boolean" name="is_valid" nullable="false" default="0"
+                comment="Is Valid"/>
+        <column xsi:type="text" name="request_date" nullable="true"
+                comment="Request Date"/>
+        <column xsi:type="text" name="name" nullable="true"
+                comment="Company Name"/>
+        <column xsi:type="text" name="address" nullable="true"
+                comment="Company Address"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <index referenceId="ALPHACOMMERCE_EUVAT_VALIDATION_COUNTRY_VAT" indexType="btree">
+            <column name="country_id"/>
+            <column name="vat_number"/>
+        </index>
+    </table>
+</schema>

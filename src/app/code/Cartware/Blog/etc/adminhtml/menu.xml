@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Cartware_Blog::menu"
+             title="Blog"
+             module="Cartware_Blog"
+             sortOrder="41"
+             resource="Cartware_Blog::blog"
+             parent="Magento_Backend::content"/>
+        <add id="Cartware_Blog::post"
+             title="Posts"
+             module="Cartware_Blog"
+             sortOrder="10"
+             action="blog/post/index"
+             resource="Cartware_Blog::post"
+             parent="Cartware_Blog::menu"/>
+        <add id="Cartware_Blog::category"
+             title="Categories"
+             module="Cartware_Blog"
+             sortOrder="20"
+             action="blog/category/index"
+             resource="Cartware_Blog::category"
+             parent="Cartware_Blog::menu"/>
+    </menu>
+</config>

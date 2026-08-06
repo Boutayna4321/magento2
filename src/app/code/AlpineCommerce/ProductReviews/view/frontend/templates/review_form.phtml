@@ -1,0 +1,47 @@
+<?php
+/** @var \AlpineCommerce\ProductReviews\Block\Frontend\ReviewForm $block */
+if (!$block->isLoggedIn()):
+    ?>
+    <p><?= $block->escapeHtml(__('Please log in to write a review.')) ?></p>
+<?php return; endif; ?>
+
+<div class="product-review-form" id="write-review">
+    <h2><?= $block->escapeHtml(__('Write Your Review')) ?></h2>
+    <div class="review-form-content">
+        <div class="field rating-field">
+            <label><?= $block->escapeHtml(__('Rating')) ?> <span class="required">*</span></label>
+            <div class="control stars">
+                <?php for ($i = 5; $i >= 1; $i--): ?>
+                    <input type="radio" name="rating" id="rating-<?= $i ?>" value="<?= $i ?>"/>
+                    <label for="rating-<?= $i ?>">&#9733;</label>
+                <?php endfor; ?>
+            </div>
+        </div>
+        <div class="field">
+            <label for="review-title"><?= $block->escapeHtml(__('Title')) ?> <span class="required">*</span></label>
+            <input type="text" name="title" id="review-title" class="input-text" required/>
+        </div>
+        <div class="field">
+            <label for="review-detail"><?= $block->escapeHtml(__('Review')) ?> <span class="required">*</span></label>
+            <textarea name="detail" id="review-detail" class="input-text" rows="5" required></textarea>
+        </div>
+        <div class="field">
+            <label for="review-images"><?= $block->escapeHtml(__('Photos (optional, max 3)')) ?></label>
+            <input type="file" name="images[]" id="review-images" multiple accept="image/*"/>
+        </div>
+        <input type="hidden" name="product_id" value="<?= $block->escapeHtml($block->getProductId()) ?>"/>
+        <div class="actions">
+            <button type="button" class="action primary" id="submit-review">
+                <span><?= $block->escapeHtml(__('Submit Review')) ?></span>
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+    require([
+        'jquery',
+        'AlpineCommerce_ProductReviews/js/review-form'
+    ], function ($, reviewForm) {
+        reviewForm.init('#submit-review', '#review-title');
+    });
+</script>

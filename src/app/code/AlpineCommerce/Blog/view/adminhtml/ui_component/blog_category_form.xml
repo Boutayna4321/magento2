@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            <item name="submit_url" xsi:type="url" path="blog/category/save"/>
+        </item>
+        <item name="config" xsi:type="array">
+            <item name="dataProvider" xsi:type="string">blog_category_form_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <namespace>blog_category_form</namespace>
+        <dataScope>data</dataScope>
+    </settings>
+    <dataSource name="blog_category_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+            <item name="config" xsi:type="array">
+                <item name="dataProvider" xsi:type="string">blog_category_form_data_source</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="blog/category/save"/>
+        </settings>
+    </dataSource>
+    <container name="button_set" component="Magento_Ui/js/form/components/button-set" sortOrder="0">
+        <argument name="data" xsi:type="array">
+            <item name="buttons" xsi:type="array">
+                <item name="save" xsi:type="array">
+                    <item name="name" xsi:type="string">save</item>
+                    <item name="label" xsi:type="string" translate="true">Save</item>
+                    <item name="class" xsi:type="string">primary</item>
+                    <item name="sortOrder" xsi:type="number">10</item>
+                </item>
+                <item name="back" xsi:type="array">
+                    <item name="name" xsi:type="string">back</item>
+                    <item name="label" xsi:type="string" translate="true">Back</item>
+                    <item name="sortOrder" xsi:type="number">20</item>
+                </item>
+                <item name="reset" xsi:type="array">
+                    <item name="name" xsi:type="string">reset</item>
+                    <item name="label" xsi:type="string" translate="true">Reset</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
+                </item>
+            </item>
+        </argument>
+    </container>
+    <fieldset name="general">
+        <settings>
+            <label translate="true">General</label>
+            <collapsible>true</collapsible>
+            <initialExpanded>true</initialExpanded>
+        </settings>
+        <field name="category_id">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                </item>
+            </argument>
+        </field>
+        <field name="name" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                    <item name="label" xsi:type="string" translate="true">Name</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">name</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+        <field name="url_key" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                    <item name="label" xsi:type="string" translate="true">URL Key</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">url_key</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+        <field name="sort_order" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                    <item name="label" xsi:type="string" translate="true">Sort Order</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">sort_order</item>
+                    <item name="default" xsi:type="number">0</item>
+                </item>
+            </argument>
+        </field>
+        <field name="is_active" formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                    <item name="label" xsi:type="string" translate="true">Status</item>
+                    <item name="dataType" xsi:type="string">boolean</item>
+                    <item name="dataScope" xsi:type="string">is_active</item>
+                    <item name="default" xsi:type="number">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Status</label>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+            </settings>
+        </field>
+    </fieldset>
+</form>

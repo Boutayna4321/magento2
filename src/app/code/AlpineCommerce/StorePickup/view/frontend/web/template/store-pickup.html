@@ -1,0 +1,26 @@
+<!--
+/**
+ * AlpineCommerce Store Pickup - store selector shown when the pickup shipping method is selected.
+ */
+-->
+<div class="alphacommerce-store-pickup" data-bind="visible: isVisible">
+    <div class="block-title">
+        <strong data-bind="i18n: 'Your pickup store'"></strong>
+    </div>
+    <div class="field alphacommerce-store-pickup__field">
+        <label class="label" data-bind="attr: {for: 'alphacommerce-pickup-source'}, i18n: 'Choose your pickup store'"></label>
+        <div class="control">
+            <select id="alphacommerce-pickup-source"
+                    name="alphacommerce_pickup_source_code"
+                    data-bind="
+                        options: availableStores,
+                        optionsText: 'name',
+                        optionsValue: 'source_code',
+                        value: selectedSourceCode,
+                        event: {change: saveStore}">
+            </select>
+        </div>
+    </div>
+    <p class="alphacommerce-store-pickup__info" data-bind="text: selectedStoreInfo"></p>
+    <p class="alphacommerce-store-pickup__message" data-bind="text: syncMessage, visible: syncMessage"></p>
+</div>

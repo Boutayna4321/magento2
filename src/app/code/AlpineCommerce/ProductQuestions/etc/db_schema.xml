@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="alphacommerce_product_question" resource="default" engine="innodb"
+           comment="Product Questions">
+        <column xsi:type="int" name="question_id" unsigned="true" nullable="false" identity="true"
+                comment="Question ID"/>
+        <column xsi:type="int" name="product_id" unsigned="true" nullable="false"
+                comment="Product ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true"
+                comment="Customer ID"/>
+        <column xsi:type="varchar" name="customer_name" nullable="true" length="255"
+                comment="Customer Name"/>
+        <column xsi:type="varchar" name="customer_email" nullable="true" length="255"
+                comment="Customer Email"/>
+        <column xsi:type="text" name="question" nullable="false"
+                comment="Question"/>
+        <column xsi:type="smallint" name="status" nullable="false" default="0"
+                comment="Status (0=pending, 1=approved, 2=rejected)"/>
+        <column xsi:type="smallint" name="is_verified_purchase" nullable="false" default="0"
+                comment="Is Verified Purchase"/>
+        <column xsi:type="int" name="helpful_count" nullable="false" default="0"
+                comment="Helpful Count"/>
+        <column xsi:type="timestamp" name="created_at" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="question_id"/>
+        </constraint>
+        <index referenceId="ALP_QUESTION_PRODUCT_ID" indexType="btree">
+            <column name="product_id"/>
+        </index>
+        <index referenceId="ALP_QUESTION_STATUS" indexType="btree">
+            <column name="status"/>
+        </index>
+        <index referenceId="ALP_QUESTION_CUSTOMER_ID" indexType="btree">
+            <column name="customer_id"/>
+        </index>
+    </table>
+
+    <table name="alphacommerce_product_answer" resource="default" engine="innodb"
+           comment="Product Question Answers">
+        <column xsi:type="int" name="answer_id" unsigned="true" nullable="false" identity="true"
+                comment="Answer ID"/>
+        <column xsi:type="int" name="question_id" unsigned="true" nullable="false"
+                comment="Question ID"/>
+        <column xsi:type="int" name="admin_user_id" unsigned="true" nullable="true"
+                comment="Admin User ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true"
+                comment="Customer ID"/>
+        <column xsi:type="text" name="answer" nullable="false"
+                comment="Answer"/>
+        <column xsi:type="smallint" name="is_official" nullable="false" default="0"
+                comment="Is Official Answer"/>
+        <column xsi:type="timestamp" name="created_at" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="answer_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ALP_ANSWER_QUESTION_ID"
+                    table="alphacommerce_product_answer"
+                    column="question_id"
+                    referenceTable="alphacommerce_product_question"
+                    referenceColumn="question_id"
+                    onDelete="CASCADE"/>
+        <index referenceId="ALP_ANSWER_QUESTION_ID_IDX" indexType="btree">
+            <column name="question_id"/>
+        </index>
+        <index referenceId="ALP_ANSWER_IS_OFFICIAL_IDX" indexType="btree">
+            <column name="is_official"/>
+        </index>
+    </table>
+
+    <table name="alphacommerce_product_question_vote" resource="default" engine="innodb"
+           comment="Product Question Helpful Votes">
+        <column xsi:type="int" name="vote_id" unsigned="true" nullable="false" identity="true"
+                comment="Vote ID"/>
+        <column xsi:type="int" name="question_id" unsigned="true" nullable="false"
+                comment="Question ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true"
+                comment="Customer ID"/>
+        <column xsi:type="varchar" name="ip" nullable="true" length="45"
+                comment="IP Address"/>
+        <column xsi:type="smallint" name="value" nullable="false" default="0"
+                comment="Vote Value (0=not helpful, 1=helpful)"/>
+        <column xsi:type="timestamp" name="created_at" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="vote_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ALP_VOTE_QUESTION_ID"
+                    table="alphacommerce_product_question_vote"
+                    column="question_id"
+                    referenceTable="alphacommerce_product_question"
+                    referenceColumn="question_id"
+                    onDelete="CASCADE"/>
+        <index referenceId="ALP_VOTE_QUESTION_ID_IDX" indexType="btree">
+            <column name="question_id"/>
+        </index>
+        <index referenceId="ALP_VOTE_CUSTOMER_ID_IDX" indexType="btree">
+            <column name="customer_id"/>
+        </index>
+    </table>
+</schema>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_Blog::menu"
+             title="Blog"
+             module="AlpineCommerce_Blog"
+             sortOrder="41"
+             resource="AlpineCommerce_Blog::blog"
+             parent="Magento_Backend::content"/>
+        <add id="AlpineCommerce_Blog::post"
+             title="Posts"
+             module="AlpineCommerce_Blog"
+             sortOrder="10"
+             action="blog/post/index"
+             resource="AlpineCommerce_Blog::post"
+             parent="AlpineCommerce_Blog::menu"/>
+        <add id="AlpineCommerce_Blog::category"
+             title="Categories"
+             module="AlpineCommerce_Blog"
+             sortOrder="20"
+             action="blog/category/index"
+             resource="AlpineCommerce_Blog::category"
+             parent="AlpineCommerce_Blog::menu"/>
+    </menu>
+</config>

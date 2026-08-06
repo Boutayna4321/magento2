@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="AlpineCommerce\ProductLabels\Block\Adminhtml\Label\Edit" name="productlabels_label_edit" template="AlpineCommerce_ProductLabels::label/edit">
+                <block class="AlpineCommerce\ProductLabels\Block\Adminhtml\Label\Edit\Tabs" name="productlabels_label_edit_tabs" as="edit_tabs">
+                    <block class="AlpineCommerce\ProductLabels\Block\Adminhtml\Label\Edit\Form" name="form" as="form">
+                        <arguments>
+                            <argument name="action" xsi:type="string">productlabels/label/save</argument>
+                            <argument name="id" xsi:type="string">edit_form</argument>
+                            <argument name="method" xsi:type="string">post</argument>
+                        </arguments>
+                    </block>
+                    <block class="AlpineCommerce\ProductLabels\Block\Adminhtml\Label\Edit\Tab\Products" name="products_tab" as="products_tab">
+                        <arguments>
+                            <argument name="id" xsi:type="string">productGrid</argument>
+                        </arguments>
+                    </block>
+                </block>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

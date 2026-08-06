@@ -1,0 +1,17 @@
+<?php /** @var $block AlpineCommerce\ProductLabels\Block\Adminhtml\Label\Edit */ ?>
+<?php if ($block->getButtonsHtml("toolbar")): ?>
+<div class="page-main-actions">
+    <div class="page-actions">
+        <div class="page-actions-buttons">
+            <?php echo $block->getButtonsHtml("toolbar") ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+<?php echo $block->getChildHtml("edit_tabs") ?>
+<?php if ($block->hasFooterButtons()): ?>
+<div class="content-footer">
+    <p class="form-buttons"><?php echo $block->getButtonsHtml("footer") ?></p>
+</div>
+<?php endif; ?>
+<?php echo $block->getFormInitScripts() ?>

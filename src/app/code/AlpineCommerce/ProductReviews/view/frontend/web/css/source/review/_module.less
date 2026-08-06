@@ -1,0 +1,105 @@
+@import '~mage/utils/main';
+
+.product-reviews-wrapper {
+    margin: 20px 0;
+}
+
+.product-reviews-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.review-rating .star {
+    color: #ccc;
+    font-size: 16px;
+    cursor: default;
+}
+
+.review-rating .star.filled {
+    color: #f0ad44;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.review-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.review-title {
+    font-weight: bold;
+}
+
+.review-status-pending {
+    color: #f0ad44;
+}
+
+.review-status-approved {
+    color: #5cb85c;
+}
+
+.review-status-rejected {
+    color: #d9534f;
+}
+
+.review-verified {
+    background: #5cb85c;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.review-images {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+
+    img {
+        max-width: 100px;
+        max-height: 100px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+}
+
+.review-helpful {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 2px;
+
+    input {
+        display: none;
+    }
+
+    label {
+        font-size: 20px;
+        color: #ccc;
+        cursor: pointer;
+    }
+
+    input:checked ~ label,
+    input:hover ~ label {
+        color: #f0ad44;
+    }
+}
+
+.no-reviews {
+    font-style: italic;
+    color: #999;
+}

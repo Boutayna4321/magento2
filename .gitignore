@@ -1,0 +1,37 @@
+# Magento 2 - Composer dependencies (NEVER commit)
+src/vendor/
+
+# Generated code
+src/generated/
+
+# Media and static content
+src/pub/media/
+src/pub/static/
+src/pub/static/adminhtml/
+src/pub/static/frontend/
+src/pub/static/deployed_version.txt
+
+# Cache, logs, sessions
+src/var/
+src/var/cache/
+src/var/log/
+src/var/page_cache/
+src/var/report/
+src/var/session/
+src/var/setup/
+src/var/view_preprocessed/
+
+# Environment-specific files (NEVER commit)
+src/app/etc/env.php
+
+# IDE and OS files
+.idea/
+.vs/
+.DS_Store
+Thumbs.db
+
+# Magento phpserver
+src/phpserver/
+
+# Composer
+src/auth.json

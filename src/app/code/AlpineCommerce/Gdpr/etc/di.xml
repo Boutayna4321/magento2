@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="AlpineCommerce\Gdpr\Api\ConsentLogRepositoryInterface"
+                type="AlpineCommerce\Gdpr\Model\ConsentLogRepository"/>
+    <preference for="AlpineCommerce\Gdpr\Api\ConsentManagementInterface"
+                type="AlpineCommerce\Gdpr\Model\ConsentManagement"/>
+    <preference for="AlpineCommerce\Gdpr\Api\GdprExportInterface"
+                type="AlpineCommerce\Gdpr\Model\GdprExportService"/>
+    <preference for="AlpineCommerce\Gdpr\Api\GdprDeleteInterface"
+                type="AlpineCommerce\Gdpr\Model\GdprDeleteService"/>
+    <preference for="AlpineCommerce\Gdpr\Api\GdprRestInterface"
+                type="AlpineCommerce\Gdpr\Model\Rest\GdprRestService"/>
+
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="alphacommerce_gdpr_export" xsi:type="object">
+                    AlpineCommerce\Gdpr\Console\Command\GdprExportCommand
+                </item>
+                <item name="alphacommerce_gdpr_delete" xsi:type="object">
+                    AlpineCommerce\Gdpr\Console\Command\GdprDeleteCommand
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>

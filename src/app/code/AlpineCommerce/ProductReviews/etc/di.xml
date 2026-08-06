@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="AlpineCommerce\ProductReviews\Api\Data\ReviewInterface"
+                type="AlpineCommerce\ProductReviews\Model\Review"/>
+    <preference for="AlpineCommerce\ProductReviews\Api\Data\ReviewSearchResultsInterface"
+                type="AlpineCommerce\ProductReviews\Model\ReviewSearchResults"/>
+    <preference for="AlpineCommerce\ProductReviews\Api\ReviewRepositoryInterface"
+                type="AlpineCommerce\ProductReviews\Model\ReviewRepository"/>
+    <preference for="AlpineCommerce\ProductReviews\Api\ReviewRestInterface"
+                type="AlpineCommerce\ProductReviews\Model\Rest\ReviewRestService"/>
+
+    <virtualType name="alp_rev_listing_data_source"
+                 type="AlpineCommerce\ProductReviews\Ui\DataProvider\ReviewListingDataProvider">
+        <arguments>
+            <argument name="name" xsi:type="string">alp_rev_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">review_id</argument>
+            <argument name="requestFieldName" xsi:type="string">review_id</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="alp_rev_form_data_source"
+                 type="AlpineCommerce\ProductReviews\Ui\DataProvider\ReviewFormDataProvider">
+        <arguments>
+            <argument name="name" xsi:type="string">alp_rev_form_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">review_id</argument>
+            <argument name="requestFieldName" xsi:type="string">review_id</argument>
+        </arguments>
+    </virtualType>
+</config>

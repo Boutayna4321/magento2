@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_ProductReviews::menu"
+             title="Product Reviews"
+             module="AlpineCommerce_ProductReviews"
+             sortOrder="45"
+             resource="AlpineCommerce_ProductReviews::review"
+             parent="Magento_Backend::marketing"/>
+        <add id="AlpineCommerce_ProductReviews::review_list"
+             title="Manage Reviews"
+             module="AlpineCommerce_ProductReviews"
+             sortOrder="10"
+             action="productreviews/review/index"
+             resource="AlpineCommerce_ProductReviews::review"
+             parent="AlpineCommerce_ProductReviews::menu"/>
+    </menu>
+</config>

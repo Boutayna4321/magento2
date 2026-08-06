@@ -1,0 +1,22 @@
+<?php
+/** @var \Cartware\Faq\Block\Listing $block */
+$faqs = $block->getFaqs();
+?>
+<?php if ($faqs): ?>
+    <div class="cartware-faq-list">
+        <?php foreach ($faqs as $faq): ?>
+            <div class="cartware-faq-item">
+                <h2 class="cartware-faq-title">
+                    <a href="<?= $block->escapeUrl($block->getFaqUrl($faq)) ?>">
+                        <?= $block->escapeHtml($faq->getTitle()) ?>
+                    </a>
+                </h2>
+                <div class="cartware-faq-content">
+                    <?= $block->escapeHtml($faq->getContent()) ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php else: ?>
+    <p><?= $block->escapeHtml(__('No FAQ entries yet.')) ?></p>
+<?php endif; ?>

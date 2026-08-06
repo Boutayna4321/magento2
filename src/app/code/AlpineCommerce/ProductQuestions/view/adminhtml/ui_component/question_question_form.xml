@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            <item name="submit_url" xsi:type="url" path="productquestions/question/save"/>
+        </item>
+        <item name="config" xsi:type="array">
+            <item name="dataProvider" xsi:type="string">pq_form_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <namespace>question_question_form</namespace>
+        <dataScope>data</dataScope>
+    </settings>
+    <dataSource name="pq_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </argument>
+            <item name="config" xsi:type="array">
+                <item name="dataProvider" xsi:type="string">pq_form_data_source</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="productquestions/question/save"/>
+        </settings>
+    </dataSource>
+    <container name="button_set" component="Magento_Ui/js/form/components/button-set" sortOrder="0">
+        <argument name="data" xsi:type="array">
+            <item name="buttons" xsi:type="array">
+                <item name="save" xsi:type="array">
+                    <item name="name" xsi:type="string">save</item>
+                    <item name="label" xsi:type="string" translate="true">Save</item>
+                    <item name="class" xsi:type="string">primary</item>
+                    <item name="sortOrder" xsi:type="number">10</item>
+                </item>
+                <item name="saveandanswer" xsi:type="array">
+                    <item name="name" xsi:type="string">saveandanswer</item>
+                    <item name="label" xsi:type="string" translate="true">Save &amp; Answer</item>
+                    <item name="class" xsi:type="string">primary</item>
+                    <item name="sortOrder" xsi:type="number">20</item>
+                </item>
+                <item name="back" xsi:type="array">
+                    <item name="name" xsi:type="string">back</item>
+                    <item name="label" xsi:type="string" translate="true">Back</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
+                </item>
+                <item name="reset" xsi:type="array">
+                    <item name="name" xsi:type="string">reset</item>
+                    <item name="label" xsi:type="string" translate="true">Reset</item>
+                    <item name="sortOrder" xsi:type="number">40</item>
+                </item>
+            </item>
+        </argument>
+    </container>
+    <fieldset name="general">
+        <settings>
+            <label translate="true">General</label>
+            <collapsible>true</collapsible>
+            <initialExpanded>true</initialExpanded>
+        </settings>
+        <field name="question_id">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                </item>
+            </argument>
+        </field>
+        <field name="product_id" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">question</item>
+                    <item name="label" xsi:type="string" translate="true">Product ID</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">product_id</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+        <field name="customer_id" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">question</item>
+                    <item name="label" xsi:type="string" translate="true">Customer ID</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">customer_id</item>
+                </item>
+            </argument>
+        </field>
+        <field name="customer_name" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">question</item>
+                    <item name="label" xsi:type="string" translate="true">Customer Name</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">customer_name</item>
+                </item>
+            </argument>
+        </field>
+        <field name="customer_email" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">question</item>
+                    <item name="label" xsi:type="string" translate="true">Customer Email</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">customer_email</item>
+                </item>
+            </argument>
+        </field>
+        <field name="question" formElement="textarea">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">question</item>
+                    <item name="label" xsi:type="string" translate="true">Question</item>
+                    <item name="dataType" xsi:type="string">textarea</item>
+                    <item name="dataScope" xsi:type="string">question</item>
+                    <item name="rows" xsi:type="number">3</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+        <field name="status" formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">question</item>
+                    <item name="label" xsi:type="string" translate="true">Status</item>
+                    <item name="dataType" xsi:type="string">select</item>
+                    <item name="dataScope" xsi:type="string">status</item>
+                    <item name="default" xsi:type="number">0</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>select</dataType>
+                <label translate="true">Status</label>
+                <options class="AlpineCommerce\ProductQuestions\Ui\Source\Status"/>
+            </settings>
+        </field>
+        <field name="is_verified_purchase" formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">question</item>
+                    <item name="label" xsi:type="string" translate="true">Verified Purchase</item>
+                    <item name="dataType" xsi:type="string">boolean</item>
+                    <item name="dataScope" xsi:type="string">is_verified_purchase</item>
+                    <item name="default" xsi:type="number">0</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Verified Purchase</label>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+            </settings>
+        </field>
+        <field name="helpful_count" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">question</item>
+                    <item name="label" xsi:type="string" translate="true">Helpful Count</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">helpful_count</item>
+                </item>
+            </argument>
+        </field>
+    </fieldset>
+    <fieldset name="answer">
+        <settings>
+            <label translate="true">Official Answer</label>
+            <collapsible>true</collapsible>
+            <initialExpanded>true</initialExpanded>
+        </settings>
+        <field name="official_answer" formElement="textarea">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">question</item>
+                    <item name="label" xsi:type="string" translate="true">Official Answer</item>
+                    <item name="dataType" xsi:type="string">textarea</item>
+                    <item name="dataScope" xsi:type="string">official_answer</item>
+                    <item name="rows" xsi:type="number">5</item>
+                </item>
+            </argument>
+        </field>
+    </fieldset>
+</form>

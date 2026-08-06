@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Cartware\StorePickup\Api\Data\StoreInfoInterface" type="Cartware\StorePickup\Model\StoreInfo"/>
+    <preference for="Cartware\StorePickup\Api\StoreInfoRepositoryInterface" type="Cartware\StorePickup\Model\StoreInfoRepository"/>
+    <preference for="Cartware\StorePickup\Api\StoreAvailabilityInterface" type="Cartware\StorePickup\Model\StoreAvailability"/>
+    <preference for="Cartware\StorePickup\Api\StorePickupCartManagementInterface" type="Cartware\StorePickup\Model\Checkout\StorePickupCartManagement"/>
+</config>

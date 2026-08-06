@@ -1,0 +1,26 @@
+<!--
+/**
+ * Cartware Store Pickup - store selector shown when the pickup shipping method is selected.
+ */
+-->
+<div class="cartware-store-pickup" data-bind="visible: isVisible">
+    <div class="block-title">
+        <strong data-bind="i18n: 'Your pickup store'"></strong>
+    </div>
+    <div class="field cartware-store-pickup__field">
+        <label class="label" data-bind="attr: {for: 'cartware-pickup-source'}, i18n: 'Choose your pickup store'"></label>
+        <div class="control">
+            <select id="cartware-pickup-source"
+                    name="cartware_pickup_source_code"
+                    data-bind="
+                        options: availableStores,
+                        optionsText: 'name',
+                        optionsValue: 'source_code',
+                        value: selectedSourceCode,
+                        event: {change: saveStore}">
+            </select>
+        </div>
+    </div>
+    <p class="cartware-store-pickup__info" data-bind="text: selectedStoreInfo"></p>
+    <p class="cartware-store-pickup__message" data-bind="text: syncMessage, visible: syncMessage"></p>
+</div>

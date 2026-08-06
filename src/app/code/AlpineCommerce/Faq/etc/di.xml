@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="AlpineCommerce\Faq\Api\Data\FaqInterface"
+                type="AlpineCommerce\Faq\Model\Faq"/>
+    <preference for="AlpineCommerce\Faq\Api\Data\FaqSearchResultsInterface"
+                type="AlpineCommerce\Faq\Model\FaqSearchResults"/>
+    <preference for="AlpineCommerce\Faq\Api\FaqRepositoryInterface"
+                type="AlpineCommerce\Faq\Model\FaqRepository"/>
+    <preference for="AlpineCommerce\Faq\Api\FaqRestInterface"
+                type="AlpineCommerce\Faq\Model\Rest\FaqRestService"/>
+
+    <virtualType name="faq_faq_listing_data_source"
+                 type="AlpineCommerce\Faq\Ui\DataProvider\FaqListingDataProvider">
+        <arguments>
+            <argument name="name" xsi:type="string">faq_faq_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">faq_id</argument>
+            <argument name="requestFieldName" xsi:type="string">faq_id</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="faq_faq_form_data_source"
+                 type="AlpineCommerce\Faq\Ui\DataProvider\FaqFormDataProvider">
+        <arguments>
+            <argument name="name" xsi:type="string">faq_faq_form_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">faq_id</argument>
+            <argument name="requestFieldName" xsi:type="string">faq_id</argument>
+        </arguments>
+    </virtualType>
+</config>

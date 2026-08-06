@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_LegalPages::menu"
+             title="Legal Pages"
+             module="AlpineCommerce_LegalPages"
+             sortOrder="42"
+             resource="AlpineCommerce_LegalPages::legal"
+             parent="Magento_Backend::content"/>
+        <add id="AlpineCommerce_LegalPages::legal_page"
+             title="Manage Legal Pages"
+             module="AlpineCommerce_LegalPages"
+             sortOrder="10"
+             action="legal/page/index"
+             resource="AlpineCommerce_LegalPages::legal"
+             parent="AlpineCommerce_LegalPages::menu"/>
+    </menu>
+</config>

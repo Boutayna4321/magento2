@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">question_question_listing.pq_listing_data_source</item>
+            <item name="deps" xsi:type="string">question_question_listing.pq_listing_data_source</item>
+        </item>
+        <item name="spinner" xsi:type="string">question_question_columns</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="add">
+                <url path="productquestions/question/new"/>
+                <class>primary</class>
+                <label translate="true">Add New Question</label>
+            </button>
+        </buttons>
+        <spinner>question_question_columns</spinner>
+        <deps>question_question_listing.pq_listing_data_source</deps>
+    </settings>
+    <dataSource name="pq_listing_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+                <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                <item name="storageConfig" xsi:type="array">
+                    <item name="indexField" xsi:type="string">question_id</item>
+                </item>
+            </item>
+            <item name="config" xsi:type="array">
+                <item name="dataProvider" xsi:type="string">pq_listing_data_source</item>
+            </item>
+        </argument>
+        <settings>
+            <filterUrlParams>
+                <param name="question_id">*</param>
+            </filterUrlParams>
+            <primaryDataSource>question_question_listing.pq_listing_data_source</primaryDataSource>
+        </settings>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <massAction name="listing_massaction">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="selectCheckbox" xsi:type="string">question_id</item>
+                    <item name="indexField" xsi:type="string">question_id</item>
+                    <item name="type" xsi:type="string">list</item>
+                    <item name="label" xsi:type="string" translate="true">Actions</item>
+                    <item name="actions" xsi:type="array">
+                        <item name="delete" xsi:type="array">
+                            <item name="type" xsi:type="string">delete</item>
+                            <item name="label" xsi:type="string" translate="true">Delete</item>
+                            <item name="url" xsi:type="url" path="productquestions/question/deleteList"/>
+                            <item name="confirm" xsi:type="array">
+                                <item name="title" xsi:type="string" translate="true">Delete</item>
+                                <item name="message" xsi:type="string" translate="true">Delete selected questions?</item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </massAction>
+        <filters name="listing_filters">
+            <settings>
+                <templates>
+                    <filters>
+                        <select>
+                            <customScope>question_question_columns</customScope>
+                            <template>ui/grid/filters/elements/ui-select</template>
+                        </select>
+                    </filters>
+                </templates>
+            </settings>
+        </filters>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="question_question_columns">
+        <column name="question_id">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="product_id">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Product ID</label>
+            </settings>
+        </column>
+        <column name="customer_id">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Customer ID</label>
+            </settings>
+        </column>
+        <column name="question">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Question</label>
+                <dataType>text</dataType>
+            </settings>
+        </column>
+        <column name="status" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <options class="AlpineCommerce\ProductQuestions\Ui\Source\Status"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Status</label>
+            </settings>
+        </column>
+        <column name="is_verified_purchase" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Verified</label>
+            </settings>
+        </column>
+        <column name="helpful_count">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Helpful Count</label>
+            </settings>
+        </column>
+        <column name="created_at">
+            <settings>
+                <filter>date</filter>
+                <dataType>date</dataType>
+                <label translate="true">Created At</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="AlpineCommerce\ProductQuestions\Ui\Component\Listing\Column\Actions">
+            <settings>
+                <indexField>question_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

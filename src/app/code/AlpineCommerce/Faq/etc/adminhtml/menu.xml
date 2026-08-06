@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_Faq::menu"
+             title="FAQ"
+             module="AlpineCommerce_Faq"
+             sortOrder="40"
+             resource="AlpineCommerce_Faq::faq"
+             parent="Magento_Backend::content"/>
+        <add id="AlpineCommerce_Faq::faq_list"
+             title="Manage FAQs"
+             module="AlpineCommerce_Faq"
+             sortOrder="10"
+             action="faq/faq/index"
+             resource="AlpineCommerce_Faq::faq"
+             parent="AlpineCommerce_Faq::menu"/>
+    </menu>
+</config>

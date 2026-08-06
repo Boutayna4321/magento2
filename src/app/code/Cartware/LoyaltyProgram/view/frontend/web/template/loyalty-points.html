@@ -1,0 +1,35 @@
+<!--
+/**
+ * Cartware_LoyaltyProgram checkout loyalty points block.
+ */
+-->
+<div class="loyalty-points-block" data-bind="visible: pointsAvailable > 0">
+    <div class="block-title">
+        <strong data-bind="i18n: 'Use my loyalty points'"></strong>
+    </div>
+    <p class="loyalty-points-available"
+       data-bind="text: 'You have ' + pointsAvailable + ' points available.'"></p>
+
+    <label class="label" for="loyalty-points-used" data-bind="i18n: 'Points to use'"></label>
+    <input id="loyalty-points-used"
+           type="number"
+           min="0"
+           data-bind="attr: {max: pointsAvailable},
+                      value: pointsUsed,
+                      valueUpdate: 'input',
+                      disable: isSyncing"/>
+
+    <p class="loyalty-points-message"
+       data-bind="text: syncMessage, visible: syncMessage"></p>
+
+    <div class="loyalty-points-summary">
+        <div class="loyalty-points-discount">
+            <span data-bind="i18n: 'Loyalty discount'"></span>
+            <span data-bind="text: getFormattedDiscount()"></span>
+        </div>
+        <div class="loyalty-points-total">
+            <span data-bind="i18n: 'Estimated total'"></span>
+            <strong data-bind="text: getFormattedPrice(getEstimatedTotal())"></strong>
+        </div>
+    </div>
+</div>

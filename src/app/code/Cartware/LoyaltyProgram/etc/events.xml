@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_invoice_save_after">
+        <observer name="cartware_loyalty_award_points_on_invoice"
+                  instance="Cartware\LoyaltyProgram\Observer\AwardPointsOnInvoice"/>
+    </event>
+    <event name="sales_order_save_after">
+        <observer name="cartware_loyalty_deduct_points_on_place_order"
+                  instance="Cartware\LoyaltyProgram\Observer\DeductLoyaltyPointsOnPlaceOrder"/>
+    </event>
+</config>

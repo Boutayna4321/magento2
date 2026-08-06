@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface"
+                type="AlpineCommerce\ProductQuestions\Model\Question"/>
+    <preference for="AlpineCommerce\ProductQuestions\Api\Data\QuestionSearchResultsInterface"
+                type="AlpineCommerce\ProductQuestions\Model\QuestionSearchResults"/>
+    <preference for="AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface"
+                type="AlpineCommerce\ProductQuestions\Model\Answer"/>
+    <preference for="AlpineCommerce\ProductQuestions\Api\Data\AnswerSearchResultsInterface"
+                type="AlpineCommerce\ProductQuestions\Model\AnswerSearchResults"/>
+    <preference for="AlpineCommerce\ProductQuestions\Api\Data\VoteInterface"
+                type="AlpineCommerce\ProductQuestions\Model\Vote"/>
+    <preference for="AlpineCommerce\ProductQuestions\Api\QuestionRepositoryInterface"
+                type="AlpineCommerce\ProductQuestions\Model\QuestionRepository"/>
+    <preference for="AlpineCommerce\ProductQuestions\Api\AnswerRepositoryInterface"
+                type="AlpineCommerce\ProductQuestions\Model\AnswerRepository"/>
+    <preference for="AlpineCommerce\ProductQuestions\Api\QuestionRestInterface"
+                type="AlpineCommerce\ProductQuestions\Model\Rest\QuestionRestService"/>
+
+    <virtualType name="pq_listing_data_source"
+                 type="AlpineCommerce\ProductQuestions\Ui\DataProvider\QuestionListingDataProvider">
+        <arguments>
+            <argument name="name" xsi:type="string">pq_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">question_id</argument>
+            <argument name="requestFieldName" xsi:type="string">question_id</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="pq_form_data_source"
+                 type="AlpineCommerce\ProductQuestions\Ui\DataProvider\QuestionFormDataProvider">
+        <arguments>
+            <argument name="name" xsi:type="string">pq_form_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">question_id</argument>
+            <argument name="requestFieldName" xsi:type="string">question_id</argument>
+        </arguments>
+    </virtualType>
+</config>

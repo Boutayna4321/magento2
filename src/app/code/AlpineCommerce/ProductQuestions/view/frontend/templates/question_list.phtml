@@ -1,0 +1,89 @@
+<?php
+/** @var \AlpineCommerce\ProductQuestions\Block\Frontend\QuestionList $block */
+$questions = $block->getQuestions();
+$productName = $block->getProductName();
+?>
+<div class="product-questions-wrapper">
+    <h2 class="product-questions-title"><?= $block->escapeHtml(__('Customer Questions')) ?></h2>
+
+    <?php if ($questions): ?>
+        <div class="product-questions-summary">
+            <span class="questions-count">
+                <?= $block->escapeHtml(count($questions)) ?> <?= $block->escapeHtml(__('questions')) ?>
+            </span>
+        </div>
+
+        <div class="product-questions-list">
+            <?php foreach ($questions as $question): ?>
+                <div class="product-question-item" data-question-id="<?= $block->escapeHtml($question->getId()) ?>">
+                    <div class="question-header">
+                        <span class="question-title"><?= $block->escapeHtml($question->getQuestion()) ?></span>
+                        <span class="question-status <?= $block->escapeHtml(strtolower($block->getStatusLabel($question->getStatus()))) ?>">
+                            <?= $block->escapeHtml($block->getStatusLabel($question->getStatus())) ?>
+                        </span>
+                    </div>
+
+                    <div class="question-meta">
+                        <?php if ($question->getCustomerName()): ?>
+                            <span class="question-author"><?= $block->escapeHtml($question->getCustomerName()) ?></span>
+                        <?php endif; ?>
+                        <span class="question-date"><?= $block->escapeHtml($question->getCreatedAt()) ?></span>
+                        <?php if ($question->getIsVerifiedPurchase()): ?>
+                            <span class="verified-badge"><?= $block->escapeHtml(__('Verified Purchase')) ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="question-helpful">
+                        <span><?= $block->escapeHtml(__('Was this helpful?')) ?></span>
+                        <button type="button" class="action vote-yes"
+                                data-question-id="<?= $block->escapeHtml($question->getId()) ?>"
+                                data-helpful="1">
+                            <?= $block->escapeHtml(__('Yes')) ?>
+                            (<span class="helpful-count"><?= $block->escapeHtml($question->getHelpfulCount()) ?></span>)
+                        </button>
+                    </div>
+
+                    <?php $answers = $block->getAnswersForQuestion($question->getId()); ?>
+                    <?php if (!empty($answers)): ?>
+                        <div class="question-answers">
+                            <?php foreach ($answers as $answer): ?>
+                                <div class="answer-item">
+                                    <?php if ($answer->getIsOfficial()): ?>
+                                        <span class="answer-badge official"><?= $block->escapeHtml(__('Official Answer')) ?></span>
+                                    <?php endif; ?>
+                                    <div class="answer-text">
+                                        <?= $block->escapeHtml($answer->getAnswer()) ?>
+                                    </div>
+                                    <div class="answer-date">
+                                        <?= $block->escapeHtml($answer->getCreatedAt()) ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="no-questions"><?= $block->escapeHtml(__('No questions yet. Be the first to ask!')) ?></p>
+    <?php endif; ?>
+
+    <?php if ($block->isLoggedIn()): ?>
+        <div class="question-form-section">
+            <a href="#ask-question" class="action primary">
+                <span><?= $block->escapeHtml(__('Ask a Question')) ?></span>
+            </a>
+        </div>
+    <?php else: ?>
+        <p class="login-prompt"><?= $block->escapeHtml(__('Please log in to ask a question.')) ?></p>
+    <?php endif; ?>
+</div>
+
+<script>
+    require([
+        'jquery',
+        'AlpineCommerce_ProductQuestions/js/question'
+    ], function ($, question) {
+        question.init();
+    });
+</script>

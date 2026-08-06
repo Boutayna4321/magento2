@@ -1,0 +1,27 @@
+<?php
+/** @var \Cartware\Blog\Block\Listing $block */
+$posts = $block->getPosts();
+?>
+<?php if ($posts): ?>
+    <div class="cartware-blog-list">
+        <?php foreach ($posts as $post): ?>
+            <article class="cartware-blog-item">
+                <h2 class="cartware-blog-title">
+                    <a href="<?= $block->escapeUrl($block->getPostUrl($post)) ?>">
+                        <?= $block->escapeHtml($post->getTitle()) ?>
+                    </a>
+                </h2>
+                <?php if ($post->getAuthor()): ?>
+                    <p class="cartware-blog-author">
+                        <?= $block->escapeHtml(__('By %1', $post->getAuthor())) ?>
+                    </p>
+                <?php endif; ?>
+                <div class="cartware-blog-excerpt">
+                    <?= $block->escapeHtml($block->stripTags($post->getContent())) ?>
+                </div>
+            </article>
+        <?php endforeach; ?>
+    </div>
+<?php else: ?>
+    <p><?= $block->escapeHtml(__('No blog posts yet.')) ?></p>
+<?php endif; ?>

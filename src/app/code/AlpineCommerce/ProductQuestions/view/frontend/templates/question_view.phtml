@@ -1,0 +1,44 @@
+<?php
+/** @var \AlpineCommerce\ProductQuestions\Block\Frontend\QuestionView $block */
+$question = $block->getQuestion();
+$answers = $block->getAnswers();
+?>
+<div class="product-question-detail">
+    <div class="question-header">
+        <h2 class="question-title"><?= $block->escapeHtml($question->getQuestion()) ?></h2>
+        <div class="question-meta">
+            <?php if ($question->getCustomerName()): ?>
+                <span class="question-author"><?= $block->escapeHtml($question->getCustomerName()) ?></span>
+            <?php endif; ?>
+            <span class="question-date"><?= $block->escapeHtml($question->getCreatedAt()) ?></span>
+            <?php if ($question->getIsVerifiedPurchase()): ?>
+                <span class="verified-badge"><?= $block->escapeHtml(__('Verified Purchase')) ?></span>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="question-text">
+        <?= $block->escapeHtml($question->getQuestion()) ?>
+    </div>
+
+    <?php if (!empty($answers)): ?>
+        <div class="question-answers">
+            <h3><?= $block->escapeHtml(__('Answers')) ?></h3>
+            <?php foreach ($answers as $answer): ?>
+                <div class="answer-item">
+                    <?php if ($answer->getIsOfficial()): ?>
+                        <span class="answer-badge official"><?= $block->escapeHtml(__('Official Answer')) ?></span>
+                    <?php endif; ?>
+                    <div class="answer-text">
+                        <?= $block->escapeHtml($answer->getAnswer()) ?>
+                    </div>
+                    <div class="answer-meta">
+                        <span class="answer-date"><?= $block->escapeHtml($answer->getCreatedAt()) ?></span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="no-answers"><?= $block->escapeHtml(__('No answers yet.')) ?></p>
+    <?php endif; ?>
+</div>

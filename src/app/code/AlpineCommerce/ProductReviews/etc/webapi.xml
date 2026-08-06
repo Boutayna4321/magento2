@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/alphacommerce/product-reviews" method="GET">
+        <service class="AlpineCommerce\ProductReviews\Api\ReviewRestInterface" method="getReviews"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-reviews/{reviewId}" method="GET">
+        <service class="AlpineCommerce\ProductReviews\Api\ReviewRestInterface" method="getReview"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-reviews" method="POST">
+        <service class="AlpineCommerce\ProductReviews\Api\ReviewRestInterface" method="addReview"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-reviews/{reviewId}/vote" method="POST">
+        <service class="AlpineCommerce\ProductReviews\Api\ReviewRestInterface" method="voteHelpful"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+</routes>

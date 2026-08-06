@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_ProductQuestions::menu"
+             title="Product Questions"
+             module="AlpineCommerce_ProductQuestions"
+             sortOrder="50"
+             resource="AlpineCommerce_ProductQuestions::question"
+             parent="Magento_Backend::marketing"/>
+        <add id="AlpineCommerce_ProductQuestions::question_list"
+             title="Manage Questions"
+             module="AlpineCommerce_ProductQuestions"
+             sortOrder="10"
+             action="productquestions/question/index"
+             resource="AlpineCommerce_ProductQuestions::question"
+             parent="AlpineCommerce_ProductQuestions::menu"/>
+    </menu>
+</config>

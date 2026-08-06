@@ -1,0 +1,9 @@
+<?php
+/** @var \Cartware\Faq\Block\Detail $block */
+$faq = $block->getFaq();
+?>
+<div class="cartware-faq-detail">
+    <h1 class="cartware-faq-title"><?= $block->escapeHtml($faq->getTitle()) ?></h1>
+    <div class="cartware-faq-content"><?= $block->escapeHtml($faq->getContent()) ?></div>
+    <p><a href="<?= $block->escapeUrl($block->getUrl('faq')) ?>"><?= $block->escapeHtml(__('Back to FAQ list')) ?></a></p>
+</div>

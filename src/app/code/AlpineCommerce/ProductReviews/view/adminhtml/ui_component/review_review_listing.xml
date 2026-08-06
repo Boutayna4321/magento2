@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">review_review_listing.alp_rev_listing_data_source</item>
+            <item name="deps" xsi:type="string">review_review_listing.alp_rev_listing_data_source</item>
+        </item>
+        <item name="spinner" xsi:type="string">review_review_columns</item>
+        <item name="buttons" xsi:type="array">
+            <button name="add">
+                <url path="productreviews/review/new"/>
+                <class>primary</class>
+                <label translate="true">Add New Review</label>
+            </button>
+        </item>
+    </argument>
+    <settings>
+        <spinner>review_review_columns</spinner>
+        <deps>review_review_listing.alp_rev_listing_data_source</deps>
+    </settings>
+    <dataSource name="alp_rev_listing_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+                <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                <item name="storageConfig" xsi:type="array">
+                    <item name="indexField" xsi:type="string">review_id</item>
+                </item>
+            </item>
+            <item name="config" xsi:type="array">
+                <item name="dataProvider" xsi:type="string">alp_rev_listing_data_source</item>
+            </item>
+        </argument>
+        <settings>
+            <filterUrlParams>
+                <param name="review_id">*</param>
+            </filterUrlParams>
+            <primaryDataSource>review_review_listing.alp_rev_listing_data_source</primaryDataSource>
+        </settings>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <massAction name="labels_mass_actions">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="selectCheckbox" xsi:type="string">review_id</item>
+                    <item name="indexField" xsi:type="string">review_id</item>
+                </item>
+            </argument>
+            <settings>
+                <entityCollectionProvider>data_provider</entityCollectionProvider>
+                <selectedItemClass>selected-item</selectedItemClass>
+            </settings>
+            <action name="delete">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">delete</item>
+                        <item name="label" xsi:type="string" translate="true">Delete</item>
+                        <item name="url" xsi:type="url" path="productreviews/review/deleteList"/>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Delete</item>
+                            <item name="message" xsi:type="string" translate="true">Delete selected reviews?</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+        </massAction>
+        <filters name="listing_filters">
+            <settings>
+                <templates>
+                    <filters>
+                        <select>
+                            <customScope>review_review_columns</customScope>
+                            <template>ui/grid/filters/elements/ui-select</template>
+                        </select>
+                    </filters>
+                </templates>
+            </settings>
+        </filters>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="review_review_columns">
+        <column name="review_id">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="product_id">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Product ID</label>
+            </settings>
+        </column>
+        <column name="title">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Title</label>
+            </settings>
+        </column>
+        <column name="rating" component="Magento_Ui/js/grid/columns/statusbar">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Rating</label>
+            </settings>
+        </column>
+        <column name="status" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <options class="AlpineCommerce\ProductReviews\Ui\Source\Status"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Status</label>
+            </settings>
+        </column>
+        <column name="is_verified">
+            <settings>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Verified</label>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+            </settings>
+        </column>
+        <column name="created_at">
+            <settings>
+                <filter>date</filter>
+                <dataType>date</dataType>
+                <label translate="true">Created At</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="AlpineCommerce\ProductReviews\Ui\Component\Listing\Column\Actions">
+            <settings>
+                <indexField>review_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

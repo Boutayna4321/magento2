@@ -1,0 +1,40 @@
+<?php /** @var $block \AlpineCommerce\StoreLocator\Block\Adminhtml\Store\Edit */ ?>
+<?php $store = $block->getStore(); ?>
+<form id="store-edit-form" action="<?= $block->escapeUrl($block->getUrl('*/*/save')) ?>" method="post">
+    <?= $block->getBlockHtml('formkey') ?>
+    <input type="hidden" name="entity_id" value="<?= (int)$store->getId() ?>" />
+    <fieldset class="fieldset admin__fieldset">
+        <legend class="admin__legend"><span><?= $block->escapeHtml(__('Store Information')) ?></span></legend>
+        <?php foreach (['source_code' => 'Source Code', 'name' => 'Store Name', 'street' => 'Street', 'city' => 'City', 'region' => 'Region', 'postcode' => 'Postcode', 'country_id' => 'Country Code', 'phone' => 'Phone', 'latitude' => 'Latitude', 'longitude' => 'Longitude'] as $field => $label): ?>
+            <div class="admin__field <?= in_array($field, ['source_code', 'name'], true) ? 'required' : '' ?>">
+                <label class="admin__field-label" for="<?= $block->escapeHtmlAttr($field) ?>"><span><?= $block->escapeHtml(__($label)) ?></span></label>
+                <div class="admin__field-control"><input class="admin__control-text" id="<?= $block->escapeHtmlAttr($field) ?>" name="<?= $block->escapeHtmlAttr($field) ?>" value="<?= $block->escapeHtmlAttr($store->getData($field)) ?>" <?= in_array($field, ['source_code', 'name'], true) ? 'required' : '' ?> /></div>
+            </div>
+        <?php endforeach; ?>
+        <div class="admin__field">
+            <label class="admin__field-label" for="opening_hours"><span><?= $block->escapeHtml(__('Opening Hours')) ?></span></label>
+            <div class="admin__field-control"><textarea class="admin__control-textarea" id="opening_hours" name="opening_hours"><?= $block->escapeHtml($store->getData('opening_hours')) ?></textarea></div>
+        </div>
+        <div class="admin__field">
+            <label class="admin__field-label" for="is_active"><span><?= $block->escapeHtml(__('Status')) ?></span></label>
+            <div class="admin__field-control"><input id="is_active" name="is_active" type="checkbox" value="1" <?= $store->getId() === null || $store->getIsActive() ? 'checked' : '' ?> /> <?= $block->escapeHtml(__('Active')) ?></div>
+        </div>
+    </fieldset>
+    <div class="store-locator-form-actions" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+        <button class="action-primary" type="submit">
+            <span><?= $block->escapeHtml(__('Save Store')) ?></span>
+        </button>
+        <a class="action-secondary" href="<?= $block->escapeUrl($block->getUrl('*/*/index')) ?>">
+            <span><?= $block->escapeHtml(__('Cancel')) ?></span>
+        </a>
+    </div>
+</form>
+<?php if ($store->getId()): ?>
+    <form id="store-delete-form" action="<?= $block->escapeUrl($block->getUrl('*/*/delete')) ?>" method="post">
+        <?= $block->getBlockHtml('formkey') ?>
+        <input type="hidden" name="id" value="<?= (int)$store->getId() ?>" />
+        <button class="action-delete" type="submit" onclick="return confirm('<?= $block->escapeHtmlAttr(__('Delete this store?')) ?>');">
+            <span><?= $block->escapeHtml(__('Delete Store')) ?></span>
+        </button>
+    </form>
+<?php endif; ?>

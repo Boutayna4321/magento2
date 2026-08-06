@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="AlpineCommerce_ProductLabels::labels" title="Product Labels" sortOrder="10">
+                    <resource id="AlpineCommerce_ProductLabels::labels_save" title="Save Labels" sortOrder="10"/>
+                    <resource id="AlpineCommerce_ProductLabels::labels_delete" title="Delete Labels" sortOrder="20"/>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

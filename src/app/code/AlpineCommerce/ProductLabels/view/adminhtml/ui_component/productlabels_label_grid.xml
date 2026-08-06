@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">productlabels_label_grid.productlabels_label_grid_data_source</item>
+            <item name="deps" xsi:type="string">productlabels_label_grid.productlabels_label_grid_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <spinner>productlabels_label_grid_columns</spinner>
+        <deps>
+            <dep>productlabels_label_grid.productlabels_label_grid_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="productlabels_label_grid_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">ProductLabelDataProvider</argument>
+            <argument name="name" xsi:type="string">productlabels_label_grid_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
+            <argument name="requestFieldName" xsi:type="string">entity_id</argument>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                </item>
+            </argument>
+        </argument>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmark"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <paging name="listing_paging"/>
+        <massaction name="listing_massaction">
+            <action name="delete">
+                <title>Delete</title>
+                <url path="productlabels/label/massDelete"/>
+                <type>delete</type>
+                <confirm>
+                    <message>Are you sure to delete selected items?</message>
+                    <title>Delete items</title>
+                </confirm>
+            </action>
+            <action name="status">
+                <title>Change status</title>
+                <url path="productlabels/label/massStatus"/>
+                <type>status</type>
+                <field>status</field>
+                <label>Status</label>
+                <values>
+                    <item name="1" xsi:type="array">
+                        <item name="value" xsi:type="number">1</item>
+                        <item name="label" xsi:type="string">Enabled</item>
+                    </item>
+                    <item name="0" xsi:type="array">
+                        <item name="value" xsi:type="number">0</item>
+                        <item name="label" xsi:type="string">Disabled</item>
+                    </item>
+                </values>
+            </action>
+        </massaction>
+        <exportButton name="export_button"/>
+    </listingToolbar>
+    <columns name="productlabels_label_grid_columns">
+        <column name="entity_id">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="name">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Label Name</label>
+            </settings>
+        </column>
+        <column name="code">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Code</label>
+            </settings>
+        </column>
+        <column name="priority">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Priority</label>
+            </settings>
+        </column>
+        <column name="position">
+            <settings>
+                <filter>select</filter>
+                <label translate="true">Position</label>
+                <options>
+                    <option name="top-left" xsi:type="array">
+                        <item name="value" xsi:type="string">top-left</item>
+                        <item name="label" xsi:type="string">Top Left</item>
+                    </option>
+                    <option name="top-right" xsi:type="array">
+                        <item name="value" xsi:type="string">top-right</item>
+                        <item name="label" xsi:type="string">Top Right</item>
+                    </option>
+                    <option name="bottom-left" xsi:type="array">
+                        <item name="value" xsi:type="string">bottom-left</item>
+                        <item name="label" xsi:type="string">Bottom Left</item>
+                    </option>
+                    <option name="bottom-right" xsi:type="array">
+                        <item name="value" xsi:type="string">bottom-right</item>
+                        <item name="label" xsi:type="string">Bottom Right</item>
+                    </option>
+                </options>
+            </settings>
+        </column>
+        <column name="is_active">
+            <settings>
+                <filter>select</filter>
+                <label translate="true">Status</label>
+                <options>
+                    <option name="1" xsi:type="array">
+                        <item name="value" xsi:type="number">1</item>
+                        <item name="label" xsi:type="string">Enabled</item>
+                    </option>
+                    <option name="0" xsi:type="array">
+                        <item name="value" xsi:type="number">0</item>
+                        <item name="label" xsi:type="string">Disabled</item>
+                    </option>
+                </options>
+            </settings>
+        </column>
+        <actionsColumn name="actions">
+            <settings>
+                <label translate="true">Actions</label>
+                <actions>
+                    <action name="edit">
+                        <settings>
+                            <urlPath>productlabels/label/edit</urlPath>
+                            <callback translate="true">(id)"/edit"</callback>
+                            <field>entity_id</field>
+                            <label translate="true">Edit</label>
+                        </settings>
+                    </action>
+                </actions>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

@@ -1,0 +1,86 @@
+<?php
+/** @var \AlpineCommerce\ProductReviews\Block\Frontend\ReviewList $block */
+$reviews = $block->getReviews();
+$productName = $block->getProductName();
+?>
+<div class="product-reviews-wrapper">
+    <h1 class="product-reviews-title"><?= $block->escapeHtml($productName) ?></h1>
+
+    <div class="product-reviews-rating-summary">
+        <?php $avgRating = $block->getAverageRating($reviews); ?>
+        <span class="rating-value"><?= $block->escapeHtml(number_format($avgRating, 1)) ?></span>
+        <span class="review-count">(<?= $block->escapeHtml(count($reviews)) ?> <?= $block->escapeHtml(__('reviews')) ?>)</span>
+    </div>
+
+    <?php if ($block->isLoggedIn()): ?>
+        <div class="product-reviews-write">
+            <a href="<?= $block->escapeUrl($block->getUrl('productreviews/index/view', ['id' => $block->getProductId()])) ?>"
+               class="action primary">
+                <span><?= $block->escapeHtml(__('Write a Review')) ?></span>
+            </a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($reviews): ?>
+        <div class="product-reviews-list">
+            <?php foreach ($reviews as $review): ?>
+                <div class="product-review-item" data-review-id="<?= $block->escapeHtml($review->getId()) ?>">
+                    <div class="review-header">
+                        <div class="review-rating">
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <span class="star<?= $i <= $review->getRating() ? ' filled' : '' ?>">&#9733;</span>
+                            <?php endfor; ?>
+                        </div>
+                        <div class="review-meta">
+                            <span class="review-title"><?= $block->escapeHtml($review->getTitle()) ?></span>
+                            <span class="review-status <?= $block->escapeHtml(strtolower($block->getStatusLabel($review->getStatus()))) ?>">
+                                <?= $block->escapeHtml($block->getStatusLabel($review->getStatus())) ?>
+                            </span>
+                            <?php if ($review->getIsVerified()): ?>
+                                <span class="review-verified"><?= $block->escapeHtml(__('Verified Purchase')) ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <?php if ($review->getDetail()): ?>
+                        <div class="review-detail">
+                            <?= $block->escapeHtml($review->getDetail()) ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php $images = $block->getImages($review->getId()); ?>
+                    <?php if (!empty($images)): ?>
+                        <div class="review-images">
+                            <?php foreach ($images as $image): ?>
+                                <img src="<?= $block->escapeUrl($block->getImageUrl($image->getImagePath())) ?>"
+                                     alt="<?= $block->escapeHtml(__('Review image')) ?>"/>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="review-helpful">
+                        <span><?= $block->escapeHtml(__('Is this review helpful?')) ?></span>
+                        <button type="button" class="action vote-yes"
+                                data-review-id="<?= $block->escapeHtml($review->getId()) ?>"
+                                data-helpful="1">
+                            <?= $block->escapeHtml(__('Yes')) ?>
+                            (<span class="helpful-yes-count"><?= $block->escapeHtml($block->getHelpfulCount($review->getId(), 1)) ?></span>)
+                        </button>
+                        <button type="button" class="action vote-no"
+                                data-review-id="<?= $block->escapeHtml($review->getId()) ?>"
+                                data-helpful="0">
+                            <?= $block->escapeHtml(__('No')) ?>
+                            (<span class="helpful-no-count"><?= $block->escapeHtml($block->getHelpfulCount($review->getId(), 0)) ?></span>)
+                        </button>
+                    </div>
+
+                    <div class="review-date">
+                        <?= $block->escapeHtml($review->getCreatedAt()) ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="no-reviews"><?= $block->escapeHtml(__('No reviews yet. Be the first to review this product!')) ?></p>
+    <?php endif; ?>
+</div>

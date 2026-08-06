@@ -1,0 +1,7 @@
+<?php
+require dirname(__DIR__,2)."/app/bootstrap.php";
+$b=\Magento\Framework\App\Bootstrap::create(BP, $_SERVER);
+$om=$b->getObjectManager();
+$om->get(\Magento\Framework\App\State::class)->setAreaCode("frontend");
+$svc=$om->get(\Magento\Integration\Model\CustomerTokenService::class);
+echo $svc->createCustomerAccessToken("roni_cost@example.com","roni_cost3@example.com");

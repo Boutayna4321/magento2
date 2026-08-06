@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/alphacommerce/product-questions" method="GET">
+        <service class="AlpineCommerce\ProductQuestions\Api\QuestionRestInterface" method="getQuestions"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-questions/{questionId}" method="GET">
+        <service class="AlpineCommerce\ProductQuestions\Api\QuestionRestInterface" method="getQuestion"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-questions" method="POST">
+        <service class="AlpineCommerce\ProductQuestions\Api\QuestionRestInterface" method="addQuestion"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-questions/{questionId}" method="PUT">
+        <service class="AlpineCommerce\ProductQuestions\Api\QuestionRestInterface" method="editQuestion"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-questions/{questionId}" method="DELETE">
+        <service class="AlpineCommerce\ProductQuestions\Api\QuestionRestInterface" method="deleteQuestion"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-questions/{questionId}/vote" method="POST">
+        <service class="AlpineCommerce\ProductQuestions\Api\QuestionRestInterface" method="voteHelpful"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-questions/{questionId}/answer" method="POST">
+        <service class="AlpineCommerce\ProductQuestions\Api\QuestionRestInterface" method="answerQuestion"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+</routes>

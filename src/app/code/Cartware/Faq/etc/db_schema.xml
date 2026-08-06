@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="cartware_faq" resource="default" engine="innodb"
+           comment="FAQ">
+        <column xsi:type="int" name="faq_id" unsigned="true" nullable="false" identity="true"
+                comment="FAQ ID"/>
+        <column xsi:type="varchar" name="title" nullable="false" length="255"
+                comment="Title"/>
+        <column xsi:type="text" name="content" nullable="true"
+                comment="Content"/>
+        <column xsi:type="varchar" name="url_key" nullable="false" length="255"
+                comment="URL Key"/>
+        <column xsi:type="int" name="sort_order" nullable="false" default="0"
+                comment="Sort Order"/>
+        <column xsi:type="boolean" name="is_active" nullable="false" default="1"
+                comment="Is Active"/>
+        <column xsi:type="timestamp" name="created_at" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="faq_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="CARTWARE_FAQ_URL_KEY">
+            <column name="url_key"/>
+        </constraint>
+        <index referenceId="CARTWARE_FAQ_IS_ACTIVE" indexType="btree">
+            <column name="is_active"/>
+        </index>
+    </table>
+</schema>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="AlpineCommerce\LoyaltyProgram\Api\LoyaltyBalanceRepositoryInterface"
+                type="AlpineCommerce\LoyaltyProgram\Model\LoyaltyBalanceRepository"/>
+
+    <preference for="AlpineCommerce\LoyaltyProgram\Api\LoyaltyCartManagementInterface"
+                type="AlpineCommerce\LoyaltyProgram\Model\Checkout\LoyaltyCartManagement"/>
+
+    <type name="AlpineCommerce\LoyaltyProgram\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">loyalty</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="loyalty" xsi:type="object">AlpineCommerce\LoyaltyProgram\Logger\Handler\Loyalty</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

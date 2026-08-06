@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <container name="productquestions.before" as="productquestions_before" before="-" htmlTag="div" htmlClass="productquestions-before"/>
+            <block class="AlpineCommerce\ProductQuestions\Block\Frontend\QuestionList"
+                   name="productquestions_list"
+                   template="AlpineCommerce_ProductQuestions::question_list.phtml"/>
+            <block class="AlpineCommerce\ProductQuestions\Block\Frontend\QuestionForm"
+                   name="productquestions_form"
+                   template="AlpineCommerce_ProductQuestions::question_form.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

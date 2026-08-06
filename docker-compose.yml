@@ -1,0 +1,141 @@
+services:
+  # ── PHP-FPM ─────────────────────────────────────────────
+  php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: magento2-php
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./src:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/conf.d/99-magento.ini
+      - ./php/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
+    depends_on:
+      mysql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - TZ=UTC
+    networks:
+      - magento-network
+
+  # ── Nginx ───────────────────────────────────────────────
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: magento2-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - magento-network
+
+  # ── MySQL 8.0 ──────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: magento2-mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: magento2
+      MYSQL_USER: magento
+      MYSQL_PASSWORD: magento123
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=512M
+      --innodb-log-file-size=256M
+      --innodb-flush-log-at-trx-commit=1
+      --sync-binlog=1
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - magento-network
+
+  # ── Elasticsearch 8.x ──────────────────────────────────
+  elasticsearch:
+    image: elasticsearch:8.11.4
+    container_name: magento2-elasticsearch
+    restart: unless-stopped
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - cluster.name=docker-cluster
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+    networks:
+      - magento-network
+
+  # ── Redis ───────────────────────────────────────────────
+  redis:
+    image: redis:7.2-alpine
+    container_name: magento2-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - magento-network
+
+  # ── Composer cache container ────────────────────────────
+  composer:
+    image: composer:2
+    container_name: magento2-composer
+    volumes:
+      - ./src:/app
+    working_dir: /app
+    entrypoint: ["composer"]
+    networks:
+      - magento-network
+
+volumes:
+  mysql_data:
+  elasticsearch_data:
+  redis_data:
+
+networks:
+  magento-network:
+    driver: bridge

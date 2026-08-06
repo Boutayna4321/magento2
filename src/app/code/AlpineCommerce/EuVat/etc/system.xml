@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="alphacommerce_euvat" translate="label" type="text" sortOrder="330"
+                 showInDefault="1" showInWebsite="0" showInStore="1">
+            <label>EU VAT</label>
+            <tab>general</tab>
+            <resource>AlpineCommerce_EuVat::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10"
+                   showInDefault="1" showInWebsite="0" showInStore="1">
+                <label>General</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Enable EU VAT Validation</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="wsdl" translate="label" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>VIES WSDL URL</label>
+                    <comment>URL of the European Commission VIES SOAP service.</comment>
+                </field>
+                <field id="timeout" translate="label" type="text" sortOrder="30"
+                       showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Request Timeout (seconds)</label>
+                    <comment>Maximum time in seconds to wait for a VIES response.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
