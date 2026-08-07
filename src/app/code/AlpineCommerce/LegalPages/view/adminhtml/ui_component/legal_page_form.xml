@@ -3,9 +3,10 @@
       xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
-            <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
-            <item name="submit_url" xsi:type="url" path="legal/page/save"/>
+            <item name="provider" xsi:type="string">legal_page_form.legal_page_form_data_source</item>
         </item>
+        <item name="label" xsi:type="string" translate="true">Legal Page Information</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
         <item name="config" xsi:type="array">
             <item name="dataProvider" xsi:type="string">legal_page_form_data_source</item>
         </item>
@@ -13,47 +14,31 @@
     <settings>
         <namespace>legal_page_form</namespace>
         <dataScope>data</dataScope>
+        <buttons>
+            <button name="save" class="AlpineCommerce\LegalPages\Block\Adminhtml\Page\Edit\SaveButton"/>
+            <button name="back" class="AlpineCommerce\LegalPages\Block\Adminhtml\Page\Edit\BackButton"/>
+        </buttons>
     </settings>
     <dataSource name="legal_page_form_data_source">
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
-                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
-            </item>
-            <item name="config" xsi:type="array">
-                <item name="dataProvider" xsi:type="string">legal_page_form_data_source</item>
+                <item name="provider" xsi:type="string">legal_page_form.legal_page_form_data_source</item>
             </item>
         </argument>
-        <settings>
+    <settings>
             <submitUrl path="legal/page/save"/>
         </settings>
+        <dataProvider class="AlpineCommerce\LegalPages\Ui\DataProvider\FormDataProvider" name="legal_page_form_data_source">
+            <settings>
+                <requestFieldName>page_id</requestFieldName>
+                <primaryFieldName>page_id</primaryFieldName>
+            </settings>
+        </dataProvider>
     </dataSource>
-    <container name="button_set" component="Magento_Ui/js/form/components/button-set" sortOrder="0">
-        <argument name="data" xsi:type="array">
-            <item name="buttons" xsi:type="array">
-                <item name="save" xsi:type="array">
-                    <item name="name" xsi:type="string">save</item>
-                    <item name="label" xsi:type="string" translate="true">Save</item>
-                    <item name="class" xsi:type="string">primary</item>
-                    <item name="sortOrder" xsi:type="number">10</item>
-                </item>
-                <item name="back" xsi:type="array">
-                    <item name="name" xsi:type="string">back</item>
-                    <item name="label" xsi:type="string" translate="true">Back</item>
-                    <item name="sortOrder" xsi:type="number">20</item>
-                </item>
-                <item name="reset" xsi:type="array">
-                    <item name="name" xsi:type="string">reset</item>
-                    <item name="label" xsi:type="string" translate="true">Reset</item>
-                    <item name="sortOrder" xsi:type="number">30</item>
-                </item>
-            </item>
-        </argument>
-    </container>
     <fieldset name="general">
         <settings>
             <label translate="true">General</label>
             <collapsible>true</collapsible>
-            <initialExpanded>true</initialExpanded>
         </settings>
         <field name="page_id">
             <argument name="data" xsi:type="array">
@@ -92,8 +77,14 @@
             <settings>
                 <dataType>select</dataType>
                 <label translate="true">Type</label>
-                <options class="AlpineCommerce\LegalPages\Ui\Source\TypeOptions"/>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="AlpineCommerce\LegalPages\Ui\Source\TypeOptions"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
         <field name="url_key" formElement="input">
             <argument name="data" xsi:type="array">
@@ -143,8 +134,14 @@
             <settings>
                 <dataType>boolean</dataType>
                 <label translate="true">Status</label>
-                <options class="Magento\Config\Model\Config\Source\Yesno"/>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
     </fieldset>
 </form>

@@ -13,25 +13,31 @@
             <resource ref="admin"/>
         </resources>
     </route>
-    <route url="/V1/alphacommerce/product-labels/:id" method="GET">
+    <route url="/V1/alphacommerce/product-labels/:entityId" method="GET">
         <service class="AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface" method="getById"/>
         <resources>
             <resource ref="admin"/>
         </resources>
     </route>
-    <route url="/V1/alphacommerce/product-labels/:id" method="PUT">
-        <service class="AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface" method="save"/>
-        <resources>
-            <resource ref="admin"/>
-        </resources>
-    </route>
-    <route url="/V1/alphacommerce/product-labels/:id" method="DELETE">
+    <route url="/V1/alphacommerce/product-labels/:entityId" method="DELETE">
         <service class="AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface" method="deleteById"/>
         <resources>
             <resource ref="admin"/>
         </resources>
     </route>
-    <route url="/V1/alphacommerce/product-labels/:id/apply" method="POST">
+    <route url="/V1/alphacommerce/product-labels/:labelId/products" method="GET">
+        <service class="AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface" method="getProductIdsByLabel"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-labels/:labelId/products" method="POST">
+        <service class="AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface" method="assignProductsToLabel"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alphacommerce/product-labels/:productId/apply" method="POST">
         <service class="AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface" method="assignLabelsToProduct"/>
         <resources>
             <resource ref="admin"/>

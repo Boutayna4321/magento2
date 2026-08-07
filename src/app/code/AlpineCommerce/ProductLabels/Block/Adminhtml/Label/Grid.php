@@ -70,7 +70,6 @@ class Grid extends Extended
         $this->addColumn("color", [
             "header" => __("Color"),
             "index" => "color",
-            "renderer" => \Magento\Backend\Block\Widget\Grid\Renderer\Color::class,
             "filter" => false
         ]);
 

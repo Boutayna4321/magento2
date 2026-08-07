@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">alphacommerce_pickup_store_info_form.alphacommerce_pickup_store_info_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Pickup Store Information</item>
+    </argument>
+    <settings>
+        <namespace>alphacommerce_pickup_store_info_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>alphacommerce_pickup_store_info_form.alphacommerce_pickup_store_info_form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="alphacommerce_pickup_store_info_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="alphacommerce_pickup/store/save"/>
+        </settings>
+        <dataProvider class="AlpineCommerce\StorePickup\Ui\DataProvider\StoreInfoFormDataProvider"
+                      name="alphacommerce_pickup_store_info_form_data_source">
+            <settings>
+                <requestFieldName>entity_id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="general">
+        <settings>
+            <label translate="true">General</label>
+        </settings>
+        <field name="entity_id" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">entity_id</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                </item>
+            </argument>
+        </field>
+        <field name="source_code" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Source Code</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">source_code</item>
+                </item>
+            </argument>
+        </field>
+        <field name="name" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Store Name</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">name</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+        <field name="street" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Street</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">street</item>
+                </item>
+            </argument>
+        </field>
+        <field name="city" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">City</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">city</item>
+                </item>
+            </argument>
+        </field>
+        <field name="region" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Region</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">region</item>
+                </item>
+            </argument>
+        </field>
+        <field name="postcode" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Postcode</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">postcode</item>
+                </item>
+            </argument>
+        </field>
+        <field name="country_id" formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Country</item>
+                    <item name="dataType" xsi:type="string">select</item>
+                    <item name="dataScope" xsi:type="string">country_id</item>
+                    <item name="options" xsi:type="array">
+                        <item name="option" xsi:type="object">Magento\Directory\Model\Config\Source\Country</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+        <field name="phone" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Phone</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">phone</item>
+                </item>
+            </argument>
+        </field>
+        <field name="latitude" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Latitude</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">latitude</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="validate-number" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+        <field name="longitude" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Longitude</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="dataScope" xsi:type="string">longitude</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="validate-number" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+        <field name="opening_hours" formElement="textarea">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Opening Hours</item>
+                    <item name="dataType" xsi:type="string">textarea</item>
+                    <item name="dataScope" xsi:type="string">opening_hours</item>
+                    <item name="rows" xsi:type="number">5</item>
+                </item>
+            </argument>
+        </field>
+        <field name="is_active" formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">store</item>
+                    <item name="label" xsi:type="string" translate="true">Active</item>
+                    <item name="dataType" xsi:type="string">boolean</item>
+                    <item name="dataScope" xsi:type="string">is_active</item>
+                    <item name="default" xsi:type="number">1</item>
+                    <item name="options" xsi:type="array">
+                        <item name="option" xsi:type="object">Magento\Config\Model\Config\Source\Yesno</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+    </fieldset>
+</form>

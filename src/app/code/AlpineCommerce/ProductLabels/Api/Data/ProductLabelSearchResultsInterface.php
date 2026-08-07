@@ -10,11 +10,11 @@ interface ProductLabelSearchResultsInterface extends SearchResultsInterface
     /**
      * @return \AlpineCommerce\ProductLabels\Api\Data\ProductLabelInterface[]
      */
-    public function getItems(): array;
+    public function getItems();
 
     /**
      * @param \AlpineCommerce\ProductLabels\Api\Data\ProductLabelInterface[] $items
      * @return $this
      */
-    public function setItems(array $items): self;
+    public function setItems(array $items);
 }

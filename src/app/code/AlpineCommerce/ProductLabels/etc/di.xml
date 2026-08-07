@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="AlpineCommerce\ProductLabels\Api\Data\ProductLabelInterface"
+                type="AlpineCommerce\ProductLabels\Model\ProductLabel"/>
+    <preference for="AlpineCommerce\ProductLabels\Api\Data\ProductLabelSearchResultsInterface"
+                type="AlpineCommerce\ProductLabels\Model\ProductLabelSearchResults"/>
     <preference for="AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface"
                 type="AlpineCommerce\ProductLabels\Model\ProductLabelRepository"/>
-    <dataSource name="productlabels_label_grid_data_source">
-        <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">AlpineCommerce\ProductLabels\Model\DataProvider\ProductLabelDataProvider</argument>
-            <argument name="name" xsi:type="string">productlabels_label_grid_data_source</argument>
-            <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
-            <argument name="requestFieldName" xsi:type="string">entity_id</argument>
-        </argument>
-    </dataSource>
+
+    <type name="Magento\Catalog\Block\Product\ListProduct">
+        <plugin name="alpinecommerce_productlabels_catalog_block"
+                type="AlpineCommerce\ProductLabels\Plugin\CatalogBlock"
+                sortOrder="10"/>
+    </type>
 </config>

@@ -8,7 +8,7 @@ use Magento\Backend\Block\Widget\Form\Container;
 
 class Edit extends Container
 {
-    protected $_blockGroup = "AlpineCommerce_ProductLabels";
+    protected $_blockGroup = 'AlpineCommerce_ProductLabels';
 
     public function __construct(Context $context, array $data = [])
     {
@@ -17,28 +17,28 @@ class Edit extends Container
 
     protected function _construct(): void
     {
-        $this->_objectId = "entity_id";
-        $this->_controller = "label";
-        $this->_moduleName = "AlpineCommerce_ProductLabels";
+        $this->_objectId = 'entity_id';
+        $this->_controller = 'label';
+        $this->_moduleName = 'AlpineCommerce_ProductLabels';
         parent::_construct();
     }
 
     public function getHeaderText(): string
     {
-        $labelRegistry = $this->_coreRegistry->registry("productlabels_label");
+        $labelRegistry = $this->_coreRegistry->registry('productlabels_label');
         if ($labelRegistry && $labelRegistry->getEntityId()) {
-            return __("Edit Product Label") . " - " . $labelRegistry->getName();
+            return __('Edit Product Label') . ' - ' . $labelRegistry->getName();
         }
-        return __("New Product Label");
+        return __('New Product Label');
     }
 
     public function getBackUrl(): string
     {
-        return $this->getUrl("*/*/");
+        return $this->getUrl('*/*/');
     }
 
     public function getSaveAndContinueUrl(): string
     {
-        return $this->getUrl("*/*/edit", ["_current" => true, "entity_id" => $this->getRequest()->getParam("entity_id")]);
+        return $this->getUrl('*/*/edit', ['_current' => true, 'entity_id' => $this->getRequest()->getParam('entity_id')]);
     }
 }

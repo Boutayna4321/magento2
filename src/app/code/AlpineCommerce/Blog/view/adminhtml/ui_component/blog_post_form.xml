@@ -3,57 +3,42 @@
       xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
-            <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
-            <item name="submit_url" xsi:type="url" path="blog/post/save"/>
+            <item name="provider" xsi:type="string">blog_post_form.blog_post_form_data_source</item>
         </item>
-        <item name="config" xsi:type="array">
-            <item name="dataProvider" xsi:type="string">blog_post_form_data_source</item>
-        </item>
+        <item name="label" xsi:type="string" translate="true">Blog Post Information</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
     </argument>
     <settings>
+        <buttons>
+            <button name="save" class="AlpineCommerce\Blog\Block\Adminhtml\Post\Edit\SaveButton"/>
+            <button name="back" class="AlpineCommerce\Blog\Block\Adminhtml\Post\Edit\BackButton"/>
+        </buttons>
         <namespace>blog_post_form</namespace>
         <dataScope>data</dataScope>
+        <deps>
+            <dep>blog_post_form.blog_post_form_data_source</dep>
+        </deps>
     </settings>
     <dataSource name="blog_post_form_data_source">
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
                 <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
             </item>
-            <item name="config" xsi:type="array">
-                <item name="dataProvider" xsi:type="string">blog_post_form_data_source</item>
-            </item>
         </argument>
         <settings>
             <submitUrl path="blog/post/save"/>
         </settings>
+        <dataProvider class="AlpineCommerce\Blog\Ui\DataProvider\PostFormDataProvider" name="blog_post_form_data_source">
+            <settings>
+                <requestFieldName>post_id</requestFieldName>
+                <primaryFieldName>post_id</primaryFieldName>
+            </settings>
+        </dataProvider>
     </dataSource>
-    <container name="button_set" component="Magento_Ui/js/form/components/button-set" sortOrder="0">
-        <argument name="data" xsi:type="array">
-            <item name="buttons" xsi:type="array">
-                <item name="save" xsi:type="array">
-                    <item name="name" xsi:type="string">save</item>
-                    <item name="label" xsi:type="string" translate="true">Save</item>
-                    <item name="class" xsi:type="string">primary</item>
-                    <item name="sortOrder" xsi:type="number">10</item>
-                </item>
-                <item name="back" xsi:type="array">
-                    <item name="name" xsi:type="string">back</item>
-                    <item name="label" xsi:type="string" translate="true">Back</item>
-                    <item name="sortOrder" xsi:type="number">20</item>
-                </item>
-                <item name="reset" xsi:type="array">
-                    <item name="name" xsi:type="string">reset</item>
-                    <item name="label" xsi:type="string" translate="true">Reset</item>
-                    <item name="sortOrder" xsi:type="number">30</item>
-                </item>
-            </item>
-        </argument>
-    </container>
     <fieldset name="general">
         <settings>
             <label translate="true">General</label>
             <collapsible>true</collapsible>
-            <initialExpanded>true</initialExpanded>
         </settings>
         <field name="post_id">
             <argument name="data" xsi:type="array">
@@ -112,8 +97,14 @@
             <settings>
                 <dataType>select</dataType>
                 <label translate="true">Category</label>
-                <options class="AlpineCommerce\Blog\Ui\Source\CategoryOptions"/>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="AlpineCommerce\Blog\Ui\Source\CategoryOptions"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
         <field name="content" formElement="textarea">
             <argument name="data" xsi:type="array">
@@ -150,8 +141,14 @@
             <settings>
                 <dataType>boolean</dataType>
                 <label translate="true">Status</label>
-                <options class="Magento\Config\Model\Config\Source\Yesno"/>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
     </fieldset>
 </form>

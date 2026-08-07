@@ -16,9 +16,10 @@ class BlogCategory extends AbstractModel implements BlogCategoryInterface
         $this->_init(\AlpineCommerce\Blog\Model\ResourceModel\BlogCategory::class);
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
-        return (int) $this->getData(self::CATEGORY_ID);
+        $value = $this->getData(self::CATEGORY_ID);
+        return $value === null ? null : (int) $value;
     }
 
     public function getName(): string

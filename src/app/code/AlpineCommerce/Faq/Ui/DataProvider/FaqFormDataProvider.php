@@ -29,16 +29,19 @@ class FaqFormDataProvider extends ModifierPoolDataProvider
         }
     }
 
+    private $loadedData = [];
+
     public function getData()
     {
-        $data = parent::getData();
-        $items = $data['items'] ?? [];
-
-        if (isset($items[0])) {
-            $faqId = (int) $items[0]['faq_id'];
-            return [$faqId => $items[0]];
+        if ($this->loadedData) {
+            return $this->loadedData;
         }
 
-        return [];
+        $items = $this->collection->getItems();
+        foreach ($items as $faq) {
+            $this->loadedData[$faq->getId()] = $faq->getData();
+        }
+
+        return $this->loadedData;
     }
 }

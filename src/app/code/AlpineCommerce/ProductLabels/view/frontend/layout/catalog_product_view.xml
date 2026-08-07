@@ -2,19 +2,12 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceBlock name="product.info.media">
+        <referenceContainer name="product.info.media">
             <block class="AlpineCommerce\ProductLabels\Block\Product\Labels"
                    name="product.labels"
                    as="product_labels"
                    before="-"
                    template="AlpineCommerce_ProductLabels::product/labels.phtml"/>
-        </referenceBlock>
-        <referenceBlock name="product.info.details">
-            <block class="AlpineCommerce\ProductLabels\Block\Product\Labels"
-                   name="product.labels.details"
-                   as="product_labels_details"
-                   before="-"
-                   template="AlpineCommerce_ProductLabels::product/labels.phtml"/>
-        </referenceBlock>
+        </referenceContainer>
     </body>
 </page>

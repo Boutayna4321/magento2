@@ -5,6 +5,6 @@ use Magento\Framework\Component\ComponentRegistrar;
 
 ComponentRegistrar::register(
     ComponentRegistrar::MODULE,
-    "AlpineCommerce_ProductLabels",
+    'AlpineCommerce_ProductLabels',
     __DIR__
 );

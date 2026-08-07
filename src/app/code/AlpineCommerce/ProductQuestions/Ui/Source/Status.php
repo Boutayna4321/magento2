@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\ProductQuestions\Ui\Source;
 
-use AlpineCommerce\ProductQuestions\Model\Status;
+use AlpineCommerce\ProductQuestions\Model\Status as StatusModel;
+use Magento\Framework\Data\OptionSourceInterface;
 
-class QuestionStatus
+class Status implements OptionSourceInterface
 {
     public function toOptionArray(): array
     {
-        return Status::toOptionArray();
+        return StatusModel::toOptionArray();
     }
 }

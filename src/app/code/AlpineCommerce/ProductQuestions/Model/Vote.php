@@ -13,9 +13,10 @@ class Vote extends AbstractModel implements VoteInterface
         $this->_init(\AlpineCommerce\ProductQuestions\Model\ResourceModel\Vote::class);
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
-        return (int) $this->getData(self::VOTE_ID);
+        $value = $this->getData(self::VOTE_ID);
+        return $value === null ? null : (int) $value;
     }
 
     public function getQuestionId(): int

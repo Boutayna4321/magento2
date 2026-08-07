@@ -1,5 +1,6 @@
 # Magento 2 - Composer dependencies (NEVER commit)
 src/vendor/
+vendor/
 
 # Generated code
 src/generated/

@@ -4,7 +4,6 @@
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">blog_category_listing.blog_category_listing_data_source</item>
-            <item name="deps" xsi:type="string">blog_category_listing.blog_category_listing_data_source</item>
         </item>
         <item name="spinner" xsi:type="string">blog_category_columns</item>
     </argument>
@@ -17,27 +16,23 @@
             </button>
         </buttons>
         <spinner>blog_category_columns</spinner>
-        <deps>blog_category_listing.blog_category_listing_data_source</deps>
+        <deps>
+            <dep>blog_category_listing.blog_category_listing_data_source</dep>
+        </deps>
     </settings>
-    <dataSource name="blog_category_listing_data_source">
-        <argument name="data" xsi:type="array">
-            <item name="js_config" xsi:type="array">
-                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
-                <item name="update_url" xsi:type="url" path="mui/index/render"/>
-                <item name="storageConfig" xsi:type="array">
-                    <item name="indexField" xsi:type="string">category_id</item>
-                </item>
-            </item>
-            <item name="config" xsi:type="array">
-                <item name="dataProvider" xsi:type="string">blog_category_listing_data_source</item>
-            </item>
-        </argument>
+    <dataSource name="blog_category_listing_data_source" component="Magento_Ui/js/grid/provider">
         <settings>
-            <filterUrlParams>
-                <param name="category_id">*</param>
-            </filterUrlParams>
-            <primaryDataSource>blog_category_listing.blog_category_listing_data_source</primaryDataSource>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">category_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
         </settings>
+        <dataProvider class="AlpineCommerce\Blog\Ui\DataProvider\CategoryListingDataProvider" name="blog_category_listing_data_source">
+            <settings>
+                <requestFieldName>category_id</requestFieldName>
+                <primaryFieldName>category_id</primaryFieldName>
+            </settings>
+        </dataProvider>
     </dataSource>
     <listingToolbar name="listing_top">
         <settings>

@@ -11,6 +11,7 @@ use AlpineCommerce\ProductReviews\Model\ResourceModel\ReviewImage\CollectionFact
 use AlpineCommerce\ProductReviews\Model\ResourceModel\ReviewHelpful\CollectionFactory as HelpfulCollectionFactory;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\View\Element\Template;
 use Magento\Catalog\Api\ProductRepositoryInterface;

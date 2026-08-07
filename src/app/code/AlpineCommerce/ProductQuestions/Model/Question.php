@@ -13,9 +13,10 @@ class Question extends AbstractModel implements QuestionInterface
         $this->_init(\AlpineCommerce\ProductQuestions\Model\ResourceModel\Question::class);
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
-        return (int) $this->getData(self::QUESTION_ID);
+        $value = $this->getData(self::QUESTION_ID);
+        return $value === null ? null : (int) $value;
     }
 
     public function getProductId(): int

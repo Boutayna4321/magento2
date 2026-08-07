@@ -12,9 +12,9 @@ interface ReviewHelpfulInterface
     public const CREATED_AT = 'created_at';
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int;
+    public function getId(): ?int;
 
     /**
      * @return int

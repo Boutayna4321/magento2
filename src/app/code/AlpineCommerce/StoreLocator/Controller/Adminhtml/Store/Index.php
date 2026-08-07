@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\StoreLocator\Controller\Adminhtml\Store;
 
-use Magento\Framework\Controller\ResultFactory;
+use Magento\Backend\Model\View\Result\Page;
 
-class Index extends AbstractStore
+class Index extends AbstractAction
 {
-    public function execute()
+    public function execute(): Page
     {
-        $page = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+        $page = $this->initPage();
         $page->getConfig()->getTitle()->prepend(__('Store Locator'));
 
         return $page;

@@ -3,9 +3,10 @@
       xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
-            <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
-            <item name="submit_url" xsi:type="url" path="productreviews/review/save"/>
+            <item name="provider" xsi:type="string">review_review_form.alp_rev_form_data_source</item>
         </item>
+        <item name="label" xsi:type="string" translate="true">Review Information</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
         <item name="config" xsi:type="array">
             <item name="dataProvider" xsi:type="string">alp_rev_form_data_source</item>
         </item>
@@ -13,47 +14,31 @@
     <settings>
         <namespace>review_review_form</namespace>
         <dataScope>data</dataScope>
+        <buttons>
+            <button name="save" class="AlpineCommerce\ProductReviews\Block\Adminhtml\Review\Edit\SaveButton"/>
+            <button name="back" class="AlpineCommerce\ProductReviews\Block\Adminhtml\Review\Edit\BackButton"/>
+        </buttons>
     </settings>
     <dataSource name="alp_rev_form_data_source">
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
-                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
-            </item>
-            <item name="config" xsi:type="array">
-                <item name="dataProvider" xsi:type="string">alp_rev_form_data_source</item>
+                <item name="provider" xsi:type="string">review_review_form.alp_rev_form_data_source</item>
             </item>
         </argument>
-        <settings>
+    <settings>
             <submitUrl path="productreviews/review/save"/>
         </settings>
+        <dataProvider class="AlpineCommerce\ProductReviews\Ui\DataProvider\ReviewFormDataProvider" name="alp_rev_form_data_source">
+            <settings>
+                <requestFieldName>review_id</requestFieldName>
+                <primaryFieldName>review_id</primaryFieldName>
+            </settings>
+        </dataProvider>
     </dataSource>
-    <container name="button_set" component="Magento_Ui/js/form/components/button-set" sortOrder="0">
-        <argument name="data" xsi:type="array">
-            <item name="buttons" xsi:type="array">
-                <item name="save" xsi:type="array">
-                    <item name="name" xsi:type="string">save</item>
-                    <item name="label" xsi:type="string" translate="true">Save</item>
-                    <item name="class" xsi:type="string">primary</item>
-                    <item name="sortOrder" xsi:type="number">10</item>
-                </item>
-                <item name="back" xsi:type="array">
-                    <item name="name" xsi:type="string">back</item>
-                    <item name="label" xsi:type="string" translate="true">Back</item>
-                    <item name="sortOrder" xsi:type="number">20</item>
-                </item>
-                <item name="reset" xsi:type="array">
-                    <item name="name" xsi:type="string">reset</item>
-                    <item name="label" xsi:type="string" translate="true">Reset</item>
-                    <item name="sortOrder" xsi:type="number">30</item>
-                </item>
-            </item>
-        </argument>
-    </container>
     <fieldset name="general">
         <settings>
             <label translate="true">General</label>
             <collapsible>true</collapsible>
-            <initialExpanded>true</initialExpanded>
         </settings>
         <field name="review_id">
             <argument name="data" xsi:type="array">
@@ -124,8 +109,14 @@
             <settings>
                 <dataType>select</dataType>
                 <label translate="true">Rating</label>
-                <options class="AlpineCommerce\ProductReviews\Ui\Source\Rating"/>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="AlpineCommerce\ProductReviews\Ui\Source\Rating"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
         <field name="status" formElement="select">
             <argument name="data" xsi:type="array">
@@ -140,8 +131,14 @@
             <settings>
                 <dataType>select</dataType>
                 <label translate="true">Status</label>
-                <options class="AlpineCommerce\ProductReviews\Ui\Source\Status"/>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="AlpineCommerce\ProductReviews\Ui\Source\Status"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
         <field name="is_verified" formElement="select">
             <argument name="data" xsi:type="array">
@@ -156,8 +153,14 @@
             <settings>
                 <dataType>select</dataType>
                 <label translate="true">Verified Purchase</label>
-                <options class="Magento\Config\Model\Config\Source\Yesno"/>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
     </fieldset>
 </form>

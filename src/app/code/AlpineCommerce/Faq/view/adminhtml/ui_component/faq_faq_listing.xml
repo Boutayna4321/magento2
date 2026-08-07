@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">faq_faq_listing.faq_faq_listing_data_source</item>
-            <item name="deps" xsi:type="string">faq_faq_listing.faq_faq_listing_data_source</item>
         </item>
-        <item name="spinner" xsi:type="string">faq_faq_columns</item>
     </argument>
     <settings>
         <buttons>
@@ -17,27 +15,22 @@
             </button>
         </buttons>
         <spinner>faq_faq_columns</spinner>
-        <deps>faq_faq_listing.faq_faq_listing_data_source</deps>
+        <deps>
+            <dep>faq_faq_listing.faq_faq_listing_data_source</dep>
+        </deps>
     </settings>
-    <dataSource name="faq_faq_listing_data_source">
-        <argument name="data" xsi:type="array">
-            <item name="js_config" xsi:type="array">
-                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
-                <item name="update_url" xsi:type="url" path="mui/index/render"/>
-                <item name="storageConfig" xsi:type="array">
-                    <item name="indexField" xsi:type="string">faq_id</item>
-                </item>
-            </item>
-            <item name="config" xsi:type="array">
-                <item name="dataProvider" xsi:type="string">faq_faq_listing_data_source</item>
-            </item>
-        </argument>
+    <dataSource name="faq_faq_listing_data_source" component="Magento_Ui/js/grid/provider">
         <settings>
-            <filterUrlParams>
-                <param name="faq_id">*</param>
-            </filterUrlParams>
-            <primaryDataSource>faq_faq_listing.faq_faq_listing_data_source</primaryDataSource>
+            <updateUrl path="mui/index/render"/>
         </settings>
+        <aclResource>AlpineCommerce_Faq::faq</aclResource>
+        <dataProvider class="AlpineCommerce\Faq\Ui\DataProvider\FaqListingDataProvider"
+                      name="faq_faq_listing_data_source">
+            <settings>
+                <requestFieldName>faq_id</requestFieldName>
+                <primaryFieldName>faq_id</primaryFieldName>
+            </settings>
+        </dataProvider>
     </dataSource>
     <listingToolbar name="listing_top">
         <settings>
@@ -45,18 +38,7 @@
         </settings>
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
-        <filters name="listing_filters">
-            <settings>
-                <templates>
-                    <filters>
-                        <select>
-                            <customScope>faq_faq_columns</customScope>
-                            <template>ui/grid/filters/elements/ui-select</template>
-                        </select>
-                    </filters>
-                </templates>
-            </settings>
-        </filters>
+        <filters name="listing_filters"/>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="faq_faq_columns">

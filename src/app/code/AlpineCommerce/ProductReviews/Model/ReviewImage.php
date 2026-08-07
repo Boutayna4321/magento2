@@ -13,9 +13,10 @@ class ReviewImage extends AbstractModel implements ReviewImageInterface
         $this->_init(\AlpineCommerce\ProductReviews\Model\ResourceModel\ReviewImage::class);
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
-        return (int) $this->getData(self::IMAGE_ID);
+        $value = $this->getData(self::IMAGE_ID);
+        return $value === null ? null : (int) $value;
     }
 
     public function getReviewId(): int

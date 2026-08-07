@@ -9,9 +9,9 @@ namespace AlpineCommerce\Gdpr\Api\Data;
 interface ConsentLogInterface
 {
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int;
+    public function getId(): ?int;
 
     /**
      * @return int|null

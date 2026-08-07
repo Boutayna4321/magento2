@@ -17,11 +17,12 @@ class Faq extends AbstractModel implements FaqInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
-        return (int) $this->getData(self::FAQ_ID);
+        $value = $this->getData(self::FAQ_ID);
+        return $value === null ? null : (int) $value;
     }
 
     /**

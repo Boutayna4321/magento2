@@ -3,39 +3,39 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\StoreLocator\Controller\Adminhtml\Store;
 
-use AlpineCommerce\StorePickup\Api\Data\StoreInfoInterfaceFactory;
-use AlpineCommerce\StorePickup\Api\StoreInfoRepositoryInterface;
-use Magento\Framework\Controller\ResultFactory;
+use AlpineCommerce\StoreLocator\Api\Data\StoreInterfaceFactory;
+use AlpineCommerce\StoreLocator\Api\StoreRepositoryInterface;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Registry;
+use Magento\Framework\View\Result\PageFactory;
 
-class Edit extends AbstractStore
+class Edit extends AbstractAction
 {
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        private readonly StoreInfoRepositoryInterface $storeRepository,
-        private readonly StoreInfoInterfaceFactory $storeFactory,
-        private readonly Registry $registry
+        Context $context,
+        private readonly StoreRepositoryInterface $storeRepository,
+        private readonly StoreInterfaceFactory $storeFactory,
+        private readonly Registry $coreRegistry,
+        PageFactory $pageFactory
     ) {
-        parent::__construct($context);
+        parent::__construct($context, $pageFactory);
     }
 
     public function execute()
     {
-        $id = (int)$this->getRequest()->getParam('id');
-        $store = $this->storeFactory->create();
+        $id = (int) $this->getRequest()->getParam('entity_id');
 
-        if ($id) {
-            try {
-                $store = $this->storeRepository->getById($id);
-            } catch (NoSuchEntityException) {
-                $this->messageManager->addErrorMessage(__('This store no longer exists.'));
-                return $this->resultRedirectFactory->create()->setPath('*/*/index');
-            }
+        try {
+            $store = $id ? $this->storeRepository->getById($id) : $this->storeFactory->create();
+            $this->coreRegistry->register('alphacommerce_storelocator_store', $store);
+        } catch (NoSuchEntityException $e) {
+            $this->messageManager->addErrorMessage(__('This store no longer exists.'));
+            return $this->_redirect('*/*/index');
         }
 
-        $this->registry->register('alphacommerce_store_locator_store', $store);
-        $page = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+        $page = $this->initPage();
         $page->getConfig()->getTitle()->prepend($id ? __('Edit Store') : __('New Store'));
 
         return $page;

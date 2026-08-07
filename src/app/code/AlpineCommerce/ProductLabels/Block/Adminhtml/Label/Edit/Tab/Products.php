@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\ProductLabels\Block\Adminhtml\Label\Edit\Tab;
 
+use AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface;
 use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget\Grid\Extended;
 use Magento\Backend\Helper\Data;
@@ -11,46 +12,81 @@ use Magento\Framework\Registry;
 
 class Products extends Extended
 {
-    private readonly ProductFactory $productFactory;
-    private readonly Registry $coreRegistry;
-
     public function __construct(
         Context $context,
         Data $backendHelper,
-        ProductFactory $productFactory,
-        Registry $registry,
+        private readonly ProductFactory $productFactory,
+        private readonly Registry $coreRegistry,
+        private readonly ProductLabelRepositoryInterface $labelRepository,
         array $data = []
     ) {
-        $this->productFactory = $productFactory;
-        $this->coreRegistry = $registry;
         parent::__construct($context, $backendHelper, $data);
     }
 
-    protected function _construct(): void {
+    protected function _construct(): void
+    {
         parent::_construct();
-        $this->setId("productLabelProductGrid");
-        $this->setDefaultSort("entity_id");
-        $this->setDefaultDir("DESC");
+        $this->setId('productLabelProductGrid');
+        $this->setDefaultSort('entity_id');
+        $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
-        $this->setUseAjax(true);
     }
 
-    protected function _prepareCollection(): self {
+    protected function _prepareCollection(): self
+    {
         $collection = $this->productFactory->create()->getCollection();
-        $label = $this->coreRegistry->registry("productlabels_label");
-        if ($label && $label->getEntityId()) {
-            $collection->addFieldToFilter("entity_id", ["in" => $label->getProductIds() ?? []]);
-        }
+        $collection->addAttributeToSelect(['name', 'sku']);
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
 
-    protected function _prepareColumns(): self {
-        $this->addColumn("entity_id", ["header" => __("ID"), "index" => "entity_id", "type" => "number"]);
-        $this->addColumn("name", ["header" => __("Name"), "index" => "name"]);
-        $this->addColumn("sku", ["header" => __("SKU"), "index" => "sku"]);
+    protected function _prepareColumns(): self
+    {
+        $this->addColumn('product_ids', [
+            'header' => __('Select'),
+            'index' => 'entity_id',
+            'type' => 'checkbox',
+            'field_name' => 'product_ids[]',
+            'values' => $this->getSelectedProducts(),
+            'sortable' => false,
+            'filter' => false,
+            'header_css_class' => 'col-select',
+            'column_css_class' => 'col-select',
+        ]);
+
+        $this->addColumn('entity_id', ['header' => __('ID'), 'index' => 'entity_id', 'type' => 'number']);
+        $this->addColumn('name', ['header' => __('Name'), 'index' => 'name']);
+        $this->addColumn('sku', ['header' => __('SKU'), 'index' => 'sku']);
+
         return parent::_prepareColumns();
     }
 
-    public function getGridUrl(): string { return $this->getUrl("productlabels/label/productGrid", ["_current" => true]); }
+    public function getGridUrl(): string
+    {
+        return $this->getUrl('productlabels/label/edit', ['entity_id' => $this->getLabelId()]);
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getSelectedProducts(): array
+    {
+        $submitted = $this->getRequest()->getPost('product_ids');
+        if (is_array($submitted)) {
+            return array_map('intval', $submitted);
+        }
+
+        $labelId = $this->getLabelId();
+        if (!$labelId) {
+            return [];
+        }
+
+        return $this->labelRepository->getProductIdsByLabel($labelId);
+    }
+
+    private function getLabelId(): int
+    {
+        $label = $this->coreRegistry->registry('productlabels_label');
+        return $label ? (int) $label->getEntityId() : 0;
+    }
 }

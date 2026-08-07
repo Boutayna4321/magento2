@@ -13,9 +13,10 @@ class Review extends AbstractModel implements ReviewInterface
         $this->_init(\AlpineCommerce\ProductReviews\Model\ResourceModel\Review::class);
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
-        return (int) $this->getData(self::REVIEW_ID);
+        $value = $this->getData(self::REVIEW_ID);
+        return $value === null ? null : (int) $value;
     }
 
     public function getProductId(): int

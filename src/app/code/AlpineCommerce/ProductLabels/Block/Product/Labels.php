@@ -3,30 +3,65 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\ProductLabels\Block\Product;
 
+use AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface;
+use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Block\Product\Context;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Block\Product\AbstractProduct;
-use AlpineCommerce\ProductLabels\Api\ProductLabelRepositoryInterface;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class Labels extends AbstractProduct
 {
-    public function __construct(Context $context, private readonly ProductLabelRepositoryInterface $labelRepository, private readonly TimezoneInterface $timezone, array $data = []) {
+    public const XML_PATH_ENABLED = 'productlabels/general/enabled';
+
+    public function __construct(
+        Context $context,
+        private readonly ProductLabelRepositoryInterface $labelRepository,
+        private readonly ScopeConfigInterface $scopeConfig,
+        array $data = []
+    ) {
         parent::__construct($context, $data);
     }
 
-    public function getLabelsHtml(Product $product): string {
-        $labels = $this->labelRepository->getLabelsByProductId((int) $product->getId());
-        if (empty($labels)) { return ""; }
-
-        $html = "<div class=\"product-labels\" style=\"position:absolute;top:10px;left:10px;z-index:10;\">";
-        foreach ($labels as $label) {
-            $position = $label["position"] ?? "top-left";
-            $html .= "<span class=\"product-label\" style=\"background-color:" . ($label["color"] ?? "#000000") . ";color:" . ($label["text_color"] ?? "#ffffff") . ";position:absolute;";
-            if ($position === "top-left") { $html .= "top:5px;left:5px;"; } elseif ($position === "top-right") { $html .= "top:5px;right:5px;"; } elseif ($position === "bottom-left") { $html .= "bottom:5px;left:5px;"; } else { $html .= "bottom:5px;right:5px;"; }
-            $html .= "padding:4px 8px;font-size:12px;font-weight:bold;text-transform:uppercase;border-radius:2px;line-height:1;white-space:nowrap;z-index:10;\">" . $this->escapeHtml($label["name"]) . "</span>";
+    public function getLabelsHtml(Product $product): string
+    {
+        if (!$this->isEnabled()) {
+            return '';
         }
-        $html .= "</div>";
+
+        $labels = $this->labelRepository->getLabelsByProductId((int) $product->getId());
+        if (empty($labels)) {
+            return '';
+        }
+
+        $html = '<div class="product-labels">';
+        foreach ($labels as $label) {
+            $position = (string) ($label['position'] ?? 'top-left');
+            $backgroundColor = (string) ($label['color'] ?? '#000000');
+            $textColor = (string) ($label['text_color'] ?? '#ffffff');
+
+            $html .= '<span class="product-label product-label--' . $this->escapeHtmlAttr($position) . '" '
+                . 'style="background-color:' . $this->escapeHtmlAttr($backgroundColor) . ';'
+                . 'color:' . $this->escapeHtmlAttr($textColor) . '">'
+                . $this->escapeHtml((string) ($label['name'] ?? ''))
+                . '</span>';
+        }
+        $html .= '</div>';
+
         return $html;
+    }
+
+    private function isEnabled(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_ENABLED,
+            ScopeInterface::SCOPE_STORE,
+            $this->getStoreId()
+        );
+    }
+
+    private function getStoreId(): int
+    {
+        return (int) $this->_storeManager->getStore()->getId();
     }
 }

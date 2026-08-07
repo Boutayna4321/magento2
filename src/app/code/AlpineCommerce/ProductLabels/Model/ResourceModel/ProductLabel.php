@@ -7,6 +7,6 @@ class ProductLabel extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
     protected function _construct(): void
     {
-        $this->_init("alphacommerce_product_label", "entity_id");
+        $this->_init('alphacommerce_product_label', 'entity_id');
     }
 }

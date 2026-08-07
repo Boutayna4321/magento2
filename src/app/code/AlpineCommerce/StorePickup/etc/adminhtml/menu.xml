@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_StorePickup::main"
+             title="Store Pickup"
+             module="AlpineCommerce_StorePickup"
+             sortOrder="100"
+             resource="AlpineCommerce_StorePickup::store"
+             parent="Magento_Backend::content"/>
+    </menu>
+</config>

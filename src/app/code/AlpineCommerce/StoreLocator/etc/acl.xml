@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Magento_Backend::content">
-                    <resource id="AlpineCommerce_StoreLocator::stores" title="Store Locator" sortOrder="90"/>
+                <resource id="AlpineCommerce_StoreLocator::main" title="Store Locator" sortOrder="90">
+                    <resource id="AlpineCommerce_StoreLocator::store" title="Manage Stores" sortOrder="10"/>
+                    <resource id="AlpineCommerce_StoreLocator::config" title="Configuration" sortOrder="20"/>
                 </resource>
             </resource>
         </resources>

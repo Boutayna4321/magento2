@@ -17,9 +17,9 @@ interface ReviewInterface
     public const UPDATED_AT = 'updated_at';
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int;
+    public function getId(): ?int;
 
     /**
      * @return int

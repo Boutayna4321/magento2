@@ -4,7 +4,7 @@
     <h1><?= $block->escapeHtml(__('Find a Store')) ?></h1>
     <p><?= $block->escapeHtml(__('Visit us in one of our stores and discover our products.')) ?></p>
 
-    <?php if ($stores->getSize()): ?>
+    <?php if (count($stores)): ?>
         <div class="store-locator-filter">
             <label class="label" for="store-locator-search">
                 <span><?= $block->escapeHtml(__('Search by store name or city')) ?></span>

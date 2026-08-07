@@ -16,9 +16,10 @@ class BlogPost extends AbstractModel implements BlogPostInterface
         $this->_init(\AlpineCommerce\Blog\Model\ResourceModel\BlogPost::class);
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
-        return (int) $this->getData(self::POST_ID);
+        $value = $this->getData(self::POST_ID);
+        return $value === null ? null : (int) $value;
     }
 
     public function getTitle(): string

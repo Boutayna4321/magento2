@@ -16,9 +16,10 @@ class LegalPage extends AbstractModel implements LegalPageInterface
         $this->_init(\AlpineCommerce\LegalPages\Model\ResourceModel\LegalPage::class);
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
-        return (int) $this->getData(self::PAGE_ID);
+        $value = $this->getData(self::PAGE_ID);
+        return $value === null ? null : (int) $value;
     }
 
     public function getTitle(): string

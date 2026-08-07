@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\ProductLabels\Api;
 
-use Magento\Framework\Api\SearchCriteriaInterface;
 use AlpineCommerce\ProductLabels\Api\Data\ProductLabelInterface;
 use AlpineCommerce\ProductLabels\Api\Data\ProductLabelSearchResultsInterface;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 interface ProductLabelRepositoryInterface
@@ -16,7 +17,7 @@ interface ProductLabelRepositoryInterface
      *
      * @param ProductLabelInterface $label
      * @return ProductLabelInterface
-     * @throws LocalizedException
+     * @throws CouldNotSaveException
      */
     public function save(ProductLabelInterface $label): ProductLabelInterface;
 
@@ -42,7 +43,7 @@ interface ProductLabelRepositoryInterface
      *
      * @param ProductLabelInterface $label
      * @return bool
-     * @throws LocalizedException
+     * @throws CouldNotDeleteException
      */
     public function delete(ProductLabelInterface $label): bool;
 
@@ -52,12 +53,12 @@ interface ProductLabelRepositoryInterface
      * @param int $entityId
      * @return bool
      * @throws NoSuchEntityException
-     * @throws LocalizedException
+     * @throws CouldNotDeleteException
      */
     public function deleteById(int $entityId): bool;
 
     /**
-     * Get labels by product ID.
+     * Get active labels assigned to a product.
      *
      * @param int $productId
      * @return array
@@ -65,11 +66,28 @@ interface ProductLabelRepositoryInterface
     public function getLabelsByProductId(int $productId): array;
 
     /**
-     * Assign labels to product.
+     * Assign labels to a product.
      *
      * @param int $productId
      * @param int[] $labelIds
      * @return bool
      */
     public function assignLabelsToProduct(int $productId, array $labelIds): bool;
+
+    /**
+     * Get product IDs assigned to a label.
+     *
+     * @param int $labelId
+     * @return int[]
+     */
+    public function getProductIdsByLabel(int $labelId): array;
+
+    /**
+     * Assign products to a label.
+     *
+     * @param int $labelId
+     * @param int[] $productIds
+     * @return bool
+     */
+    public function assignProductsToLabel(int $labelId, array $productIds): bool;
 }

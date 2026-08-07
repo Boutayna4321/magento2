@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_Gdpr::main"
+             title="GDPR"
+             module="AlpineCommerce_Gdpr"
+             sortOrder="90"
+             resource="AlpineCommerce_Gdpr::consent_log"
+             parent="Magento_Backend::content"/>
+    </menu>
+</config>

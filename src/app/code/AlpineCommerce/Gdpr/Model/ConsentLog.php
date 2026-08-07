@@ -17,11 +17,12 @@ class ConsentLog extends AbstractModel implements ConsentLogInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
-        return (int) $this->getData('entity_id');
+        $value = $this->getData('entity_id');
+        return $value === null ? null : (int) $value;
     }
 
     /**
