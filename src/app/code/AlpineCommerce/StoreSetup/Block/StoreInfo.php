@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace AlpineCommerce\Training\Block;
+namespace AlpineCommerce\StoreSetup\Block;
 
-use AlpineCommerce\Training\Helper\Data;
+use AlpineCommerce\StoreSetup\Helper\Data;
 use Magento\Framework\View\Element\Template;
 
 class StoreInfo extends Template

@@ -3,22 +3,22 @@
     
     <!-- Fires after product is saved in admin -->
     <event name="catalog_product_save_after">
-        <observer name="training_product_save" instance="AlpineCommerce\Training\Observer\ProductSaveAfter"/>
+        <observer name="storesetup_product_save" instance="AlpineCommerce\StoreSetup\Observer\ProductSaveAfter"/>
     </event>
 
     <!-- Fires after order is placed -->
     <event name="sales_order_place_after">
-        <observer name="training_order_placed" instance="AlpineCommerce\Training\Observer\OrderPlacedAfter"/>
+        <observer name="storesetup_order_placed" instance="AlpineCommerce\StoreSetup\Observer\OrderPlacedAfter"/>
     </event>
 
     <!-- Fires before checkout -->
     <event name="checkout_controller_before_action">
-        <observer name="training_checkout_before" instance="AlpineCommerce\Training\Observer\CheckoutBefore"/>
+        <observer name="storesetup_checkout_before" instance="AlpineCommerce\StoreSetup\Observer\CheckoutBefore"/>
     </event>
 
     <!-- Fires after customer login -->
     <event name="customer_customer_login">
-        <observer name="training_customer_login" instance="AlpineCommerce\Training\Observer\CustomerLogin"/>
+        <observer name="storesetup_customer_login" instance="AlpineCommerce\StoreSetup\Observer\CustomerLogin"/>
     </event>
 
 </config>

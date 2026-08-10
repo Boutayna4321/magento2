@@ -3,14 +3,14 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <!-- ============================================ -->
-        <!-- TRAINING MODULE CONFIGURATION                -->
+        <!-- STORE SETUP MODULE CONFIGURATION             -->
         <!-- ============================================ -->
-        <training>
+        <storesetup>
             <general>
                 <enabled>1</enabled>
                 <display_store_info>1</display_store_info>
             </general>
-        </training>
+        </storesetup>
 
         <!-- ============================================ -->
         <!-- DEFAULT WEBSITE - UK (English)               -->
@@ -31,7 +31,7 @@
         </currency>
 
         <!-- ============================================ -->
-        <!-- CATALOG PRICE SCOPE - Website               -->
+        <!-- CATALOG PRICE SCOPE - Website                -->
         <!-- ============================================ -->
         <catalog>
             <price>
@@ -59,22 +59,23 @@
         <!-- ============================================ -->
         <!-- SHIPPING METHODS DEFAULTS                    -->
         <!-- ============================================ -->
-        <shipping>
-            <methods>
-                <flatrate>
-                    <active>1</active>
-                    <title>Flat Rate</title>
-                    <type>O</type>
-                    <price>5.00</price>
-                </flatrate>
-                <freeshipping>
-                    <active>1</active>
-                    <title>Free Shipping</title>
-                    <free_shipping_subtract>1</free_shipping_subtract>
-                    <min_order_amount>50.00</min_order_amount>
-                </freeshipping>
-            </methods>
-        </shipping>
+        <carriers>
+            <flatrate>
+                <active>1</active>
+                <title>Flat Rate</title>
+                <type>O</type>
+                <price>5.00</price>
+            </flatrate>
+            <freeshipping>
+                <active>1</active>
+                <title>Free Shipping</title>
+                <free_shipping_subtract>1</free_shipping_subtract>
+                <free_shipping_subtotal>50.00</free_shipping_subtotal>
+            </freeshipping>
+            <tablerate>
+                <active>0</active>
+            </tablerate>
+        </carriers>
     </default>
 
     <!-- ============================================ -->

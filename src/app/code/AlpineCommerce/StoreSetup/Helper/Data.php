@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AlpineCommerce\Training\Helper;
+namespace AlpineCommerce\StoreSetup\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
@@ -50,12 +50,12 @@ class Data extends AbstractHelper
 
     public function isModuleEnabled(): bool
     {
-        return $this->scopeConfig->isSetFlag('training/general/enabled');
+        return $this->scopeConfig->isSetFlag('storesetup/general/enabled');
     }
 
     public function isDisplayStoreInfo(): bool
     {
-        return $this->scopeConfig->isSetFlag('training/general/display_store_info');
+        return $this->scopeConfig->isSetFlag('storesetup/general/display_store_info');
     }
 
     public function getDefaultLocale(): ?string
@@ -80,7 +80,7 @@ class Data extends AbstractHelper
 
     public function logError(string $message): void
     {
-        $this->logger->error('Training Helper: ' . $message);
+        $this->logger->error('StoreSetup Helper: ' . $message);
     }
 
     public function isDefaultStore(): bool

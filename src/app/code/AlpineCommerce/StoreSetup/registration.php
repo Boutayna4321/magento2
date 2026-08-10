@@ -5,7 +5,7 @@ use Magento\Framework\Component\ComponentRegistrar;
 
 ComponentRegistrar::register(
     ComponentRegistrar::MODULE,
-    'AlpineCommerce_Training',
+    'AlpineCommerce_StoreSetup',
     __DIR__
 );
 

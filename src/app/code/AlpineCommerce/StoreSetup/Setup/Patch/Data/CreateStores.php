@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AlpineCommerce\Training\Setup\Patch\Data;
+namespace AlpineCommerce\StoreSetup\Setup\Patch\Data;
 
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;

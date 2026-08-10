@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace AlpineCommerce\Training\Observer;
+namespace AlpineCommerce\StoreSetup\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Psr\Log\LoggerInterface;
 
-class CheckoutBefore implements ObserverInterface
+class ProductSaveAfter implements ObserverInterface
 {
     private readonly LoggerInterface $logger;
 
@@ -19,9 +19,13 @@ class CheckoutBefore implements ObserverInterface
     public function execute(Observer $observer): void
     {
         try {
-            // Pre-checkout logic here (block checkout, redirect, etc.)
+            $product = $observer->getEvent()->getProduct();
+
+            if (empty($product->getShortDescription())) {
+                $product->setShortDescription('Auto-generated description for ' . $product->getName());
+            }
         } catch (\Exception $e) {
-            $this->logger->error('Training CheckoutBefore: ' . $e->getMessage());
+            $this->logger->error('Training ProductSaveAfter: ' . $e->getMessage());
         }
     }
 }

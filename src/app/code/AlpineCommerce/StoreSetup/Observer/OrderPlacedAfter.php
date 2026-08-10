@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace AlpineCommerce\Training\Observer;
+namespace AlpineCommerce\StoreSetup\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Psr\Log\LoggerInterface;
 
-class CustomerLogin implements ObserverInterface
+class OrderPlacedAfter implements ObserverInterface
 {
     private readonly LoggerInterface $logger;
 
@@ -19,10 +19,10 @@ class CustomerLogin implements ObserverInterface
     public function execute(Observer $observer): void
     {
         try {
-            $customer = $observer->getEvent()->getCustomer();
-            // Post-login logic here (last-login tracking, welcome message, etc.)
+            $order = $observer->getEvent()->getOrder();
+            // Post-order logic here (ERP sync, custom emails, etc.)
         } catch (\Exception $e) {
-            $this->logger->error('Training CustomerLogin: ' . $e->getMessage());
+            $this->logger->error('Training OrderPlacedAfter: ' . $e->getMessage());
         }
     }
 }
