@@ -1,8 +1,0 @@
-<?php if ($block->isDisplayStoreInfo()): ?>
-<div class="training-store-info">
-    <h3><?= $block->escapeHtml(__('Store Information')) ?></h3>
-    <p><?= $block->escapeHtml(__('Store: %1', $block->getStoreName())) ?></p>
-    <p><?= $block->escapeHtml(__('Store ID: %1', $block->getStoreId())) ?></p>
-    <p><?= $block->escapeHtml(__('URL: %1', $block->getStoreUrl())) ?></p>
-</div>
-<?php endif; ?>
