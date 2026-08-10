@@ -4,4 +4,15 @@
     <preference for="AlpineCommerce\StorePickup\Api\StoreInfoRepositoryInterface" type="AlpineCommerce\StorePickup\Model\StoreInfoRepository"/>
     <preference for="AlpineCommerce\StorePickup\Api\StoreAvailabilityInterface" type="AlpineCommerce\StorePickup\Model\StoreAvailability"/>
     <preference for="AlpineCommerce\StorePickup\Api\StorePickupCartManagementInterface" type="AlpineCommerce\StorePickup\Model\Checkout\StorePickupCartManagement"/>
+
+    <type name="Magento\OfflineShipping\Model\Carrier\Flatrate">
+        <plugin name="alpinecommerce_filter_flatrate"
+                type="AlpineCommerce\StorePickup\Plugin\Shipping\FilterFlatRate"
+                sortOrder="10"/>
+    </type>
+    <type name="Magento\OfflineShipping\Model\Carrier\Freeshipping">
+        <plugin name="alpinecommerce_filter_freeshipping"
+                type="AlpineCommerce\StorePickup\Plugin\Shipping\FilterFreeShipping"
+                sortOrder="10"/>
+    </type>
 </config>

@@ -112,7 +112,50 @@ No dedicated command.
 | P2 | `etc/adminhtml/routes.xml` missing → admin URLs `alphacommerce_pickup/*` unresolved | 📋 BACKLOG B-06 P2 |
 | P3 | `etc/adminhtml/menu.xml`: item without `action` attribute (non-clickable menu) | 📋 BACKLOG B-06 P3 |
 
-## 11. Magento concepts taught
+## 11. Shipping methods filtering (free shipping threshold)
+
+### 11.1 Responsibility
+
+The store offers **2 shipping methods**: a paid **Flat Rate** (5.00) and a free
+**Free Shipping** method that only applies when the cart reaches the threshold
+(**>= 50.00**). At checkout, always **one method is hidden** depending on the cart:
+
+| Cart | Available methods |
+|---|---|
+| < 50.00 | Flat Rate (5.00) only |
+| >= 50.00 | Free Shipping (0.00) only |
+
+A third carrier (**Table Rate**) is disabled (only US rates existed; out of scope).
+
+### 11.2 Implementation
+
+Two plugins intercept the offline carriers' `collectRates()` (registered in
+`etc/di.xml` — one plugin class per carrier to keep the correct type-hint):
+
+| Plugin | Target carrier | Behaviour |
+|---|---|---|
+| `Plugin/Shipping/FilterFlatRate.php` | `Magento\OfflineShipping\Model\Carrier\Flatrate` | `return false` when `quote->getGrandTotal() >= 50.00` (hides the paid method) |
+| `Plugin/Shipping/FilterFreeShipping.php` | `Magento\OfflineShipping\Model\Carrier\Freeshipping` | `return false` when `quote->getGrandTotal() < 50.00` (hides the free method) |
+
+The native Free Shipping threshold is also configured in the store:
+`carriers/freeshipping/free_shipping_subtotal = 50.00`
+(defaults in `AlpineCommerce/StoreSetup/etc/config.xml`, active values in `core_config_data`).
+
+> ⚠️ **Known limitation**: the plugins compare `quote->getGrandTotal()` (incl. tax)
+> while the native Free Shipping carrier compares the **package value (subtotal)**.
+> Edge case: subtotal < 50.00 but grand total >= 50.00 (tax pushes it over) →
+> Flat Rate hidden but Free Shipping not eligible → **no method available**.
+> A consistent fix would compare the subtotal (`$request->getPackageValueWithDiscount()`) in both plugins.
+
+### 11.3 Bug fixed
+
+The original implementation used **one** plugin class (`FilterShippingMethods`)
+registered on both carriers with `aroundCollectRates(Flatrate $subject, ...)`.
+Freeshipping is also a carrier → Magento called the method with a `Freeshipping`
+subject → `TypeError` (HTTP 500 on `V1/carts/mine/estimate-shipping-methods-by-address-id`).
+Fix: two dedicated classes + `bin/magento setup:di:compile` (regenerate interceptors).
+
+## 12. Magento concepts taught
 
 - Custom Magento carrier (`Magento\Shipping\Model\Carrier\AbstractCarrier`)
 - Checkout integration (config provider)
@@ -120,7 +163,7 @@ No dedicated command.
 - Admin CRUD controllers (Faq pattern)
 - ACL + admin menu
 
-## 12. Validation & status
+## 13. Validation & status
 
 - **Finalization sprint**: Sprint 2 (analysis `18`-`19`, architecture `20`)
 - **Magento validation**: pending — non-regression tests (checkout, REST)

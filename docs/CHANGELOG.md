@@ -16,6 +16,39 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.5.3] - 2026-08-10
+
+### Added (shipping methods — free shipping threshold)
+
+- **2 shipping methods** configured: **Flat Rate** (5.00, paid) + **Free Shipping**
+  (0.00, available from **>= 50.00** cart). At checkout, one method is always hidden
+  depending on the cart value: `< 50.00` → Flat Rate only; `>= 50.00` → Free Shipping only.
+- **Table Rate carrier disabled** (`carriers/tablerate/active = 0`): it only had US rates
+  and is out of scope. Default set in `AlpineCommerce/StoreSetup/etc/config.xml`,
+  active value in `core_config_data`.
+- **StorePickup plugins** `Plugin/Shipping/FilterFlatRate.php` and
+  `Plugin/Shipping/FilterFreeShipping.php` intercept the offline carriers'
+  `collectRates()` (`etc/di.xml`): hide Flat Rate when `grand_total >= 50.00`,
+  hide Free Shipping when `grand_total < 50.00`.
+
+### Fixed
+
+- `StorePickup` — `V1/carts/mine/estimate-shipping-methods-by-address-id` returned
+  **HTTP 500**. Root cause: a single plugin class (`FilterShippingMethods`) was
+  registered on both `Flatrate` and `Freeshipping` carriers with
+  `aroundCollectRates(Flatrate $subject, ...)`; Magento invoked it with a
+  `Freeshipping` subject → `TypeError`. Fix: two dedicated plugin classes (correct
+  type-hint each) + `bin/magento setup:di:compile`.
+
+### Known limitation
+
+- Threshold comparison is inconsistent: plugins use `quote->getGrandTotal()` (incl. tax),
+  native Free Shipping carrier uses package value (subtotal). Edge case where
+  subtotal < 50.00 but grand total >= 50.00 leaves no shipping method available.
+  See `docs/modules/STORE_PICKUP.md` §11.2.
+
+---
+
 ## [1.5.2] - 2026-08-06
 
 ### Fixed (admin bug report — Sprint 6, addendum)
