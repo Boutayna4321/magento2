@@ -1,11 +1,11 @@
-# Architecture du projet AlpineCommerce
+# AlpineCommerce Project Architecture
 
-> Vue d'ensemble de l'architecture Magento + AlpineCommerce et registre des décisions
-> d'architecture (ADR). Regroupe l'ancien `01_ARCHITECTURE.md` et `06_DECISIONS.md`.
+> Overview of Magento + AlpineCommerce architecture and architecture decision
+> registry (ADR). Combines the former `01_ARCHITECTURE.md` and `06_DECISIONS.md`.
 
 ---
 
-## 1. Vue d'ensemble
+## 1. Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -43,147 +43,147 @@
 │  └───────────────────────────────────────────────────┘     │
 │                                                             │
 │  ┌─────────────────────────────────────────────────────┐   │
-│  │                    Base de données (MySQL)            │   │
+│  │                    Database (MySQL)                  │   │
 │  └─────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Principe fondamental : Magento 2 est le cœur de l'application.** Les modules
-AlpineCommerce viennent **compléter** Magento, jamais le remplacer.
+**Fundamental principle: Magento 2 is the core of the application.** AlpineCommerce
+modules **complement** Magento, never replace it.
 
-### Règles d'or
+### Golden Rules
 
-1. **Ne jamais recréer** un module Magento existant
-2. **Étendre** via Plugin, Observer, Layout XML, ViewModel
-3. **Utiliser** les Service Contracts de Magento
-4. **Respecter** les conventions de nommage Magento
+1. **Never recreate** an existing Magento module
+2. **Extend** via Plugin, Observer, Layout XML, ViewModel
+3. **Use** Magento Service Contracts
+4. **Respect** Magento naming conventions
 
 ---
 
 ## 2. Magento Core
 
-### Modules Magento utilisés
+### Magento modules used
 
-| Module Magento | Rôle dans AlpineCommerce |
+| Magento Module | Role in AlpineCommerce |
 |---|---|
-| `Magento_Catalog` | Catalogue produits |
-| `Magento_Customer` | Gestion des clients |
-| `Magento_Checkout` | Processus de commande |
-| `Magento_Sales` | Commandes, factures, avoirs |
-| `Magento_Quote` | Panier et devis |
-| `Magento_Cms` | Pages et blocs CMS |
+| `Magento_Catalog` | Product catalog |
+| `Magento_Customer` | Customer management |
+| `Magento_Checkout` | Order process |
+| `Magento_Sales` | Orders, invoices, credit memos |
+| `Magento_Quote` | Cart and quotes |
+| `Magento_Cms` | Pages and CMS blocks |
 | `Magento_Inventory` | MSI (Multi Source Inventory) |
-| `Magento_Payment` | Méthodes de paiement |
-| `Magento_Shipping` | Méthodes de livraison |
-| `Magento_Store` | Multi-boutiques |
-| `Magento_Backend` | Interface d'administration |
+| `Magento_Payment` | Payment methods |
+| `Magento_Shipping` | Shipping methods |
+| `Magento_Store` | Multi-store |
+| `Magento_Backend` | Admin interface |
 | `Magento_Webapi` | REST API |
-| `Magento_Indexer` | Indexeurs |
+| `Magento_Indexer` | Indexers |
 | `Magento_Cache` | Cache |
 
 ---
 
-## 3. Modules AlpineCommerce
+## 3. AlpineCommerce Modules
 
-### Modules existants
+### Existing modules
 
-| Module | Responsabilité | Tables DB | API REST |
+| Module | Responsibility | DB Tables | REST API |
 |---|---|---|---|
-| `AlpineCommerce_Blog` | Blog multi-boutiques | `alphacommerce_blog_post`, `alphacommerce_blog_category` | `/V1/alphacommerce/blog/*` |
+| `AlpineCommerce_Blog` | Multi-store blog | `alphacommerce_blog_post`, `alphacommerce_blog_category` | `/V1/alphacommerce/blog/*` |
 | `AlpineCommerce_Faq` | FAQ | `alphacommerce_faq` | `/V1/alphacommerce/faqs/*` |
-| `AlpineCommerce_Gdpr` | Conformité RGPD | `alphacommerce_gdpr_consent_log` | `/V1/alphacommerce/gdpr/*` |
-| `AlpineCommerce_Hreflang` | SEO hreflang | Aucune | Aucune |
-| `AlpineCommerce_LegalPages` | Pages légales | `alphacommerce_legal_page` | `/V1/alphacommerce/legal-pages/*` |
-| `AlpineCommerce_StorePickup` | Retrait en magasin | `alphacommerce_pickup_store_info` | `/V1/carts/mine/store-pickup` |
-| `AlpineCommerce_StoreLocator` | Localisateur de magasins | `alphacommerce_store_locator_store` | Aucune |
-| `AlpineCommerce_Training` | Module de formation | Aucune | Aucune |
-| `AlpineCommerce_EuVat` | Validation TVA UE | `alphacommerce_euvat_validation` | `/V1/alphacommerce/euvat/*` |
-| `AlpineCommerce_LoyaltyProgram` | Programme de fidélité | `alpinecommerce_loyalty_balance`, `alpinecommerce_loyalty_order_points` | `/V1/carts/mine/loyalty-points` |
-| `AlpineCommerce_ProductReviews` | Avis produits | `alphacommerce_product_review`, `alphacommerce_product_review_image`, `alphacommerce_product_review_helpful` | `/V1/alphacommerce/product-reviews/*` |
-| `AlpineCommerce_ProductQuestions` | Q&R produit | `alphacommerce_product_question`, `alphacommerce_product_answer`, `alphacommerce_product_question_vote` | `/V1/alphacommerce/product-questions/*` |
-| `AlpineCommerce_ProductLabels` | Étiquettes produits | `alphacommerce_product_label`, `alphacommerce_product_label_product` | `/V1/alphacommerce/product-labels/*` |
+| `AlpineCommerce_Gdpr` | GDPR compliance | `alphacommerce_gdpr_consent_log` | `/V1/alphacommerce/gdpr/*` |
+| `AlpineCommerce_Hreflang` | SEO hreflang | None | None |
+| `AlpineCommerce_LegalPages` | Legal pages | `alphacommerce_legal_page` | `/V1/alphacommerce/legal-pages/*` |
+| `AlpineCommerce_StorePickup` | Store pickup | `alphacommerce_pickup_store_info` | `/V1/carts/mine/store-pickup` |
+| `AlpineCommerce_StoreLocator` | Store locator | `alphacommerce_store_locator_store` | None |
+| `AlpineCommerce_Training` | Training module | None | None |
+| `AlpineCommerce_EuVat` | EU VAT validation | `alphacommerce_euvat_validation` | `/V1/alphacommerce/euvat/*` |
+| `AlpineCommerce_LoyaltyProgram` | Loyalty program | `alpinecommerce_loyalty_balance`, `alpinecommerce_loyalty_order_points` | `/V1/carts/mine/loyalty-points` |
+| `AlpineCommerce_ProductReviews` | Product reviews | `alphacommerce_product_review`, `alphacommerce_product_review_image`, `alphacommerce_product_review_helpful` | `/V1/alphacommerce/product-reviews/*` |
+| `AlpineCommerce_ProductQuestions` | Product Q&A | `alphacommerce_product_question`, `alphacommerce_product_answer`, `alphacommerce_product_question_vote` | `/V1/alphacommerce/product-questions/*` |
+| `AlpineCommerce_ProductLabels` | Product labels | `alphacommerce_product_label`, `alphacommerce_product_label_product` | `/V1/alphacommerce/product-labels/*` |
 
-### Principes d'un module AlpineCommerce
+### AlpineCommerce Module Principles
 
-- **Une seule responsabilité** : un module = une fonctionnalité métier
-- **Indépendance** : pas de dépendance entre modules AlpineCommerce
-- **Service Contracts** : chaque module expose ses interfaces dans `Api/`
-- **db_schema.xml** : pas de `InstallSchema` ou `InstallData`
-- **Pas de logique métier dans les Controllers** : les Controllers délèguent aux Services
+- **Single responsibility**: one module = one business feature
+- **Independence**: no dependency between AlpineCommerce modules
+- **Service Contracts**: each module exposes its interfaces in `Api/`
+- **db_schema.xml**: no `InstallSchema` or `InstallData`
+- **No business logic in Controllers**: Controllers delegate to Services
 
 ---
 
-## 4. Backend : patterns utilisés
+## 4. Backend: patterns used
 
 | Pattern | Usage |
 |---|---|
-| **Service Contract** | Interface métier exposée dans `Api/` |
-| **Repository** | Accès aux données, implémente le Service Contract |
-| **Resource Model** | Opérations CRUD sur les tables |
-| **Collection** | Liste d'entités avec filtres et tris |
-| **Plugin** | Modification du comportement d'une méthode existante |
-| **Observer** | Réaction à un événement Magento |
-| **ViewModel** | Logique de présentation pour les templates PHTML |
-| **Factory** | Création d'objets (généré automatiquement) |
-| **Preference** | Liaison interface → implémentation dans `di.xml` |
-| **VirtualType** | Type virtuel pour configuration DI complexe |
+| **Service Contract** | Business interface exposed in `Api/` |
+| **Repository** | Data access, implements the Service Contract |
+| **Resource Model** | CRUD operations on tables |
+| **Collection** | Entity list with filters and sorting |
+| **Plugin** | Modify behavior of an existing method |
+| **Observer** | React to a Magento event |
+| **ViewModel** | Presentation logic for PHTML templates |
+| **Factory** | Object creation (automatically generated) |
+| **Preference** | Interface → implementation link in `di.xml` |
+| **VirtualType** | Virtual type for complex DI configuration |
 
-### Structure d'un module
+### Module structure
 
 ```
 AlpineCommerce_Module/
-├── registration.php              # Enregistrement du module
+├── registration.php              # Module registration
 ├── etc/
-│   ├── module.xml                # Nom, version, séquences
-│   ├── db_schema.xml             # Tables et colonnes
-│   ├── di.xml                    # Préférences, plugins, virtualTypes
+│   ├── module.xml                # Name, version, sequences
+│   ├── db_schema.xml             # Tables and columns
+│   ├── di.xml                    # Preferences, plugins, virtualTypes
 │   ├── events.xml                # Observers
-│   ├── webapi.xml                # Routes REST API
-│   ├── acl.xml                   # Permissions admin
+│   ├── webapi.xml                # REST API routes
+│   ├── acl.xml                   # Admin permissions
 │   ├── frontend/
-│   │   ├── di.xml                # Plugins frontend
-│   │   └── routes.xml            # Routes frontend
+│   │   ├── di.xml                # Frontend plugins
+│   │   └── routes.xml            # Frontend routes
 │   └── adminhtml/
-│       ├── routes.xml            # Routes admin
-│       ├── menu.xml              # Menu admin
-│       └── system.xml            # Configuration admin
+│       ├── routes.xml            # Admin routes
+│       ├── menu.xml              # Admin menu
+│       └── system.xml            # Admin configuration
 ├── Api/
-│   ├── ModuleInterface.php       # Service Contract principal
+│   ├── ModuleInterface.php       # Main Service Contract
 │   └── Data/                     # Data Interfaces
 ├── Model/
-│   ├── Entity.php                # Entité métier
+│   ├── Entity.php                # Business entity
 │   ├── EntityRepository.php      # Repository (CRUD)
 │   ├── ResourceModel/
 │   │   ├── Entity.php            # Resource Model
 │   │   └── Entity/
 │   │       └── Collection.php    # Collection
-│   └── Service.php               # Logique métier
-├── Block/                        # Blocks PHTML (backend)
+│   └── Service.php               # Business logic
+├── Block/                        # PHTML Blocks (backend)
 ├── Controller/                   # Controllers
 ├── Plugin/                       # Plugins
 ├── Observer/                     # Observers
-├── Console/Command/              # Commandes CLI
+├── Console/Command/              # CLI commands
 ├── view/
-│   ├── adminhtml/                # Templates et layouts admin
-│   └── frontend/                 # Templates et layouts frontend
-└── i18n/                         # Traductions
+│   ├── adminhtml/                # Admin templates and layouts
+│   └── frontend/                 # Frontend templates and layouts
+└── i18n/                         # Translations
 ```
 
-> ⚠️ Note : la référence canonique complète (avec `Ui/`, `Setup/Patch/`, etc.) est
-> documentée dans `ENGINEERING_GUIDE.md` → « Squelette d'un module canonique ».
+> ⚠️ Note: the full canonical reference (with `Ui/`, `Setup/Patch/`, etc.) is
+> documented in `ENGINEERING_GUIDE.md` → "Canonical module skeleton".
 
 ---
 
-## 5. Base de données
+## 5. Database
 
-### Principes
+### Principles
 
-- Utiliser exclusivement `db_schema.xml` (déclaratif)
-- Pas de `InstallSchema.php` ou `InstallData.php`
-- Préférer les Data Patches (`Setup/Patch/Data/`) pour les insertions initiales
-- Nommage : `alphacommerce_{module}_{table}`
+- Use exclusively `db_schema.xml` (declarative)
+- No `InstallSchema.php` or `InstallData.php`
+- Prefer Data Patches (`Setup/Patch/Data/`) for initial inserts
+- Naming: `alphacommerce_{module}_{table}`
 
-### Tables par module
+### Tables by module
 
 | Module | Tables |
 |---|---|
@@ -191,7 +191,7 @@ AlpineCommerce_Module/
 | `Faq` | `alphacommerce_faq` |
 | `Gdpr` | `alphacommerce_gdpr_consent_log` |
 | `LegalPages` | `alphacommerce_legal_page` |
-| `StorePickup` | `alphacommerce_pickup_store_info` (+ colonnes `quote`/`sales_order`) |
+| `StorePickup` | `alphacommerce_pickup_store_info` (+ `quote`/`sales_order` columns) |
 | `StoreLocator` | `alphacommerce_store_locator_store` |
 | `ProductReviews` | `alphacommerce_product_review`, `alphacommerce_product_review_image`, `alphacommerce_product_review_helpful` |
 | `ProductQuestions` | `alphacommerce_product_question`, `alphacommerce_product_answer`, `alphacommerce_product_question_vote` |
@@ -203,27 +203,27 @@ AlpineCommerce_Module/
 
 ## 6. REST API
 
-### Principes
+### Principles
 
-- Uniquement REST API (pas de GraphQL pour l'instant — voir ADR-006)
-- Routes définies dans `etc/webapi.xml`
-- Authentification : `self` (client connecté) ou `anonymous`
-- Toutes les routes exposent des Service Contracts
+- REST API only (no GraphQL for now — see ADR-006)
+- Routes defined in `etc/webapi.xml`
+- Authentication: `self` (connected customer) or `anonymous`
+- All routes expose Service Contracts
 
-### Routes existantes
+### Existing routes
 
-| Module | Route | Méthode | Authentification |
+| Module | Route | Method | Authentication |
 |---|---|---|---|
-| `Blog` | `/V1/alphacommerce/blog/*` | GET/POST | Mixte |
+| `Blog` | `/V1/alphacommerce/blog/*` | GET/POST | Mixed |
 | `Faq` | `/V1/alphacommerce/faqs` | GET | Anonymous |
-| `Gdpr` | `/V1/alphacommerce/gdpr/*` | POST/GET/DELETE | Mixte |
+| `Gdpr` | `/V1/alphacommerce/gdpr/*` | POST/GET/DELETE | Mixed |
 | `LegalPages` | `/V1/alphacommerce/legal-pages/*` | GET | Anonymous |
 | `StorePickup` | `/V1/carts/mine/store-pickup` | GET/POST | Self |
 | `LoyaltyProgram` | `/V1/carts/mine/loyalty-points` | POST | Self |
-| `EuVat` | `/V1/alphacommerce/euvat/*` | GET/POST | Mixte |
-| `ProductReviews` | `/V1/alphacommerce/product-reviews/*` | GET/POST | Mixte |
-| `ProductQuestions` | `/V1/alphacommerce/product-questions/*` | GET/POST | Mixte |
-| `ProductLabels` | `/V1/alphacommerce/product-labels/*` | GET/POST/DELETE | Mixte |
+| `EuVat` | `/V1/alphacommerce/euvat/*` | GET/POST | Mixed |
+| `ProductReviews` | `/V1/alphacommerce/product-reviews/*` | GET/POST | Mixed |
+| `ProductQuestions` | `/V1/alphacommerce/product-questions/*` | GET/POST | Mixed |
+| `ProductLabels` | `/V1/alphacommerce/product-labels/*` | GET/POST/DELETE | Mixed |
 
 ---
 
@@ -231,109 +231,109 @@ AlpineCommerce_Module/
 
 ### Configuration
 
-- Magento gère nativement le multi-store
-- Les modules AlpineCommerce utilisent les scopes Magento
-- Les données peuvent être filtrées par `store_id` ou `website_id`
-- Le module `Hreflang` gère les balises hreflang pour le SEO multi-boutiques
+- Magento manages multi-store natively
+- AlpineCommerce modules use Magento scopes
+- Data can be filtered by `store_id` or `website_id`
+- The `Hreflang` module manages hreflang tags for multi-store SEO
 
-### Bonnes pratiques
+### Best practices
 
-- Utiliser `\Magento\Store\Model\StoreManagerInterface` pour récupérer le store courant
-- Ne jamais hardcoder un `store_id`
-- Préférer les repositories avec filtres par store
+- Use `\Magento\Store\Model\StoreManagerInterface` to get the current store
+- Never hardcode a `store_id`
+- Prefer repositories with store filters
 
 ---
 
-## 8. Sécurité
+## 8. Security
 
-### Principes
+### Principles
 
-- **ACL** : chaque module admin protégé par des ACLs
-- **Input validation** : validation systématique des entrées
-- **Output escaping** : échappement systématique des sorties
-- **Prepared statements** : via les Resource Models
-- **REST API** : authentification par token ou session
+- **ACL**: each admin module protected by ACLs
+- **Input validation**: systematic validation of inputs
+- **Output escaping**: systematic escaping of outputs
+- **Prepared statements**: via Resource Models
+- **REST API**: authentication by token or session
 
 ### Checklist
 
-- [ ] ACLs définies pour chaque controller admin
-- [ ] Validation des paramètres d'entrée
-- [ ] Échappement HTML dans les templates
-- [ ] Pas de données sensibles en log
-- [ ] Règles de validation Magento utilisées
+- [ ] ACLs defined for each admin controller
+- [ ] Input parameter validation
+- [ ] HTML escaping in templates
+- [ ] No sensitive data in logs
+- [ ] Magento validation rules used
 
 ---
 
 ## 9. Performance
 
-### Principes
+### Principles
 
-- **Cache** : utilisation du cache Magento (config, layout, block_html, full_page)
-- **Indexers** : pas d'indexeur personnalisé sans justification
-- **Collections** : chargement paginé, pas de `load()` complet
-- **Queries** : pas de requête SQL brute sans justification
-- **EAV** : utilisation correcte des attributs EAV
-- **Cache de configuration** : `config.xml` pour les valeurs par défaut
+- **Cache**: use Magento cache (config, layout, block_html, full_page)
+- **Indexers**: no custom indexer without justification
+- **Collections**: paginated loading, no complete `load()`
+- **Queries**: no raw SQL without justification
+- **EAV**: correct use of EAV attributes
+- **Config cache**: `config.xml` for default values
 
-### Outils
+### Tools
 
 - `bin/magento cache:clean`
 - `bin/magento indexer:reindex`
 - `bin/magento setup:di:compile`
-- Blackfire / Xdebug pour le profiling
+- Blackfire / Xdebug for profiling
 
 ---
 
 ## 10. Frontend
 
-### Stack technique
+### Tech stack
 
-- **Framework** : React
-- **Bundler** : Vite
-- **CSS** : Tailwind CSS
+- **Framework**: React
+- **Bundler**: Vite
+- **CSS**: Tailwind CSS
 
 ### Architecture
 
 ```
 frontend/
 ├── src/
-│   ├── components/      # Composants React réutilisables
-│   ├── pages/           # Pages de l'application
+│   ├── components/      # Reusable React components
+│   ├── pages/           # Application pages
 │   ├── hooks/           # Custom hooks
-│   ├── services/        # Appels API REST
+│   ├── services/        # REST API calls
 │   ├── store/           # State management
-│   └── main.jsx         # Point d'entrée
+│   └── main.jsx         # Entry point
 ├── public/
 ├── vite.config.js
 └── tailwind.config.js
 ```
 
-### Principes
+### Principles
 
-- **Separation of Concerns** : composants présentationnels vs conteneurs
-- **Custom Hooks** : logique réutilisable
-- **Services API** : centralisation des appels REST
-- **TypeScript** : typage fort (à confirmer)
+- **Separation of Concerns**: presentational components vs containers
+- **Custom Hooks**: reusable logic
+- **API Services**: centralization of REST calls
+- **TypeScript**: strong typing (to be confirmed)
 
 ---
 
-## 11. Déploiement
+## 11. Deployment
 
-### Environnements
+### Environments
 
-- **Développement** : Docker, mode developer
-- **Staging** : Pré-production, mode production
-- **Production** : Live, mode production, cache activé
+- **Development**: Docker, developer mode
+- **Staging**: Pre-production, production mode
+- **Production**: Live, production mode, cache enabled
 
-### Processus
+### Process
 
-1. Commit sur Git
-2. CI/CD (tests, lint, analyse statique)
-3. Déploiement sur staging
-4. Validation fonctionnelle
-5. Déploiement en production
+1. Commit to Git
+2. CI/CD (tests, lint, static analysis)
+3. Deployment to staging
+4. Functional validation
+5. Production deployment
 
-### Commandes de déploiement
+### Deployment commands
 
 ```bash
 bin/magento setup:upgrade
@@ -345,132 +345,132 @@ bin/magento indexer:reindex
 
 ---
 
-## 12. Décisions d'architecture (ADR)
+## 12. Architecture Decisions (ADR)
 
-### Format d'une décision
+### Decision format
 
-Chaque décision d'architecture est documentée selon le format ADR (Architecture Decision Record).
+Each architecture decision is documented according to the ADR format (Architecture Decision Record).
 
 ```
 ADR-XXX
-Titre de la décision
+Decision title
 
-Statut: Accepté | Rejeté | Déprécié | Remplacé par ADR-YYY
+Status: Accepted | Rejected | Deprecated | Replaced by ADR-YYY
 Date: YYYY-MM-DD
-Décideurs: [liste]
+Deciders: [list]
 
-Contexte:
-Description du contexte et du problème.
+Context:
+Description of the context and problem.
 
-Décision:
-Description de la décision prise.
+Decision:
+Description of the decision made.
 
 Justification:
-Pourquoi cette décision a été prise.
+Why this decision was made.
 
 Impact:
-Conséquences de cette décision.
+Consequences of this decision.
 ```
 
-### Registre des décisions
+### Decision registry
 
-| ADR | Titre | Statut |
+| ADR | Title | Status |
 |---|---|---|
-| ADR-001 | Magento reste le cœur de l'application | Accepté |
-| ADR-002 | AlpineCommerce développe uniquement des fonctionnalités métier | Accepté |
-| ADR-003 | Étendre Magento plutôt que le remplacer | Accepté |
-| ADR-004 | Chaque module possède une seule responsabilité | Accepté |
-| ADR-005 | Toutes les APIs utilisent les Service Contracts | Accepté |
-| ADR-006 | Le projet utilise uniquement REST API | Accepté |
-| ADR-007 | Chaque Sprint se termine par un audit complet | Accepté |
-| ADR-008 | Toute nouvelle décision devra être ajoutée dans ce document | Accepté |
-| ADR-009 | Migration depuis Cartware vers AlpineCommerce | Accepté |
-| ADR-014 | Architecture des modules ProductReviews et ProductQuestions | Accepté |
-| ADR-010 | Frontend React vs PWA Studio | À décider |
-| ADR-011 | GraphQL pour les APIs publiques | À décider |
-| ADR-012 | Tests automatisés en CI/CD | À décider |
-| ADR-013 | Stratégie de déploiement | À décider |
+| ADR-001 | Magento remains the core of the application | Accepted |
+| ADR-002 | AlpineCommerce develops only business features | Accepted |
+| ADR-003 | Extend Magento rather than replace it | Accepted |
+| ADR-004 | Each module has a single responsibility | Accepted |
+| ADR-005 | All APIs use Service Contracts | Accepted |
+| ADR-006 | The project uses only REST API | Accepted |
+| ADR-007 | Each Sprint ends with a complete audit | Accepted |
+| ADR-008 | Any new decision must be added to this document | Accepted |
+| ADR-009 | Migration from Cartware to AlpineCommerce | Accepted |
+| ADR-014 | Architecture of ProductReviews and ProductQuestions modules | Accepted |
+| ADR-010 | Frontend React vs PWA Studio | To decide |
+| ADR-011 | GraphQL for public APIs | To decide |
+| ADR-012 | Automated tests in CI/CD | To decide |
+| ADR-013 | Deployment strategy | To decide |
 
-### ADR-001 : Magento reste le cœur de l'application
+### ADR-001: Magento remains the core of the application
 
-- **Statut** : Accepté — **Date** : 2024-01-01
+- **Status**: Accepted — **Date**: 2024-01-01
 
-Magento 2 Open Source reste le cœur de l'application. Toutes les fonctionnalités natives de Magento sont utilisées telles quelles.
-Justification : Magento est mature, sécurisé et éprouvé ; la communauté est active ; les fonctionnalités natives (catalogue, checkout, paiement) sont complexes à réécrire.
-Impact : aucune réécriture des fonctionnalités Magento ; les modules AlpineCommerce complètent Magento ; les mises à jour restent possibles.
+Magento 2 Open Source remains the core of the application. All native Magento features are used as-is.
+Justification: Magento is mature, secure, and proven; the community is active; native features (catalog, checkout, payment) are complex to rewrite.
+Impact: no rewriting of Magento features; AlpineCommerce modules complement Magento; updates remain possible.
 
-### ADR-002 : AlpineCommerce développe uniquement des fonctionnalités métier
+### ADR-002: AlpineCommerce develops only business features
 
-- **Statut** : Accepté — **Date** : 2024-01-01
+- **Status**: Accepted — **Date**: 2024-01-01
 
-Les modules AlpineCommerce ne font que des fonctionnalités métier que Magento ne propose pas nativement.
-Impact : pas de module `AlpineCommerce_Catalog`, `AlpineCommerce_Customer`, etc. ; les modules sont des extensions métier pures.
+AlpineCommerce modules only do business features that Magento does not provide natively.
+Impact: no `AlpineCommerce_Catalog`, `AlpineCommerce_Customer`, etc.; modules are pure business extensions.
 
-### ADR-003 : Étendre Magento plutôt que le remplacer
+### ADR-003: Extend Magento rather than replace it
 
-- **Statut** : Accepté — **Date** : 2024-01-01
+- **Status**: Accepted — **Date**: 2024-01-01
 
-Étendre Magento via Plugins, Observers, Layout XML, ViewModels avant de créer un nouveau module.
-Justification : moins de code à maintenir, meilleure compatibilité avec les mises à jour Magento, respect des conventions.
-Impact : utilisation systématique des Plugins et Observers ; pas de duplication de code Magento.
+Extend Magento via Plugins, Observers, Layout XML, ViewModels before creating a new module.
+Justification: less code to maintain, better compatibility with Magento updates, respect of conventions.
+Impact: systematic use of Plugins and Observers; no Magento code duplication.
 
-### ADR-004 : Chaque module possède une seule responsabilité
+### ADR-004: Each module has a single responsibility
 
-- **Statut** : Accepté — **Date** : 2024-01-01
+- **Status**: Accepted — **Date**: 2024-01-01
 
-Chaque module AlpineCommerce a une seule responsabilité métier et ne dépend pas des autres modules AlpineCommerce.
-Impact : pas de dépendances entre modules AlpineCommerce ; chaque module peut être activé/désactivé indépendamment.
+Each AlpineCommerce module has a single business responsibility and does not depend on other AlpineCommerce modules.
+Impact: no dependencies between AlpineCommerce modules; each module can be activated/deactivated independently.
 
-### ADR-005 : Toutes les APIs utilisent les Service Contracts
+### ADR-005: All APIs use Service Contracts
 
-- **Statut** : Accepté — **Date** : 2024-01-01
+- **Status**: Accepted — **Date**: 2024-01-01
 
-Toutes les routes REST API exposent des Service Contracts (interfaces dans `Api/`).
-Impact : tous les modules avec API REST ont un `Api/` directory ; les Controllers utilisent les interfaces, pas les implémentations.
+All REST API routes expose Service Contracts (interfaces in `Api/`).
+Impact: all modules with REST API have an `Api/` directory; Controllers use interfaces, not implementations.
 
-### ADR-006 : Le projet utilise uniquement REST API
+### ADR-006: The project uses only REST API
 
-- **Statut** : Accepté — **Date** : 2024-01-01
+- **Status**: Accepted — **Date**: 2024-01-01
 
-Le projet utilise uniquement REST API pour l'instant. GraphQL n'est pas exclu pour le futur.
-Justification : REST est plus simple à mettre en place, l'équipe maîtrise REST, les besoins actuels sont couverts.
-Impact : toutes les routes sont définies dans `webapi.xml` ; pas de schema GraphQL pour l'instant.
+The project uses only REST API for now. GraphQL is not excluded for the future.
+Justification: REST is simpler to set up, the team masters REST, current needs are covered.
+Impact: all routes are defined in `webapi.xml`; no GraphQL schema for now.
 
-### ADR-007 : Chaque Sprint se termine par un audit complet
+### ADR-007: Each Sprint ends with a complete audit
 
-- **Statut** : Accepté — **Date** : 2024-01-01
+- **Status**: Accepted — **Date**: 2024-01-01
 
-Chaque sprint se termine par un audit technique complet avant de passer au suivant.
-Impact : temps d'audit inclus dans chaque sprint ; aucun code non audité n'est considéré comme terminé.
+Each sprint ends with a complete technical audit before moving to the next.
+Impact: audit time included in each sprint; no unaudited code is considered complete.
 
-### ADR-008 : Toute nouvelle décision devra être ajoutée dans ce document
+### ADR-008: Any new decision must be added to this document
 
-- **Statut** : Accepté — **Date** : 2024-01-01
+- **Status**: Accepted — **Date**: 2024-01-01
 
-Toute nouvelle décision d'architecture sera ajoutée dans ce document avec le format ADR.
-Impact : traçabilité des décisions ; documentation vivante ; référence pour toute l'équipe.
+Any new architecture decision will be added to this document in ADR format.
+Impact: traceability of decisions; living documentation; reference for the whole team.
 
-### ADR-009 : Migration depuis Cartware vers AlpineCommerce
+### ADR-009: Migration from Cartware to AlpineCommerce
 
-- **Statut** : Accepté — **Date** : 2024-01-01
+- **Status**: Accepted — **Date**: 2024-01-01
 
-Tous les modules Cartware sont migrés vers AlpineCommerce avec changement du namespace PHP, du nom de module, des noms de tables DB, des référenceIds dans `db_schema.xml`, et conservation des fonctionnalités.
-Impact : 10 modules migrés ; migration progressive module par module ; les modules Cartware restent actifs jusqu'à validation complète.
+All Cartware modules are migrated to AlpineCommerce with changes to the PHP namespace, module name, DB table names, `referenceIds` in `db_schema.xml`, and feature preservation.
+Impact: 10 modules migrated; progressive migration module by module; Cartware modules remain active until full validation.
 
-### ADR-014 : Architecture des modules ProductReviews et ProductQuestions
+### ADR-014: Architecture of ProductReviews and ProductQuestions modules
 
-- **Statut** : Accepté — **Date** : 2026-08-04
+- **Status**: Accepted — **Date**: 2026-08-04
 
-Décisions :
-1. **Routes isolées** : `productreviews` et `productquestions` comme frontName pour éviter tout conflit avec les routes natives Magento (`review`).
-2. **Injection produit** : `catalog_product_view.xml` pour injecter les blocs frontend sur la fiche produit, sans modifier le Core.
-3. **3 tables séparées** : chaque entité (review, image, vote / question, answer, vote) a sa propre table avec clés étrangères et index.
-4. **Vote utile désynchronisé** : le compteur `helpful_count` est incrémenté à la volée pour éviter les jointures coûteuses en lecture.
-5. **Modération par statut** : workflow (pending → approved/rejected).
-6. **Réponses officielles** : champ `is_official` pour distinguer les réponses admin des réponses clients.
+Decisions:
+1. **Isolated routes**: `productreviews` and `productquestions` as frontName to avoid any conflict with native Magento routes (`review`).
+2. **Product injection**: `catalog_product_view.xml` to inject frontend blocks on the product page, without modifying the Core.
+3. **3 separate tables**: each entity (review, image, vote / question, answer, vote) has its own table with foreign keys and indexes.
+4. **Desynchronized helpful vote**: the `helpful_count` counter is incremented on the fly to avoid costly joins in read.
+5. **Status moderation**: workflow (pending → approved/rejected).
+6. **Official responses**: `is_official` field to distinguish admin responses from customer responses.
 
-Impact : pas de conflit avec les modules Magento natifs ; performance optimisée en lecture ; modération complète côté admin.
+Impact: no conflict with native Magento modules; optimized read performance; complete admin moderation.
 
 ---
 
-*Registre des décisions vivant : toute nouvelle décision y est ajoutée au format ADR (ADR-008).*
+*Living decision registry: any new decision is added in ADR format (ADR-008).*

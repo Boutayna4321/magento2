@@ -4,7 +4,6 @@
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">question_question_listing.pq_listing_data_source</item>
-            <item name="deps" xsi:type="string">question_question_listing.pq_listing_data_source</item>
         </item>
         <item name="spinner" xsi:type="string">question_question_columns</item>
     </argument>
@@ -17,27 +16,22 @@
             </button>
         </buttons>
         <spinner>question_question_columns</spinner>
-        <deps>question_question_listing.pq_listing_data_source</deps>
+        <deps>
+            <dep>question_question_listing.pq_listing_data_source</dep>
+        </deps>
     </settings>
-    <dataSource name="pq_listing_data_source">
-        <argument name="data" xsi:type="array">
-            <item name="js_config" xsi:type="array">
-                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
-                <item name="update_url" xsi:type="url" path="mui/index/render"/>
-                <item name="storageConfig" xsi:type="array">
-                    <item name="indexField" xsi:type="string">question_id</item>
-                </item>
-            </item>
-            <item name="config" xsi:type="array">
-                <item name="dataProvider" xsi:type="string">pq_listing_data_source</item>
-            </item>
-        </argument>
+    <dataSource name="pq_listing_data_source" component="Magento_Ui/js/grid/provider">
         <settings>
-            <filterUrlParams>
-                <param name="question_id">*</param>
-            </filterUrlParams>
-            <primaryDataSource>question_question_listing.pq_listing_data_source</primaryDataSource>
+            <updateUrl path="mui/index/render"/>
         </settings>
+        <aclResource>AlpineCommerce_ProductQuestions::question</aclResource>
+        <dataProvider class="AlpineCommerce\ProductQuestions\Ui\DataProvider\QuestionListingDataProvider"
+                      name="pq_listing_data_source">
+            <settings>
+                <requestFieldName>question_id</requestFieldName>
+                <primaryFieldName>question_id</primaryFieldName>
+            </settings>
+        </dataProvider>
     </dataSource>
     <listingToolbar name="listing_top">
         <settings>
@@ -45,7 +39,7 @@
         </settings>
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
-        <massAction name="listing_massaction">
+        <massaction name="listing_massaction">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="selectCheckbox" xsi:type="string">question_id</item>
@@ -65,14 +59,14 @@
                     </item>
                 </item>
             </argument>
-        </massAction>
+        </massaction>
         <filters name="listing_filters">
             <settings>
                 <templates>
                     <filters>
                         <select>
-                            <customScope>question_question_columns</customScope>
-                            <template>ui/grid/filters/elements/ui-select</template>
+                            <param name="template" xsi:type="string">ui/grid/filters/elements/ui-select</param>
+                            <param name="component" xsi:type="string">Magento_Ui/js/form/element/ui-select</param>
                         </select>
                     </filters>
                 </templates>

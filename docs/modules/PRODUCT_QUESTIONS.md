@@ -1,89 +1,89 @@
-# Module AlpineCommerce_ProductQuestions — Questions produits
+# AlpineCommerce_ProductQuestions Module — Product Questions
 
-> **Statut** : ✅ Stable (v1.1.0)
+> **Status**: ✅ Stable (v1.1.0)
 
-## 1. Responsabilité
+## 1. Responsibility
 
-Questions/réponses sur les produits : affichage sur la page produit, modération admin,
-exposition via REST.
+Product questions/answers: display on the product page, admin moderation,
+exposure via REST.
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-| **Frontend page produit** | Bloc des questions (`QuestionList`) |
-| **Admin** | Formulaire de modération (`question_question_form`) |
-| **REST** | Services REST questions/réponses |
+| **Frontend product page** | Questions block (`QuestionList`) |
+| **Admin** | Moderation form (`question_question_form`) |
+| **REST** | Questions/answers REST services |
 
 ## 3. Architecture
 
 ```
 AlpineCommerce/ProductQuestions/
 ├── Api/                        # Service Contracts + AnswerSearchResultsInterface
-├── Block/Frontend/QuestionList.php  # use SortOrder (fix Sprint 6)
+├── Block/Frontend/QuestionList.php  # use SortOrder (Sprint 6 fix)
 ├── Model/
-│   ├── Status.php               # getLabel(): string (cast match) + OptionSourceInterface
-│   └── Rest/                    # services REST
+│   ├── Status.php               # getLabel(): string (match cast) + OptionSourceInterface
+│   └── Rest/                    # REST services
 ├── Ui/
 │   ├── DataProvider/QuestionFormDataProvider.php
 │   └── Source/Status.php        # fix C4
 ├── etc/
-│   ├── di.xml                   # preference AnswerSearchResultsInterface (fix Sprint 6)
-│   └── frontend/routes.xml      # fix C6 (créé — route frontend absente)
+│   ├── di.xml                   # AnswerSearchResultsInterface preference (Sprint 6 fix)
+│   └── frontend/routes.xml      # fix C6 (created — missing frontend route)
 └── view/adminhtml/ui_component/ question_question_form.xml
 ```
 
-## 4. Base de données
+## 4. Database
 
-Tables des questions et réponses (standardisées).
+Questions and answers tables (standardized).
 
-## 5. API REST
+## 5. REST API
 
-Services REST questions/réponses (pattern `QuestionRestService`/`ReviewRestService`,
+Questions/answers REST services (pattern `QuestionRestService`/`ReviewRestService`,
 `UserContextInterface::getUserId()`).
 
 ## 6. Admin
 
-- Formulaire `question_question_form` : corrigé (dataProvider `QuestionFormDataProvider`,
-  `question_id` + remplacement `button-set` → `<settings><buttons>`)
+- `question_question_form` form: fixed (dataProvider `QuestionFormDataProvider`,
+  `question_id` + replacement `button-set` → `<settings><buttons>`)
 
 ## 7. Frontend
 
-- Page produit : bloc des questions — **route frontend ajoutée** (fix C6, HTTP 200)
+- Product page: questions block — **frontend route added** (fix C6, HTTP 200)
 
 ## 8. CLI
 
-Aucune commande dédiée.
+No dedicated command.
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| Préférence `AnswerSearchResultsInterface` → `AnswerSearchResults` | Fatal « Cannot instantiate interface » (di:compile) |
-| Cast `(string)` dans `Status::getLabel()` | `Phrase` → `string` (PHP 8.2 strict_types) |
+| `AnswerSearchResultsInterface` → `AnswerSearchResults` preference | Fatal "Cannot instantiate interface" (di:compile) |
+| `(string)` cast in `Status::getLabel()` | `Phrase` → `string` (PHP 8.2 strict_types) |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| C4 | `Ui/Source/Status.php` : mauvais namespace (fatal compile) | ✅ Corrigé (Phase 1) |
-| C5 | `question_question_form.xml` : `</item>` jamais fermé (XML malformé) | ✅ Corrigé (Phase 1) |
-| C6 | `etc/frontend/routes.xml` absent → 404 | ✅ Corrigé (Phase 1) — fichier créé |
-| — | `AnswerSearchResultsInterface` sans implémentation | ✅ Corrigé (Sprint 6) — préférence di.xml |
-| — | `QuestionList` `use SortOrder` manquant (fatal) | ✅ Corrigé (Sprint 6) |
-| — | `question_question_form` : exception « class required » + `button-set` | ✅ Corrigé (Sprint 6 addendum) |
+| C4 | `Ui/Source/Status.php`: wrong namespace (compile fatal) | ✅ Fixed (Phase 1) |
+| C5 | `question_question_form.xml`: `</item>` never closed (malformed XML) | ✅ Fixed (Phase 1) |
+| C6 | `etc/frontend/routes.xml` missing → 404 | ✅ Fixed (Phase 1) — file created |
+| — | `AnswerSearchResultsInterface` without implementation | ✅ Fixed (Sprint 6) — di.xml preference |
+| — | `QuestionList` `use SortOrder` missing (fatal) | ✅ Fixed (Sprint 6) |
+| — | `question_question_form`: "class required" exception + `button-set` | ✅ Fixed (Sprint 6 addendum) |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
-- Routes frontend (`etc/frontend/routes.xml`)
-- Préférences `di.xml` pour SearchResults
+- Frontend routes (`etc/frontend/routes.xml`)
+- `di.xml` preferences for SearchResults
 - UI Component form + `ButtonProviderInterface`
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Statut** : ✅ Stable — formulaire validé à l'écran (Sprint 6)
+- **Status**: ✅ Stable — form validated on screen (Sprint 6)
 
 ---
 
-*Sources : `SPRINT_VALIDATION_REPORT.md`, `SPRINT_INTEGRATION_REPORT.md`
-(fusionnés dans `CHANGELOG.md`).*
+*Sources: `SPRINT_VALIDATION_REPORT.md`, `SPRINT_INTEGRATION_REPORT.md`
+(merged into `CHANGELOG.md`).*

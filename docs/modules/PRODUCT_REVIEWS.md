@@ -1,19 +1,19 @@
-# Module AlpineCommerce_ProductReviews — Avis produits
+# AlpineCommerce_ProductReviews Module — Product Reviews
 
-> **Statut** : ✅ Stable (v1.1.0)
+> **Status**: ✅ Stable (v1.1.0)
 
-## 1. Responsabilité
+## 1. Responsibility
 
-Gestion des **avis produits** : affichage sur la page produit, modération admin,
-exposition via REST.
+**Product review** management: display on the product page, admin moderation,
+exposure via REST.
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-| **Frontend page produit** | Affichage des avis (bloc `ReviewList`) |
-| **Admin** | Formulaire de modération (`review_review_form`) |
-| **REST** | Services REST des avis (`QuestionRestService`/`ReviewRestService` pattern) |
+| **Frontend product page** | Reviews display (`ReviewList` block) |
+| **Admin** | Moderation form (`review_review_form`) |
+| **REST** | Review REST services (`QuestionRestService`/`ReviewRestService` pattern) |
 
 ## 3. Architecture
 
@@ -23,66 +23,66 @@ AlpineCommerce/ProductReviews/
 ├── Block/Frontend/ReviewList.php  # use SortOrder (fix C2)
 ├── Helper/Image.php             # fix C1 (Context)
 ├── Model/
-│   ├── Status.php               # getLabel(): string (cast match — fix Sprint 6)
-│   └── Rest/                    # services REST
+│   ├── Status.php               # getLabel(): string (match cast — Sprint 6 fix)
+│   └── Rest/                    # REST services
 ├── Ui/
 │   ├── DataProvider/ReviewFormDataProvider.php
 │   └── Source/Status.php        # Status implements OptionSourceInterface (fix C3)
 └── view/adminhtml/ui_component/ review_review_form.xml
 ```
 
-## 4. Base de données
+## 4. Database
 
-Table des avis produits (standardisée).
+Product reviews table (standardized).
 
-## 5. API REST
+## 5. REST API
 
-Services REST des avis (pattern `QuestionRestService`/`ReviewRestService` — utilisent
-`UserContextInterface::getUserId()` après le fix 2.4.8).
+Review REST services (pattern `QuestionRestService`/`ReviewRestService` — using
+`UserContextInterface::getUserId()` after the 2.4.8 fix).
 
 ## 6. Admin
 
-- Formulaire `review_review_form` : corrigé (dataProvider `ReviewFormDataProvider`,
-  `review_id` + remplacement `button-set` → `<settings><buttons>`)
+- `review_review_form` form: fixed (dataProvider `ReviewFormDataProvider`,
+  `review_id` + replacement `button-set` → `<settings><buttons>`)
 
 ## 7. Frontend
 
-- Page produit : bloc des avis (HTTP 200)
+- Product page: reviews block (HTTP 200)
 
 ## 8. CLI
 
-Aucune commande dédiée.
+No dedicated command.
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| `Status implements OptionSourceInterface` | Corrige le mauvais namespace (fatal di:compile) |
-| `getLabel()` cast `(string)` | `Phrase` → `string` (TypeError PHP 8.2 + strict_types) |
+| `Status implements OptionSourceInterface` | Fixes wrong namespace (fatal di:compile) |
+| `getLabel()` cast `(string)` | `Phrase` → `string` (PHP 8.2 strict_types TypeError) |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| C1 | `Helper/Image.php` : ctor sans `Context` + `parent::__construct` | ✅ Corrigé (Phase 1) |
-| C2 | `Block/Frontend/ReviewList.php` : `use SortOrder` manquant (fatal) | ✅ Corrigé (Phase 1) |
-| C3 | `Ui/Source/Status.php` : classe dans le mauvais namespace (fatal compile) | ✅ Corrigé (Phase 1) |
-| — | `getCurrentCustomer()` inexistant en 2.4.8 (API) | ✅ Corrigé (Sprint 5) — `UserContextInterface::getUserId()` |
-| — | `review_review_form` : exception « class required » + `button-set` | ✅ Corrigé (Sprint 6 addendum) |
-| — | `Status::getLabel()` `Phrase` → `string` | ✅ Corrigé (Sprint 6) |
+| C1 | `Helper/Image.php`: ctor without `Context` + `parent::__construct` | ✅ Fixed (Phase 1) |
+| C2 | `Block/Frontend/ReviewList.php`: `use SortOrder` missing (fatal) | ✅ Fixed (Phase 1) |
+| C3 | `Ui/Source/Status.php`: class in wrong namespace (fatal compile) | ✅ Fixed (Phase 1) |
+| — | `getCurrentCustomer()` non-existent in 2.4.8 (API) | ✅ Fixed (Sprint 5) — `UserContextInterface::getUserId()` |
+| — | `review_review_form`: "class required" exception + `button-set` | ✅ Fixed (Sprint 6 addendum) |
+| — | `Status::getLabel()` `Phrase` → `string` | ✅ Fixed (Sprint 6) |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
 - UI Component form + `ButtonProviderInterface`
-- `UserContextInterface` (remplacement `getCurrentCustomer()` en 2.4.8)
-- `OptionSourceInterface` pour les sources de listing
+- `UserContextInterface` (replacement for `getCurrentCustomer()` in 2.4.8)
+- `OptionSourceInterface` for listing sources
 - `SortOrder` (SearchCriteria)
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Statut** : ✅ Stable — formulaire validé à l'écran (Sprint 6)
+- **Status**: ✅ Stable — form validated on screen (Sprint 6)
 
 ---
 
-*Sources : `SPRINT_VALIDATION_REPORT.md`, `SPRINT_INTEGRATION_REPORT.md`
-(fusionnés dans `CHANGELOG.md`).*
+*Sources: `SPRINT_VALIDATION_REPORT.md`, `SPRINT_INTEGRATION_REPORT.md`
+(merged into `CHANGELOG.md`).*

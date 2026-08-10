@@ -29,16 +29,18 @@ class CategoryFormDataProvider extends ModifierPoolDataProvider
         }
     }
 
+    private $loadedData = [];
+
     public function getData()
     {
-        $data = parent::getData();
-        $items = $data['items'] ?? [];
-
-        if (isset($items[0])) {
-            $categoryId = (int) $items[0]['category_id'];
-            return [$categoryId => $items[0]];
+        if ($this->loadedData) {
+            return $this->loadedData;
         }
 
-        return [];
+        foreach ($this->collection->getItems() as $category) {
+            $this->loadedData[$category->getId()] = $category->getData();
+        }
+
+        return $this->loadedData;
     }
 }

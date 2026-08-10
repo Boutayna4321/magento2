@@ -43,8 +43,7 @@
             <action name="delete">
                 <settings>
                     <url path="mui/massAction"/>
-                    <param name="collectionClass">AlpineCommerce\Gdpr\Model\ResourceModel\ConsentLog\Collection</param>
-                    <confirm>
+                                        <confirm>
                         <message translate="true">Delete selected items?</message>
                         <title translate="true">Delete items</title>
                     </confirm>
@@ -88,34 +87,14 @@
             <settings>
                 <filter>select</filter>
                 <label translate="true">Consent Type</label>
-                <options>
-                    <option name="cookies" value="cookies">
-                        <label translate="true">Cookies</label>
-                    </option>
-                    <option name="newsletter" value="newsletter">
-                        <label translate="true">Newsletter</label>
-                    </option>
-                    <option name="terms" value="terms">
-                        <label translate="true">Terms</label>
-                    </option>
-                    <option name="privacy" value="privacy">
-                        <label translate="true">Privacy</label>
-                    </option>
-                </options>
+                <options class="AlpineCommerce\Gdpr\Ui\Source\ConsentType"/>
             </settings>
         </column>
         <column name="status" sortOrder="40">
             <settings>
                 <filter>select</filter>
                 <label translate="true">Status</label>
-                <options>
-                    <option name="1" value="1">
-                        <label translate="true">Granted</label>
-                    </option>
-                    <option name="0" value="0">
-                        <label translate="true">Revoked</label>
-                    </option>
-                </options>
+                <options class="AlpineCommerce\Gdpr\Ui\Source\Status"/>
             </settings>
         </column>
         <column name="created_at" sortOrder="50">

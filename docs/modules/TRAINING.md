@@ -1,76 +1,76 @@
-# Module AlpineCommerce_Training — Formation & démonstration
+# AlpineCommerce_Training Module — Training & Demo
 
-> **Statut** : 🔄 En finalisation (v1.3.0)
+> **Status**: 🔄 In finalization (v1.3.0)
 
-## 1. Responsabilité
+## 1. Responsibility
 
-Module de **formation et démonstration** Magento : observers d'événements, configuration
-multi-stores et exemples de bonnes pratiques. **Ne pas déployer tel quel en production**
-(la Data Patch de création de store views doit être supprimée — voir `BACKLOG.md` B-08).
+Magento **training and demo** module: event observers, multi-store configuration,
+and examples of best practices. **Do not deploy as-is in production**
+(the store view creation Data Patch must be removed — see `BACKLOG.md` B-08).
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-| **Data Patch** | Création de store views — ⚠️ **à supprimer** (BACKLOG B-08) |
-| **Observers** | Sur produit, commande, checkout, connexion client |
-| **Configuration** | Multi-stores |
+| **Data Patch** | Store view creation — ⚠️ **to remove** (BACKLOG B-08) |
+| **Observers** | On product, order, checkout, customer login |
+| **Configuration** | Multi-store |
 
 ## 3. Architecture
 
 ```
 AlpineCommerce/Training/
-├── Setup/Patch/Data/           # Data Patch création store views (⚠️ à supprimer)
-├── Observer/                   # produit, commande, checkout, connexion client
-├── etc/system.xml              # configuration multi-stores
-└── (blocks/templates de démonstration)
+├── Setup/Patch/Data/           # Data Patch store view creation (⚠️ to remove)
+├── Observer/                   # product, order, checkout, customer login
+├── etc/system.xml              # multi-store configuration
+└── (demo blocks/templates)
 ```
 
-## 4. Base de données
+## 4. Database
 
-Aucune table dédiée. La Data Patch modifie `core_store_group` / `core_store`
-(⚠️ voir BACKLOG B-08 — à transformer en script de démo reproductible).
+No dedicated table. The Data Patch modifies `core_store_group` / `core_store`
+(⚠️ see BACKLOG B-08 — to transform into reproducible demo script).
 
-## 5. API REST
+## 5. REST API
 
-Aucune.
+None.
 
 ## 6. Admin
 
-- Configuration système (démonstration)
+- System configuration (demo)
 
 ## 7. Frontend
 
-- Démonstration via observers (logs, événements)
+- Demo via observers (logs, events)
 
 ## 8. CLI
 
-Aucune commande dédiée.
+No dedicated command.
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| Data Patch pour store views | Illustration du pattern Data Patch, mais **interdit en production** (B-08) |
-| Observers multiples | Support pédagogique des événements Magento |
+| Data Patch for store views | Illustrates the Data Patch pattern, but **forbidden in production** (B-08) |
+| Multiple observers | Pedagogical support for Magento events |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| B-08 | Data Patch crée des store views de façon permanente — irréversible/indésirable | 📋 BACKLOG B-08 — supprimer/transformer |
+| B-08 | Data Patch creates store views permanently — irreversible/undesirable | 📋 BACKLOG B-08 — remove/transform |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
 - **Observers** (product, order, checkout, customer_login)
-- **Data Patches** (et leurs risques en prod)
-- Configuration multi-stores
+- **Data Patches** (and their risks in production)
+- Multi-store configuration
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Statut** : 🔄 En finalisation — validation globale OK (Sprint 6)
+- **Status**: 🔄 In finalization — global validation OK (Sprint 6)
 
 ---
 
-*Sources : `docs/08_CHANGELOG.md` (v1.3.0), `SPRINT_VALIDATION_REPORT.md`,
-`SPRINT_INTEGRATION_REPORT.md` (fusionnés dans `CHANGELOG.md`).*
+*Sources: `docs/08_CHANGELOG.md` (v1.3.0), `SPRINT_VALIDATION_REPORT.md`,
+`SPRINT_INTEGRATION_REPORT.md` (merged into `CHANGELOG.md`).*

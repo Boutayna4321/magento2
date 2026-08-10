@@ -14,6 +14,9 @@
     <settings>
         <namespace>question_question_form</namespace>
         <dataScope>data</dataScope>
+        <deps>
+            <dep>question_question_form.pq_form_data_source</dep>
+        </deps>
         <buttons>
             <button name="save" class="AlpineCommerce\ProductQuestions\Block\Adminhtml\Question\Edit\SaveButton"/>
             <button name="back" class="AlpineCommerce\ProductQuestions\Block\Adminhtml\Question\Edit\BackButton"/>
@@ -23,6 +26,7 @@
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
                 <item name="provider" xsi:type="string">question_question_form.pq_form_data_source</item>
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
             </item>
         </argument>
     <settings>
@@ -39,6 +43,7 @@
         <settings>
             <label translate="true">General</label>
             <collapsible>true</collapsible>
+            <opened>true</opened>
         </settings>
         <field name="question_id">
             <argument name="data" xsi:type="array">
@@ -165,6 +170,7 @@
         <settings>
             <label translate="true">Official Answer</label>
             <collapsible>true</collapsible>
+            <opened>true</opened>
         </settings>
         <field name="official_answer" formElement="textarea">
             <argument name="data" xsi:type="array">

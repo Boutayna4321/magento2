@@ -39,6 +39,7 @@
         <settings>
             <label translate="true">General</label>
             <collapsible>true</collapsible>
+            <opened>true</opened>
         </settings>
         <field name="post_id">
             <argument name="data" xsi:type="array">

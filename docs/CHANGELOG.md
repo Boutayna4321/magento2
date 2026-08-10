@@ -1,38 +1,38 @@
-# Changelog officiel du projet AlpineCommerce
+# Official Changelog of the AlpineCommerce Project
 
-Toutes les modifications notables du projet sont documentées dans ce fichier.
+All notable changes to the project are documented in this file.
 
-Format basé sur [Keep a Changelog](https://keepachangelog.com/fr-FR/).
+Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
-> Ce document regroupe l'ancien `08_CHANGELOG.md` ainsi que les rapports racine
-> `SPRINT_VALIDATION_REPORT.md` (Sprint 5 — validation fonctionnelle) et
-> `SPRINT_INTEGRATION_REPORT.md` (Sprint 6 — intégration fonctionnelle).
+> This document combines the former `08_CHANGELOG.md` as well as the root reports
+> `SPRINT_VALIDATION_REPORT.md` (Sprint 5 — functional validation) and
+> `SPRINT_INTEGRATION_REPORT.md` (Sprint 6 — functional integration).
 >
-> ⚠️ **Réconciliation des sprints** : les sprints de finalisation des modules
-> (Sprint 1 = Gdpr, 2 = StorePickup, 3 = StoreLocator) et les sprints globaux
-> (Sprint 4 = correctifs code, Sprint 5 = validation, Sprint 6 = intégration) sont
-> regroupés ici chronologiquement. Les rapports détaillés de chaque sprint sont
-> archivés dans `archive/sprints/`.
+> ⚠️ **Sprint reconciliation**: the module finalization sprints
+> (Sprint 1 = Gdpr, 2 = StorePickup, 3 = StoreLocator) and global sprints
+> (Sprint 4 = code fixes, Sprint 5 = validation, Sprint 6 = integration) are
+> grouped here chronologically. The detailed reports of each sprint are
+> archived in `archive/sprints/`.
 
 ---
 
 ## [1.5.2] - 2026-08-06
 
-### Corrigé (bug report admin — Sprint 6, addendum)
+### Fixed (admin bug report — Sprint 6, addendum)
 
-- `AlpineCommerce_Blog` — `view/adminhtml/ui_component/blog_category_form.xml` :
+- `AlpineCommerce_Blog` — `view/adminhtml/ui_component/blog_category_form.xml`:
   exception `InvalidArgumentException: Node "argument" with name "class" is required for this type`
-  sur la page admin `admin/blog/category/edit`. Cause : le `<dataSource>` n'avait pas
-  d'enfant `<dataProvider class="...">` — `definition.map.xml` (module-ui) construit
-  l'argument `dataProvider` en `configurableObject` dont la classe provient de
-  `dataProvider/@class` (XPath) ; sans ce nœud, l'évaluateur
+  on admin page `admin/blog/category/edit`. Cause: the `<dataSource>` had no
+  child `<dataProvider class="...">` — `definition.map.xml` (module-ui) builds
+  the `dataProvider` argument as `configurableObject` whose class comes from
+  `dataProvider/@class` (XPath); without this node, the evaluator
   `Magento\Framework\View\Element\UiComponent\Argument\Interpreter\ConfigurableObject`
-  levait l'exception au rendu du layout.
-  Fix : ajout de `<dataProvider class="AlpineCommerce\Blog\Ui\DataProvider\CategoryFormDataProvider"
+  threw the exception at layout rendering.
+  Fix: addition of `<dataProvider class="AlpineCommerce\Blog\Ui\DataProvider\CategoryFormDataProvider"
   name="blog_category_form_data_source">` (`requestFieldName`/`primaryFieldName` = `category_id`),
-  suppression de l'item `config/dataProvider` redondant, `js_config` aligné sur le
-  formulaire Post qui fonctionne.
-- **Même cause corrigée sur 4 autres formulaires admin** (même exception « class required ») :
+  removal of the redundant `config/dataProvider` item, `js_config` aligned on the
+  working Post form.
+- **Same cause fixed on 4 other admin forms** (same "class required" exception):
 
   | uiComponent | dataProvider | ID |
   |---|---|---|
@@ -41,265 +41,265 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr-FR/).
   | `question_question_form` | `AlpineCommerce\ProductQuestions\Ui\DataProvider\QuestionFormDataProvider` | `question_id` |
   | `review_review_form` | `AlpineCommerce\ProductReviews\Ui\DataProvider\ReviewFormDataProvider` | `review_id` |
 
-### Corrigé (formulaire admin vide côté navigateur — cause racine `button-set`)
+### Fixed (empty admin form in browser — root cause `button-set`)
 
-- La page `admin/faq/faq/new|edit` renvoyait un HTML valide mais le formulaire restait
-  vide dans le navigateur. Cause racine : `<container name="button_set"
-  component="Magento_Ui/js/form/components/button-set">` — ce composant JS **n'existe
-  pas en Magento 2.4.8** (seuls `button.js`, `button-adapter.js` et
-  `form/adapter/buttons.js` existent). Au chargement, `Magento_Ui/js/core/app` échoue
-  sur la référence manquante → la structure du formulaire n'est jamais initialisée.
-- Fix — remplacement du container par `<settings><buttons>` avec des classes
-  `ButtonProviderInterface` (pattern `Blog/Block/Adminhtml/Post/Edit/*`), pour les 5
-  formulaires concernés (`faq_faq_form`, `blog_category_form`, `legal_page_form`,
-  `question_question_form`, `review_review_form`) + 15 classes créées
-  (`{GenericButton,SaveButton,BackButton}.php` par module).
-  `GenericButton::get{...}Id()` via `getRequest()->getParam('<id>')` ; `SaveButton` :
-  `actionName=save`, `params=[false]`, `sort_order=90` ; `BackButton` : url `*/*/`,
+- The page `admin/faq/faq/new|edit` returned valid HTML but the form stayed
+  empty in the browser. Root cause: `<container name="button_set"
+  component="Magento_Ui/js/form/components/button-set">` — this JS component **does not
+  exist in Magento 2.4.8** (only `button.js`, `button-adapter.js` and
+  `form/adapter/buttons.js` exist). On load, `Magento_Ui/js/core/app` fails
+  on the missing reference → the form structure is never initialized.
+- Fix — replacement of the container by `<settings><buttons>` with
+  `ButtonProviderInterface` classes (pattern `Blog/Block/Adminhtml/Post/Edit/*`), for the 5
+  concerned forms (`faq_faq_form`, `blog_category_form`, `legal_page_form`,
+  `question_question_form`, `review_review_form`) + 15 classes created
+  (`{GenericButton,SaveButton,BackButton}.php` per module).
+  `GenericButton::get{...}Id()` via `getRequest()->getParam('<id>')`; `SaveButton`:
+  `actionName=save`, `params=[false]`, `sort_order=90`; `BackButton`: url `*/*/`,
   `sort_order=10`.
 
-### Technique (Sprint 6 — intégration)
+### Technical (Sprint 6 — integration)
 
-- `ProductLabels/view/frontend/layout/catalog_product_view.xml` : `referenceContainer`
-  → `referenceBlock` pour `product.info.media` + `product.info.details` (ce sont des
-  `block`, pas des `container` — les labels n'étaient jamais rendus).
-- `ProductQuestions/Block/Frontend/QuestionList.php` : `use Magento\Framework\Api\SortOrder;`
-  ajouté (fatal `Class SortOrder not found`).
-- `ProductQuestions/Model/Status.php` + `ProductReviews/Model/Status.php` : cast
-  `(string)` sur les branches `match` (`getLabel()` retournait une `Phrase`, pas un `string`
-  → `TypeError` sous PHP 8.2 + `strict_types=1`).
-- `ProductQuestions/etc/di.xml` : preference `AnswerSearchResultsInterface` →
-  `AnswerSearchResults` ajoutée (fatal `Cannot instantiate interface`).
-- **Intégration validée** pour les 13 modules : frontend (page produit : labels,
-  reviews, questions ; routes `/blog`, `/faq`, `/legal`, `/store-locator` ; checkout :
-  loyalty + store pickup), admin (CRUD), REST API (GET/POST) et CLI.
+- `ProductLabels/view/frontend/layout/catalog_product_view.xml`: `referenceContainer`
+  → `referenceBlock` for `product.info.media` + `product.info.details` (these are
+  `block`, not `container` — labels were never rendered).
+- `ProductQuestions/Block/Frontend/QuestionList.php`: `use Magento\Framework\Api\SortOrder;`
+  added (fatal `Class SortOrder not found`).
+- `ProductQuestions/Model/Status.php` + `ProductReviews/Model/Status.php`: cast
+  `(string)` on `match` branches (`getLabel()` returned a `Phrase`, not a `string`
+  → `TypeError` under PHP 8.2 + `strict_types=1`).
+- `ProductQuestions/etc/di.xml`: `AnswerSearchResultsInterface` preference →
+  `AnswerSearchResults` added (fatal `Cannot instantiate interface`).
+- **Integration validated** for the 13 modules: frontend (product page: labels,
+  reviews, questions; routes `/blog`, `/faq`, `/legal`, `/store-locator`; checkout:
+  loyalty + store pickup), admin (CRUD), REST API (GET/POST) and CLI.
 
-### Reste à traiter (Phase 2 — voir `BACKLOG.md` B-06)
+### Remaining to address (Phase 2 — see `BACKLOG.md` B-06)
 
-- 6 listings admin XSD-invalides (bien-formés) : `<massAction>` (mauvaise casse),
-  `<deps>` texte, `<primaryDataSource>`, `<param>` dans massaction, `<options>` inline
-- `AlpineCommerce_StorePickup/etc/adminhtml/routes.xml` absent (URLs admin
-  `alphacommerce_pickup/*` non résolues)
-- `AlpineCommerce_StorePickup/etc/adminhtml/menu.xml` : item de menu sans attribut `action`
+- 6 admin listings XSD-invalid (well-formed): `<massAction>` (wrong case),
+  `<deps>` text, `<primaryDataSource>`, `<param>` in massaction, `<options>` inline
+- `AlpineCommerce_StorePickup/etc/adminhtml/routes.xml` missing (admin URLs
+  `alphacommerce_pickup/*` unresolved)
+- `AlpineCommerce_StorePickup/etc/adminhtml/menu.xml`: menu item without `action` attribute
 
 ---
 
 ## [1.5.1] - 2026-08-06
 
-### Corrigé (Phase 1 — 14 bugs critiques, Sprint 5 validation)
+### Fixed (Phase 1 — 14 critical bugs, Sprint 5 validation)
 
-Revue ciblée des 13 modules : 12 bugs critiques contre-vérifiés puis 2 fatals PHP
-supplémentaires découverts par le compilateur. La compilation `setup:di:compile` était
-**bloquée** (fatal PHP masqué par la barre de progression). **14 bugs corrigés.**
+Targeted review of the 13 modules: 12 critical bugs re-verified then 2 additional PHP
+fatals discovered by the compiler. The `setup:di:compile` compilation was
+**blocked** (PHP fatal hidden by the progress bar). **14 bugs fixed.**
 
-| # | Module | Fichier(s) | Cause racine | Fix |
-|---|--------|-----------|--------------|-----|
-| C1 | ProductReviews | `Helper/Image.php` | ctor sans `Context` + `parent::__construct` | `Context` injecté, `parent::__construct($context)` |
-| C2 | ProductReviews | `Block/Frontend/ReviewList.php` | `use Magento\Framework\Api\SortOrder;` manquant (fatal) | import ajouté |
-| C3 | ProductReviews | `Ui/Source/Status.php` | classe dans le mauvais namespace (fatal compile) | réécrit en `Status implements OptionSourceInterface` |
-| C4 | ProductQuestions | `Ui/Source/Status.php` | idem C3 | réécrit en `Status implements OptionSourceInterface` |
-| C5 | ProductQuestions | `question_question_form.xml` | `</item>` jamais fermé (XML malformé) | fermeture corrigée |
-| C6 | ProductQuestions | `etc/frontend/routes.xml` | route frontend absente (404) | fichier créé |
-| C7 | ProductLabels | `Block/Adminhtml/Label/Grid.php` | `use Magento\Backend\Block\Widget\Grid` (collision fatale), ctor invalide, renderer + constante inexistants | ctor corrigé, renderer retiré, massaction natif |
-| C8 | StoreLocator | `alphacommerce_store_locator_store_form.xml` | XML malformé (`optionsclass`, `<formElements>` orphelins, `</label>`, `country_id` absent) | réécrit, XSD-validé |
-| C9 | StorePickup | `alphacommerce_pickup_store_info_form.xml` | idem C8 | réécrit, XSD-validé |
-| C10 | StoreLocator | `store-locator.phtml:7` | `getSize()` sur un retour `array` (fatal) | `count($stores)` |
-| C11 | StoreLocator + StorePickup | `Controller/Adminhtml/Store/{Save,Delete}.php` (4) | `parent::__construct($context)` alors que `AbstractAction` exige `PageFactory` (fatal) | `PageFactory` injecté + `parent::__construct($context, $pageFactory)` |
-| C12 | Blog | `blog_post_form.xml` | classes de boutons `Block\Adminhtml\Post\Edit\*` inexistantes (fatal) | `GenericButton`, `SaveButton`, `BackButton` créés |
-| D1 | Gdpr | `Controller/Adminhtml/ConsentLog/Export.php` | PHP 8.2 fatal « Cannot redeclare non-readonly property ... as readonly » (découvert par di:compile) | propriété promue `ResultFactory` retirée |
-| D2 | StoreLocator | `Model/StoreRepository.php` | `StoreInterfaceFactory` sans `use` → `Model\StoreInterfaceFactory` inexistant (découvert par di:compile) | `use Api\Data\StoreInterfaceFactory` ajouté |
+| # | Module | File(s) | Root cause | Fix |
+|---|--------|---------|------------|-----|
+| C1 | ProductReviews | `Helper/Image.php` | ctor without `Context` + `parent::__construct` | `Context` injected, `parent::__construct($context)` |
+| C2 | ProductReviews | `Block/Frontend/ReviewList.php` | `use Magento\Framework\Api\SortOrder;` missing (fatal) | import added |
+| C3 | ProductReviews | `Ui/Source/Status.php` | class in wrong namespace (compile fatal) | rewritten as `Status implements OptionSourceInterface` |
+| C4 | ProductQuestions | `Ui/Source/Status.php` | same as C3 | rewritten as `Status implements OptionSourceInterface` |
+| C5 | ProductQuestions | `question_question_form.xml` | `</item>` never closed (malformed XML) | closing tag fixed |
+| C6 | ProductQuestions | `etc/frontend/routes.xml` | frontend route missing (404) | file created |
+| C7 | ProductLabels | `Block/Adminhtml/Label/Grid.php` | `use Magento\Backend\Block\Widget\Grid` (fatal collision), invalid ctor, renderer + non-existent constant | ctor fixed, renderer removed, native massaction |
+| C8 | StoreLocator | `alphacommerce_store_locator_store_form.xml` | malformed XML (`optionsclass`, orphaned `<formElements>`, `</label>`, `country_id` missing) | rewritten, XSD-validated |
+| C9 | StorePickup | `alphacommerce_pickup_store_info_form.xml` | same as C8 | rewritten, XSD-validated |
+| C10 | StoreLocator | `store-locator.phtml:7` | `getSize()` on an `array` return (fatal) | `count($stores)` |
+| C11 | StoreLocator + StorePickup | `Controller/Adminhtml/Store/{Save,Delete}.php` (4) | `parent::__construct($context)` while `AbstractAction` requires `PageFactory` (fatal) | `PageFactory` injected + `parent::__construct($context, $pageFactory)` |
+| C12 | Blog | `blog_post_form.xml` | button classes `Block\Adminhtml\Post\Edit\*` non-existent (fatal) | `GenericButton`, `SaveButton`, `BackButton` created |
+| D1 | Gdpr | `Controller/Adminhtml/ConsentLog/Export.php` | PHP 8.2 fatal "Cannot redeclare non-readonly property ... as readonly" (discovered by di:compile) | promoted property `ResultFactory` removed |
+| D2 | StoreLocator | `Model/StoreRepository.php` | `StoreInterfaceFactory` without `use` → `Model\StoreInterfaceFactory` non-existent (discovered by di:compile) | `use Api\Data\StoreInterfaceFactory` added |
 
-### Technique (Sprint 5 — validation)
+### Technical (Sprint 5 — validation)
 
-- `setup:di:compile` : compilation complète validée (**EXIT 0**, 4582 classes générées)
-  après correction des fatals PHP (le blocage historique « Repositories code generation »
-  était le fatal Gdpr silencieux). Permissions `var/generated` rétablies pour le runtime php-fpm.
-- Lint PHP 100 % propre (488+ fichiers), XML 100 % bien-formé, 12/18 `ui_component` XSD-valides.
-- **13 modules validés fonctionnellement** : installation, schéma DB (16 tables), admin,
-  frontend (HTTP 200), REST API, CLI — tous `PASS`.
-- **18 bugs corrigés au total** sur les sprints 4-5, dont 4 API-critiques en Sprint 5 :
-  1. `getCurrentCustomer()` inexistant en 2.4.8 (`QuestionRestService`, `ReviewRestService`)
-     → remplacé par `UserContextInterface::getUserId()` + `getById()`.
-  2. Doc blocks `@return`/`@param` manquants sur 6 interfaces Data (`DataObjectProcessor`
-     exige les doc blocks pour la sérialisation JSON) → ajoutés (10 fichiers avec SearchResults).
-  3. `Status` non importé dans le namespace `Model\Rest` → `use` ajouté.
-  4. Mismatch de type ID client (`string` vs `?int`) dans les setters → cast `(int)` + `?->`.
+- `setup:di:compile`: full compilation validated (**EXIT 0**, 4582 classes generated)
+  after correcting PHP fatals (the historical blockage "Repositories code generation"
+  was the silent Gdpr fatal). `var/generated` permissions restored for php-fpm runtime.
+- PHP lint 100% clean (488+ files), XML 100% well-formed, 12/18 `ui_component` XSD-valid.
+- **13 modules functionally validated**: installation, DB schema (16 tables), admin,
+  frontend (HTTP 200), REST API, CLI — all `PASS`.
+- **18 bugs fixed in total** on sprints 4-5, including 4 API-critical bugs in Sprint 5:
+  1. `getCurrentCustomer()` non-existent in 2.4.8 (`QuestionRestService`, `ReviewRestService`)
+     → replaced by `UserContextInterface::getUserId()` + `getById()`.
+  2. Doc blocks `@return`/`@param` missing on 6 Data interfaces (`DataObjectProcessor`
+     requires doc blocks for JSON serialization) → added (10 files with SearchResults).
+  3. `Status` not imported in `Model\Rest` namespace → `use` added.
+  4. Customer ID type mismatch (`string` vs `?int`) in setters → cast `(int)` + `?->`.
 
-### Issues résiduelles (non bloquantes — voir `BACKLOG.md`)
+### Residual issues (non-blocking — see `BACKLOG.md`)
 
-- Page produit 500 : bug core Elasticsearch 8.x `_id` fielddata (pas un bug AlpineCommerce).
-- APIs `self` 401 : plugin `recaptcha-webapi-rest` bloque les routes customer-self y compris
-  les endpoints natifs Magento (issue d'environnement).
-- GDPR `delete` n'anonymise pas les données client (Art. 17 incomplet) — B-06 P4.
-- ProductLabels : observer N+1 — B-06 P5.
+- Product page 500: Elasticsearch 8.x core bug `_id` fielddata (not an AlpineCommerce bug).
+- `self` APIs 401: `recaptcha-webapi-rest` plugin blocks customer-self routes including
+  native Magento endpoints (environment issue).
+- GDPR `delete` does not anonymize customer data (Art. 17 incomplete) — B-06 P4.
+- ProductLabels: N+1 observer — B-06 P5.
 
 ---
 
 ## [1.5.0] - 2026-08-06
 
-### Ajouté
+### Added
 
-- `AlpineCommerce_ProductLabels` : étiquettes produits administrables
-  - Tables : `alphacommerce_product_label`, `alphacommerce_product_label_product`
-  - Grille admin (listing, massactions Delete / Change status, bouton Add New Label)
-  - Formulaire d'édition : nom, code, couleurs, priorité, position, dates de validité, statut, sélection produits
-  - REST API : `/V1/alphacommerce/product-labels` (GET/POST), `/:entityId` (GET/DELETE),
+- `AlpineCommerce_ProductLabels`: manageable product labels
+  - Tables: `alphacommerce_product_label`, `alphacommerce_product_label_product`
+  - Admin grid (listing, Delete / Change status massactions, "Add New Label" button)
+  - Edit form: name, code, colors, priority, position, validity dates, status, product selection
+  - REST API: `/V1/alphacommerce/product-labels` (GET/POST), `/:entityId` (GET/DELETE),
     `/:labelId/products` (GET/POST), `/:productId/apply` (POST)
-  - Frontend : rendu des étiquettes sur la page produit et dans les listings catégorie (plugin `CatalogBlock`)
-  - i18n français
+  - Frontend: label rendering on product page and category listings (plugin `CatalogBlock`)
+  - French i18n
 
-### Corrigé
+### Fixed
 
-- Grille admin réécrite au format Magento 2.4.8 (retrait `primaryDataSource`, bloc
-  `<templates><filters><select>` obsolète ; ajout du `<dataProvider>` enfant obligatoire)
-- VirtualType de data source retiré de `di.xml` (le `<dataProvider class="...">` XML suffit)
-- Template des blocs admin corrigé avec extension `.phtml` (`::label/edit.phtml`)
-- Formulaire d'édition : `use_container => true` + URL d'action via `getUrl()`
-- Contrôleur `Edit` : injection explicite de `Magento\Framework\Registry`
-- Routes REST réécrites en syntaxe `:param` ; docblocks PHPDoc ajoutés
-- `ProductLabelSearchResultsInterface::getItems()` sans `: array` (compatibilité PHP)
-- Suppression du code de debug (`var_dump`)
+- Admin grid rewritten in Magento 2.4.8 format (removal of `primaryDataSource`, obsolete
+  `<templates><filters><select>` block; addition of mandatory child `<dataProvider>`)
+- VirtualType data source removed from `di.xml` (the `<dataProvider class="...">` XML is sufficient)
+- Admin block template corrected with `.phtml` extension (`::label/edit.phtml`)
+- Edit form: `use_container => true` + action URL via `getUrl()`
+- `Edit` controller: explicit injection of `Magento\Framework\Registry`
+- REST routes rewritten in `:param` syntax; PHPDoc docblocks added
+- `ProductLabelSearchResultsInterface::getItems()` without `: array` (PHP compatibility)
+- Removal of debug code (`var_dump`)
 
 ---
 
 ## [1.4.0] - 2024-01-15
 
-### Ajouté
+### Added
 
-- `AlpineCommerce_LoyaltyProgram` : programme de fidélité avec gain et dépense de points
-  - Tables : `alpinecommerce_loyalty_balance`, `alpinecommerce_loyalty_order_points`
-  - REST API : `/V1/carts/mine/loyalty-points`
-  - Observers : attribution de points sur facture, déduction sur commande
-  - Total collector : réduction de panier
-  - Plugin minicart : message incitatif
+- `AlpineCommerce_LoyaltyProgram`: loyalty program with point earning and spending
+  - Tables: `alpinecommerce_loyalty_balance`, `alpinecommerce_loyalty_order_points`
+  - REST API: `/V1/carts/mine/loyalty-points`
+  - Observers: point allocation on invoice, deduction on order
+  - Total collector: cart discount
+  - Minicart plugin: incentive message
 
-### Corrigé
+### Fixed
 
-- Correction des `referenceId` dans `db_schema.xml` (prefix `ALPINECOMMERCE_*`)
-- Suppression des fichiers legacy `Setup/InstallSchema.php` et `Setup/InstallData.php`
-- Suppression du repository en mémoire `InMemory/LoyaltyBalanceRepository.php`
+- Correction of `referenceId` in `db_schema.xml` (prefix `ALPINECOMMERCE_*`)
+- Removal of legacy files `Setup/InstallSchema.php` and `Setup/InstallData.php`
+- Removal of in-memory repository `InMemory/LoyaltyBalanceRepository.php`
 
 ---
 
 ## [1.3.0] - 2024-01-10
 
-### Ajouté
+### Added
 
-- `AlpineCommerce_Training` : module de formation et démonstration
-  - Data Patch pour création de store views (⚠️ à supprimer — voir `BACKLOG.md` B-08)
-  - Observers sur produit, commande, checkout, connexion client
-  - Configuration multi-stores
-- `AlpineCommerce_StoreLocator` : localisateur de magasins physiques
-  - Interface admin pour gérer les magasins
-  - Frontend avec carte et coordonnées
-  - CSS admin et frontend
-- `AlpineCommerce_StorePickup` : option de retrait en magasin
-  - Carrier Magento personnalisé
-  - Sélection de magasin dans le checkout
-  - Configuration admin
-  - i18n français
+- `AlpineCommerce_Training`: training and demo module
+  - Data Patch for store view creation (⚠️ to remove — see `BACKLOG.md` B-08)
+  - Observers on product, order, checkout, customer login
+  - Multi-store configuration
+- `AlpineCommerce_StoreLocator`: physical store locator
+  - Admin interface to manage stores
+  - Frontend with map and coordinates
+  - Admin and frontend CSS
+- `AlpineCommerce_StorePickup`: store pickup option
+  - Custom Magento carrier
+  - Store selection in checkout
+  - Admin configuration
+  - French i18n
 
-### Corrigé
+### Fixed
 
-- Migration des chemins de configuration (`cartware_*` → `alphacommerce_*`)
+- Migration of configuration paths (`cartware_*` → `alphacommerce_*`)
 
 ---
 
 ## [1.2.0] - 2024-01-05
 
-### Ajouté
+### Added
 
-- `AlpineCommerce_LegalPages` : pages légales dynamiques
-  - Types de pages : CGV, CGU, confidentialité, mentions légales
-  - Interface admin CRUD
-  - REST API publique
-  - Frontend avec listing et vue détaillée
-- `AlpineCommerce_Gdpr` : conformité RGPD
-  - Logging des consentements
-  - Export des données personnelles (Art. 15)
-  - Anonymisation des données (Art. 17)
-  - Commandes CLI
+- `AlpineCommerce_LegalPages`: dynamic legal pages
+  - Page types: T&C, ToS, privacy, legal notices
+  - Admin CRUD interface
+  - Public REST API
+  - Frontend with listing and detail view
+- `AlpineCommerce_Gdpr`: GDPR compliance
+  - Consent logging
+  - Personal data export (Art. 15)
+  - Data anonymization (Art. 17)
+  - CLI commands
   - REST API
-- `AlpineCommerce_Faq` : FAQ
-  - Interface admin CRUD
-  - REST API publique
-  - Frontend avec listing et vue détaillée
+- `AlpineCommerce_Faq`: FAQ
+  - Admin CRUD interface
+  - Public REST API
+  - Frontend with listing and detail view
 
 ---
 
 ## [1.1.0] - 2024-01-01
 
-### Ajouté
+### Added
 
-- `AlpineCommerce_Blog` : blog multi-boutiques
-  - Catégories et articles
-  - Interface admin CRUD
-  - REST API publique
-  - Frontend avec listing et vue détaillée
+- `AlpineCommerce_Blog`: multi-store blog
+  - Categories and posts
+  - Admin CRUD interface
+  - Public REST API
+  - Frontend with listing and detail view
 
-### Corrigé
+### Fixed
 
-- Standardisation des noms de tables et colonnes
-- Correction des chemins de configuration
+- Standardization of table and column names
+- Correction of configuration paths
 
 ---
 
 ## [1.0.0] - 2023-12-20
 
-### Ajouté
+### Added
 
-- `AlpineCommerce_EuVat` : validation TVA européenne
-  - Intégration service VIES via SOAP
-  - Commande CLI `alphacommerce:euvat:validate`
+- `AlpineCommerce_EuVat`: European VAT validation
+  - VIES service integration via SOAP
+  - CLI command `alphacommerce:euvat:validate`
   - REST API
-  - Configuration admin
-  - i18n français
-- `AlpineCommerce_Hreflang` : balises hreflang SEO
-  - Génération automatique des balises hreflang
-  - Support multi-boutiques
-  - Configuration admin
-  - i18n français
+  - Admin configuration
+  - French i18n
+- `AlpineCommerce_Hreflang`: hreflang SEO tags
+  - Automatic hreflang tag generation
+  - Multi-store support
+  - Admin configuration
+  - French i18n
 
 ---
 
 ## [0.1.0] - 2023-12-01
 
-### Ajouté
+### Added
 
-- Structure initiale du projet
-- Documentation officielle (`docs/`)
-- Workflow de sprint
-- Guidelines de développement
-- Décisions d'architecture (ADR)
-
----
-
-## Légende
-
-- **Ajouté** : Nouvelles fonctionnalités
-- **Corrigé** : Corrections de bugs
-- **Modifié** : Changements dans des fonctionnalités existantes
-- **Supprimé** : Fonctionnalités supprimées
-- **Sécurité** : Corrections de vulnérabilités
+- Initial project structure
+- Official documentation (`docs/`)
+- Sprint workflow
+- Development guidelines
+- Architecture decisions (ADR)
 
 ---
 
-## Prochaines versions
+## Legend
 
-### v1.1 (prévu)
-
-- Compléter la finalisation des 7 modules en cours (interface admin pour
-  LoyaltyProgram, EuVat, Hreflang, Training — voir `ROADMAP.md`)
-- Anonymisation admin GDPR (Art. 17), configuration système GDPR
-- Gestion des transactions LoyaltyProgram, disponibilités StorePickup,
-  recherche par proximité StoreLocator
-- Tests automatisés (voir `BACKLOG.md` B-07)
-
-### v2.0 (prévu)
-
-- Introduction de `AlpineCommerce_Contact`
-- Passage au frontend React + Vite + Tailwind CSS
+- **Added**: New features
+- **Fixed**: Bug fixes
+- **Changed**: Changes to existing features
+- **Removed**: Removed features
+- **Security**: Vulnerability fixes
 
 ---
 
-*Dernière mise à jour : 2026-08-06.*
+## Upcoming versions
+
+### v1.1 (planned)
+
+- Complete the finalization of the 7 modules in progress (admin interface for
+  LoyaltyProgram, EuVat, Hreflang, Training — see `ROADMAP.md`)
+- GDPR admin anonymization (Art. 17), GDPR system configuration
+- LoyaltyProgram transaction management, StorePickup availability,
+  StoreLocator proximity search
+- Automated tests (see `BACKLOG.md` B-07)
+
+### v2.0 (planned)
+
+- Introduction of `AlpineCommerce_Contact`
+- Migration to React + Vite + Tailwind CSS frontend
+
+---
+
+*Last updated: 2026-08-06.*

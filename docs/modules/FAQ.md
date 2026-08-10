@@ -1,21 +1,21 @@
-# Module AlpineCommerce_Faq — FAQ
+# AlpineCommerce_Faq Module — FAQ
 
-> **Statut** : ✅ Stable (v1.2.0) — **module canonique** des patterns UI Component
+> **Status**: ✅ Stable (v1.2.0) — **canonical module** for UI Component patterns
 
-## 1. Responsabilité
+## 1. Responsibility
 
-Page « Foire aux questions » : gestion admin des questions/réponses (CRUD), exposition
-via REST API publique et affichage frontend (listing + vue détaillée). Sert de
-**module de référence** pour les patterns UI Component du projet.
+"Frequently Asked Questions" page: admin management of questions/answers (CRUD),
+exposure via public REST API, and frontend display (listing + detail view). Serves as a
+**reference module** for the project's UI Component patterns.
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-| **CRUD admin** | Listing + formulaire de question/réponse |
-| **REST API publique** | Exposition des FAQ |
-| **Frontend** | Route `/faq` — listing + vue détaillée |
-| **Pattern de référence** | Listing, formulaire, DataProvider, boutons (modèle des autres modules) |
+| **Admin CRUD** | Listing + question/answer form |
+| **Public REST API** | FAQ exposure |
+| **Frontend** | `/faq` route — listing + detail view |
+| **Reference pattern** | Listing, form, DataProvider, buttons (model for other modules) |
 
 ## 3. Architecture
 
@@ -29,57 +29,57 @@ AlpineCommerce/Faq/
 └── view/adminhtml/ui_component/ faq_faq_listing.xml, faq_faq_form.xml
 ```
 
-## 4. Base de données
+## 4. Database
 
-Table principale des questions/réponses (schéma standardisé).
+Main questions/answers table (standardized schema).
 
-## 5. API REST
+## 5. REST API
 
-API publique d'exposition des entrées FAQ.
+Public API for exposing FAQ entries.
 
 ## 6. Admin
 
-- Listing `faq_faq_listing` — ⚠️ **6 listings admin XSD-invalides (bien-formés)** :
-  `<massAction>` (mauvaise casse), `<deps>` texte, `<primaryDataSource>`, `<param>`
-  dans massaction, `<options>` inline — dont `faq_faq_listing` (voir `BACKLOG.md` B-01,
-  **bloquant v1.0**)
-- Formulaire `faq_faq_form` : corrigé (dataProvider `FaqFormDataProvider`, `faq_id` +
-  remplacement `button-set` → `<settings><buttons>`)
+- `faq_faq_listing` listing — ⚠️ **6 admin listings XSD-invalid (well-formed)**:
+  `<massAction>` (wrong case), `<deps>` text, `<primaryDataSource>`, `<param>`
+  in massaction, `<options>` inline — including `faq_faq_listing` (see `BACKLOG.md` B-01,
+  **blocking v1.0**)
+- `faq_faq_form` form: fixed (dataProvider `FaqFormDataProvider`, `faq_id` +
+  replacement `button-set` → `<settings><buttons>`)
 
 ## 7. Frontend
 
-- Route `/faq` : listing + vue détaillée (HTTP 200)
+- `/faq` route: listing + detail view (HTTP 200)
 
 ## 8. CLI
 
-Aucune commande dédiée.
+No dedicated command.
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| Module canonique des patterns UI Component | Les patterns listing/form ont été clonés depuis Faq vers les autres modules |
-| Fix `button-set` appliqué en premier sur Faq | Page de test de la cause racine formulaire vide (2.4.8) |
+| Canonical module for UI Component patterns | The listing/form patterns were cloned from Faq to other modules |
+| `button-set` fix applied first on Faq | Test page for the root cause of empty form (2.4.8) |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| B-01 | 6 listings XSD-invalides (dont `faq_faq_listing`) — `<massAction>`, `<deps>` texte, `<primaryDataSource>`, `<param>` massaction, `<options>` inline | 📋 **Bloquant v1.0** — BACKLOG B-01 |
-| — | `faq_faq_form` : exception « class required » + `button-set` (formulaire vide) | ✅ Corrigé (Sprint 6 addendum) |
+| B-01 | 6 listings XSD-invalid (including `faq_faq_listing`) — `<massAction>`, `<deps>` text, `<primaryDataSource>`, `<param>` massaction, `<options>` inline | 📋 **Blocking v1.0** — BACKLOG B-01 |
+| — | `faq_faq_form`: "class required" exception + `button-set` (empty form) | ✅ Fixed (Sprint 6 addendum) |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
-- UI Component `<listing>` (structure XSD, dataProvider)
-- UI Component `<form>` (dataProvider, boutons `ButtonProviderInterface`)
-- Routes admin/frontend + ACL
+- UI Component `<listing>` (XSD structure, dataProvider)
+- UI Component `<form>` (dataProvider, `ButtonProviderInterface` buttons)
+- Admin/frontend routes + ACL
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Statut** : ✅ Stable — formulaire validé à l'écran (Sprint 6)
-- **Blocker restant** : listings XSD-invalides (B-01) à corriger en Phase 2
+- **Status**: ✅ Stable — form validated on screen (Sprint 6)
+- **Remaining blocker**: XSD-invalid listings (B-01) to fix in Phase 2
 
 ---
 
-*Sources : `docs/08_CHANGELOG.md` (v1.2.0), `SPRINT_VALIDATION_REPORT.md`,
-`SPRINT_INTEGRATION_REPORT.md` (fusionnés dans `CHANGELOG.md`).*
+*Sources: `docs/08_CHANGELOG.md` (v1.2.0), `SPRINT_VALIDATION_REPORT.md`,
+`SPRINT_INTEGRATION_REPORT.md` (merged into `CHANGELOG.md`).*

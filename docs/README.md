@@ -1,77 +1,77 @@
-# Documentation AlpineCommerce
+# AlpineCommerce Documentation
 
-Bienvenue dans la documentation officielle d'AlpineCommerce — plateforme e-commerce
-professionnelle construite sur **Magento 2.4.8** (Adobe Commerce Open Source) et référence
-open source pour apprendre Magento 2.
+Welcome to the official AlpineCommerce documentation — a professional e-commerce
+platform built on **Magento 2.4.8** (Adobe Commerce Open Source) and open source
+reference for learning Magento 2.
 
-## Organisation de la documentation
+## Documentation Organization
 
 ```
 docs/
-├── README.md                 ← ce fichier (hub de la documentation)
-├── PROJECT_CHARTER.md        ← vision, mission, cahier des charges v1.0, analyse fonctionnelle
-├── ARCHITECTURE.md           ← architecture Magento + AlpineCommerce + registre ADR
-├── ENGINEERING_GUIDE.md      ← l'Engineering Bible : standards, patterns, workflow, glossaire
-├── ROADMAP.md                ← plan de développement v1.0 et au-delà
-├── CHANGELOG.md              ← historique des versions et des correctifs
-├── BACKLOG.md                ← dette technique tracée (Phase C)
-├── modules/                  ← le chapitre de chaque module (Phase D)
+├── README.md                 ← this file (documentation hub)
+├── PROJECT_CHARTER.md        ← vision, mission, specifications v1.0, functional analysis
+├── ARCHITECTURE.md           ← Magento + AlpineCommerce architecture + ADR registry
+├── ENGINEERING_GUIDE.md      ← The Engineering Bible: standards, patterns, workflow, glossary
+├── ROADMAP.md                ← v1.0 development plan and beyond
+├── CHANGELOG.md              ← version history and fixes
+├── BACKLOG.md                ← tracked technical debt (Phase C)
+├── modules/                  ← each module's chapter (Phase D)
 │   ├── BLOG.md
 │   ├── FAQ.md
 │   ├── ...
-└── archive/sprints/          ← rapports de sprint historiques (hors doc officielle)
+└── archive/sprints/          ← historical sprint reports (outside official docs)
 ```
 
-## Documents principaux
+## Main Documents
 
-| Document | Rôle | Contenu essentiel |
+| Document | Role | Essential content |
 |---|---|---|
-| `PROJECT_CHARTER.md` | 🎯 La charte | Vision double (plateforme + référence d'apprentissage), philosophie, cahier des charges et analyse fonctionnelle v1.0, décisions d'architecture majeures |
-| `ARCHITECTURE.md` | 🏗️ L'architecture | Vue d'ensemble, Magento Core, 13 modules, tables DB, REST API, multi-store, sécurité, performance, déploiement, registre ADR (ADR-001 → 014) |
-| `ENGINEERING_GUIDE.md` | 📐 L'Engineering Bible | Squelette canonique d'un module, principes (SOLID/DRY/KISS/YAGNI), PSR-12, patterns Adobe Commerce, ACL/UI Components, workflow des sprints, anti-patterns, checklist, glossaire |
-| `ROADMAP.md` | 🗺️ La roadmap | 6 modules stables, 7 en finalisation, modules prévus/futurs, extensions Magento, priorisation, historique des versions |
-| `CHANGELOG.md` | 📜 L'historique | Versions 0.1.0 → 1.5.2, correctifs Phase 1 (14 bugs critiques), intégration Sprint 6, résolution des formulaires admin |
-| `BACKLOG.md` | 🛠️ La dette technique | B-01 → B-09 : listings XSD, Service Contracts manquants, absence de tests, Training incohérent, Phase 2 résiduelle |
+| `PROJECT_CHARTER.md` | 🎯 The charter | Dual vision (platform + learning reference), philosophy, specifications and functional analysis v1.0, major architecture decisions |
+| `ARCHITECTURE.md` | 🏗️ Architecture | Overview, Magento Core, 13 modules, DB tables, REST API, multi-store, security, performance, deployment, ADR registry (ADR-001 → 014) |
+| `ENGINEERING_GUIDE.md` | 📐 The Engineering Bible | Canonical module skeleton, principles (SOLID/DRY/KISS/YAGNI), PSR-12, Adobe Commerce patterns, ACL/UI Components, sprint workflow, anti-patterns, checklist, glossary |
+| `ROADMAP.md` | 🗺️ Roadmap | 6 stable modules, 7 in finalization, planned/future modules, Magento extensions, prioritization, version history |
+| `CHANGELOG.md` | 📜 History | Versions 0.1.0 → 1.5.2, Phase 1 fixes (14 critical bugs), Sprint 6 integration, admin form resolution |
+| `BACKLOG.md` | 🛠️ Technical debt | B-01 → B-09: XSD listings, missing Service Contracts, absence of tests, inconsistent Training, residual Phase 2 |
 
-## Documents modules
+## Module Documents
 
-Chaque module AlpineCommerce a son document dans `docs/modules/` — il est
-**auto-suffisant** : tout ce qu'il faut savoir sur le module est dedans (responsabilité,
-périmètre, architecture, API, décisions, bugs connus).
+Each AlpineCommerce module has its own document in `docs/modules/` — it is
+**self-contained**: everything you need to know about the module is inside
+(responsibility, scope, architecture, API, decisions, known bugs).
 
-| Module | Document | Statut |
+| Module | Document | Status |
 |---|---|---|
 | Blog | `modules/BLOG.md` | ✅ Stable |
-| Faq (module canonique) | `modules/FAQ.md` | ✅ Stable |
+| Faq (canonical module) | `modules/FAQ.md` | ✅ Stable |
 | LegalPages | `modules/LEGAL_PAGES.md` | ✅ Stable |
 | ProductReviews | `modules/PRODUCT_REVIEWS.md` | ✅ Stable |
 | ProductQuestions | `modules/PRODUCT_QUESTIONS.md` | ✅ Stable |
 | ProductLabels | `modules/PRODUCT_LABELS.md` | ✅ Stable |
-| Gdpr | `modules/GDPR.md` | 🔄 Finalisation (Sprint 1) |
-| StorePickup | `modules/STORE_PICKUP.md` | 🔄 Finalisation (Sprint 2) |
-| StoreLocator | `modules/STORE_LOCATOR.md` | 🔄 Finalisation (Sprint 3) |
-| LoyaltyProgram | `modules/LOYALTY_PROGRAM.md` | ⏳ À finaliser |
-| EuVat | `modules/EU_VAT.md` | ⏳ À finaliser |
-| Hreflang | `modules/HREFLANG.md` | ⏳ À finaliser |
-| Training | `modules/TRAINING.md` | ⏳ À finaliser |
+| Gdpr | `modules/GDPR.md` | 🔄 Finalization (Sprint 1) |
+| StorePickup | `modules/STORE_PICKUP.md` | 🔄 Finalization (Sprint 2) |
+| StoreLocator | `modules/STORE_LOCATOR.md` | 🔄 Finalization (Sprint 3) |
+| LoyaltyProgram | `modules/LOYALTY_PROGRAM.md` | ⏳ To be finalized |
+| EuVat | `modules/EU_VAT.md` | ⏳ To be finalized |
+| Hreflang | `modules/HREFLANG.md` | ⏳ To be finalized |
+| Training | `modules/TRAINING.md` | ⏳ To be finalized |
 
-## Points d'entrée par profil
+## Entry points by profile
 
-- **Développeur débutant** : commencez par `PROJECT_CHARTER.md` (le « pourquoi »),
-  puis `ARCHITECTURE.md` (le « comment »), puis le document du module canonique
+- **Beginner developer**: start with `PROJECT_CHARTER.md` (the "why"),
+  then `ARCHITECTURE.md` (the "how"), then the canonical module document
   `modules/FAQ.md`.
-- **Développeur intermédiaire** : `ENGINEERING_GUIDE.md` est votre référence ;
-  comparez chaque module au squelette canonique.
-- **Contributeur / maintainer** : `ENGINEERING_GUIDE.md` (checklist de validation),
-  `BACKLOG.md` (dette à traiter), `CHANGELOG.md` (historique des décisions de correctif).
+- **Intermediate developer**: `ENGINEERING_GUIDE.md` is your reference;
+  compare each module to the canonical skeleton.
+- **Contributor / maintainer**: `ENGINEERING_GUIDE.md` (validation checklist),
+  `BACKLOG.md` (debt to address), `CHANGELOG.md` (history of fix decisions).
 
-## Lien avec le code
+## Link to code
 
-- Modules : `src/app/code/AlpineCommerce/*`
-- Thème custom : `src/app/design/`
-- La doc est la **Source of Truth** : toute décision architecturale y est tracée,
-  tout le code doit la respecter, toute modification est validée.
+- Modules: `src/app/code/AlpineCommerce/*`
+- Custom theme: `src/app/design/`
+- The documentation is the **Source of Truth**: every architecture decision is tracked there,
+  all code must respect it, any modification is validated.
 
 ---
 
-*Dernière mise à jour : 2026-08-07 (restructuration en documentation produit).*
+*Last updated: 2026-08-07 (restructuring into product documentation).*

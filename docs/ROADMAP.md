@@ -1,122 +1,122 @@
-# Roadmap du projet AlpineCommerce
+# AlpineCommerce Project Roadmap
 
-> Plan de développement v1.0 et au-delà. Réconcilie l'ancien `05_PROJECT_ROADMAP.md`
-> avec l'état réel d'exécution des sprints (Sprints 1-3 de finalisation, Sprint 5
-> validation, Sprint 6 intégration).
+> v1.0 development plan and beyond. Reconciles the former `05_PROJECT_ROADMAP.md`
+> with the actual sprint execution status (Sprints 1-3 of finalization, Sprint 5
+> validation, Sprint 6 integration).
 >
-> ⚠️ **Réconciliation des numéros de sprint** : la documentation module parle de
-> « Sprint 1 » (GDPR), « Sprint 2 » (StorePickup), « Sprint 3 » (StoreLocator) — ce sont
-> les sprints de **finalisation** de chaque module. Les rapports racine archivés sont
-> numérotés « Sprint 5 » (validation fonctionnelle) et « Sprint 6 » (intégration) — ce
-> sont les sprints **globaux** de la phase B. Les deux numérotations coexistent ; le
-> suivi global est le Sprint (voir `CHANGELOG.md`).
+> ⚠️ **Sprint number reconciliation**: the module documentation speaks of
+> "Sprint 1" (GDPR), "Sprint 2" (StorePickup), "Sprint 3" (StoreLocator) — these are
+> the **finalization** sprints for each module. The archived root reports are
+> numbered "Sprint 5" (functional validation) and "Sprint 6" (integration) — these
+> are the global **Phase B** sprints. Both numbering systems coexist; the
+> global tracking is the Sprint (see `CHANGELOG.md`).
 
 ---
 
-## Modules stables (v1.0)
+## Stable modules (v1.0)
 
-Ces modules sont fonctionnellement complets et stables. Aucune modification n'est prévue dans les sprints de finalisation.
+These modules are functionally complete and stable. No modification is planned in the finalization sprints.
 
-| Module | Description | Statut |
+| Module | Description | Status |
 |---|---|---|
-| `AlpineCommerce_Blog` | Blog multi-boutiques avec catégories et commentaires | ✅ Stable |
-| `AlpineCommerce_Faq` | FAQ avec recherche et filtres | ✅ Stable |
-| `AlpineCommerce_LegalPages` | Pages légales dynamiques (CGV, CGU, confidentialité) | ✅ Stable |
-| `AlpineCommerce_ProductReviews` | Système d'avis produits avec photos, votes, modération | ✅ Stable |
-| `AlpineCommerce_ProductQuestions` | Système Q&R produit avec réponses, votes, modération | ✅ Stable |
-| `AlpineCommerce_ProductLabels` | Étiquettes produits avec gestion admin | ✅ Stable |
+| `AlpineCommerce_Blog` | Multi-store blog with categories and comments | ✅ Stable |
+| `AlpineCommerce_Faq` | FAQ with search and filters | ✅ Stable |
+| `AlpineCommerce_LegalPages` | Dynamic legal pages (T&C, ToS, privacy) | ✅ Stable |
+| `AlpineCommerce_ProductReviews` | Product review system with photos, votes, moderation | ✅ Stable |
+| `AlpineCommerce_ProductQuestions` | Product Q&A system with answers, votes, moderation | ✅ Stable |
+| `AlpineCommerce_ProductLabels` | Product labels with admin management | ✅ Stable |
 
 ---
 
-## Modules en cours de finalisation v1.0
+## Modules in v1.0 finalization
 
-Ces modules ont un cœur métier fonctionnel et nécessitent une interface admin pour être exploitables en production.
+These modules have a functional core and need an admin interface to be usable in production.
 
-| Ordre | Module | Description | Statut | Sprint de finalisation |
+| Order | Module | Description | Status | Finalization sprint |
 |---|---|---|---|---|
-| 1 | `AlpineCommerce_Gdpr` | Gestion des consentements RGPD et droits utilisateur | 🔄 Code terminé – validation Magento en attente | Sprint 1 |
-| 2 | `AlpineCommerce_StorePickup` | Option de retrait en magasin pour les commandes | 🔄 Code terminé – validation Magento en attente | Sprint 2 |
-| 3 | `AlpineCommerce_StoreLocator` | Localisateur de magasins physiques | 🔄 Code terminé – validation Magento en attente | Sprint 3 |
-| 4 | `AlpineCommerce_LoyaltyProgram` | Programme de fidélité (gain/dépense de points) | ⏳ À finaliser | Sprint 4 |
-| 5 | `AlpineCommerce_EuVat` | Validation TVA européenne via service VIES | ⏳ À finaliser | Sprint 5 |
-| 6 | `AlpineCommerce_Hreflang` | Balises hreflang pour SEO multi-boutiques | ⏳ À finaliser | Sprint 6 |
-| 7 | `AlpineCommerce_Training` | Module de formation et démonstration | ⏳ À finaliser | Sprint 7 |
+| 1 | `AlpineCommerce_Gdpr` | GDPR consent management and user rights | 🔄 Code done — Magento validation pending | Sprint 1 |
+| 2 | `AlpineCommerce_StorePickup` | Store pickup option for orders | 🔄 Code done — Magento validation pending | Sprint 2 |
+| 3 | `AlpineCommerce_StoreLocator` | Physical store locator | 🔄 Code done — Magento validation pending | Sprint 3 |
+| 4 | `AlpineCommerce_LoyaltyProgram` | Loyalty program (earn/spend points) | ⏳ To be finalized | Sprint 4 |
+| 5 | `AlpineCommerce_EuVat` | European VAT validation via VIES service | ⏳ To be finalized | Sprint 5 |
+| 6 | `AlpineCommerce_Hreflang` | Hreflang tags for multi-store SEO | ⏳ To be finalized | Sprint 6 |
+| 7 | `AlpineCommerce_Training` | Training and demo module | ⏳ To be finalized | Sprint 7 |
 
-> **Note d'état** : pour Gdpr, StorePickup et StoreLocator, l'interface admin
-> (listing/formulaires UI Component, ACL, menu) a été développée pendant les sprints
-> de finalisation 1-3. Ces modules restent marqués « validation en attente » tant que
-> la validation Magento complète (sprint global) n'est pas close. Les détails de chaque
-> finalisation sont dans `modules/` — voir les documents `GDPR.md`, `STORE_PICKUP.md`,
+> **Status note**: for Gdpr, StorePickup and StoreLocator, the admin interface
+> (UI Component listing/forms, ACL, menu) was developed during finalization
+> sprints 1-3. These modules remain marked "validation pending" until
+> complete Magento validation (global sprint) is closed. The details of each
+> finalization are in `modules/` — see documents `GDPR.md`, `STORE_PICKUP.md`,
 > `STORE_LOCATOR.md`.
 
 ---
 
-## Modules prévus (post-v1.0)
+## Planned modules (post-v1.0)
 
-| Module | Description | Priorité | Justification |
+| Module | Description | Priority | Justification |
 |---|---|---|---|
-| `AlpineCommerce_Contact` | Formulaire de contact avancé avec gestion des demandes | 🟠 Haute | Magento a un formulaire basique, mais pas de suivi des demandes |
-| `AlpineCommerce_AbandonedCart` | Récupération de paniers abandonnés par email | 🟡 Moyenne | Magento n'a pas de récupération automatique de paniers |
-| `AlpineCommerce_Wishlist` | Liste de souhaits améliorée avec partage social | 🟡 Moyenne | Magento a une wishlist, mais limitée en fonctionnalités |
-| `AlpineCommerce_Compare` | Comparateur de produits avancé | 🟡 Moyenne | Magento a un comparateur basique |
-| `AlpineCommerce_Newsletter` | Newsletter avec gestion des abonnements et templates | 🟡 Moyenne | Magento a une newsletter basique |
-| `AlpineCommerce_CacheWarmer` | Pré-génération du cache pour améliorer les performances | 🟢 Basse | Optimisation technique |
+| `AlpineCommerce_Contact` | Advanced contact form with request management | 🟠 High | Magento has a basic form, but no request tracking |
+| `AlpineCommerce_AbandonedCart` | Abandoned cart recovery by email | 🟡 Medium | Magento has no automatic cart recovery |
+| `AlpineCommerce_Wishlist` | Improved wishlist with social sharing | 🟡 Medium | Magento has a wishlist, but limited in features |
+| `AlpineCommerce_Compare` | Advanced product comparator | 🟡 Medium | Magento has a basic comparator |
+| `AlpineCommerce_Newsletter` | Newsletter with subscription and template management | 🟡 Medium | Magento has a basic newsletter |
+| `AlpineCommerce_CacheWarmer` | Pre-generation of cache to improve performance | 🟢 Low | Technical optimization |
 
 ---
 
-## Modules futurs (idées)
+## Future modules (ideas)
 
-| Module | Description | Priorité |
+| Module | Description | Priority |
 |---|---|---|
-| `AlpineCommerce_Multilingual` | Gestion multilingue améliorée avec détection automatique | 🟢 Basse |
-| `AlpineCommerce_Personalization` | Recommandations produits personnalisées | 🟢 Basse |
-| `AlpineCommerce_GiftCard` | Cartes cadeaux avec gestion des codes | 🟡 Moyenne |
-| `AlpineCommerce_Search` | Recherche avancée avec filtres et suggestions | 🟡 Moyenne |
-| `AlpineCommerce_Seo` | SEO avancé (meta tags, structured data, sitemap) | 🟡 Moyenne |
-| `AlpineCommerce_Analytics` | Tableau de bord analytics intégré | 🟢 Basse |
-| `AlpineCommerce_Export` | Export de données (commandes, clients, produits) | 🟢 Basse |
+| `AlpineCommerce_Multilingual` | Improved multilingual management with automatic detection | 🟢 Low |
+| `AlpineCommerce_Personalization` | Personalized product recommendations | 🟢 Low |
+| `AlpineCommerce_GiftCard` | Gift cards with code management | 🟡 Medium |
+| `AlpineCommerce_Search` | Advanced search with filters and suggestions | 🟡 Medium |
+| `AlpineCommerce_Seo` | Advanced SEO (meta tags, structured data, sitemap) | 🟡 Medium |
+| `AlpineCommerce_Analytics` | Integrated analytics dashboard | 🟢 Low |
+| `AlpineCommerce_Export` | Data export (orders, customers, products) | 🟢 Low |
 
 ---
 
-## Extensions Magento (sans module AlpineCommerce)
+## Magento Extensions (without AlpineCommerce module)
 
-Certaines fonctionnalités seront ajoutées en étendant Magento directement, sans créer de module AlpineCommerce.
+Some features will be added by extending Magento directly, without creating an AlpineCommerce module.
 
-| Fonctionnalité | Approche | Module affecté |
+| Feature | Approach | Affected module |
 |---|---|---|
-| Modification du checkout | Plugin sur `Magento_Checkout` | AlpineCommerce_StorePickup |
-| Ajout de colonnes dans la grille produits | UI Component / Plugin | AlpineCommerce_ProductLabels |
-| Modification du formulaire de contact | Layout XML + Plugin | AlpineCommerce_Contact |
-| Ajout de filtres de recherche | Plugin sur `Magento_CatalogSearch` | AlpineCommerce_Search |
-| Modification du template produit | Layout XML + ViewModel | AlpineCommerce_ProductLabels |
+| Checkout modification | Plugin on `Magento_Checkout` | AlpineCommerce_StorePickup |
+| Adding columns to product grid | UI Component / Plugin | AlpineCommerce_ProductLabels |
+| Contact form modification | Layout XML + Plugin | AlpineCommerce_Contact |
+| Adding search filters | Plugin on `Magento_CatalogSearch` | AlpineCommerce_Search |
+| Product template modification | Layout XML + ViewModel | AlpineCommerce_ProductLabels |
 
 ---
 
-## Règles de priorisation
+## Prioritization rules
 
-1. **Modules stables** : Maintenir et corriger les bugs
-2. **Finalisation v1.0** : Compléter les 7 modules en cours (un par sprint)
-3. **Modules prévus** : Développer selon les priorités métier (post-v1.0)
-4. **Extensions Magento** : Ajouter via Plugins/Observers/Layouts
-5. **Refactoring** : Jamais sans justification métier
+1. **Stable modules**: Maintain and fix bugs
+2. **v1.0 finalization**: Complete the 7 modules in progress (one per sprint)
+3. **Planned modules**: Develop according to business priorities (post-v1.0)
+4. **Magento extensions**: Add via Plugins/Observers/Layouts
+5. **Refactoring**: Never without business justification
 
 ---
 
-## Historique des versions
+## Version history
 
-| Version | Date | Changements |
+| Version | Date | Changes |
 |---|---|---|
-| 1.0.0 | 2024 | Migration initiale depuis Cartware vers AlpineCommerce |
-| 1.1.0 | 2024 | Ajout de AlpineCommerce_Blog, AlpineCommerce_Faq, AlpineCommerce_Gdpr |
-| 1.2.0 | 2024 | Ajout de AlpineCommerce_LegalPages, AlpineCommerce_StorePickup, AlpineCommerce_StoreLocator |
-| 1.3.0 | 2024 | Ajout de AlpineCommerce_Training, AlpineCommerce_EuVat, AlpineCommerce_Hreflang |
-| 1.4.0 | 2024 | Ajout de AlpineCommerce_LoyaltyProgram |
-| 1.5.0 | 2024 | Ajout de AlpineCommerce_ProductReviews, AlpineCommerce_ProductQuestions |
-| 1.5.1 | 2026-08-06 | Audit v1.0, plan de finalisation par sprints, 14 bugs critiques corrigés (Phase 1) |
-| 1.5.2 | 2026-08-06 | Correction des formulaires admin (dataProvider « class required », boutons `button-set`) |
+| 1.0.0 | 2024 | Initial migration from Cartware to AlpineCommerce |
+| 1.1.0 | 2024 | Addition of AlpineCommerce_Blog, AlpineCommerce_Faq, AlpineCommerce_Gdpr |
+| 1.2.0 | 2024 | Addition of AlpineCommerce_LegalPages, AlpineCommerce_StorePickup, AlpineCommerce_StoreLocator |
+| 1.3.0 | 2024 | Addition of AlpineCommerce_Training, AlpineCommerce_EuVat, AlpineCommerce_Hreflang |
+| 1.4.0 | 2024 | Addition of AlpineCommerce_LoyaltyProgram |
+| 1.5.0 | 2024 | Addition of AlpineCommerce_ProductReviews, AlpineCommerce_ProductQuestions |
+| 1.5.1 | 2026-08-06 | v1.0 audit, finalization plan by sprints, 14 critical bugs fixed (Phase 1) |
+| 1.5.2 | 2026-08-06 | Admin form fixes (dataProvider "class required", `button-set` buttons) |
 
-> Les versions détaillées sont documentées dans `CHANGELOG.md`.
+> Detailed versions are documented in `CHANGELOG.md`.
 
 ---
 
-*Dernière mise à jour : 2026-08-06.*
+*Last updated: 2026-08-06.*

@@ -1,20 +1,20 @@
-# Module AlpineCommerce_LegalPages — Pages légales dynamiques
+# AlpineCommerce_LegalPages Module — Dynamic Legal Pages
 
-> **Statut** : ✅ Stable (v1.2.0)
+> **Status**: ✅ Stable (v1.2.0)
 
-## 1. Responsabilité
+## 1. Responsibility
 
-Pages légales dynamiques et administrables : **CGV, CGU, politique de confidentialité,
-mentions légales**. CRUD admin, REST API publique, frontend avec listing et vue détaillée.
+Dynamic and manageable legal pages: **T&C, ToS, privacy policy,
+legal notices**. Admin CRUD, public REST API, frontend with listing and detail view.
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-| **Types de pages** | CGV, CGU, confidentialité, mentions légales |
-| **CRUD admin** | Listing + formulaire (contenu riche par type) |
-| **REST API publique** | Exposition des pages |
-| **Frontend** | Route `/legal` — listing + vue détaillée |
+| **Page types** | T&C, ToS, privacy, legal notices |
+| **Admin CRUD** | Listing + form (rich content by type) |
+| **Public REST API** | Page exposure |
+| **Frontend** | `/legal` route — listing + detail view |
 
 ## 3. Architecture
 
@@ -28,51 +28,51 @@ AlpineCommerce/LegalPages/
 └── view/adminhtml/ui_component/ legal_page_form.xml
 ```
 
-## 4. Base de données
+## 4. Database
 
-Table des pages légales (type, contenu, statut).
+Legal pages table (type, content, status).
 
-## 5. API REST
+## 5. REST API
 
-API publique d'exposition des pages légales.
+Public API for exposing legal pages.
 
 ## 6. Admin
 
-- CRUD des pages par type (CGV, CGU, confidentialité, mentions légales)
-- Formulaire `legal_page_form` : corrigé (dataProvider `FormDataProvider`, `page_id` +
-  remplacement `button-set` → `<settings><buttons>`)
+- CRUD of pages by type (T&C, ToS, privacy, legal notices)
+- `legal_page_form` form: fixed (dataProvider `FormDataProvider`, `page_id` +
+  replacement `button-set` → `<settings><buttons>`)
 
 ## 7. Frontend
 
-- Route `/legal` : listing + vue détaillée (HTTP 200)
+- `/legal` route: listing + detail view (HTTP 200)
 
 ## 8. CLI
 
-Aucune commande dédiée.
+No dedicated command.
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| Contenu stocké en base, pages dynamiques | Les textes légaux évoluent sans déploiement |
-| Frontend listing + détail | Pattern standard des modules de contenu |
+| Content stored in DB, dynamic pages | Legal texts evolve without deployment |
+| Frontend listing + detail | Standard pattern for content modules |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| — | `legal_page_form` : exception « class required » + `button-set` (formulaire vide) | ✅ Corrigé (Sprint 6 addendum) |
+| — | `legal_page_form`: "class required" exception + `button-set` (empty form) | ✅ Fixed (Sprint 6 addendum) |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
 - UI Component form + `ButtonProviderInterface`
-- Routes frontend/admin, ACL
+- Frontend/admin routes, ACL
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Statut** : ✅ Stable — formulaire validé à l'écran (Sprint 6)
+- **Status**: ✅ Stable — form validated on screen (Sprint 6)
 
 ---
 
-*Sources : `docs/08_CHANGELOG.md` (v1.2.0), `SPRINT_VALIDATION_REPORT.md`,
-`SPRINT_INTEGRATION_REPORT.md` (fusionnés dans `CHANGELOG.md`).*
+*Sources: `docs/08_CHANGELOG.md` (v1.2.0), `SPRINT_VALIDATION_REPORT.md`,
+`SPRINT_INTEGRATION_REPORT.md` (merged into `CHANGELOG.md`).*

@@ -1,192 +1,192 @@
 # Engineering Bible — AlpineCommerce
 
-> Ce document est la **référence absolue** pour tout développement sur AlpineCommerce.
-> Il est la Phase A de la roadmap : les règles ci-dessous sont **gelées**. Tout nouveau
-> module (Phase B) doit les respecter sans exception. La dette existante est tracée dans
+> This document is the **absolute reference** for all development on AlpineCommerce.
+> It is Phase A of the roadmap: the rules below are **frozen**. Any new
+> module (Phase B) must respect them without exception. Existing debt is tracked in
 > `BACKLOG.md`.
 >
-> Ce document regroupe l'ancien `02_ENGINEERING_GUIDE.md`, `03_MODULE_GUIDELINES.md`,
-> `04_SPRINT_WORKFLOW.md` et `07_GLOSSARY.md`.
+> This document combines the former `02_ENGINEERING_GUIDE.md`, `03_MODULE_GUIDELINES.md`,
+> `04_SPRINT_WORKFLOW.md` and `07_GLOSSARY.md`.
 
-## Ce que ce document contient
+## What this document contains
 
-| Section | Contenu |
+| Section | Content |
 |---|---|
-| Squelette d'un module canonique | L'arborescence obligatoire d'un module professionnel |
-| Quand créer un module | La question à poser avant toute création |
-| Principes fondamentaux | SOLID, DRY, KISS, YAGNI, Clean Code |
-| Standards de code | PSR-12, conventions, exemples |
-| Patterns officiels Adobe Commerce | Repository, Service Contracts, DI, Plugins, Observers, etc. |
-| REST API | webapi.xml, authentification |
-| ACL / Layout / UI Components | Les trois piliers de l'admin |
-| i18n / Logging / Erreurs / Tests | Les bonnes pratiques transverses |
-| Workflow des sprints | Le cycle de vie d'un sprint et le rôle de l'AI |
-| ❌ Ce qu'il ne faut JAMAIS faire | Les anti-patterns, pourquoi, et l'alternative |
-| Checklist de validation | À exécuter avant chaque commit et chaque sprint |
-| Glossaire | Les termes Magento |
+| Canonical module skeleton | The mandatory directory tree of a professional module |
+| When to create a module | The question to ask before any creation |
+| Fundamental principles | SOLID, DRY, KISS, YAGNI, Clean Code |
+| Code standards | PSR-12, conventions, examples |
+| Official Adobe Commerce patterns | Repository, Service Contracts, DI, Plugins, Observers, etc. |
+| REST API | webapi.xml, authentication |
+| ACL / Layout / UI Components | The three pillars of the admin |
+| i18n / Logging / Errors / Tests | Good cross-cutting practices |
+| Sprint workflow | The sprint life cycle and the role of the AI |
+| ❌ What you must NEVER do | Anti-patterns, why, and the alternative |
+| Validation checklist | To execute before each commit and each sprint |
+| Glossary | Magento terms |
 
-**Module de référence** : `AlpineCommerce/Faq` est le module canonique — comparez toujours
-votre code à sa structure.
+**Reference module**: `AlpineCommerce/Faq` is the canonical module — always compare
+your code to its structure.
 
 ---
 
-## Squelette d'un module canonique
+## Canonical Module Skeleton
 
-> Toute nouvelle entité métier suit **exactement** cette arborescence (dérivée de
-> `AlpineCommerce/Faq` et `AlpineCommerce/ProductLabels`).
+> Any new business entity follows **exactly** this directory tree (derived from
+> `AlpineCommerce/Faq` and `AlpineCommerce/ProductLabels`).
 
 ```
 AlpineCommerce/{Module}/
-├── registration.php                  # Enregistrement Composer
+├── registration.php                  # Composer registration
 ├── etc/
-│   ├── module.xml                    # Déclaration + séquence
-│   ├── db_schema.xml                 # Schéma de base (jamais InstallSchema/InstallData)
-│   ├── di.xml                        # preferences (interfaces → implémentations)
-│   ├── webapi.xml                    # Routes REST (si API exposée)
-│   ├── acl.xml                       # Ressources admin (si admin)
-│   ├── menu.xml                      # Menu admin (adminhtml/)
-│   └── routes.xml                    # adminhtml/ ou frontend/ selon la zone
+│   ├── module.xml                    # Declaration + sequence
+│   ├── db_schema.xml                 # DB schema (never InstallSchema/InstallData)
+│   ├── di.xml                        # preferences (interfaces → implementations)
+│   ├── webapi.xml                    # REST routes (if API exposed)
+│   ├── acl.xml                       # Admin resources (if admin)
+│   ├── menu.xml                      # Admin menu (adminhtml/)
+│   └── routes.xml                    # adminhtml/ or frontend/ depending on the area
 ├── Api/
 │   ├── {Entity}Interface.php         # Data Interface (Service Contract)
 │   ├── {Entity}SearchResultsInterface.php
 │   ├── {Entity}RepositoryInterface.php
-│   └── ...                           # Autres interfaces métier
+│   └── ...                           # Other business interfaces
 ├── Model/
-│   ├── {Entity}.php                  # Model (données)
-│   ├── {Entity}Repository.php        # Implémentation du Repository
+│   ├── {Entity}.php                  # Model (data)
+│   ├── {Entity}Repository.php        # Repository implementation
 │   ├── {Entity}SearchResults.php
 │   └── ResourceModel/
-│       ├── {Entity}.php              # ResourceModel (accès table)
-│       └── {Entity}/Collection.php   # Collection (listes filtrées/paginées)
+│       ├── {Entity}.php              # ResourceModel (table access)
+│       └── {Entity}/Collection.php   # Collection (filtered/paginated lists)
 ├── Controller/
-│   ├── Index/                        # Controllers frontend (zone frontend)
-│   └── Adminhtml/{Entity}/           # Controllers admin (zone adminhtml)
-│       ├── Index.php                 # Grille
-│       ├── NewAction.php             # Formulaire vierge
-│       ├── Edit.php                  # Formulaire pré-rempli
-│       ├── Save.php                  # Persistance (délègue au Repository)
+│   ├── Index/                        # Frontend controllers (frontend area)
+│   └── Adminhtml/{Entity}/           # Admin controllers (adminhtml area)
+│       ├── Index.php                 # Grid
+│       ├── NewAction.php             # Blank form
+│       ├── Edit.php                  # Pre-filled form
+│       ├── Save.php                  # Persistence (delegates to Repository)
 │       └── Delete.php / MassDelete.php
-├── Block/                            # Blocks frontend (+ admin si nécessaire)
+├── Block/                            # Frontend blocks (+ admin if needed)
 ├── Ui/
-│   ├── DataProvider/                 # DataProviders des grilles/formulaires
-│   └── Component/                    # Colonnes custom (actions, ...)
+│   ├── DataProvider/                 # DataProviders for grids/forms
+│   └── Component/                    # Custom columns (actions, ...)
 ├── Plugin/                           # Plugins (interception)
-├── Observer/                         # Observers (événements)
-├── Console/                          # Commandes CLI
+├── Observer/                         # Observers (events)
+├── Console/                          # CLI commands
 ├── Setup/Patch/                      # Data/Schema Patches
 ├── view/
-│   ├── adminhtml/ui_component/       # Grilles + formulaires UI Components
-│   ├── adminhtml/layout/             # Layouts admin
-│   ├── frontend/layout/              # Layouts frontend
-│   └── frontend/templates/           # Templates PHTML
-└── i18n/                             # Traductions CSV
+│   ├── adminhtml/ui_component/       # Grids + forms UI Components
+│   ├── adminhtml/layout/             # Admin layouts
+│   ├── frontend/layout/              # Frontend layouts
+│   └── frontend/templates/           # PHTML templates
+└── i18n/                             # CSV translations
 ```
 
-**Règles associées**
-- Aucun de ces dossiers n'est **optionnel au choix** : s'il manque, la justification doit
-  être écrite dans la doc du module (décision assumée).
-- Le dossier `Api/` n'est pas un détail : c'est **la promesse publique** du module.
+**Associated rules**
+- None of these folders is **optional by choice**: if one is missing, the justification must
+  be written in the module documentation (assumed decision).
+- The `Api/` folder is not a detail: it is **the public promise** of the module.
 
 ---
 
-## Quand créer un module AlpineCommerce ?
+## When to create an AlpineCommerce module?
 
-**Principe fondamental** — avant de créer un module, poser cette question :
+**Fundamental principle** — before creating a module, ask this question:
 
-> Est-ce que Magento possède déjà cette fonctionnalité ?
+> Does Magento already have this feature?
 
-- **Si OUI** → Étendre Magento via Plugin, Observer, Layout XML, ViewModel
-- **Si NON** → Créer un module AlpineCommerce
+- **If YES** → Extend Magento via Plugin, Observer, Layout XML, ViewModel
+- **If NO** → Create an AlpineCommerce module
 
-### Exemples valides
+### Valid examples
 
-| Fonctionnalité | Module AlpineCommerce | Justification |
+| Feature | AlpineCommerce module | Justification |
 |---|---|---|
-| Blog | `AlpineCommerce_Blog` | Magento n'a pas de blog natif |
-| FAQ | `AlpineCommerce_Faq` | Magento n'a pas de FAQ natif |
-| Programme de fidélité | `AlpineCommerce_LoyaltyProgram` | Pas en Open Source |
-| RGPD avancé | `AlpineCommerce_Gdpr` | Magento a des bases mais pas de gestion complète |
-| Store Pickup | `AlpineCommerce_StorePickup` | Magento n'a pas de retrait en magasin natif |
-| Localisateur de magasins | `AlpineCommerce_StoreLocator` | Magento n'a pas de store locator natif |
-| Validation TVA UE | `AlpineCommerce_EuVat` | Magento n'a pas de validation VIES native |
-| Pages légales | `AlpineCommerce_LegalPages` | Magento n'a pas de gestion de pages légales dédiée |
+| Blog | `AlpineCommerce_Blog` | Magento has no native blog |
+| FAQ | `AlpineCommerce_Faq` | Magento has no native FAQ |
+| Loyalty program | `AlpineCommerce_LoyaltyProgram` | Not in Open Source |
+| Advanced GDPR | `AlpineCommerce_Gdpr` | Magento has basics but no complete management |
+| Store Pickup | `AlpineCommerce_StorePickup` | Magento has no native store pickup |
+| Store locator | `AlpineCommerce_StoreLocator` | Magento has no native store locator |
+| EU VAT validation | `AlpineCommerce_EuVat` | Magento has no native VIES validation |
+| Legal pages | `AlpineCommerce_LegalPages` | Magento has no dedicated legal page management |
 
-### Exemples invalides
+### Invalid examples
 
-| Fonctionnalité proposée | Pourquoi c'est invalide |
+| Proposed feature | Why it's invalid |
 |---|---|
-| `AlpineCommerce_Catalog` | Magento a `Magento_Catalog` → Étendre |
-| `AlpineCommerce_Customer` | Magento a `Magento_Customer` → Étendre |
-| `AlpineCommerce_Checkout` | Magento a `Magento_Checkout` → Étendre |
-| `AlpineCommerce_Sales` | Magento a `Magento_Sales` → Étendre |
-| `AlpineCommerce_Cms` | Magento a `Magento_Cms` → Étendre |
-| `AlpineCommerce_Payment` | Magento a `Magento_Payment` → Étendre |
-| `AlpineCommerce_Shipping` | Magento a `Magento_Shipping` → Étendre |
+| `AlpineCommerce_Catalog` | Magento has `Magento_Catalog` → Extend |
+| `AlpineCommerce_Customer` | Magento has `Magento_Customer` → Extend |
+| `AlpineCommerce_Checkout` | Magento has `Magento_Checkout` → Extend |
+| `AlpineCommerce_Sales` | Magento has `Magento_Sales` → Extend |
+| `AlpineCommerce_Cms` | Magento has `Magento_Cms` → Extend |
+| `AlpineCommerce_Payment` | Magento has `Magento_Payment` → Extend |
+| `AlpineCommerce_Shipping` | Magento has `Magento_Shipping` → Extend |
 
 ---
 
-## Principes fondamentaux
+## Fundamental Principles
 
 ### SOLID
 
-- **S**ingle Responsibility : chaque classe a une seule raison de changer
-- **O**pen/Closed : ouvert à l'extension, fermé à la modification
-- **L**iskov Substitution : une implémentation peut remplacer son interface
-- **I**nterface Segregation : interfaces petites et spécifiques
-- **D**ependency Inversion : dépendre d'abstractions, pas de concret
+- **S**ingle Responsibility: each class has one reason to change
+- **O**pen/Closed: open for extension, closed for modification
+- **L**iskov Substitution: any implementation can replace its interface
+- **I**nterface Segregation: small, specific interfaces
+- **D**ependency Inversion: depend on abstractions, not concrete classes
 
 ### DRY (Don't Repeat Yourself)
 
-- Pas de duplication de code
-- Extraire la logique commune dans des services, helpers ou traits
-- Les configurations XML doivent être factorisées
+- No code duplication
+- Extract common logic into services, helpers, or traits
+- XML configurations should be factored
 
 ### KISS (Keep It Simple, Stupid)
 
-- Privilégier la simplicité
-- Éviter la sur-ingénierie
-- Une solution simple > une solution complexe
+- Favor simplicity
+- Avoid over-engineering
+- A simple solution > a complex solution
 
 ### YAGNI (You Ain't Gonna Need It)
 
-- Ne pas développer de fonctionnalité "au cas où"
-- Développer seulement ce qui est nécessaire maintenant
-- Supprimer le code mort
+- Don't develop features "just in case"
+- Develop only what is needed now
+- Remove dead code
 
 ### Clean Code
 
-- Noms explicites (variables, méthodes, classes)
-- Fonctions courtes (< 20 lignes idéalement)
-- Pas de commentaires inutiles (le code doit être auto-explicite)
-- Gestion des erreurs explicite
-- Pas de code mort
+- Explicit names (variables, methods, classes)
+- Short functions (< 20 lines ideally)
+- No unnecessary comments (code should be self-explanatory)
+- Explicit error handling
+- No dead code
 
 ---
 
-## Standards de code
+## Code Standards
 
 ### PSR-12
 
-Tout le code PHP doit respecter la norme **PSR-12**.
+All PHP code must respect the **PSR-12** standard.
 
 ```bash
-# Vérification avec PHP_CodeSniffer
+# Verification with PHP_CodeSniffer
 vendor/bin/phpcs --standard=PSR12 app/code/AlpineCommerce/
 
-# Correction automatique
+# Automatic correction
 vendor/bin/phpcbf --standard=PSR12 app/code/AlpineCommerce/
 ```
 
-### Conventions Magento
+### Magento Conventions
 
-- **Classes** : `PascalCase`
-- **Méthodes** : `camelCase`
-- **Variables** : `$camelCase`
-- **Constantes** : `UPPER_SNAKE_CASE`
-- **Fichiers** : correspond au nom de la classe
-- **Namespaces** : `AlpineCommerce\Module\SousNamespace`
+- **Classes**: `PascalCase`
+- **Methods**: `camelCase`
+- **Variables**: `$camelCase`
+- **Constants**: `UPPER_SNAKE_CASE`
+- **Files**: match the class name
+- **Namespaces**: `AlpineCommerce\Module\SubNamespace`
 
-### Exemple de code conforme
+### Compliant code example
 
 ```php
 <?php
@@ -212,22 +212,22 @@ interface BlogPostRepositoryInterface
 
 ---
 
-## Patterns officiels Adobe Commerce
+## Official Adobe Commerce Patterns
 
 ### Repository Pattern
 
-**Usage** : Accès aux données, masque la complexité des Resource Models.
+**Usage**: Data access, masks the complexity of Resource Models.
 
-**Structure** :
+**Structure**:
 
 ```
 Api/
   └── EntityRepositoryInterface.php    # Interface (Service Contract)
 Model/
-  └── EntityRepository.php             # Implémentation
+  └── EntityRepository.php             # Implementation
 ```
 
-**Exemple** :
+**Example**:
 
 ```php
 // Api/EntityRepositoryInterface.php
@@ -245,23 +245,23 @@ interface EntityRepositoryInterface
 
 ### Service Contracts
 
-**Définition** : Interfaces définies dans `Api/` qui exposent les fonctionnalités métier.
+**Definition**: Interfaces defined in `Api/` that expose business features.
 
-**Règles** :
-- Toute logique métier doit être derrière un Service Contract
-- Les Controllers ne font jamais de logique métier directement
-- Les Controllers délèguent aux Services/Repositories
+**Rules**:
+- All business logic must be behind a Service Contract
+- Controllers never do business logic directly
+- Controllers delegate to Services/Repositories
 
-**Quand en créer un** : dès qu'une fonctionnalité expose une API (REST, GraphQL, ou usage interne).
+**When to create one**: as soon as a feature exposes an API (REST, GraphQL, or internal usage).
 
 ### Dependency Injection
 
-**Définition** : Injection des dépendances via le constructeur.
+**Definition**: Injection of dependencies via the constructor.
 
-**Règles** :
-- Toujours typer les paramètres du constructeur (`private readonly`)
-- Ne jamais utiliser `$objectManager->create()` dans le code métier
-- Utiliser les factories générées automatiquement par Magento
+**Rules**:
+- Always type constructor parameters (`private readonly`)
+- Never use `$objectManager->create()` in business code
+- Use factories generated automatically by Magento
 
 ```php
 public function __construct(
@@ -272,16 +272,16 @@ public function __construct(
 
 ### Plugins (Interceptors)
 
-**Usage** : Modifier le comportement d'une méthode existante sans la toucher.
+**Usage**: Modify the behavior of an existing method without touching it.
 
-**Quand utiliser** :
-- Ajouter du comportement avant/après/autour d'une méthode Magento
-- Modifier un retour sans override de classe
-- Ajouter de la logique métier sur un code existant
+**When to use**:
+- Add behavior before/after/around a Magento method
+- Modify a return without class override
+- Add business logic on existing code
 
-**Quand ne PAS utiliser** :
-- Pour remplacer complètement une méthode → préférer une Preference
-- Pour la logique métier → créer un Service
+**When NOT to use**:
+- To completely replace a method → prefer a Preference
+- For business logic → create a Service
 
 ```php
 // etc/di.xml
@@ -296,18 +296,18 @@ class ProductPlugin
 {
     public function beforeGetName(\Magento\Catalog\Model\Product $subject): array
     {
-        // Avant l'appel à getName()
+        // Before calling getName()
     }
 
     public function afterGetName(\Magento\Catalog\Model\Product $subject, string $result): string
     {
-        // Après l'appel à getName()
+        // After calling getName()
         return strtoupper($result);
     }
 
     public function aroundGetName(\Magento\Catalog\Model\Product $subject, \Closure $proceed): string
     {
-        // Autour de l'appel à getName()
+        // Around the call to getName()
         return $proceed();
     }
 }
@@ -315,16 +315,16 @@ class ProductPlugin
 
 ### Observers
 
-**Usage** : Réagir à un événement Magento.
+**Usage**: React to a Magento event.
 
-**Quand utiliser** :
-- Réagir à un événement métier (commande passée, facture créée)
-- Découpler la logique métier
-- Plusieurs listeners sur le même événement
+**When to use**:
+- React to a business event (order placed, invoice created)
+- Decouple business logic
+- Multiple listeners on the same event
 
-**Quand ne PAS utiliser** :
-- Pour modifier un comportement → préférer un Plugin
-- Pour la logique métier critique → préférer un Service direct
+**When NOT to use**:
+- To modify behavior → prefer a Plugin
+- For critical business logic → prefer a direct Service
 
 ```php
 // etc/events.xml
@@ -339,53 +339,53 @@ class OrderSaveObserver
     public function execute(\Magento\Framework\Event\Observer $observer): void
     {
         $order = $observer->getEvent()->getOrder();
-        // Logique métier
+        // Business logic
     }
 }
 ```
 
-### Plugin vs Observer — règle d'or
+### Plugin vs Observer — golden rule
 
-| Critère | Plugin | Observer |
+| Criterion | Plugin | Observer |
 |---|---|---|
-| **Usage** | Modifier une méthode existante | Réagir à un événement |
-| **Dépendance** | Couplé à une classe spécifique | Découplé via événement |
-| **Priorité** | `before` / `after` / `around` | Exécution après l'événement |
-| **Cas d'usage** | Ajouter un comportement sur `Product::getName()` | Réagir à `sales_order_save_after` |
+| **Usage** | Modify an existing method | React to an event |
+| **Dependency** | Coupled to a specific class | Decoupled via event |
+| **Priority** | `before` / `after` / `around` | Execution after the event |
+| **Use case** | Add behavior on `Product::getName()` | React to `sales_order_save_after` |
 
-- Si tu veux modifier le comportement d'une méthode → **Plugin**
-- Si tu veux réagir à un événement métier → **Observer**
+- If you want to modify the behavior of a method → **Plugin**
+- If you want to react to a business event → **Observer**
 
-### Preference vs Factory — règle d'or
+### Preference vs Factory — golden rule
 
-| Critère | Preference | Factory |
+| Criterion | Preference | Factory |
 |---|---|---|
-| **Usage** | Lier une interface à une implémentation | Créer un objet |
-| **Portée** | Global (tout le DI) | Local (un seul appel) |
-| **Cas d'usage** | Service Contract → Implémentation | Création d'entités métier |
+| **Usage** | Link an interface to an implementation | Create an object |
+| **Scope** | Global (all DI) | Local (single call) |
+| **Use case** | Service Contract → Implementation | Creation of business objects |
 
-- Service Contract → **Preference** dans `di.xml`
-- Création d'objets → **Factory** générée automatiquement
+- Service Contract → **Preference** in `di.xml`
+- Object creation → automatically generated **Factory**
 
-### ViewModel vs Block — règle d'or
+### ViewModel vs Block — golden rule
 
-| Critère | ViewModel | Block |
+| Criterion | ViewModel | Block |
 |---|---|---|
-| **Usage** | Logique de présentation | Structure de page Magento |
-| **Héritage** | `\Magento\Framework\View\Element\Template` | `\Magento\Framework\View\Element\Template` |
-| **Cas d'usage** | Formater des données pour un template | Conteneur dans un layout XML |
+| **Usage** | Presentation logic | Magento page structure |
+| **Inheritance** | `\Magento\Framework\View\Element\Template` | `\Magento\Framework\View\Element\Template` |
+| **Use case** | Format data for a template | Container in a layout XML |
 
-- Si tu as besoin d'un conteneur dans un layout → **Block**
-- Si tu as besoin de logique de présentation → **ViewModel**
+- If you need a container in a layout → **Block**
+- If you need presentation logic → **ViewModel**
 
 ### Preference (DI)
 
-**Usage** : Lier une interface à une implémentation concrète dans `di.xml`.
+**Usage**: Link an interface to a concrete implementation in `di.xml`.
 
-**Règles** :
-- Utiliser uniquement pour les Service Contracts
-- Une seule Preference par interface
-- Préférer les factories pour la création d'objets
+**Rules**:
+- Use only for Service Contracts
+- One Preference per interface
+- Prefer factories for object creation
 
 ```xml
 <!-- etc/di.xml -->
@@ -395,7 +395,7 @@ class OrderSaveObserver
 
 ### ViewModel
 
-**Usage** : Logique de présentation pour les templates PHTML.
+**Usage**: Presentation logic for PHTML templates.
 
 ```php
 // Block/Product/ViewModel.php
@@ -414,12 +414,12 @@ class ViewModel extends \Magento\Framework\View\Element\Template
 
 ### Resource Models
 
-**Usage** : Opérations CRUD sur les tables de base de données.
+**Usage**: CRUD operations on database tables.
 
-**Règles** :
-- Hériter de `\Magento\Framework\Model\ResourceModel\Db\AbstractDb`
-- Définir `_construct()` avec `_init($tableName, $primaryKey)`
-- Ne pas utiliser de SQL direct sans justification
+**Rules**:
+- Inherit from `\Magento\Framework\Model\ResourceModel\Db\AbstractDb`
+- Define `_construct()` with `_init($tableName, $primaryKey)`
+- Don't use direct SQL without justification
 
 ```php
 class Entity extends AbstractDb
@@ -433,12 +433,12 @@ class Entity extends AbstractDb
 
 ### Collections
 
-**Usage** : Liste d'entités avec filtres, tris et pagination.
+**Usage**: List of entities with filters, sorting, and pagination.
 
-**Règles** :
-- Toujours utiliser `addFieldToFilter()` au lieu de WHERE manuel
-- Limiter les résultats avec `setPageSize()` et `setCurPage()`
-- Ne jamais charger une collection complète sans pagination
+**Rules**:
+- Always use `addFieldToFilter()` instead of manual WHERE
+- Limit results with `setPageSize()` and `setCurPage()`
+- Never load a complete collection without pagination
 
 ```php
 $collection = $this->entityCollectionFactory->create();
@@ -448,16 +448,16 @@ $collection->addFieldToFilter('is_active', 1)
     ->setCurPage(1);
 ```
 
-### Relations entre composants
+### Component Relationships
 
 ```
-Api/Data/EntityInterface.php      <- Interface de l'entité
+Api/Data/EntityInterface.php      <- Entity interface
 Api/EntityRepositoryInterface.php <- Service Contract (CRUD)
-Model/Entity.php                  <- Entité métier
-Model/EntityRepository.php        <- Implémentation
-Model/ResourceModel/Entity.php    <- Accès DB
+Model/Entity.php                  <- Business entity
+Model/EntityRepository.php        <- Implementation
+Model/ResourceModel/Entity.php    <- DB access
 Model/ResourceModel/Entity/
-    └── Collection.php             <- Liste d'entités
+    └── Collection.php             <- Entity list
 ```
 
 ---
@@ -466,7 +466,7 @@ Model/ResourceModel/Entity/
 
 ### webapi.xml
 
-**Structure** :
+**Structure**:
 
 ```xml
 <?xml version="1.0"?>
@@ -475,38 +475,38 @@ Model/ResourceModel/Entity/
     <route url="/V1/alphacommerce/module/endpoint" method="GET">
         <service class="AlpineCommerce\Module\Api\ServiceInterface" method="getItems"/>
         <resources>
-            <resource ref="self"/> <!-- ou "anonymous" -->
+            <resource ref="self"/> <!-- or "anonymous" -->
         </resources>
     </route>
 </routes>
 ```
 
-### Authentification
+### Authentication
 
-| Valeur | Signification |
+| Value | Meaning |
 |---|---|
-| `self` | Client connecté (customer token) |
-| `anonymous` | Accès public |
-| `admin` | Administrateur connecté |
+| `self` | Connected customer (customer token) |
+| `anonymous` | Public access |
+| `admin` | Connected administrator |
 
-### Quand créer une REST API ?
+### When to create a REST API?
 
-**Créer une route REST si :**
-- Le frontend React a besoin de données métier
-- Une intégration externe doit consommer le module
-- Le module expose des fonctionnalités interactives (ex : voter pour une FAQ)
+**Create a REST route if:**
+- The React frontend needs business data
+- An external integration must consume the module
+- The module exposes interactive features (e.g.: vote for a FAQ)
 
-**Ne pas créer de REST API si :**
-- Les données sont déjà accessibles via les endpoints Magento natifs
-- Le module est purement backend (ex : Data Patch)
-- Les données ne sont utilisées que dans les templates PHTML
+**Do NOT create a REST API if:**
+- Data is already accessible via native Magento endpoints
+- The module is purely backend (e.g.: Data Patch)
+- Data is only used in PHTML templates
 
-### Bonnes pratiques
+### Best practices
 
-- Toutes les routes exposent des Service Contracts
-- Validation des paramètres dans le Service
-- Retour d'objets Data Interface (pas de arrays)
-- Gestion des erreurs avec exceptions Magento
+- All routes expose Service Contracts
+- Parameter validation in the Service
+- Return Data Interface objects (no arrays)
+- Error handling with Magento exceptions
 
 ---
 
@@ -527,24 +527,24 @@ Model/ResourceModel/Entity/
 </acl>
 ```
 
-### Règles
+### Rules
 
-- Une ACL par ressource protégée
-- Les Controllers admin vérifient `ADMIN_RESOURCE`
-- Les menus utilisent la même ACL
+- One ACL per protected resource
+- Admin controllers check `ADMIN_RESOURCE`
+- Menus use the same ACL
 
 ---
 
 ## Layout XML
 
-### Principes
+### Principles
 
-- Les layouts définissent la structure des pages
-- Utiliser `referenceContainer` et `referenceBlock` pour modifier
-- Ne pas dupliquer les layouts, utiliser `reference` pour étendre
-- ⚠️ Vérifier le type de la cible : `referenceContainer` ne fonctionne que sur un vrai
-  `<container>` ; sur un `<block>` il faut `referenceBlock` (sinon les blocs sont
-  silencieusement ignorés — cf. bug corrigé sur `catalog_product_view.xml` de ProductLabels).
+- Layouts define the page structure
+- Use `referenceContainer` and `referenceBlock` to modify
+- Don't duplicate layouts, use `reference` to extend
+- ⚠️ Check the target type: `referenceContainer` only works on a real
+  `<container>`; on a `<block>` you must use `referenceBlock` (otherwise blocks are
+  silently ignored — cf. bug fixed on `catalog_product_view.xml` of ProductLabels).
 
 ```xml
 <!-- view/frontend/layout/cms_index_index.xml -->
@@ -566,18 +566,18 @@ Model/ResourceModel/Entity/
 
 ### Usage
 
-Les UI Components sont utilisés pour les grilles et formulaires dans l'admin Magento.
+UI Components are used for grids and forms in the Magento admin.
 
-**Types principaux** :
-- `listing` : grille de données
-- `form` : formulaire d'édition
-- `dataSource` : source de données
+**Main types**:
+- `listing`: data grid
+- `form`: edit form
+- `dataSource`: data source
 
-### Structure (format Magento 2.4.x)
+### Structure (Magento 2.4.x format)
 
-> **⚠️ Attention** : ce format a changé en 2.4.x. Le `<dataSource>` doit contenir un
-> enfant `<dataProvider class="..." name="...">`. Sans lui, la grille plante au chargement
-> (exception `ConfigurableObject`). Référence fonctionnelle : `productlabels_label_grid.xml`.
+> **⚠️ Warning**: this format changed in 2.4.x. The `<dataSource>` must contain a
+> child `<dataProvider class="..." name="...">`. Without it, the grid crashes on load
+> (exception `ConfigurableObject`). Functional reference: `productlabels_label_grid.xml`.
 
 ```xml
 <!-- view/adminhtml/ui_component/entity_listing.xml -->
@@ -610,18 +610,18 @@ Les UI Components sont utilisés pour les grilles et formulaires dans l'admin Ma
 </listing>
 ```
 
-**Ce qui ne doit JAMAIS apparaître** (format obsolète, cf. `BACKLOG.md` → B-01) :
-`<primaryDataSource>`, `<templates><filters><select customScope="...">`, et un
-`<dataSource>` sans `<dataProvider class=...>`.
+**What must NEVER appear** (obsolete format, cf. `BACKLOG.md` → B-01):
+`<primaryDataSource>`, `<templates><filters><select customScope="...">`, and a
+`<dataSource>` without `<dataProvider class=...>`.
 
-**Boutons de formulaire** : ne jamais utiliser `<container name="button_set" component="Magento_Ui/js/form/components/button-set">` —
-ce composant JS **n'existe pas en Magento 2.4.8** et laisse le formulaire vide dans le navigateur.
-Utiliser `<settings><buttons>` + des classes `ButtonProviderInterface`
+**Form buttons**: never use `<container name="button_set" component="Magento_Ui/js/form/components/button-set">` —
+this JS component **does not exist in Magento 2.4.8** and leaves the form empty in the browser.
+Use `<settings><buttons>` + `ButtonProviderInterface` classes
 (`{GenericButton,SaveButton,BackButton}.php`).
 
 ---
 
-## i18n (Traductions)
+## i18n (Translations)
 
 ### Structure
 
@@ -632,15 +632,15 @@ i18n/
 └── de_DE.csv
 ```
 
-### Format CSV
+### CSV Format
 
 ```csv
-"Original string","Traduction"
+"Original string","Translation"
 "Save","Enregistrer"
 "Delete","Supprimer"
 ```
 
-### Utilisation dans le code
+### Usage in code
 
 ```php
 // PHP
@@ -656,7 +656,7 @@ __('Save')
 
 ### PSR-3
 
-Utiliser l'interface `\Psr\Log\LoggerInterface` :
+Use the `\Psr\Log\LoggerInterface` interface:
 
 ```php
 public function __construct(
@@ -672,50 +672,50 @@ public function doSomething(): void
 
 ---
 
-## Gestion des erreurs
+## Error Handling
 
-### Exceptions Magento
+### Magento Exceptions
 
 | Exception | Usage |
 |---|---|
-| `NoSuchEntityException` | Entité introuvable |
-| `CouldNotSaveException` | Erreur lors de la sauvegarde |
-| `CouldNotDeleteException` | Erreur lors de la suppression |
-| `LocalizedException` | Erreur métier générique |
+| `NoSuchEntityException` | Entity not found |
+| `CouldNotSaveException` | Error during save |
+| `CouldNotDeleteException` | Error during delete |
+| `LocalizedException` | Generic business error |
 
-### Bonnes pratiques
+### Best practices
 
-- Toujours utiliser les exceptions Magento
-- Ne jamais exposer les détails techniques en production
-- Logger les erreurs avec contexte
+- Always use Magento exceptions
+- Never expose technical details in production
+- Log errors with context
 
 ---
 
-## Base de données
+## Database
 
-### Quand créer une table ?
+### When to create a table?
 
-Créer une table uniquement si Magento ne dispose pas d'entité native adaptée.
+Create a table only if Magento does not have a suitable native entity.
 
-- Préférer les attributs EAV de Magento si possible
-- Créer une table personnalisée seulement pour des entités métier spécifiques
-- Nommage : `alphacommerce_{module}_{table}` ou `alpinecommerce_{module}_{table}`
+- Prefer Magento EAV attributes if possible
+- Create a custom table only for specific business entities
+- Naming: `alphacommerce_{module}_{table}` or `alpinecommerce_{module}_{table}`
 
-### Quand utiliser db_schema.xml ?
+### When to use db_schema.xml?
 
-Toujours. Jamais `InstallSchema.php` ou `InstallData.php`.
+Always. Never `InstallSchema.php` or `InstallData.php`.
 
-- Déclaratif : Magento gère la création/migration des tables
-- Versionné : les changements sont tracés
-- Multi-environnements : fonctionne sur dev, staging, prod
+- Declarative: Magento manages table creation/migration
+- Versioned: changes are tracked
+- Multi-environment: works on dev, staging, prod
 
-### Quand créer un Repository ?
+### When to create a Repository?
 
-Toujours, pour toute entité métier ayant une table dédiée.
+Always, for any business entity with a dedicated table.
 
-- Le Repository est l'unique point d'accès aux données
-- Il implémente un Service Contract
-- Il masque la complexité des Resource Models
+- The Repository is the sole data access point
+- It implements a Service Contract
+- It hides the complexity of Resource Models
 
 ---
 
@@ -735,468 +735,468 @@ Test/
     └── BlogFrontendTest.php
 ```
 
-### Règles
+### Rules
 
-- Tests unitaires pour la logique métier pure
-- Tests d'intégration pour les Repositories et Services
-- Tests fonctionnels pour les scénarios utilisateur
-- Couverture minimum : 80%
+- Unit tests for pure business logic
+- Integration tests for Repositories and Services
+- Functional tests for user scenarios
+- Minimum coverage: 80%
 
 ---
 
-## Workflow des sprints
+## Sprint Workflow
 
-### Philosophie
+### Philosophy
 
-Chaque sprint est une itération fermée, traçable et validée.
+Each sprint is a closed, traceable, and validated iteration.
 
-Nous ne développons jamais plusieurs fonctionnalités en parallèle.
-Nous ne faisons jamais de refactoring non demandé.
-Nous ne modifions jamais un module sans validation.
+We never develop multiple features in parallel.
+We never do unrequested refactoring.
+We never modify a module without validation.
 
-### Cycle de vie d'un Sprint
+### Sprint Life Cycle
 
 ```
 ┌─────────────┐
-│   ANALYSE    │  Comprendre le besoin métier
-│   EXISTANT   │  et l'existant technique
+│   ANALYZE    │  Understand the business need
+│   EXISTING   │  and technical state
 └──────┬──────┘
        ▼
 ┌─────────────┐
-│   PLANIF.    │  Proposer l'architecture
-│  APPROUVA.  │  et attendre validation
+│  PLAN &     │  Propose the architecture
+│  APPROVE    │  and wait for validation
 └──────┬──────┘
        ▼
 ┌─────────────┐
-│ DÉVELOPPEM. │  Coder le module ou
-│  PROGRESSIF │  l'extension Magento
+│  PROGRESSIVE │  Code the module or
+│ DEVELOPMENT  │  the Magento extension
 └──────┬──────┘
        ▼
 ┌─────────────┐
-│ COMPILATION │  setup:upgrade, di:compile,
-│  & TESTS    │  cache:clean, indexer:reindex
+│ COMPILATION  │  setup:upgrade, di:compile,
+│  & TESTS     │  cache:clean, indexer:reindex
 └──────┬──────┘
        ▼
 ┌─────────────┐
-│    AUDIT     │  Vérifier la conformité
-│  TECHNIQUE  │  avec les standards
+│   TECHNICAL  │  Verify compliance
+│   AUDIT      │  with standards
 └──────┬──────┘
        ▼
 ┌─────────────┐
-│   RAPPORT    │  Documenter ce qui a été
-│  & STOP     │  fait, puis s'arrêter
+│   REPORT     │  Document what was
+│  & STOP      │  done, then stop
 └─────────────┘
 ```
 
-### Rôle de l'AI pendant un Sprint
+### Role of the AI during a Sprint
 
-L'AI est un **Tech Lead et Software Architect**.
+The AI is a **Tech Lead and Software Architect**.
 
-**Responsabilités** :
-- Analyser l'existant
-- Expliquer les choix techniques
-- Proposer l'architecture
-- Coder les fonctionnalités validées
-- Vérifier la conformité (PSR-12, Magento Best Practices)
-- Produire des rapports d'audit
-- Documenter les décisions
+**Responsibilities**:
+- Analyze the existing codebase
+- Explain technical choices
+- Propose the architecture
+- Code validated features
+- Verify compliance (PSR-12, Magento Best Practices)
+- Produce audit reports
+- Document decisions
 
-**Ce que l'AI ne fait PAS** :
-- Proposer des refactorings non demandés
-- Modifier du code sans validation
-- Créer des modules sans justification
-- Développer plusieurs fonctionnalités en parallèle
+**What the AI does NOT do**:
+- Propose unrequested refactorings
+- Modify code without validation
+- Create modules without justification
+- Develop multiple features in parallel
 
-### Étapes détaillées
+### Detailed Steps
 
-**Étape 1 : Analyse de l'existant** — lister les fichiers, vérifier les dépendances,
-identifier les patterns, détecter les problèmes. *Livrable : état des lieux complet.*
+**Step 1: Existing codebase analysis** — list files, verify dependencies,
+identify patterns, detect issues. *Deliverable: full state of play.*
 
-**Étape 2 : Planification et validation** — expliquer le besoin, proposer l'architecture,
-attendre la validation. *Livrable : plan de travail approuvé.*
+**Step 2: Planning and validation** — explain the need, propose the architecture,
+wait for validation. *Deliverable: approved work plan.*
 
-**Étape 3 : Développement progressif** — un fichier à la fois, valider chaque étape. *Livrable : code fonctionnel.*
+**Step 3: Progressive development** — one file at a time, validate each step. *Deliverable: working code.*
 
-**Étape 4 : Compilation et tests** — commandes obligatoires :
+**Step 4: Compilation and tests** — mandatory commands:
 
 ```bash
-# Mise à jour de la base de données
+# Database update
 bin/magento setup:upgrade
 
-# Compilation du DI
+# DI compilation
 bin/magento setup:di:compile
 
-# Déploiement du contenu statique (si nécessaire)
+# Static content deployment (if needed)
 bin/magento setup:static-content:deploy
 
-# Nettoyage du cache
+# Cache cleanup
 bin/magento cache:clean
 bin/magento cache:flush
 
-# Réindexation
+# Reindexing
 bin/magento indexer:reindex
 
-# Vérification du statut des modules
+# Module status check
 bin/magento module:status
 ```
 
-**Étape 5 : Audit technique** — conformité PSR-12, conventions Magento, cohérence des
-namespaces, absence de code mort, absence de références à d'autres modules AlpineCommerce.
+**Step 5: Technical audit** — PSR-12 compliance, Magento conventions, namespace
+consistency, absence of dead code, absence of references to other AlpineCommerce modules.
 
-**Étape 6 : Rapport et STOP** — produire un rapport (résumé, fichiers modifiés/créés,
-validation des commandes, prochaines étapes), **puis s'arrêter et attendre la validation.**
+**Step 6: Report and STOP** — produce a report (summary, modified/created
+files, command validation, next steps), **then stop and wait for validation.**
 
-### Règles strictes
+### Strict rules
 
-**Jamais** :
-- ❌ Modifier plusieurs fonctionnalités en même temps
-- ❌ Faire du refactoring non demandé
-- ❌ Modifier un autre module sans validation
-- ❌ Proposer de recréer Catalog, Customer, Checkout, Sales
-- ❌ Ignorer les erreurs de compilation
+**Never**:
+- ❌ Modify multiple features at the same time
+- ❌ Do unrequested refactoring
+- ❌ Modify another module without validation
+- ❌ Propose to recreate Catalog, Customer, Checkout, Sales
+- ❌ Ignore compilation errors
 
-**Toujours** :
-- ✅ Travailler module par module
-- ✅ Attendre la validation avant chaque étape importante
-- ✅ Vérifier que Magento ne fait pas déjà la fonctionnalité
-- ✅ Documenter les décisions
-- ✅ Produire un rapport après chaque sprint
+**Always**:
+- ✅ Work module by module
+- ✅ Wait for validation before each important step
+- ✅ Verify that Magento doesn't already provide the feature
+- ✅ Document decisions
+- ✅ Produce a report after each sprint
 
-**Validation par l'utilisateur** : le plan de travail (É2), le développement (É3), l'audit
-technique (É5) et le rapport final (É6). **Aucune étape ne peut être franchie sans validation explicite.**
+**User validation**: the work plan (E2), the development (E3), the technical
+audit (E5) and the final report (E6). **No step can be passed without explicit validation.**
 
 ---
 
-## ❌ Ce qu'il ne faut JAMAIS faire
+## ❌ What you must NEVER do
 
-> Chaque anti-pattern est listé avec : **pourquoi c'est mauvais** et **la bonne approche**.
-> Un code qui tombe dans un de ces pièges est **refusé en revue**, quelle qu'en soit la raison.
+> Each anti-pattern is listed with: **why it's bad** and **the right approach**.
+> Code that falls into one of these traps is **rejected in review**, whatever the reason.
 
-### 1. Utiliser `ObjectManager` dans le code métier
+### 1. Use `ObjectManager` in business code
 
 ```php
-// ❌ JAMAIS
+// ❌ NEVER
 $repo = $this->_objectManager->create(EntityRepository::class);
 ```
 
-**Pourquoi c'est mauvais** : contourne le conteneur DI, rend le code intestable,
-masque les dépendances réelles, casse les plugins sur cette classe.
-**Bonne approche** : injecter la dépendance dans le constructeur (`private readonly ...`).
+**Why it's bad**: bypasses the DI container, makes code untestable,
+hides real dependencies, breaks plugins on this class.
+**Good approach**: inject the dependency in the constructor (`private readonly ...`).
 
-### 2. Créer `InstallSchema.php` / `InstallData.php`
+### 2. Create `InstallSchema.php` / `InstallData.php`
 
-**Pourquoi c'est mauvais** : obsolète et non exécutable dans les cycles de mise à jour
-(`setup:upgrade`). Ne gère pas les mises à jour incrémentales.
-**Bonne approche** : `etc/db_schema.xml` pour le schéma + `Setup/Patch/` pour les données.
+**Why it's bad**: obsolete and not executable in update cycles
+(`setup:upgrade`). Doesn't handle incremental updates.
+**Good approach**: `etc/db_schema.xml` for schema + `Setup/Patch/` for data.
 
-### 3. SQL direct dans les Controllers ou les Blocks
+### 3. Direct SQL in Controllers or Blocks
 
 ```php
-// ❌ JAMAIS
+// ❌ NEVER
 $result = $connection->query('SELECT * FROM entity WHERE id = ' . $id);
 ```
 
-**Pourquoi c'est mauvais** : fuite de logique métier dans la couche présentation,
-vulnérabilité aux injections si mal concaténé, impossible à tester.
-**Bonne approche** : Repository → ResourceModel → Collection.
+**Why it's bad**: leaks business logic into the presentation layer,
+vulnerable to injections if poorly concatenated, impossible to test.
+**Good approach**: Repository → ResourceModel → Collection.
 
-### 4. Logique métier dans les Blocks / ViewModels
+### 4. Business logic in Blocks / ViewModels
 
-**Pourquoi c'est mauvais** : le Block doit uniquement **préparer des données pour le
-template**. La logique métier doit être réutilisable et testable.
-**Bonne approche** : Service / Repository pour la logique, Block pour l'affichage.
+**Why it's bad**: the Block should only **prepare data for the
+template**. Business logic must be reusable and testable.
+**Good approach**: Service / Repository for logic, Block for display.
 
-### 5. Helper « fourre-tout »
+### 5. "Junk drawer" Helper
 
 ```php
-// ❌ JAMAIS
-class Data extends AbstractHelper { /* 200 méthodes disparates */ }
+// ❌ NEVER
+class Data extends AbstractHelper { /* 200 disparate methods */ }
 ```
 
-**Pourquoi c'est mauvais** : anti-SOLID (Single Responsibility violé), classe difficile à
-lire, à tester, à remplacer.
-**Bonne approche** : un service par responsabilité (`GetActiveLabels`, `PriceCalculator`...).
+**Why it's bad**: anti-SOLID (Single Responsibility violated), class difficult to
+read, test, replace.
+**Good approach**: one service per responsibility (`GetActiveLabels`, `PriceCalculator`...).
 
-### 6. Préferences inutiles (override de classes Magento)
+### 6. Unnecessary Preferences (override Magento classes)
 
-**Pourquoi c'est mauvais** : override global, conflits avec d'autres modules, mises à jour
-core impossibles. Le dernier recours absolu.
-**Bonne approche** (dans l'ordre) : **Plugin → Observer → Layout XML → Preference**.
+**Why it's bad**: global override, conflicts with other modules, core
+updates impossible. The absolute last resort.
+**Good approach** (in order): **Plugin → Observer → Layout XML → Preference**.
 
-### 7. Réécrire le Core Magento
+### 7. Rewrite Magento Core
 
-**Pourquoi c'est mauvais** : Magento fournit Catalog, Customer, Sales, Checkout, Inventory,
-CMS. Les réécrire = coût énorme + perte des mises à jour de sécurité.
-**Bonne approche** : **toujours étendre avant de créer.** On ne crée un module que pour de la
-**vraie valeur métier nouvelle**.
+**Why it's bad**: Magento provides Catalog, Customer, Sales, Checkout, Inventory,
+CMS. Rewriting them = enormous cost + loss of security updates.
+**Good approach**: **always extend before creating.** We only create a module for
+**genuine new business value**.
 
-### 8. Copier-coller le code du Core
+### 8. Copy-paste Core code
 
-**Pourquoi c'est mauvais** : code maintenu par d'autres, incompatible avec vos versions,
-impossible à mettre à jour.
-**Bonne approche** : étendre par plugin/observer, ou réécrire **minimalement** et proprement
-pour votre besoin.
+**Why it's bad**: code maintained by others, incompatible with your versions,
+impossible to update.
+**Good approach**: extend via plugin/observer, or rewrite **minimally** and cleanly
+for your need.
 
-### 9. Contourner les Service Contracts
+### 9. Bypass Service Contracts
 
 ```php
-// ❌ JAMAIS
+// ❌ NEVER
 $model = $this->modelFactory->create()->load($id);
-// ✅ TOUJOURS
+// ✅ ALWAYS
 $entity = $this->entityRepository->getById($id);
 ```
 
-**Pourquoi c'est mauvais** : le Repository est la seule porte d'entrée officielle.
-**Bonne approche** : passer par l'interface `Api/{Entity}RepositoryInterface` partout.
+**Why it's bad**: the Repository is the only official entry point.
+**Good approach**: go through the `Api/{Entity}RepositoryInterface` interface everywhere.
 
-### 10. Le « commit aveugle » (sans validation)
+### 10. The "blind commit" (without validation)
 
-**Pourquoi c'est mauvais** : un module non validé en local casse la chaîne pour tout le monde.
-**Bonne approche** : exécuter la **checklist de validation** ci-dessous avant chaque commit.
-
----
-
-## Checklist de validation d'un module
-
-### Avant chaque commit
-
-- [ ] `php -l` sur tous les fichiers PHP
-- [ ] `phpcs` conforme PSR-12
-- [ ] Pas de référence à un autre module AlpineCommerce (sauf autorisation)
-- [ ] Service Contracts définis dans `Api/`
-- [ ] `db_schema.xml` valide et cohérent avec les ResourceModels (pas de InstallSchema/InstallData)
-- [ ] `module.xml` avec séquences correctes
-- [ ] `di.xml` sans erreur
-- [ ] `webapi.xml` avec authentification correcte
-- [ ] `acl.xml` défini si controller admin
-- [ ] Routes frontend et admin définies
-- [ ] Traductions dans `i18n/`
-- [ ] Pas de logique métier dans les Controllers
-- [ ] Pas de `$objectManager->create()` dans le code métier
-- [ ] Pas de SQL direct sans justification
-- [ ] Pas de `preference` sur une classe core Magento
-- [ ] Pas de réécriture de fonctionnalité existante du core (étendre > créer)
-- [ ] UI Components au format 2.4.x (`<dataProvider class="...">` présent, pas de `primaryDataSource`)
-- [ ] Pas de code mort (classes, méthodes, variables inutilisés)
-
-### Avant chaque Sprint
-
-- [ ] `setup:upgrade` passe sans erreur
-- [ ] `setup:di:compile` passe sans erreur
-- [ ] `module:status` affiche le module correctement
-- [ ] `cache:clean` et `cache:flush` passent
-- [ ] `indexer:reindex` passe
-- [ ] Module testé en frontend et/ou backend
-- [ ] Aucune erreur dans `var/log/system.log` et `var/log/exception.log`
+**Why it's bad**: a module not validated locally breaks the chain for everyone.
+**Good approach**: execute the **validation checklist** below before each commit.
 
 ---
 
-## Glossaire
+## Module Validation Checklist
+
+### Before each commit
+
+- [ ] `php -l` on all PHP files
+- [ ] `phpcs` PSR-12 compliant
+- [ ] No reference to another AlpineCommerce module (unless authorized)
+- [ ] Service Contracts defined in `Api/`
+- [ ] `db_schema.xml` valid and consistent with ResourceModels (no InstallSchema/InstallData)
+- [ ] `module.xml` with correct sequences
+- [ ] `di.xml` without error
+- [ ] `webapi.xml` with correct authentication
+- [ ] `acl.xml` defined if admin controller
+- [ ] Frontend and admin routes defined
+- [ ] Translations in `i18n/`
+- [ ] No business logic in Controllers
+- [ ] No `$objectManager->create()` in business code
+- [ ] No direct SQL without justification
+- [ ] No `preference` on a Magento core class
+- [ ] No rewriting of existing core functionality (extend > create)
+- [ ] UI Components in 2.4.x format (`<dataProvider class="...">` present, no `primaryDataSource`)
+- [ ] No dead code (unused classes, methods, variables)
+
+### Before each Sprint
+
+- [ ] `setup:upgrade` passes without error
+- [ ] `setup:di:compile` passes without error
+- [ ] `module:status` displays the module correctly
+- [ ] `cache:clean` and `cache:flush` pass
+- [ ] `indexer:reindex` passes
+- [ ] Module tested in frontend and/or backend
+- [ ] No errors in `var/log/system.log` and `var/log/exception.log`
+
+---
+
+## Glossary
 
 ### A
 
-**ACL (Access Control List)** — Système de permissions de Magento qui définit qui peut accéder à quelles ressources dans l'admin.
+**ACL (Access Control List)** — Magento's permission system that defines who can access what resources in the admin.
 
-**Adobe Commerce** — Nom officiel de Magento 2 (Enterprise Edition). Dans ce projet, nous utilisons Magento 2 Open Source.
+**Adobe Commerce** — Official name of Magento 2 (Enterprise Edition). In this project, we use Magento 2 Open Source.
 
-**API REST** — Interface de programmation qui permet d'interagir avec Magento via des requêtes HTTP. Définie dans `etc/webapi.xml`.
+**API REST** — Programming interface that allows interaction with Magento via HTTP requests. Defined in `etc/webapi.xml`.
 
-**Area** — Concept Magento qui délimite le contexte d'exécution : `frontend`, `adminhtml`, `crontab`, `webapi_rest`, `graphql`.
+**Area** — Magento concept that delimits the execution context: `frontend`, `adminhtml`, `crontab`, `webapi_rest`, `graphql`.
 
-**Attribute** — Propriété d'un produit, client ou catégorie dans Magento. Peut être de type EAV (texte, date, décimal) ou Flat (varchar, int, text, decimal, datetime).
+**Attribute** — Property of a product, customer, or category in Magento. Can be of type EAV (text, date, decimal) or Flat (varchar, int, text, decimal, datetime).
 
 ### B
 
-**Block** — Classe PHP qui fournit des données à un template PHTML. Hérite de `\Magento\Framework\View\Element\Template`.
+**Block** — PHP class that provides data to a PHTML template. Inherits from `\Magento\Framework\View\Element\Template`.
 
-**Bundle Product** — Type de produit Magento composé d'options multiples, chaque option liée à un produit simple.
+**Bundle Product** — Magento product type composed of multiple options, each linked to a simple product.
 
 ### C
 
-**Cache** — Mécanisme de Magento pour stocker des données fréquemment utilisées. Types : `config`, `layout`, `block_html`, `collections`, `reflection`, `db_ddl`, `full_page` (Varnish), `translate`, `config_integration`, `config_integration_api`.
+**Cache** — Magento mechanism for storing frequently used data. Types: `config`, `layout`, `block_html`, `collections`, `reflection`, `db_ddl`, `full_page` (Varnish), `translate`, `config_integration`, `config_integration_api`.
 
-**Collection** — Classe qui représente une liste d'entités avec filtres, tris et pagination.
+**Collection** — Class representing a list of entities with filters, sorting, and pagination.
 
-**Composer** — Gestionnaire de dépendances PHP utilisé par Magento.
+**Composer** — PHP dependency manager used by Magento.
 
-**ComponentRegistrar** — Classe Magento qui enregistre les modules, thèmes et packages de langue.
+**ComponentRegistrar** — Magento class that registers modules, themes, and language packages.
 
-**Controller** — Classe qui gère les requêtes HTTP et retourne une réponse. Dans Magento, les controllers étendent `\Magento\Framework\App\Action\Action`.
+**Controller** — Class that handles HTTP requests and returns a response. In Magento, controllers extend `\Magento\Framework\App\Action\Action`.
 
-**Cron** — Tâches planifiées dans Magento. Configurées dans `etc/crontab.xml`.
+**Cron** — Scheduled tasks in Magento. Configured in `etc/crontab.xml`.
 
-**Customer** — Entité représentant un client dans Magento.
+**Customer** — Entity representing a client in Magento.
 
 ### D
 
-**Data Patch** — Script PHP qui modifie la structure ou les données de la base de données. Utilisé pour les modifications post-installation.
+**Data Patch** — PHP script that modifies the database structure or data. Used for post-installation modifications.
 
-**db_schema.xml** — Fichier XML déclaratif qui définit les tables, colonnes, index et contraintes de la base de données.
+**db_schema.xml** — Declarative XML file that defines tables, columns, indexes, and constraints of the database.
 
-**Dependency Injection (DI)** — Pattern qui permet d'injecter les dépendances d'une classe via son constructeur plutôt que de les créer directement.
+**Dependency Injection (DI)** — Pattern that allows injecting a class's dependencies via its constructor rather than creating them directly.
 
-**di.xml** — Fichier de configuration du Dependency Injection Container de Magento.
+**di.xml** — Magento Dependency Injection Container configuration file.
 
-**Directory** — Répertoire virtuel de Magento (ex : `app/code`, `app/design`, `vendor`).
+**Directory** — Virtual directory of Magento (e.g.: `app/code`, `app/design`, `vendor`).
 
 ### E
 
-**EAV (Entity-Attribute-Value)** — Modèle de données de Magento pour les entités comme les produits et les clients. Permet d'ajouter des attributs dynamiquement.
+**EAV (Entity-Attribute-Value)** — Magento data model for entities like products and customers. Allows dynamic attributes.
 
-**Event** — Mécanisme de Magento qui permet de réagir à des actions spécifiques (ex : `sales_order_save_after`).
+**Event** — Magento mechanism that allows reacting to specific actions (e.g.: `sales_order_save_after`).
 
-**events.xml** — Fichier qui déclare les observers pour des événements Magento.
+**events.xml** — File that declares observers for Magento events.
 
-**Extension Attribute** — Mécanisme qui permet d'ajouter des attributs à une interface sans la modifier. Utilisé pour étendre les Service Contracts.
+**Extension Attribute** — Mechanism that allows adding attributes to an interface without modifying it. Used to extend Service Contracts.
 
 ### F
 
-**Factory** — Classe générée automatiquement par Magento pour créer des instances d'objets. Utilise le pattern Factory.
+**Factory** — Class automatically generated by Magento to create object instances. Uses the Factory pattern.
 
-**Frontend** — Zone de l'application visible par les clients. Différent de `adminhtml`.
+**Frontend** — Application area visible to customers. Different from `adminhtml`.
 
-**FrontName** — Identifiant d'une route dans l'URL (ex : `loyalty` dans `/loyalty/customer/balance`).
+**FrontName** — Route identifier in the URL (e.g.: `loyalty` in `/loyalty/customer/balance`).
 
 ### G
 
-**GraphQL** — API query language pour Magento (non utilisée dans ce projet pour l'instant).
+**GraphQL** — API query language for Magento (not used in this project for now).
 
-**Group** — Niveau de configuration dans Magento : `default` (global), `websites` (par site), `stores` (par boutique).
+**Group** — Configuration level in Magento: `default` (global), `websites` (per site), `stores` (per store).
 
 ### H
 
-**Helper** — Classe utilitaire qui fournit des méthodes réutilisables. Dans Magento, les Helpers étendent `\Magento\Framework\App\Helper\AbstractHelper`.
+**Helper** — Utility class that provides reusable methods. In Magento, Helpers extend `\Magento\Framework\App\Helper\AbstractHelper`.
 
 ### I
 
-**Indexer** — Processus Magento qui maintient les données à jour pour améliorer les performances des recherches et filtres.
+**Indexer** — Magento process that keeps data updated to improve search and filter performance.
 
-**Interface** — Contrat qui définit les méthodes qu'une classe doit implémenter. Dans Magento, les interfaces sont dans le dossier `Api/`.
+**Interface** — Contract that defines the methods a class must implement. In Magento, interfaces are in the `Api/` folder.
 
-**Interceptor** — Classe générée par `setup:di:compile` qui implémente la logique des Plugins.
+**Interceptor** — Class generated by `setup:di:compile` that implements Plugin logic.
 
 ### K
 
-**Knockout.js** — Framework JavaScript utilisé par Magento pour les composants UI (checkout, mini-cart). Dans ce projet, React remplace Knockout pour le frontend personnalisé.
+**Knockout.js** — JavaScript framework used by Magento for UI components (checkout, mini-cart). In this project, React replaces Knockout for the custom frontend.
 
 ### L
 
-**Layout XML** — Fichier XML qui définit la structure d'une page Magento (blocks, containers, templates).
+**Layout XML** — XML file that defines the structure of a Magento page (blocks, containers, templates).
 
-**Logger** — Classe qui écrit des messages dans les fichiers de log. Utilise PSR-3.
+**Logger** — Class that writes messages to log files. Uses PSR-3.
 
 ### M
 
-**Magento 2** — Plateforme e-commerce open source sur laquelle repose AlpineCommerce.
+**Magento 2** — Open-source e-commerce platform on which AlpineCommerce is based.
 
-**Menu** — Élément du menu admin défini dans `etc/adminhtml/menu.xml`.
+**Menu** — Admin menu item defined in `etc/adminhtml/menu.xml`.
 
-**Module** — Unité fonctionnelle de Magento. Dans AlpineCommerce, chaque module est une fonctionnalité métier.
+**Module** — Functional unit of Magento. In AlpineCommerce, each module is a business feature.
 
-**module.xml** — Fichier qui déclare un module Magento avec son nom, sa version et ses dépendances.
+**module.xml** — File that declares a Magento module with its name, version, and dependencies.
 
-**MSI (Multi Source Inventory)** — Système d'inventaire multi-sources de Magento qui permet de gérer des stocks dans plusieurs entrepôts.
+**MSI (Multi Source Inventory)** — Magento's multi-source inventory system that allows managing stock in multiple warehouses.
 
-**Multi Store** — Fonctionnalité de Magento qui permet de gérer plusieurs boutiques avec des configurations différentes.
+**Multi Store** — Magento feature that allows managing multiple stores with different configurations.
 
 ### O
 
-**Observer** — Classe qui réagit à un événement Magento. Déclarée dans `etc/events.xml`.
+**Observer** — Class that reacts to a Magento event. Declared in `etc/events.xml`.
 
-**OOP (Object-Oriented Programming)** — Paradigme de programmation utilisé par Magento : classes, interfaces, héritage, polymorphisme.
+**OOP (Object-Oriented Programming)** — Programming paradigm used by Magento: classes, interfaces, inheritance, polymorphism.
 
 ### P
 
-**Patch** — Script qui modifie la base de données. Peut être de type `Data` (données) ou `Schema` (structure).
+**Patch** — Script that modifies the database. Can be of type `Data` (data) or `Schema` (structure).
 
-**Permission** — Droit d'accès à une ressource Magento, défini dans `etc/acl.xml`.
+**Permission** — Right to access a Magento resource, defined in `etc/acl.xml`.
 
-**Plugin (Interceptor)** — Pattern Magento qui permet de modifier le comportement d'une méthode sans la toucher. Défini dans `etc/di.xml`.
+**Plugin (Interceptor)** — Magento pattern that allows modifying the behavior of a method without touching it. Defined in `etc/di.xml`.
 
-**Preference** — Liaison dans `di.xml` qui associe une interface à une implémentation concrète.
+**Preference** — Link in `di.xml` that associates an interface with a concrete implementation.
 
-**Product** — Entité représentant un produit dans Magento.
+**Product** — Entity representing a product in Magento.
 
-**Proxy** — Classe générée par Magento pour le chargement paresseux (lazy loading) des dépendances.
+**Proxy** — Class generated by Magento for lazy loading of dependencies.
 
-**PSR-12** — Norme de codage PHP que respecte le projet.
+**PSR-12** — PHP coding standard respected by the project.
 
-**PHTML** — Extension des fichiers de template Magento (PHP HTML).
+**PHTML** — Magento template file extension (PHP HTML).
 
 ### Q
 
-**Quote** — Entité représentant le panier d'un client avant la commande.
+**Quote** — Entity representing a customer's cart before the order.
 
 ### R
 
-**React** — Bibliothèque JavaScript utilisée pour le frontend personnalisé d'AlpineCommerce.
+**React** — JavaScript library used for AlpineCommerce's custom frontend.
 
-**Registration** — Fichier `registration.php` qui enregistre un module, un thème ou un package de langue auprès de Magento.
+**Registration** — `registration.php` file that registers a module, theme, or language package with Magento.
 
-**Repository** — Classe qui fournit un accès aux données via des méthodes métier (getById, getList, save, delete). Implémente un Service Contract.
+**Repository** — Class that provides data access via business methods (getById, getList, save, delete). Implements a Service Contract.
 
-**Resource Model** — Classe qui effectue les opérations CRUD sur les tables de base de données.
+**Resource Model** — Class that performs CRUD operations on database tables.
 
-**REST API** — Interface de programmation basée sur HTTP pour interagir avec Magento.
+**REST API** — HTTP-based programming interface for interacting with Magento.
 
-**routes.xml** — Fichier qui déclare les routes frontend ou admin d'un module.
+**routes.xml** — File that declares frontend or admin routes of a module.
 
 ### S
 
-**Sales** — Module Magento qui gère les commandes, factures, avoirs et expéditions.
+**Sales** — Magento module that manages orders, invoices, credit memos, and shipments.
 
-**Schema** — Structure de la base de données. Dans Magento, défini dans `etc/db_schema.xml`.
+**Schema** — Database structure. In Magento, defined in `etc/db_schema.xml`.
 
-**Scope** — Portée de configuration dans Magento : `default` (global), `website` (site web), `store` (boutique).
+**Scope** — Configuration scope in Magento: `default` (global), `website` (website), `store` (store).
 
-**Search Criteria** — Objet Magento qui représente les critères de recherche (filtres, tris, pagination).
+**Search Criteria** — Magento object representing search criteria (filters, sorting, pagination).
 
-**Service Contract** — Interface qui définit les méthodes d'un service métier. Stockée dans `Api/`.
+**Service Contract** — Interface that defines the methods of a business service. Stored in `Api/`.
 
-**Setup** — Répertoire qui contient les scripts d'installation et de mise à jour de la base de données.
+**Setup** — Directory containing database installation and update scripts.
 
-**Shipping** — Module Magento qui gère les méthodes de livraison.
+**Shipping** — Magento module that manages shipping methods.
 
-**Store** — Entité représentant une boutique dans Magento.
+**Store** — Entity representing a store in Magento.
 
-**Store View** — Niveau le plus bas de la hiérarchie Magento : Global > Site Web > Groupe de boutiques > Boutique > Vue de boutique.
+**Store View** — Lowest level of the Magento hierarchy: Global > Website > Store Group > Store > Store View.
 
 ### T
 
-**Tailwind CSS** — Framework CSS utility-first utilisé pour le frontend personnalisé.
+**Tailwind CSS** — Utility-first CSS framework used for the custom frontend.
 
-**Template** — Fichier PHTML qui contient le HTML d'une page ou d'un block.
+**Template** — PHTML file containing the HTML of a page or block.
 
-**Total Collector** — Classe Magento qui calcule les totaux du panier (sous-total, taxes, frais de livraison, remises).
+**Total Collector** — Magento class that calculates cart totals (subtotal, taxes, shipping fees, discounts).
 
 ### U
 
-**UI Component** — Composant d'interface utilisateur Magento pour les grilles et formulaires admin. Défini dans `view/adminhtml/ui_component/`.
+**UI Component** — Magento UI component for admin grids and forms. Defined in `view/adminhtml/ui_component/`.
 
-**URL Rewrite** — Mécanisme de Magento qui permet de personnaliser les URLs pour le SEO.
+**URL Rewrite** — Magento mechanism for customizing URLs for SEO.
 
 ### V
 
-**Varnish** — Reverse proxy cache utilisé en production pour accélérer le chargement des pages.
+**Varnish** — Reverse proxy cache used in production to speed up page loading.
 
-**ViewModel** — Classe qui fournit des données et de la logique à un template. Alternative moderne aux Blocks.
+**ViewModel** — Class that provides data and logic to a template. Modern alternative to Blocks.
 
-**VirtualType** — Type virtuel dans `di.xml` qui permet de configurer une classe sans la déclarer explicitement.
+**VirtualType** — Virtual type in `di.xml` that allows configuring a class without explicitly declaring it.
 
 ### W
 
-**webapi.xml** — Fichier qui déclare les routes REST API d'un module.
+**webapi.xml** — File that declares REST API routes of a module.
 
-**Website** — Entité représentant un site web dans la hiérarchie Magento.
+**Website** — Entity representing a website in the Magento hierarchy.
 
 ### X-Y-Z
 
-**XML** — Langage de balisage utilisé pour les configurations Magento (layouts, di, webapi, etc.).
+**XML** — Markup language used for Magento configurations (layouts, di, webapi, etc.).
 
-**YAML** — Format de fichier utilisé par Docker et certaines configurations Magento.
+**YAML** — File format used by Docker and some Magento configurations.
 
-**Zone** — Concept Magento qui délimite le contexte d'exécution (frontend, adminhtml, crontab, etc.).
+**Zone** — Magento concept that delimits the execution context (frontend, adminhtml, crontab, etc.).
 
 ---
 
-*Dernière mise à jour : 2026-08-06 (Phase A — gel des standards).*
+*Last updated: 2026-08-06 (Phase A — standards frozen).*

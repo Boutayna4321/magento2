@@ -1,22 +1,22 @@
-# Module AlpineCommerce_LoyaltyProgram — Programme de fidélité
+# AlpineCommerce_LoyaltyProgram Module — Loyalty Program
 
-> **Statut** : 🔄 En finalisation (v1.4.0)
+> **Status**: 🔄 In finalization (v1.4.0)
 
-## 1. Responsabilité
+## 1. Responsibility
 
-**Programme de fidélité** : gain et dépense de points sur les commandes, réduction de
-panier, et messagerie d'incitation.
+**Loyalty program**: earning and spending points on orders, cart discount,
+and incentive messaging.
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-| **Gain de points** | Observer : attribution de points sur facture |
-| **Dépense de points** | Observer : déduction sur commande |
-| **Réduction de panier** | Total collector |
-| **Minicart** | Plugin : message incitatif |
+| **Point earning** | Observer: point allocation on invoice |
+| **Point spending** | Observer: deduction on order |
+| **Cart discount** | Total collector |
+| **Minicart** | Plugin: incentive message |
 | **REST API** | `/V1/carts/mine/loyalty-points` |
-| **Admin** | Interface admin en cours de finalisation |
+| **Admin** | Admin interface in finalization |
 
 ## 3. Architecture
 
@@ -24,70 +24,70 @@ panier, et messagerie d'incitation.
 AlpineCommerce/LoyaltyProgram/
 ├── Api/                        # Service Contracts (points, balance)
 ├── Model/
-│   ├── Total/                  # Total collector (réduction de panier)
-│   └── (Repository en base — InMemory supprimé)
-├── Observer/                   # Sur invoice (gain) et order (dépense)
-├── Plugin/Minicart.php         # message incitatif
+│   ├── Total/                  # Total collector (cart discount)
+│   └── (Repository in base — InMemory removed)
+├── Observer/                   # On invoice (earning) and order (spending)
+├── Plugin/Minicart.php         # incentive message
 └── etc/db_schema.xml           # referenceId prefix ALPINECOMMERCE_*
 ```
 
-## 4. Base de données
+## 4. Database
 
-| Table | Rôle |
+| Table | Role |
 |---|---|
-| `alpinecommerce_loyalty_balance` | Solde de points par client |
-| `alpinecommerce_loyalty_order_points` | Points émis/déduits par commande |
+| `alpinecommerce_loyalty_balance` | Point balance per customer |
+| `alpinecommerce_loyalty_order_points` | Points issued/deducted per order |
 
-## 5. API REST
+## 5. REST API
 
-| Route | Rôle |
+| Route | Role |
 |---|---|
-| `/V1/carts/mine/loyalty-points` | Consultation/utilisation des points (cart mine) |
+| `/V1/carts/mine/loyalty-points` | View/use points (cart mine) |
 
 ## 6. Admin
 
-- Interface admin **en cours de finalisation** (v1.1 prévu — voir `ROADMAP.md`)
-- Intégration admin globale validée (Sprint 6)
+- Admin interface **in finalization** (v1.1 planned — see `ROADMAP.md`)
+- Global admin integration validated (Sprint 6)
 
 ## 7. Frontend
 
-- Minicart : message incitatif (plugin)
-- Checkout : réduction appliquée par le total collector
+- Minicart: incentive message (plugin)
+- Checkout: discount applied by total collector
 
 ## 8. CLI
 
-Aucune commande dédiée.
+No dedicated command.
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| Observers (invoice/order) | Attribution et déduction déléguées aux événements Magento |
-| Total collector | Réduction de panier native (extension du processus de totaux) |
-| Suppression du repository `InMemory/LoyaltyBalanceRepository.php` | Inutile — repository en base |
-| Suppression `InstallSchema.php` / `InstallData.php` | Remplacés par `db_schema.xml` / data patches |
+| Observers (invoice/order) | Earning and deduction delegated to Magento events |
+| Total collector | Native cart discount (extension of the total process) |
+| Removal of `InMemory/LoyaltyBalanceRepository.php` | Unnecessary — base repository |
+| Removal of `InstallSchema.php` / `InstallData.php` | Replaced by `db_schema.xml` / data patches |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| — | `referenceId` incorrects dans `db_schema.xml` | ✅ Corrigé — prefix `ALPINECOMMERCE_*` |
-| — | Fichiers legacy `Setup/InstallSchema.php` / `InstallData.php` | ✅ Corrigé — supprimés |
-| — | Repository en mémoire legacy | ✅ Corrigé — supprimé |
-| — | Transactions / interface admin complète | 📋 v1.1 — `ROADMAP.md` |
+| — | Incorrect `referenceId` in `db_schema.xml` | ✅ Fixed — prefix `ALPINECOMMERCE_*` |
+| — | Legacy files `Setup/InstallSchema.php` / `InstallData.php` | ✅ Fixed — removed |
+| — | Legacy in-memory repository | ✅ Fixed — removed |
+| — | Transactions / complete admin interface | 📋 v1.1 — `ROADMAP.md` |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
-- **Total collector** (`collect` sur le processus de totaux)
+- **Total collector** (`collect` on the total process)
 - **Observers** (invoice, order)
-- **Plugin** sur minicart
+- **Plugin** on minicart
 - Data patches + `db_schema.xml` (referenceId)
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Statut** : 🔄 En finalisation — cœur fonctionnel validé (Sprint 6), interface admin à compléter
+- **Status**: 🔄 In finalization — functional core validated (Sprint 6), admin interface to complete
 
 ---
 
-*Sources : `docs/08_CHANGELOG.md` (v1.4.0), `SPRINT_VALIDATION_REPORT.md`,
-`SPRINT_INTEGRATION_REPORT.md` (fusionnés dans `CHANGELOG.md`).*
+*Sources: `docs/08_CHANGELOG.md` (v1.4.0), `SPRINT_VALIDATION_REPORT.md`,
+`SPRINT_INTEGRATION_REPORT.md` (merged into `CHANGELOG.md`).*

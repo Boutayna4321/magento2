@@ -1,21 +1,21 @@
-# Module AlpineCommerce_ProductLabels — Étiquettes produits
+# AlpineCommerce_ProductLabels Module — Product Labels
 
-> **Statut** : ✅ Stable (v1.5.0)
+> **Status**: ✅ Stable (v1.5.0)
 
-## 1. Responsabilité
+## 1. Responsibility
 
-**Étiquettes produits** administrables (ex. « Nouveau », « Promotion », « Stock limité ») :
-rendu visuel sur la page produit et les listings de catégorie.
+**Manageable product labels** (e.g. "New", "Sale", "Limited stock"):
+visual rendering on the product page and category listings.
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-| **Grille admin** | Listing avec massactions Delete / Change status + bouton « Add New Label » |
-| **Formulaire d'édition** | Nom, code, couleurs, priorité, position, dates de validité, statut, sélection produits |
-| **REST API** | CRUD des labels + liaison produits + application |
-| **Frontend** | Rendu sur page produit et listings catégorie (plugin `CatalogBlock`) |
-| **i18n** | Traduction française |
+| **Admin grid** | Listing with Delete / Change status massactions + "Add New Label" button |
+| **Edit form** | Name, code, colors, priority, position, validity dates, status, product selection |
+| **REST API** | Label CRUD + product linking + application |
+| **Frontend** | Rendering on product page and category listings (plugin `CatalogBlock`) |
+| **i18n** | French translation |
 
 ## 3. Architecture
 
@@ -23,27 +23,27 @@ rendu visuel sur la page produit et les listings de catégorie.
 AlpineCommerce/ProductLabels/
 ├── Api/                        # Service Contracts + SearchResults
 ├── Block/
-│   ├── Adminhtml/Label/Grid.php   # fix C7 — réécrit (massaction natif)
-│   └── Frontend/                  # rendu labels
+│   ├── Adminhtml/Label/Grid.php   # fix C7 — rewritten (native massaction)
+│   └── Frontend/                  # label rendering
 ├── Controller/                 # Adminhtml (CRUD) + REST
 ├── Model/                      # Entities, repositories, ResourceModel/Collection
-├── Plugin/CatalogBlock.php     # plugin d'affichage frontend
-├── Observer/                   # application des labels (⚠️ N+1 — BACKLOG B-06 P5)
+├── Plugin/CatalogBlock.php     # frontend display plugin
+├── Observer/                   # label application (⚠️ N+1 — BACKLOG B-06 P5)
 └── view/
     ├── adminhtml/ui_component/alphacommerce_product_label_listing.xml
-    └── frontend/layout/catalog_product_view.xml   # referenceBlock (fix Sprint 6)
+    └── frontend/layout/catalog_product_view.xml   # referenceBlock (Sprint 6 fix)
 ```
 
-## 4. Base de données
+## 4. Database
 
-| Table | Rôle |
+| Table | Role |
 |---|---|
-| `alphacommerce_product_label` | Labels (code, couleurs, priorité, position, dates, statut) |
-| `alphacommerce_product_label_product` | Liaison label ↔ produits |
+| `alphacommerce_product_label` | Labels (code, colors, priority, position, dates, status) |
+| `alphacommerce_product_label_product` | Label ↔ products link |
 
-## 5. API REST
+## 5. REST API
 
-| Route | Méthodes |
+| Route | Methods |
 |---|---|
 | `/V1/alphacommerce/product-labels` | GET, POST |
 | `/V1/alphacommerce/product-labels/:entityId` | GET, DELETE |
@@ -52,51 +52,51 @@ AlpineCommerce/ProductLabels/
 
 ## 6. Admin
 
-- Grille admin réécrite au format 2.4.8 : retrait `primaryDataSource`, bloc
-  `<templates><filters><select>` obsolète, **`<dataProvider class="...">` enfant ajouté**
-- VirtualType de data source retiré du `di.xml`
-- Formulaire : `use_container => true`, URL d'action via `getUrl()`, Registry injecté
-  explicitement dans le contrôleur `Edit`
+- Grid rewritten in 2.4.8 format: removal of `primaryDataSource`, obsolete
+  `<templates><filters><select>` block, **`<dataProvider class="...">` child added**
+- VirtualType data source removed from `di.xml`
+- Form: `use_container => true`, action URL via `getUrl()`, `Registry` explicitly
+  injected in `Edit` controller
 
 ## 7. Frontend
 
-- Page produit + listings catégorie : rendu des labels via plugin `CatalogBlock`
-- Fix Sprint 6 : `referenceContainer` → **`referenceBlock`** pour `product.info.media`
-  et `product.info.details` (ce sont des `block`, pas des `container` — labels jamais rendus)
+- Product page + category listings: label rendering via `CatalogBlock` plugin
+- Sprint 6 fix: `referenceContainer` → **`referenceBlock`** for `product.info.media`
+  and `product.info.details` (these are `block`, not `container` — labels never rendered)
 
 ## 8. CLI
 
-Aucune commande dédiée.
+No dedicated command.
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| Plugin `CatalogBlock` pour le rendu | Affichage sans toucher les templates core |
-| Grid Magento 2.4.8 natif | Le bloc `<templates><filters><select>` est obsolète ; massaction natif |
-| `<dataProvider class="...">` enfant obligatoire | Exigence `definition.map.xml` (module-ui) |
+| `CatalogBlock` plugin for rendering | Display without touching core templates |
+| Native Magento 2.4.8 Grid | The `<templates><filters><select>` block is obsolete; native massaction |
+| `<dataProvider class="...">` mandatory child | `definition.map.xml` requirement (module-ui) |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| C7 | `Block/Adminhtml/Label/Grid.php` : `use Magento\Backend\Block\Widget\Grid` (collision fatale), ctor invalide, renderer + constante inexistants | ✅ Corrigé (Phase 1) |
-| — | Grille non conforme 2.4.8 (`primaryDataSource`, `<templates><filters><select>`) | ✅ Corrigé (v1.5.0) |
-| — | Labels jamais rendus (referenceContainer sur des blocks) | ✅ Corrigé (Sprint 6) |
-| P5 | Observer : N+1 sur l'application des labels | 📋 BACKLOG B-06 P5 |
+| C7 | `Block/Adminhtml/Label/Grid.php`: `use Magento\Backend\Block\Widget\Grid` (fatal collision), invalid ctor, renderer + non-existent constant | ✅ Fixed (Phase 1) |
+| — | Grid not 2.4.8 compliant (`primaryDataSource`, `<templates><filters><select>`) | ✅ Fixed (v1.5.0) |
+| — | Labels never rendered (referenceContainer on blocks) | ✅ Fixed (Sprint 6) |
+| P5 | Observer: N+1 on label application | 📋 BACKLOG B-06 P5 |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
-- Plugin (`around/after`) sur blocs core (`CatalogBlock`)
-- Grille admin native 2.4.8 (listing + massactions + bouton Add New)
+- Plugin (`around/after`) on core blocks (`CatalogBlock`)
+- Native 2.4.8 admin grid (listing + massactions + Add New button)
 - `referenceBlock` vs `referenceContainer`
-- Routes REST syntaxe `:param`
+- REST routes `:param` syntax
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Statut** : ✅ Stable — frontend et admin validés (Sprint 6)
+- **Status**: ✅ Stable — frontend and admin validated (Sprint 6)
 
 ---
 
-*Sources : `docs/08_CHANGELOG.md` (v1.5.0), `SPRINT_VALIDATION_REPORT.md`,
-`SPRINT_INTEGRATION_REPORT.md` (fusionnés dans `CHANGELOG.md`).*
+*Sources: `docs/08_CHANGELOG.md` (v1.5.0), `SPRINT_VALIDATION_REPORT.md`,
+`SPRINT_INTEGRATION_REPORT.md` (merged into `CHANGELOG.md`).*

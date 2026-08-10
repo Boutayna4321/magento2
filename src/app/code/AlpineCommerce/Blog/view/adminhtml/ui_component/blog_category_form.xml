@@ -14,6 +14,9 @@
     <settings>
         <namespace>blog_category_form</namespace>
         <dataScope>data</dataScope>
+        <deps>
+            <dep>blog_category_form.blog_category_form_data_source</dep>
+        </deps>
         <buttons>
             <button name="save" class="AlpineCommerce\Blog\Block\Adminhtml\Category\Edit\SaveButton"/>
             <button name="back" class="AlpineCommerce\Blog\Block\Adminhtml\Category\Edit\BackButton"/>
@@ -23,6 +26,7 @@
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
                 <item name="provider" xsi:type="string">blog_category_form.blog_category_form_data_source</item>
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
             </item>
         </argument>
     <settings>
@@ -39,6 +43,7 @@
         <settings>
             <label translate="true">General</label>
             <collapsible>true</collapsible>
+            <opened>true</opened>
         </settings>
         <field name="category_id">
             <argument name="data" xsi:type="array">

@@ -1,81 +1,81 @@
-# Module AlpineCommerce_EuVat — Validation TVA européenne
+# AlpineCommerce_EuVat Module — European VAT Validation
 
-> **Statut** : 🔄 En finalisation (v1.0.0)
+> **Status**: 🔄 In finalization (v1.0.0)
 
-## 1. Responsabilité
+## 1. Responsibility
 
-**Validation des numéros de TVA européens** via le service **VIES** (VAT Information
-Exchange System, requête SOAP), avec commande CLI, REST API et configuration admin.
+**European VAT number validation** via the **VIES** service (VAT Information
+Exchange System, SOAP request), with CLI command, REST API, and admin configuration.
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-| **Validation VIES** | Intégration du service VIES via SOAP |
-| **CLI** | Commande `alphacommerce:euvat:validate` |
-| **REST API** | Validation exposée |
-| **Configuration admin** | Activation et paramétrage |
-| **i18n** | Traduction française |
+| **VIES validation** | VIES service integration via SOAP |
+| **CLI** | `alphacommerce:euvat:validate` command |
+| **REST API** | Exposed validation |
+| **Admin configuration** | Activation and setup |
+| **i18n** | French translation |
 
 ## 3. Architecture
 
 ```
 AlpineCommerce/EuVat/
 ├── Api/                        # Service Contracts
-├── Console/                    # commande alphacommerce:euvat:validate
-├── Model/                      # client SOAP VIES + logique de validation
+├── Console/                    # alphacommerce:euvat:validate command
+├── Model/                      # VIES SOAP client + validation logic
 ├── Controller/                 # REST
 └── etc/
-    ├── system.xml              # configuration admin
+    ├── system.xml              # admin configuration
     └── (webapi.xml)            # REST API
 ```
 
-## 4. Base de données
+## 4. Database
 
-Aucune table dédiée (validation en temps réel via VIES).
+No dedicated table (real-time validation via VIES).
 
-## 5. API REST
+## 5. REST API
 
-Route REST de validation d'un numéro de TVA (Service Contract exposé).
+REST route for VAT number validation (exposed Service Contract).
 
 ## 6. Admin
 
-- Configuration système (activation, paramètres VIES)
+- System configuration (activation, VIES parameters)
 
 ## 7. Frontend
 
-Aucun frontend dédié.
+No dedicated frontend.
 
 ## 8. CLI
 
-| Commande | Rôle |
+| Command | Role |
 |---|---|
-| `alphacommerce:euvat:validate` | Valider un numéro de TVA (VIES) |
+| `alphacommerce:euvat:validate` | Validate a VAT number (VIES) |
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| VIES via SOAP | Service officiel de la Commission européenne pour la validation intracommunautaire |
-| CLI + REST | Deux modes d'appel (ops et intégration) |
+| VIES via SOAP | Official European Commission service for intra-community validation |
+| CLI + REST | Two call modes (ops and integration) |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| — | Interface admin complète à finaliser | 📋 v1.1 — `ROADMAP.md` |
+| — | Complete admin interface to finalize | 📋 v1.1 — `ROADMAP.md` |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
-- Commandes **Console** (`bin/magento`)
-- Client **SOAP** externe (wsdl)
-- Configuration système (`system.xml`)
+- **Console** commands (`bin/magento`)
+- External **SOAP** client (wsdl)
+- System configuration (`system.xml`)
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Statut** : 🔄 En finalisation — validation globale OK (Sprint 6), finalisation admin prévue
+- **Status**: 🔄 In finalization — global validation OK (Sprint 6), admin finalization planned
 
 ---
 
-*Sources : `docs/08_CHANGELOG.md` (v1.0.0), `SPRINT_VALIDATION_REPORT.md`,
-`SPRINT_INTEGRATION_REPORT.md` (fusionnés dans `CHANGELOG.md`).*
+*Sources: `docs/08_CHANGELOG.md` (v1.0.0), `SPRINT_VALIDATION_REPORT.md`,
+`SPRINT_INTEGRATION_REPORT.md` (merged into `CHANGELOG.md`).*

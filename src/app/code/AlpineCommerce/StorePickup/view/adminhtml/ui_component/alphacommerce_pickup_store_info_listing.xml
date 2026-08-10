@@ -43,8 +43,7 @@
             <action name="delete">
                 <settings>
                     <url path="mui/massAction"/>
-                    <param name="collectionClass">AlpineCommerce\StorePickup\Model\ResourceModel\StoreInfo\Collection</param>
-                    <confirm>
+                                        <confirm>
                         <message translate="true">Delete selected items?</message>
                         <title translate="true">Delete items</title>
                     </confirm>

@@ -1,128 +1,128 @@
-# Module AlpineCommerce_Gdpr — Conformité RGPD
+# AlpineCommerce_Gdpr Module — GDPR Compliance
 
-> **Statut** : 🔄 Code terminé — validation Magento en attente (sprint de finalisation : Sprint 1)
+> **Status**: 🔄 Code done — Magento validation pending (finalization sprint: Sprint 1)
 
-## 1. Responsabilité
+## 1. Responsibility
 
-Gérer la **conformité RGPD** pour la plateforme : journalisation des consentements,
-export des données personnelles (droit à la portabilité, Art. 15) et suppression
-(droit à l'oubli, Art. 17). Magento ne propose pas de module RGPD natif en Open Source.
+Manage **GDPR compliance** for the platform: consent logging,
+personal data export (right to portability, Art. 15) and deletion
+(right to be forgotten, Art. 17). Magento does not offer a native GDPR module in Open Source.
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-### Inclus (v1.0)
+### Included (v1.0)
 
-| Fonctionnalité | Description | Priorité |
+| Feature | Description | Priority |
 |---|---|---|
-| **Listing admin des consentements** | Interface admin listant tous les consentements (customer, date, type, IP, statut) | Critique |
-| **Export admin RGPD** | Bouton « Export » dans le listing → déclenche `GdprExportInterface` pour un client (Art. 15) | Haute |
-| **ACL granulaire** | `consent_log`, `export`, `config` (séparés car l'export est une action sensible) | Haute |
-| **Menu admin** | Entrée « GDPR > Consent Log » sous `Magento_Backend::content` | Haute |
-| **Cœur métier existant** | Logging, export, delete, REST API, console commands (pré-existants, inchangés) | — |
+| **Admin consent listing** | Admin interface listing all consents (customer, date, type, IP, status) | Critical |
+| **GDPR admin export** | "Export" button in the listing → triggers `GdprExportInterface` for a customer (Art. 15) | High |
+| **Granular ACL** | `consent_log`, `export`, `config` (separate because export is a sensitive action) | High |
+| **Admin menu** | "GDPR > Consent Log" entry under `Magento_Backend::content` | High |
+| **Existing business core** | Logging, export, delete, REST API, console commands (pre-existing, unchanged) | — |
 
-### Exclusions assumées (v1.1)
+### Assumed exclusions (v1.1)
 
-- **Anonymisation admin** (Art. 17) : les console commands suffisent en v1.0
-- **Configuration système** : valeurs par défaut codées en dur
-- **Journalisation des accès export** : prévu en v1.1
+- **Admin anonymization** (Art. 17): console commands are sufficient in v1.0
+- **System configuration**: values hardcoded
+- **Export access logging**: planned for v1.1
 
 ## 3. Architecture
 
 ```
 AlpineCommerce/Gdpr/
 ├── etc/
-│   ├── module.xml / db_schema.xml / di.xml / webapi.xml   # EXISTANT — inchangé
-│   ├── acl.xml                    # Créé (Sprint 1) — consent_log, export, config
-│   └── adminhtml/menu.xml         # Créé (Sprint 1)
+│   ├── module.xml / db_schema.xml / di.xml / webapi.xml   # EXISTING — unchanged
+│   ├── acl.xml                    # Created (Sprint 1) — consent_log, export, config
+│   └── adminhtml/menu.xml         # Created (Sprint 1)
 ├── Controller/Adminhtml/ConsentLog/
-│   ├── Index.php                  # Créé — listing (pattern Faq)
-│   └── Export.php                 # Créé — export admin
+│   ├── Index.php                  # Created — listing (Faq pattern)
+│   └── Export.php                 # Created — admin export
 ├── Ui/
-│   ├── DataProvider/ConsentLogListingDataProvider.php     # Créé — AbstractDataProvider
-│   └── Component/Listing/Column/Actions.php               # Créé — colonne Export
+│   ├── DataProvider/ConsentLogListingDataProvider.php     # Created — AbstractDataProvider
+│   └── Component/Listing/Column/Actions.php               # Created — Export column
 └── view/adminhtml/
     ├── layout/alphacommerce_gdpr_consentlog_index.xml
     └── ui_component/alphacommerce_gdpr_consent_log_listing.xml
 ```
 
-**Règle d'or** : ne pas toucher au cœur métier existant. L'interface admin s'appuie sur
-les Service Contracts (`ConsentLogRepositoryInterface`, `GdprExportInterface`) sans les modifier.
+**Golden rule**: do not touch the existing business core. The admin interface relies on
+the Service Contracts (`ConsentLogRepositoryInterface`, `GdprExportInterface`) without modifying them.
 
-## 4. Base de données
+## 4. Database
 
-| Table | Rôle |
+| Table | Role |
 |---|---|
-| `alphacommerce_gdpr_consent_log` | Logs des consentements (customer_id, consent_type, status, ip_address, created_at) |
+| `alphacommerce_gdpr_consent_log` | Consent logs (customer_id, consent_type, status, ip_address, created_at) |
 
-Aucune modification de schéma au Sprint 1 (table pré-existante).
+No schema modification in Sprint 1 (pre-existing table).
 
-## 5. API REST
+## 5. REST API
 
-| Route | Méthode | Auth | Rôle |
+| Route | Method | Auth | Role |
 |---|---|---|---|
-| `/V1/alphacommerce/gdpr/consent` | POST | anonymous | Enregistrer un consentement |
-| `/V1/alphacommerce/gdpr/export` | GET | Mixte | Exporter les données d'un client |
-| `/V1/alphacommerce/gdpr/delete` | DELETE | Mixte | Supprimer/anonymiser les données |
+| `/V1/alphacommerce/gdpr/consent` | POST | anonymous | Record a consent |
+| `/V1/alphacommerce/gdpr/export` | GET | Mixed | Export a customer's data |
+| `/V1/alphacommerce/gdpr/delete` | DELETE | Mixed | Delete/anonymize data |
 
 5 Service Contracts (`ConsentManagementInterface`, `ConsentLogRepositoryInterface`,
 `GdprExportInterface`, `GdprDeleteInterface`, `GdprRestInterface`).
 
 ## 6. Admin
 
-- **ACL** : `AlpineCommerce_Gdpr::main` (parent) > `consent_log`, `export`, `config`
-- **Menu** : GDPR sous `Magento_Backend::content`, `sortOrder=90`
-- **Listing** : UI Component 2.4.8 conforme (dataProvider custom `AbstractDataProvider`,
-  filtres `textRange`/`select`/`date`, colonne Actions avec bouton Export + confirmation)
-- **Réseau de sécurité** : route protégée par `_isAllowed()` → 403 si non autorisé
+- **ACL**: `AlpineCommerce_Gdpr::main` (parent) > `consent_log`, `export`, `config`
+- **Menu**: GDPR under `Magento_Backend::content`, `sortOrder=90`
+- **Listing**: 2.4.8 compliant UI Component (custom `AbstractDataProvider`,
+  `textRange`/`select`/`date` filters, Actions column with Export button + confirmation)
+- **Safety net**: route protected by `_isAllowed()` → 403 if not authorized
 
 ## 7. Frontend
 
-Aucun frontend spécifique (actions via REST côté client). Les données IP sont sensibles
-et accessibles uniquement aux admins avec ACL `consent_log`.
+No specific frontend (actions via REST on client side). IP data is sensitive
+and accessible only to admins with ACL `consent_log`.
 
 ## 8. CLI
 
-| Commande | Rôle |
+| Command | Role |
 |---|---|
-| `alphacommerce:gdpr:export <customer_id>` | Export des données d'un client (argument positionnel) |
-| `alphacommerce:gdpr:delete <customer_id>` | Suppression des données d'un client |
+| `alphacommerce:gdpr:export <customer_id>` | Export a customer's data (positional argument) |
+| `alphacommerce:gdpr:delete <customer_id>` | Delete a customer's data |
 
-> ⚠️ L'aide CLI (`--help`) est trompeuse : l'usage réel est l'argument positionnel
-> (voir BACKLOG B-06 P8).
+> ⚠️ CLI help (`--help`) is misleading: actual usage is the positional argument
+> (see BACKLOG B-06 P8).
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| Ne pas étendre le scope métier | Le cœur (log, export, delete) existe déjà et est couvert par le REST API |
-| Ajouter seulement l'interface admin manquante | Listing + export trigger + ACL |
-| Conserver les console commands | Alternative opérationnelle (ex. anonymisation Art. 17 reportée en v1.1) |
-| Exclusions v1.1 | Anonymisation admin + configuration système reportées (console commands suffisantes) |
+| Do not extend business scope | The core (log, export, delete) already exists and is covered by REST API |
+| Add only the missing admin interface | Listing + export trigger + ACL |
+| Keep console commands | Operational alternative (e.g. Art. 17 anonymization deferred to v1.1) |
+| v1.1 exclusions | Admin anonymization + system configuration deferred (console commands sufficient) |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| D1 | `Controller/Adminhtml/ConsentLog/Export.php` : fatal PHP 8.2 `readonly` (collision `AbstractAction::$resultFactory`) | ✅ Corrigé (Phase 1) |
-| — | `GdprDeleteService` n'anonymise pas les adresses/emails de commande (Art. 17 incomplet) | 📋 BACKLOG B-06 P4 |
-| — | Aide CLI export trompeuse | 📋 BACKLOG B-06 P8 |
+| D1 | `Controller/Adminhtml/ConsentLog/Export.php`: PHP 8.2 fatal `readonly` (collision `AbstractAction::$resultFactory`) | ✅ Fixed (Phase 1) |
+| — | `GdprDeleteService` does not anonymize order addresses/emails (Art. 17 incomplete) | 📋 BACKLOG B-06 P4 |
+| — | Misleading CLI export help | 📋 BACKLOG B-06 P8 |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
-- Service Contracts (5 interfaces exposées via REST)
-- UI Component `<listing>` + DataProvider custom (`AbstractDataProvider`)
-- ACL hiérarchique + menu admin
-- Controller admin (pattern Faq) + action export (Réponse JSON)
-- Colonne d'actions custom avec confirmation (`UrlInterface`)
+- Service Contracts (5 interfaces exposed via REST)
+- UI Component `<listing>` + custom DataProvider (`AbstractDataProvider`)
+- Hierarchical ACL + admin menu
+- Admin controller (Faq pattern) + export action (JSON Response)
+- Custom action column with confirmation (`UrlInterface`)
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Sprint de finalisation** : Sprint 1 (analyse `14`-`15`, architecture `16`)
-- **Validation Magento** : en attente — les tests de non-régression (REST consent,
-  CLI export/delete, admin) font partie de la validation globale (Sprint 5)
-- Issues connues d'environnement : non bloquantes
+- **Finalization sprint**: Sprint 1 (analysis `14`-`15`, architecture `16`)
+- **Magento validation**: pending — non-regression tests (REST consent,
+  CLI export/delete, admin) are part of global validation (Sprint 5)
+- Known environment issues: non-blocking
 
 ---
 
-*Sources : docs `14_SPRINT_CAHIER_DES_CHARGES_GDPR.md`, `15_SPRINT_ANALYSE_GDPR.md`,
-`16_SPRINT_ARCHITECTURE_GDPR.md` (fusionnés ici), archive `17_SPRINT_REPORT_GDPR.md`.*
+*Sources: docs `14_SPRINT_CAHIER_DES_CHARGES_GDPR.md`, `15_SPRINT_ANALYSE_GDPR.md`,
+`16_SPRINT_ARCHITECTURE_GDPR.md` (merged here), archive `17_SPRINT_REPORT_GDPR.md`.*

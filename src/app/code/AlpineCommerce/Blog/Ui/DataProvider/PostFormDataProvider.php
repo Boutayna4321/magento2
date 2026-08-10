@@ -29,16 +29,18 @@ class PostFormDataProvider extends ModifierPoolDataProvider
         }
     }
 
+    private $loadedData = [];
+
     public function getData()
     {
-        $data = parent::getData();
-        $items = $data['items'] ?? [];
-
-        if (isset($items[0])) {
-            $postId = (int) $items[0]['post_id'];
-            return [$postId => $items[0]];
+        if ($this->loadedData) {
+            return $this->loadedData;
         }
 
-        return [];
+        foreach ($this->collection->getItems() as $post) {
+            $this->loadedData[$post->getId()] = $post->getData();
+        }
+
+        return $this->loadedData;
     }
 }

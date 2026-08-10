@@ -1,252 +1,252 @@
-# Charte du projet AlpineCommerce
+# AlpineCommerce Project Charter
 
-> Document fondateur du projet : vision, mission, contexte, cahier des charges v1.0
-> et analyse fonctionnelle. Il regroupe l'ancien `00_PROJECT_VISION.md`, le cahier des
-> charges du sprint de finalisation (`12`) et l'analyse fonctionnelle associée (`13`).
+> Founding document of the project: vision, mission, context, specifications v1.0
+> and functional analysis. It combines the former `00_PROJECT_VISION.md`, the sprint
+> finalization specifications (`12`) and the associated functional analysis (`13`).
 
 ---
 
 ## 1. Vision
 
-AlpineCommerce a **deux objectifs complémentaires** :
+AlpineCommerce has **two complementary objectives**:
 
-### 1.1 Une plateforme e-commerce professionnelle
+### 1.1 A professional e-commerce platform
 
-Projet e-commerce professionnel basé sur **Adobe Commerce (Magento 2 Open Source)**.
+Professional e-commerce project based on **Adobe Commerce (Magento 2 Open Source)**.
 
-Nous ne construisons pas un nouveau moteur e-commerce.
-Nous ne remplaçons pas Magento.
-Nous exploitons Magento comme cœur de l'application et y ajoutons des fonctionnalités métier spécifiques via des modules propres.
+We are not building a new e-commerce engine.
+We are not replacing Magento.
+We leverage Magento as the application core and add specific business features via proper modules.
 
-### 1.2 Une référence open source pour apprendre Magento 2
+### 1.2 An open source reference for learning Magento 2
 
-Le projet a pour ambition de devenir **l'une des meilleures références open source** pour
-apprendre Adobe Commerce / Magento 2 : un dépôt qu'un développeur débutant ou intermédiaire
-peut cloner, lire, parcourir et comprendre **progressivement**.
+The project aims to become **one of the best open source references** for
+learning Adobe Commerce / Magento 2: a repository that a beginner or intermediate
+developer can clone, read, browse, and understand **progressively**.
 
-> **Le dépôt doit permettre de passer de « je ne connais pas Magento » à « je suis capable
-> de développer un module professionnel ».**
+> **The repository must enable the transition from "I don't know Magento" to "I am capable
+> of developing a professional module".**
 >
-> Chaque module est un chapitre du cours. La documentation explique non seulement **ce que
-> fait le code**, mais surtout **pourquoi** ce choix d'architecture a été fait, quelles sont
-> les alternatives, et quelles erreurs éviter.
+> Each module is a chapter of the course. The documentation explains not only **what
+> the code does**, but above all **why** this architecture choice was made, what the
+> alternatives are, and what errors to avoid.
 
-### 1.3 Roadmap d'exécution (4 phases)
+### 1.3 Execution roadmap (4 phases)
 
-| Phase | Contenu | État |
+| Phase | Content | Status |
 |---|---|---|
-| **A — Standards** | Engineering Bible, Learning Path, Backlog, README pédagogique | ✅ en cours (2026-08) |
-| **B — Développement métier** | Finaliser les 13 modules de la v1.0 (cap ferme) | à venir |
-| **C — Harmonisation** | Refactoriser les anciens modules (1 sprint / module) | après v1.0 |
-| **D — Documentation pédagogique** | README modules, schémas, exercices | après harmonisation |
+| **A — Standards** | Engineering Bible, Learning Path, Backlog, pedagogical README | ✅ in progress (2026-08) |
+| **B — Business development** | Finalize the 13 modules of v1.0 (firm scope) | upcoming |
+| **C — Harmonization** | Refactor old modules (1 sprint / module) | after v1.0 |
+| **D — Pedagogical documentation** | Module READMEs, diagrams, exercises | after harmonization |
 
 ---
 
-## 2. Contexte
+## 2. Context
 
-Le e-commerce moderne exige des fonctionnalités avancées que Magento ne propose pas nativement en Open Source :
+Modern e-commerce requires advanced features that Magento does not offer natively in Open Source:
 
-- Un système de fidélité complet
-- Un blog intégré au catalogue
-- Un module FAQ optimisé pour le SEO
-- Une gestion avancée du RGPD
-- Un localisateur de magasins physique
-- Une option de retrait en magasin (Store Pickup)
-- Des pages légales dynamiques
-- Des balises hreflang pour le SEO multi-boutiques
-- Une validation TVA européenne automatisée
+- A complete loyalty system
+- A blog integrated into the catalog
+- An SEO-optimized FAQ module
+- Advanced GDPR management
+- A physical store locator
+- A store pickup option
+- Dynamic legal pages
+- Hreflang tags for multi-store SEO
+- Automated European VAT validation
 
-Au lieu d'acheter ces modules à des éditeurs tiers, nous les développons en interne sous le vendor `AlpineCommerce`.
-
----
-
-## 3. Objectifs
-
-### Objectifs métier
-
-- Fournir une expérience e-commerce complète et professionnelle
-- Disposer de fonctionnalités différenciantes (fidélité, blog, FAQ, RGPD)
-- Maîtriser l'ensemble de la stack Adobe Commerce
-- Être capable de maintenir et faire évoluer chaque module indépendamment
-
-### Objectifs techniques
-
-- Produire du code propre, testable et maintenable
-- Respecter les standards Adobe Commerce et PHP (PSR-12)
-- Utiliser les patterns officiels Magento : Service Contracts, Repository, DI, Plugins, Observers
-- Assurer la compatibilité avec les futures versions de Magento
-- Garantir la performance et la sécurité
-
-### Objectifs pédagogiques
-
-- Comprendre l'architecture Magento en profondeur
-- Savoir quand étendre Magento vs quand créer un nouveau module
-- Maîtriser les concepts : Service Contracts, Resource Models, UI Components, Layout XML
-- Apprendre les bonnes pratiques d'une équipe Adobe Commerce professionnelle
+Instead of buying these modules from third-party vendors, we develop them in-house under the vendor `AlpineCommerce`.
 
 ---
 
-## 4. Philosophie
+## 3. Objectives
 
-### Magento est le cœur
+### Business objectives
 
-Magento fournit nativement :
+- Provide a complete and professional e-commerce experience
+- Have differentiating features (loyalty, blog, FAQ, GDPR)
+- Master the entire Adobe Commerce stack
+- Be able to maintain and evolve each module independently
 
-- Catalogue produits
-- Gestion des clients
-- Processus de commande
-- Paiements et livraisons
+### Technical objectives
+
+- Produce clean, testable, and maintainable code
+- Respect Adobe Commerce and PHP standards (PSR-12)
+- Use official Magento patterns: Service Contracts, Repository, DI, Plugins, Observers
+- Ensure compatibility with future Magento versions
+- Guarantee performance and security
+
+### Pedagogical objectives
+
+- Understand Magento architecture in depth
+- Know when to extend Magento vs when to create a new module
+- Master the concepts: Service Contracts, Resource Models, UI Components, Layout XML
+- Learn the best practices of a professional Adobe Commerce team
+
+---
+
+## 4. Philosophy
+
+### Magento is the core
+
+Magento provides natively:
+
+- Product catalog
+- Customer management
+- Order process
+- Payments and shipping
 - CMS
-- Inventaire (MSI)
+- Inventory (MSI)
 - REST API
-- Indexers et cache
+- Indexers and cache
 
-Nous **n'écrivons jamais** de code pour remplacer ces fonctionnalités.
-Nous les utilisons telles quelles et les étendons uniquement si nécessaire.
+We **never** write code to replace these features.
+We use them as-is and extend them only if necessary.
 
-### Chaque module a une seule responsabilité
+### Each module has a single responsibility
 
-Un module AlpineCommerce ne fait qu'une chose et il le fait bien.
+An AlpineCommerce module does only one thing and does it well.
 
 ```
-AlpineCommerce_Blog          → Gestion du blog
-AlpineCommerce_Faq           → Gestion de la FAQ
-AlpineCommerce_Gdpr          → Conformité RGPD
-AlpineCommerce_LoyaltyProgram → Programme de fidélité
+AlpineCommerce_Blog          → Blog management
+AlpineCommerce_Faq           → FAQ management
+AlpineCommerce_Gdpr          → GDPR compliance
+AlpineCommerce_LoyaltyProgram → Loyalty program
 ...
 ```
 
-### Étendre avant de créer
+### Extend before creating
 
-Avant de créer un module, nous vérifions systématiquement si Magento native ne propose pas déjà la fonctionnalité.
+Before creating a module, we systematically check whether Magento native already provides the feature.
 
-- Si Magento le fait → nous étendons via Plugin, Observer, Layout XML
-- Si Magento ne le fait pas → nous créons un module AlpineCommerce
+- If Magento does it → we extend via Plugin, Observer, Layout XML
+- If Magento doesn't → we create an AlpineCommerce module
 
-### Documentation comme Source of Truth
+### Documentation as Source of Truth
 
-Toute décision architecturale est documentée.
-Tout le code doit respecter la documentation.
-Toute modification de la documentation est tracée et validée.
+Every architecture decision is documented.
+All code must respect the documentation.
+Any modification to the documentation is tracked and validated.
 
-### Pourquoi AlpineCommerce existe ?
+### Why AlpineCommerce exists?
 
-- **Indépendance** : nos modules ne dépendent pas d'un éditeur tiers
-- **Propriété intellectuelle** : le code nous appartient
-- **Évolutivité** : nous contrôlons la roadmap et les priorités
-- **Apprentissage** : construction d'une expertise Adobe Commerce interne
-- **Réutilisabilité** : les modules sont conçus pour être déployés sur d'autres projets Magento
-- **Communauté** : partager une référence open source de qualité qui manque à la communauté Magento (le « pourquoi » des choix d'architecture)
+- **Independence**: our modules don't depend on a third-party vendor
+- **Intellectual property**: the code belongs to us
+- **Scalability**: we control the roadmap and priorities
+- **Learning**: building internal Adobe Commerce expertise
+- **Reusability**: modules are designed to be deployed on other Magento projects
+- **Community**: share a quality open source reference that is missing from the Magento community (the "why" of architecture choices)
 
-### Le critère de qualité définitif
+### The definitive quality criterion
 
-Avant toute implémentation, la question à se poser est :
+Before any implementation, the question to ask is:
 
-> « Est-ce qu'un développeur qui découvre Magento comprendra facilement **pourquoi** cette
-> solution a été choisie ? »
+> "Will a developer discovering Magento easily understand **why** this
+> solution was chosen?"
 
-Si la réponse est non, on améliore le code ou la documentation avant de considérer le travail terminé.
+If the answer is no, improve the code or documentation before considering the work complete.
 
 ---
 
-## 5. Cahier des charges v1.0
+## 5. Specifications v1.0
 
-> **Sprint** : Finalisation fonctionnelle des 13 modules AlpineCommerce
-> **Version cible** : v1.0 stable
-> **Date** : 2026-08-06
-> **Statut** : En attente de validation
+> **Sprint**: Functional finalization of the 13 AlpineCommerce modules
+> **Target version**: v1.0 stable
+> **Date**: 2026-08-06
+> **Status**: Awaiting validation
 
-### 5.1 Besoin métier
+### 5.1 Business need
 
-AlpineCommerce dispose de 13 modules fonctionnels sur le plan du code, mais plusieurs d'entre eux présentent des **incomplétudes fonctionnelles** qui empêchent la plateforme d'être utilisable en production.
+AlpineCommerce has 13 functional modules on the code side, but several of them have **functional gaps** that prevent the platform from being usable in production.
 
-Le besoin métier est de **finaliser chaque module** pour qu'il soit :
+The business need is to **finalize each module** so that it is:
 
-- **Opérationnel** : un administrateur peut utiliser l'interface backend pour configurer et gérer le module.
-- **Complet** : toutes les fonctionnalités métier définies dans la roadmap sont implémentées et accessibles.
-- **Stable** : le module ne présente pas de crash, d'erreur PHP, ou de comportement incohérent.
-- **Conforme** : l'interface admin respecte les standards Adobe Commerce 2.4.8 (UI Components, ACL, validation).
+- **Operational**: an administrator can use the backend interface to configure and manage the module.
+- **Complete**: all business features defined in the roadmap are implemented and accessible.
+- **Stable**: the module does not crash, produce PHP errors, or inconsistent behavior.
+- **Compliant**: the admin interface respects Adobe Commerce 2.4.8 standards (UI Components, ACL, validation).
 
-Aujourd'hui, 7 modules sur 13 présentent des **blocages fonctionnels** :
+Today, 7 out of 13 modules have **functional blockers**:
 
-| Module | Blocage fonctionnel |
+| Module | Functional blocker |
 |---|---|
-| **Gdpr** | Aucune interface admin pour consulter/exporter les consentements. |
-| **EuVat** | Aucune interface admin pour consulter l'historique des validations TVA. |
-| **LoyaltyProgram** | Aucune interface admin pour configurer le programme ou consulter les soldes clients. |
-| **StorePickup** | Aucune interface admin pour gérer les points de retrait. |
-| **StoreLocator** | Aucune interface admin pour gérer les magasins. Couplage fort avec StorePickup. |
-| **Hreflang** | Module 100% configuration, mais son périmètre exact (SEO pur ou gestion d'entités) n'est pas clair. |
-| **Training** | Module de démonstration incohérent : data patch créant des store views, pas d'interface. |
+| **Gdpr** | No admin interface to view/export consents. |
+| **EuVat** | No admin interface to view VAT validation history. |
+| **LoyaltyProgram** | No admin interface to configure the program or view customer balances. |
+| **StorePickup** | No admin interface to manage pickup points. |
+| **StoreLocator** | No admin interface to manage stores. Strong coupling with StorePickup. |
+| **Hreflang** | Module 100% configuration, but its exact scope (pure SEO or entity management) is unclear. |
+| **Training** | Inconsistent demo module: data patch creating store views, no interface. |
 
-### 5.2 Fonctionnalités attendues par module à finaliser
+### 5.2 Expected features per module to finalize
 
-#### GDPR — Gestion des consentements RGPD
+#### GDPR — GDPR Consent Management
 
-| Fonctionnalité | Description | Priorité |
+| Feature | Description | Priority |
 |---|---|---|
-| **Listing des consentements** | Interface admin listant tous les consentements enregistrés (customer, date, type, IP, statut). | Critique |
-| **Export des données** | Interface admin permettant d'exporter les consentements d'un client (RGPD : droit à la portabilité). | Critique |
-| **Configuration** | Page de configuration système (durée de rétention, consentements requis, anonymisation auto). | Haute |
-| **ACL** | Permissions granulaire : consulter les logs, exporter, configurer. | Haute |
+| **Consent listing** | Admin interface listing all registered consents (customer, date, type, IP, status). | Critical |
+| **Data export** | Admin interface allowing export of a customer's consents (GDPR: right to portability). | Critical |
+| **Configuration** | System configuration page (retention duration, required consents, auto-anonymization). | High |
+| **ACL** | Granular permissions: view logs, export, configure. | High |
 
-#### EuVat — Validation TVA européenne
+#### EuVat — European VAT Validation
 
-| Fonctionnalité | Description | Priorité |
+| Feature | Description | Priority |
 |---|---|---|
-| **Historique des validations** | Interface admin listant les validations TVA effectuées (pays, numéro, résultat, date). | Haute |
-| **Configuration** | Page de configuration système (pays activés, mode strict/validation, cache). | Haute |
-| **ACL** | Permissions : consulter l'historique, configurer. | Haute |
+| **Validation history** | Admin interface listing VAT validations performed (country, number, result, date). | High |
+| **Configuration** | System configuration page (enabled countries, strict/validation mode, cache). | High |
+| **ACL** | Permissions: view history, configure. | High |
 
-#### LoyaltyProgram — Programme de fidélité
+#### LoyaltyProgram — Loyalty Program
 
-| Fonctionnalité | Description | Priorité |
+| Feature | Description | Priority |
 |---|---|---|
-| **Configuration du programme** | Interface admin pour définir les règles (points par euro dépensé, valeur du point, seuils). | Critique |
-| **Consultation des soldes** | Interface admin permettant de rechercher un client et voir son solde de points, historique des transactions. | Critique |
-| **Gestion des transactions** | Interface admin pour consulter, filtrer, annuler des transactions de points. | Haute |
-| **ACL** | Permissions : configurer, consulter soldes, gérer transactions. | Haute |
+| **Program configuration** | Admin interface to define rules (points per euro spent, point value, thresholds). | Critical |
+| **Balance consultation** | Admin interface to search for a customer and view their point balance, transaction history. | Critical |
+| **Transaction management** | Admin interface to view, filter, cancel point transactions. | High |
+| **ACL** | Permissions: configure, view balances, manage transactions. | High |
 
-#### StorePickup — Retrait en magasin
+#### StorePickup — Store Pickup
 
-| Fonctionnalité | Description | Priorité |
+| Feature | Description | Priority |
 |---|---|---|
-| **Gestion des points de retrait** | Interface admin CRUD complète pour gérer les magasins (nom, adresse, horaires, capacités, statut). | Critique |
-| **Disponibilités** | Interface admin pour gérer les créneaux de retrait (jours, heures, capacité par créneau). | Haute |
-| **Configuration** | Page de configuration système (frais de retrait, délai avant retrait, activation/désactivation). | Haute |
-| **ACL** | Permissions : gérer les magasins, gérer les disponibilités, configurer. | Haute |
+| **Pickup point management** | Full admin CRUD to manage stores (name, address, hours, capacities, status). | Critical |
+| **Availability** | Admin interface to manage pickup slots (days, hours, capacity per slot). | High |
+| **Configuration** | System configuration page (pickup fees, delay before pickup, activation/deactivation). | High |
+| **ACL** | Permissions: manage stores, manage availability, configure. | High |
 
-#### StoreLocator — Localisateur de magasins
+#### StoreLocator — Store Locator
 
-| Fonctionnalité | Description | Priorité |
+| Feature | Description | Priority |
 |---|---|---|
-| **Gestion des magasins** | Interface admin CRUD pour gérer les magasins (nom, adresse, géolocalisation, horaires, statut). | Critique |
-| **Carte frontend** | Page frontend affichant la carte des magasins avec recherche par géolocalisation ou adresse. | Haute |
-| **Configuration** | Page de configuration système (fournisseur de carte, rayon de recherche, unité). | Haute |
-| **ACL** | Permissions : gérer les magasins, configurer. | Haute |
+| **Store management** | Admin CRUD to manage stores (name, address, geolocation, hours, status). | Critical |
+| **Frontend map** | Frontend page displaying the store map with search by geolocation or address. | High |
+| **Configuration** | System configuration page (map provider, search radius, unit). | High |
+| **ACL** | Permissions: manage stores, configure. | High |
 
-#### Hreflang — SEO multi-boutiques
+#### Hreflang — Multi-store SEO
 
-| Fonctionnalité | Description | Priorité |
+| Feature | Description | Priority |
 |---|---|---|
-| **Clarification du périmètre** | Décider si le module reste 100% configuration ou s'il gère des entités métier. | Critique |
-| **Configuration** | Page de configuration système (activation par store view, langue par défaut, x-default). | Haute |
-| **Balises hreflang** | Injection automatique des balises `<link rel="alternate" hreflang="...">` dans le head. | Haute |
-| **ACL** | Permissions : configurer. | Haute |
+| **Scope clarification** | Decide whether the module remains 100% configuration or manages business entities. | Critical |
+| **Configuration** | System configuration page (activation by store view, default language, x-default). | High |
+| **Hreflang tags** | Automatic injection of `<link rel="alternate" hreflang="...">` tags in the head. | High |
+| **ACL** | Permissions: configure. | High |
 
-#### Training — Module de démonstration
+#### Training — Demo Module
 
-| Fonctionnalité | Description | Priorité |
+| Feature | Description | Priority |
 |---|---|---|
-| **Clarification du rôle** | Définir si c'est un module de démo pour apprenants ou un module fonctionnel. | Critique |
-| **Interface cohérente** | Supprimer le data patch créant des store views (anormal). | Haute |
-| **Fonctionnalités** | Si module de démo : implémenter les fonctionnalités promises. Si module fonctionnel : aligner sur les standards. | Haute |
+| **Role clarification** | Define whether it's a demo module for learners or a functional module. | Critical |
+| **Consistent interface** | Remove the data patch creating store views (abnormal). | High |
+| **Features** | If demo module: implement promised features. If functional: align with standards. | High |
 
-### 5.3 Modules déjà stables (6)
+### 5.3 Already stable modules (6)
 
-Les modules suivants sont considérés comme fonctionnellement stables. Aucune nouvelle fonctionnalité n'est demandée dans ce sprint :
+The following modules are considered functionally stable. No new feature is requested in this sprint:
 
-| Module | Statut |
+| Module | Status |
 |---|---|
 | Blog | ✅ Stable |
 | Faq | ✅ Stable |
@@ -255,129 +255,129 @@ Les modules suivants sont considérés comme fonctionnellement stables. Aucune n
 | ProductReviews | ✅ Stable |
 | ProductLabels | ✅ Stable |
 
-### 5.4 Contraintes techniques
+### 5.4 Technical constraints
 
-**Standards obligatoires** (Charte du projet) :
+**Mandatory standards** (Project Charter):
 - Magento 2.4.8, PSR-12, `declare(strict_types=1)`
-- Dependency Injection uniquement
-- Service Contracts pour toute logique métier
+- Dependency Injection only
+- Service Contracts for all business logic
 - Repository Pattern, ResourceModels, Collections
-- `db_schema.xml` (pas de `InstallSchema`/`InstallData`)
-- ACL complet, UI Components pour l'admin
-- REST API si exposition nécessaire, Layout XML pour le frontend
-- Aucun ObjectManager, aucun code legacy
+- `db_schema.xml` (no `InstallSchema`/`InstallData`)
+- Full ACL, UI Components for the admin
+- REST API if necessary, Layout XML for the frontend
+- No ObjectManager, no legacy code
 
-**Contraintes d'architecture** :
-- **Étendre Magento, jamais le remplacer**
-- **Un module = une responsabilité**
-- **Homogénéité** : tous les modules doivent donner l'impression d'avoir été développés par une seule équipe
-- **Compatibilité** : ne pas casser les fonctionnalités ni les données existantes
+**Architecture constraints**:
+- **Extend Magento, never replace it**
+- **One module = one responsibility**
+- **Homogeneity**: all modules must look like they were developed by a single team
+- **Compatibility**: don't break existing functionality or data
 
-**Contraintes de sécurité** :
-- Toutes les routes admin protégées par ACL
-- Entrées utilisateur validées et échappées
-- Aucune fuite d'information sensible sans contrôle d'accès
-- Conformité RGPD pour le module Gdpr (droit à l'oubli, droit à la portabilité)
+**Security constraints**:
+- All admin routes protected by ACL
+- User input validated and escaped
+- No sensitive information leak without access control
+- GDPR compliance for the Gdpr module (right to be forgotten, right to portability)
 
-**Contraintes de données** :
-- Les modifications de tables core (`quote`, `sales_order`) documentées et sécurisées
-- Data patches idempotents
-- Aucune perte de données existante pendant les migrations
+**Data constraints**:
+- Core table modifications (`quote`, `sales_order`) documented and secured
+- Idempotent data patches
+- No data loss during migrations
 
-### 5.5 Critères d'acceptation généraux
+### 5.5 General acceptance criteria
 
-| Critère | Description | Acceptation |
+| Criterion | Description | Acceptance |
 |---|---|---|
-| **Interface admin fonctionnelle** | L'administrateur peut accéder à toutes les fonctionnalités du module via le backend. | Menu accessible, pages chargent sans erreur, CRUD fonctionnel. |
-| **ACL opérationnelle** | Les permissions sont définies et appliquées. | Un utilisateur sans permission ne peut pas accéder aux pages. |
-| **Respect des standards** | Le code respecte la Charte du projet. | `strict_types=1`, DI, pas d'ObjectManager, pas de legacy. |
-| **Pas de régression** | Les modules déjà stables continuent de fonctionner. | Tests manuels des 6 modules stables. |
-| **Cohérence visuelle** | L'interface admin ressemble aux autres modules AlpineCommerce. | Même style que le module canonique (Faq). |
+| **Functional admin interface** | The administrator can access all module features via the backend. | Menu accessible, pages load without error, functional CRUD. |
+| **Operational ACL** | Permissions are defined and applied. | A user without permission cannot access pages. |
+| **Respect of standards** | The code respects the Project Charter. | `strict_types=1`, DI, no ObjectManager, no legacy. |
+| **No regression** | Already stable modules continue to work. | Manual tests of the 6 stable modules. |
+| **Visual consistency** | The admin interface looks like the other AlpineCommerce modules. | Same style as the canonical module (Faq). |
 
-### 5.6 Hors périmètre v1.0
+### 5.6 v1.0 out of scope
 
-- **Tests automatisés** (Unit, Integration, Functional, API) : sprint dédié
-- **Documentation pédagogique** (README modules, schémas, exercices) : sprint dédié
-- **Harmonisation de la dette technique** (préfixe tables, data patches, audit XSD formulaires) : sprint dédié
-- **Nouveaux modules** : interdits jusqu'à la v1.0 stable
-- **Optimisation des performances** : non bloquant pour la v1.0
+- **Automated tests** (Unit, Integration, Functional, API): dedicated sprint
+- **Pedagogical documentation** (module READMEs, diagrams, exercises): dedicated sprint
+- **Technical debt harmonization** (table prefix, data patches, form XSD audit): dedicated sprint
+- **New modules**: forbidden until v1.0 stable
+- **Performance optimization**: non-blocking for v1.0
 
 ---
 
-## 6. Analyse fonctionnelle v1.0
+## 6. Functional analysis v1.0
 
-### 6.1 Méthode d'analyse
+### 6.1 Analysis method
 
-Pour chaque module, la grille suivante est appliquée :
+For each module, the following grid is applied:
 
-| Critère | Question |
+| Criterion | Question |
 |---|---|
-| **Besoin métier** | Quel problème résout cette fonctionnalité ? |
-| **Solution native** | Magento propose-t-il déjà cette fonctionnalité ? |
-| **Indispensable v1.0** | Sans cette fonctionnalité, la plateforme est-elle utilisable en production ? |
-| **Reportable** | Peut-elle être ajoutée dans un sprint ultérieur sans bloquer la v1.0 ? |
-| **Impact utilisateur** | Qui est affecté et comment ? |
-| **Impact architecture** | La fonctionnalité modifie-t-elle l'architecture existante ? |
-| **Priorité** | Critique / Haute / Moyenne / Faible |
-| **Recommandation** | Inclure dans v1.0 ou reporter ? |
+| **Business need** | What problem does this feature solve? |
+| **Native solution** | Does Magento already provide this feature? |
+| **Essential v1.0** | Without this feature, is the platform usable in production? |
+| **Deferrable** | Can it be added in a later sprint without blocking v1.0? |
+| **User impact** | Who is affected and how? |
+| **Architecture impact** | Does the feature modify the existing architecture? |
+| **Priority** | Critical / High / Medium / Low |
+| **Recommendation** | Include in v1.0 or defer? |
 
-### 6.2 Synthèse par module
+### 6.2 Summary by module
 
-| Module | Fonctionnalité v1.0 | Fonctionnalité v1.1 | Justification globale |
+| Module | v1.0 Feature | v1.1 Feature | Overall justification |
 |---|---|---|---|
-| **GDPR** | Listing admin + Export admin + ACL | Anonymisation admin + Config système | Le module métier existe, il manque l'interface admin pour être exploitable. |
-| **EuVat** | Historique admin + ACL étendue | Config avancée | Le module métier existe, il manque la visibilité sur les validations. |
-| **LoyaltyProgram** | Configuration + Consultation soldes + ACL + Menu | Gestion transactions + Config avancée | Le cœur fonctionne (checkout), il manque la configuration et la visibilité admin. |
-| **StorePickup** | CRUD magasins + ACL + Menu | Disponibilités/créneaux + Config avancée | Le checkout fonctionne, il manque les magasins à gérer. |
-| **StoreLocator** | Décision architecture + CRUD magasins + Carte frontend + ACL + Menu | Recherche proximité + Config | Module partiellement implémenté avec mauvais couplage. À restructurer. |
-| **Hreflang** | Clarification périmètre (config-only) + validation injection balises | Mapping manuel langue-store | Module fonctionnellement complet. Décision d'architecture à documenter. |
-| **Training** | Clarification rôle + Suppression data patch | Alignement standards (si fonctionnel) | Module incohérent. Nécessite une décision de périmètre. |
+| **GDPR** | Admin listing + Admin export + ACL | Admin anonymization + System config | The business module exists, the admin interface is missing to be usable. |
+| **EuVat** | History + extended ACL | Advanced config | The business module exists, visibility on validations is missing. |
+| **LoyaltyProgram** | Configuration + Balance consultation + ACL + Menu | Transaction management + Advanced config | The core works (checkout), admin configuration and visibility are missing. |
+| **StorePickup** | Store CRUD + ACL + Menu | Availability/slots + Advanced config | Checkout works, stores to manage are missing. |
+| **StoreLocator** | Architecture decision + Store CRUD + Frontend map + ACL + Menu | Proximity search + Config | Partially implemented with bad coupling. To restructure. |
+| **Hreflang** | Scope clarification (config-only) + tag injection validation | Manual language-store mapping | Functionally complete module. Architecture decision to document. |
+| **Training** | Role clarification + Remove data patch | Standards alignment (if functional) | Inconsistent module. Needs a scope decision. |
 
-### 6.3 Périmètre v1.0 (fonctionnalités incluses)
+### 6.3 v1.0 Scope (included features)
 
-| ID | Module | Fonctionnalité | Priorité |
+| ID | Module | Feature | Priority |
 |---|---|---|---|
-| V1-01 | GDPR | Listing admin des consentements (UI Component + controllers + ACL) | Critique |
-| V1-02 | GDPR | Export admin RGPD (bouton dans le listing) | Haute |
-| V1-03 | EuVat | Historique admin des validations (UI Component + controllers + menu + ACL) | Haute |
-| V1-04 | LoyaltyProgram | Configuration des règles (system.xml) | Critique |
-| V1-05 | LoyaltyProgram | Consultation soldes clients (UI Component + controllers + ACL + menu) | Critique |
-| V1-06 | StorePickup | CRUD magasins (UI Component + controllers + ACL + menu) | Critique |
-| V1-07 | StoreLocator | Décision d'architecture documentée | Critique |
-| V1-08 | StoreLocator | CRUD magasins (UI Components + controllers + ACL + menu) | Critique |
-| V1-09 | StoreLocator | Carte frontend (block + layout + template) | Haute |
-| V1-10 | Hreflang | Décision d'architecture documentée (configuration-only) | Critique |
-| V1-11 | Hreflang | Validation injection balises (déjà fait, vérification) | Haute |
-| V1-12 | Training | Clarification rôle documentée | Critique |
-| V1-13 | Training | Suppression data patch `CreateStores.php` | Haute |
+| V1-01 | GDPR | Admin consent listing (UI Component + controllers + ACL) | Critical |
+| V1-02 | GDPR | GDPR admin export (button in listing) | High |
+| V1-03 | EuVat | Admin validation history (UI Component + controllers + menu + ACL) | High |
+| V1-04 | LoyaltyProgram | Rules configuration (system.xml) | Critical |
+| V1-05 | LoyaltyProgram | Customer balance consultation (UI Component + controllers + ACL + menu) | Critical |
+| V1-06 | StorePickup | Store CRUD (UI Component + controllers + ACL + menu) | Critical |
+| V1-07 | StoreLocator | Documented architecture decision | Critical |
+| V1-08 | StoreLocator | Store CRUD (UI Components + controllers + ACL + menu) | Critical |
+| V1-09 | StoreLocator | Frontend map (block + layout + template) | High |
+| V1-10 | Hreflang | Documented architecture decision (configuration-only) | Critical |
+| V1-11 | Hreflang | Tag injection validation (already done, verification) | High |
+| V1-12 | Training | Documented role clarification | Critical |
+| V1-13 | Training | Remove data patch `CreateStores.php` | High |
 
-### 6.4 Périmètre reporté à v1.1
+### 6.4 v1.1 Deferred Scope
 
-| ID | Module | Fonctionnalité | Justification |
+| ID | Module | Feature | Justification |
 |---|---|---|---|
-| V1.1-01 | GDPR | Anonymisation admin | Console commands suffisantes. |
-| V1.1-02 | GDPR | Configuration système | Valeurs par défaut codées en dur acceptables. |
-| V1.1-03 | EuVat | Configuration avancée | Config de base suffisante. |
-| V1.1-04 | LoyaltyProgram | Gestion avancée des transactions | Consultation solde suffisante. |
-| V1.1-05 | LoyaltyProgram | Configuration avancée | Valeurs par défaut acceptables. |
-| V1.1-06 | StorePickup | Gestion des disponibilités/créneaux | Horaires génériques suffisent. |
-| V1.1-07 | StorePickup | Configuration avancée | Config carrier de base suffisante. |
-| V1.1-08 | StoreLocator | Recherche par proximité | Raffinement UX. |
-| V1.1-09 | StoreLocator | Configuration système | Valeurs par défaut acceptables. |
-| V1.1-10 | Hreflang | Mapping manuel langue-store | Mapping automatique suffit. |
-| V1.1-11 | Training | Alignement standards complet | Dépend de la décision de rôle. |
+| V1.1-01 | GDPR | Admin anonymization | Console commands are sufficient. |
+| V1.1-02 | GDPR | System configuration | Hardcoded default values acceptable. |
+| V1.1-03 | EuVat | Advanced configuration | Basic config is sufficient. |
+| V1.1-04 | LoyaltyProgram | Advanced transaction management | Balance consultation is sufficient. |
+| V1.1-05 | LoyaltyProgram | Advanced configuration | Default values acceptable. |
+| V1.1-06 | StorePickup | Availability/slot management | Generic schedules are sufficient. |
+| V1.1-07 | StorePickup | Advanced configuration | Basic carrier config is sufficient. |
+| V1.1-08 | StoreLocator | Proximity search | UX refinement. |
+| V1.1-09 | StoreLocator | System configuration | Default values acceptable. |
+| V1.1-10 | Hreflang | Manual language-store mapping | Automatic mapping is sufficient. |
+| V1.1-11 | Training | Full standards alignment | Depends on role decision. |
 
-### 6.5 Décisions d'architecture majeures
+### 6.5 Major architecture decisions
 
-| # | Décision | Options | Recommandation | Impact si non décidé |
+| # | Decision | Options | Recommendation | Impact if undecided |
 |---|---|---|---|---|
-| 1 | **StoreLocator** : couplage avec StorePickup ou indépendance ? | A : Couplage (lecture seule sur StorePickup) / B : Indépendance (entité propre) | **Option B** | Si non décidé, le module reste avec un couplage fort non maintenable. |
-| 2 | **Hreflang** : configuration-only ou entités métier ? | A : Configuration-only / B : Entités métier (mapping langue-store) | **Option A** | Si non décidé, le scope reste flou et risque de gonfler. |
-| 3 | **Training** : module demo ou module fonctionnel ? | A : Démonstration pédagogique / B : Module fonctionnel | **Option A** | Si non décidé, le module reste incohérent avec data patch anormal. |
+| 1 | **StoreLocator**: coupling with StorePickup or independence? | A: Coupling (read-only on StorePickup) / B: Independence (own entity) | **Option B** | If undecided, the module remains with unmaintainable strong coupling. |
+| 2 | **Hreflang**: configuration-only or business entities? | A: Configuration-only / B: Business entities (language-store mapping) | **Option A** | If undecided, the scope remains vague and risks ballooning. |
+| 3 | **Training**: demo module or functional module? | A: Pedagogical demo / B: Functional module | **Option A** | If undecided, the module remains inconsistent with abnormal data patch. |
 
-> **Validation requise** : périmètre v1.0 (V1-01 → V1-13), périmètre v1.1 reporté,
-> et les 3 décisions d'architecture ci-dessus doivent être validées par le product owner.
+> **Required validation**: v1.0 scope (V1-01 → V1-13), deferred v1.1 scope,
+> and the 3 architecture decisions above must be validated by the product owner.
 
 ---
 
-*Document conforme à la Charte du projet AlpineCommerce.*
+*Document compliant with the AlpineCommerce Project Charter.*

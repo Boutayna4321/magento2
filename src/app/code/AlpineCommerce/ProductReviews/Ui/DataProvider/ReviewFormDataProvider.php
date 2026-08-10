@@ -29,16 +29,18 @@ class ReviewFormDataProvider extends ModifierPoolDataProvider
         }
     }
 
+    private $loadedData = [];
+
     public function getData()
     {
-        $data = parent::getData();
-        $items = $data['items'] ?? [];
-
-        if (isset($items[0])) {
-            $reviewId = (int) $items[0]['review_id'];
-            return [$reviewId => $items[0]];
+        if ($this->loadedData) {
+            return $this->loadedData;
         }
 
-        return [];
+        foreach ($this->collection->getItems() as $review) {
+            $this->loadedData[$review->getId()] = $review->getData();
+        }
+
+        return $this->loadedData;
     }
 }

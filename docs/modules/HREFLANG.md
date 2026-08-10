@@ -1,76 +1,76 @@
-# Module AlpineCommerce_Hreflang — Balises hreflang SEO
+# AlpineCommerce_Hreflang Module — SEO Hreflang Tags
 
-> **Statut** : 🔄 En finalisation (v1.0.0)
+> **Status**: 🔄 In finalization (v1.0.0)
 
-## 1. Responsabilité
+## 1. Responsibility
 
-Génération automatique des **balises hreflang** (SEO multi-boutiques) : balises
-`<link rel="alternate" hreflang="...">` pour les pages de chaque boutique.
+Automatic generation of **hreflang tags** (multi-store SEO): `<link rel="alternate" hreflang="...">`
+tags for each store's pages.
 
-## 2. Périmètre & fonctionnalités
+## 2. Scope & features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-| **Génération automatique** | Balises hreflang injectées sur les pages |
-| **Multi-boutiques** | Support des store views |
-| **Configuration admin** | Activation et paramétrage |
-| **i18n** | Traduction française |
+| **Automatic generation** | Hreflang tags injected on pages |
+| **Multi-store** | Store view support |
+| **Admin configuration** | Activation and setup |
+| **i18n** | French translation |
 
 ## 3. Architecture
 
 ```
 AlpineCommerce/Hreflang/
-├── Model/                      # générateur de balises + logique hreflang
-├── (Plugin/Block)              # injection dans le head des pages
+├── Model/                      # tag generator + hreflang logic
+├── (Plugin/Block)              # injection into page head
 └── etc/
-    └── system.xml              # configuration admin
+    └── system.xml              # admin configuration
 ```
 
-## 4. Base de données
+## 4. Database
 
-Aucune table dédiée (configuration en `core_config_data`).
+No dedicated table (configuration in `core_config_data`).
 
-## 5. API REST
+## 5. REST API
 
-Aucune.
+None.
 
 ## 6. Admin
 
-- Configuration système (activation, domaines par store view)
+- System configuration (activation, domains per store view)
 
 ## 7. Frontend
 
-- Balises `<link rel="alternate" hreflang="xx-XX">` générées automatiquement dans le
-  `<head>` des pages (une par store view), selon la configuration
+- `<link rel="alternate" hreflang="xx-XX">` tags generated automatically in the
+  `<head>` of pages (one per store view), according to configuration
 
 ## 8. CLI
 
-Aucune commande dédiée.
+No dedicated command.
 
-## 9. Décisions d'architecture
+## 9. Architecture decisions
 
-| Décision | Justification |
+| Decision | Justification |
 |---|---|
-| Génération automatique (plugin/observer sur le head) | Aucun changement de template core |
-| Configuration par store view | Mapping URL → langue propre à chaque boutique |
+| Automatic generation (plugin/observer on head) | No core template change |
+| Configuration per store view | URL → language mapping specific to each store |
 
-## 10. Bugs connus / limites
+## 10. Known bugs / limitations
 
-| # | Problème | Statut |
+| # | Problem | Status |
 |---|---|---|
-| — | Finalisation complète (configuration fine, tests SEO) | 📋 v1.1 — `ROADMAP.md` |
+| — | Complete finalization (fine configuration, SEO tests) | 📋 v1.1 — `ROADMAP.md` |
 
-## 11. Concepts Magento enseignés
+## 11. Magento concepts taught
 
-- SEO multi-store (hreflang)
-- Configuration système par store view
-- Injection de markup dans le `<head>` (plugin/bloc)
+- Multi-store SEO (hreflang)
+- System configuration per store view
+- Markup injection into `<head>` (plugin/block)
 
-## 12. Validation & statut
+## 12. Validation & status
 
-- **Statut** : 🔄 En finalisation — validation globale OK (Sprint 6)
+- **Status**: 🔄 In finalization — global validation OK (Sprint 6)
 
 ---
 
-*Sources : `docs/08_CHANGELOG.md` (v1.0.0), `SPRINT_VALIDATION_REPORT.md`,
-`SPRINT_INTEGRATION_REPORT.md` (fusionnés dans `CHANGELOG.md`).*
+*Sources: `docs/08_CHANGELOG.md` (v1.0.0), `SPRINT_VALIDATION_REPORT.md`,
+`SPRINT_INTEGRATION_REPORT.md` (merged into `CHANGELOG.md`).*

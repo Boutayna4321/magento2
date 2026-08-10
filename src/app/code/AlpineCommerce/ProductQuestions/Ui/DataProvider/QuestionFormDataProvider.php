@@ -34,14 +34,17 @@ class QuestionFormDataProvider extends ModifierPoolDataProvider
         }
     }
 
+    private $loadedData = [];
+
     public function getData()
     {
-        $data = parent::getData();
-        $items = $data['items'] ?? [];
+        if ($this->loadedData) {
+            return $this->loadedData;
+        }
 
-        if (isset($items[0])) {
-            $questionId = (int) $items[0]['question_id'];
-            $item = $items[0];
+        foreach ($this->collection->getItems() as $question) {
+            $questionId = (int) $question->getId();
+            $item = $question->getData();
 
             $officialAnswer = $this->getOfficialAnswerText($questionId);
             if ($officialAnswer !== null) {
@@ -50,10 +53,10 @@ class QuestionFormDataProvider extends ModifierPoolDataProvider
 
             $item['answers'] = $this->getAnswersData($questionId);
 
-            return [$questionId => $item];
+            $this->loadedData[$questionId] = $item;
         }
 
-        return [];
+        return $this->loadedData;
     }
 
     private function getOfficialAnswerText(int $questionId): ?string
