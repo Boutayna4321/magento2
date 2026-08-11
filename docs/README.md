@@ -58,23 +58,30 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
 **self-contained**: everything you need to know about the module is inside
 (responsibility, scope, architecture, API, decisions, known bugs).
 
+### Stable modules
+
+| Module | Document |
+|---|---|
+| Blog | `modules/BLOG.md` |
+| Faq | `modules/FAQ.md` |
+| LegalPages | `modules/LEGAL_PAGES.md` |
+| ProductReviews | `modules/PRODUCT_REVIEWS.md` |
+| ProductQuestions | `modules/PRODUCT_QUESTIONS.md` |
+| ProductLabels | `modules/PRODUCT_LABELS.md` |
+| CustomerGrid | `modules/CUSTOMER_GRID.md` |
+| CustomerCare | `modules/CUSTOMER_CARE.md` |
+| StoreSetup | `modules/STORE_SETUP.md` |
+
+### Modules in finalization
+
 | Module | Document | Status |
-||---|---|
-| Blog | `modules/BLOG.md` | ✅ Stable |
-| Faq (canonical module) | `modules/FAQ.md` | ✅ Stable |
-| LegalPages | `modules/LEGAL_PAGES.md` | ✅ Stable |
-| ProductReviews | `modules/PRODUCT_REVIEWS.md` | ✅ Stable |
-| ProductQuestions | `modules/PRODUCT_QUESTIONS.md` | ✅ Stable |
-| ProductLabels | `modules/PRODUCT_LABELS.md` | ✅ Stable |
-| CustomerGrid | `modules/CUSTOMER_GRID.md` | ✅ Stable |
-| CustomerCare | `modules/CUSTOMER_CARE.md` | ✅ Stable |
+|---|---|---|
 | Gdpr | `modules/GDPR.md` | 🔄 Finalization (Sprint 1) |
 | StorePickup | `modules/STORE_PICKUP.md` | 🔄 Finalization (Sprint 2) |
 | StoreLocator | `modules/STORE_LOCATOR.md` | 🔄 Finalization (Sprint 3) |
 | LoyaltyProgram | `modules/LOYALTY_PROGRAM.md` | ⏳ To be finalized |
 | EuVat | `modules/EU_VAT.md` | ⏳ To be finalized |
 | Hreflang | `modules/HREFLANG.md` | ⏳ To be finalized |
-| StoreSetup | `modules/STORE_SETUP.md` | ✅ Stable |
 
 ## Entry points by profile
 
