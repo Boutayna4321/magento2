@@ -59,6 +59,22 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.5.9] - 2026-08-11
+
+### Added (Magento 2 JavaScript guide)
+
+- New `docs/prerequisites/magento-js.md` — beginner-friendly guide covering:
+  - **RequireJS** (AMD): `define()`, `require()`, `requirejs-config.js`
+  - **KnockoutJS**: observables, computed, `data-bind` in HTML templates
+  - **jQuery**: DOM manipulation, AJAX, `data-mage-init` initialization
+  - **mage/* libraries**: `mage/storage`, `mage/translate`, `mage/mage`
+  - **3 JS patterns** in AlpineCommerce: UI Component+KO, jQuery+AJAX, Vanilla JS
+  - **Integration methods**: layout XML, `data-mage-init`, `requirejs-config.js`
+  - **Debug tips**: Chrome DevTools, RequireJS errors, KO inspection
+- Updated `docs/README.md` with `magento-js.md` in the prerequisites section.
+
+---
+
 ## [1.5.8] - 2026-08-11
 
 ### Added (CI/CD pipeline)
