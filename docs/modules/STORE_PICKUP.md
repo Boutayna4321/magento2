@@ -134,18 +134,18 @@ Two plugins intercept the offline carriers' `collectRates()` (registered in
 
 | Plugin | Target carrier | Behaviour |
 |---|---|---|
-| `Plugin/Shipping/FilterFlatRate.php` | `Magento\OfflineShipping\Model\Carrier\Flatrate` | `return false` when `quote->getGrandTotal() >= 50.00` (hides the paid method) |
-| `Plugin/Shipping/FilterFreeShipping.php` | `Magento\OfflineShipping\Model\Carrier\Freeshipping` | `return false` when `quote->getGrandTotal() < 50.00` (hides the free method) |
+| `Plugin/Shipping/FilterFlatRate.php` | `Magento\OfflineShipping\Model\Carrier\Flatrate` | `return false` when package value (`$request->getPackageValueWithDiscount()`) `>= 50.00` (hides the paid method) |
+| `Plugin/Shipping/FilterFreeShipping.php` | `Magento\OfflineShipping\Model\Carrier\Freeshipping` | `return false` when package value `< 50.00` (hides the free method) |
 
 The native Free Shipping threshold is also configured in the store:
 `carriers/freeshipping/free_shipping_subtotal = 50.00`
 (defaults in `AlpineCommerce/StoreSetup/etc/config.xml`, active values in `core_config_data`).
 
-> ⚠️ **Known limitation**: the plugins compare `quote->getGrandTotal()` (incl. tax)
-> while the native Free Shipping carrier compares the **package value (subtotal)**.
-> Edge case: subtotal < 50.00 but grand total >= 50.00 (tax pushes it over) →
-> Flat Rate hidden but Free Shipping not eligible → **no method available**.
-> A consistent fix would compare the subtotal (`$request->getPackageValueWithDiscount()`) in both plugins.
+Both plugins compare the **package value (subtotal) of the destination address**
+— the same metric the native Free Shipping carrier uses. This matches the native
+behaviour for **multiple addresses** (multishipping): each shipping address is
+evaluated independently (each address = one order), so one group can get Free
+Shipping while another still pays the Flat Rate.
 
 ### 11.3 Bug fixed
 
@@ -154,6 +154,19 @@ registered on both carriers with `aroundCollectRates(Flatrate $subject, ...)`.
 Freeshipping is also a carrier → Magento called the method with a `Freeshipping`
 subject → `TypeError` (HTTP 500 on `V1/carts/mine/estimate-shipping-methods-by-address-id`).
 Fix: two dedicated classes + `bin/magento setup:di:compile` (regenerate interceptors).
+
+### 11.4 Known limitation fixed (subtotal vs grand total)
+
+The plugins originally compared `quote->getGrandTotal()` (the whole cart, incl.
+tax) while the native carrier compares the per-address subtotal. With
+**multishipping**, the whole-cart total (`>= 50`) hid Flat Rate for *every*
+address, even those whose own subtotal was `< 50` → such a group had no Flat
+Rate **and** no Free Shipping (only Store Pickup remained).
+
+Fix (`2026-08-11`): both plugins now compare
+`$request->getPackageValueWithDiscount()` — the subtotal of the destination
+address — matching native behaviour. Now each address group is evaluated
+independently: `subtotal >= 50` → Free Shipping; `subtotal < 50` → Flat Rate.
 
 ## 12. Magento concepts taught
 

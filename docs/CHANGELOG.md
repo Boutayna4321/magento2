@@ -16,6 +16,25 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.5.4] - 2026-08-11
+
+### Fixed (multishipping — per-address subtotal)
+
+- The StorePickup shipping plugins (`FilterFlatRate`, `FilterFreeShipping`) now compare
+  the **package value (subtotal) of the destination address**
+  (`$request->getPackageValueWithDiscount()`) instead of the whole-cart
+  `quote->getGrandTotal()`.
+- **Why**: with **Check Out with Multiple Addresses**, the whole-cart total
+  (`>= 50`) hid Flat Rate for every address, so groups whose own subtotal was
+  `< 50` were left with no Flat Rate **and** no Free Shipping (only Store Pickup
+  remained). Now each address is evaluated independently, matching the native
+  Free Shipping carrier: `subtotal >= 50` → Free Shipping; `< 50` → Flat Rate.
+- Ran `bin/magento setup:di:compile` to regenerate the carrier interceptors.
+- Verified via REST (`V1/carts/mine/estimate-shipping-methods`): cart `44 < 50` →
+  Flat Rate 5.00 + Store Pickup; cart `66 >= 50` → Free Shipping 0.00 + Store Pickup.
+
+---
+
 ## [1.5.3] - 2026-08-10
 
 ### Added (shipping methods — free shipping threshold)
