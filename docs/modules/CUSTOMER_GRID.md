@@ -108,7 +108,7 @@ php bin/magento cache:flush
 
 - `module:enable AlpineCommerce_CustomerGrid` — OK
 - `setup:upgrade` — OK (nothing to import)
-- `setup:di:compile` — OK (9/9, interceptors regenerated)
+- `setup:di:compile` — OK
 - `cache:flush` — OK
 - **Live verification** (admin, `admin` user): the merged `customer_listing`
   component was loaded through `UiComponentFactory` in `adminhtml` area —

@@ -25,6 +25,8 @@ These modules are functionally complete and stable. No modification is planned i
 | `AlpineCommerce_ProductReviews` | Product review system with photos, votes, moderation | ✅ Stable |
 | `AlpineCommerce_ProductQuestions` | Product Q&A system with answers, votes, moderation | ✅ Stable |
 | `AlpineCommerce_ProductLabels` | Product labels with admin management | ✅ Stable |
+| `AlpineCommerce_CustomerGrid` | Admin customer grid customisation (columns, labels, visibility) | ✅ Stable |
+| `AlpineCommerce_CustomerCare` | Customer care: VIP levels, lifetime spend, customer attributes, REST + cron | ✅ Stable |
 
 ---
 
@@ -40,7 +42,7 @@ These modules have a functional core and need an admin interface to be usable in
 | 4 | `AlpineCommerce_LoyaltyProgram` | Loyalty program (earn/spend points) | ⏳ To be finalized | Sprint 4 |
 | 5 | `AlpineCommerce_EuVat` | European VAT validation via VIES service | ⏳ To be finalized | Sprint 5 |
 | 6 | `AlpineCommerce_Hreflang` | Hreflang tags for multi-store SEO | ⏳ To be finalized | Sprint 6 |
-| 7 | `AlpineCommerce_Training` | Training and demo module | ⏳ To be finalized | Sprint 7 |
+| 7 | `AlpineCommerce_StoreSetup` | Store setup (configuration, observers, store views) | ✅ Stable | — |
 
 > **Status note**: for Gdpr, StorePickup and StoreLocator, the admin interface
 > (UI Component listing/forms, ACL, menu) was developed during finalization
@@ -109,14 +111,16 @@ Some features will be added by extending Magento directly, without creating an A
 | 1.0.0 | 2024 | Initial migration from Cartware to AlpineCommerce |
 | 1.1.0 | 2024 | Addition of AlpineCommerce_Blog, AlpineCommerce_Faq, AlpineCommerce_Gdpr |
 | 1.2.0 | 2024 | Addition of AlpineCommerce_LegalPages, AlpineCommerce_StorePickup, AlpineCommerce_StoreLocator |
-| 1.3.0 | 2024 | Addition of AlpineCommerce_Training, AlpineCommerce_EuVat, AlpineCommerce_Hreflang |
+| 1.3.0 | 2024 | Addition of AlpineCommerce_StoreSetup, AlpineCommerce_EuVat, AlpineCommerce_Hreflang |
 | 1.4.0 | 2024 | Addition of AlpineCommerce_LoyaltyProgram |
 | 1.5.0 | 2024 | Addition of AlpineCommerce_ProductReviews, AlpineCommerce_ProductQuestions |
 | 1.5.1 | 2026-08-06 | v1.0 audit, finalization plan by sprints, 14 critical bugs fixed (Phase 1) |
 | 1.5.2 | 2026-08-06 | Admin form fixes (dataProvider "class required", `button-set` buttons) |
+| 1.5.5 | 2026-08-11 | Addition of `AlpineCommerce_CustomerGrid` (admin customer grid customisation) |
+| 1.5.7 | 2026-08-11 | Addition of `AlpineCommerce_CustomerCare` (VIP program, lifetime spend, customer attributes, REST + cron) |
 
 > Detailed versions are documented in `CHANGELOG.md`.
 
 ---
 
-*Last updated: 2026-08-06.*
+*Last updated: 2026-08-11.*

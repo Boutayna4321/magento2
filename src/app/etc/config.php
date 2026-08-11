@@ -379,6 +379,7 @@ return [
         'Magento_WishlistSampleData' => 1,
         'AlpineCommerce_Blog' => 1,
         'AlpineCommerce_CustomerGrid' => 1,
+        'AlpineCommerce_CustomerCare' => 1,
         'AlpineCommerce_EuVat' => 1,
         'AlpineCommerce_Faq' => 1,
         'AlpineCommerce_Gdpr' => 1,

@@ -36,7 +36,7 @@ developer can clone, read, browse, and understand **progressively**.
 | Phase | Content | Status |
 |---|---|---|
 | **A — Standards** | Engineering Bible, Learning Path, Backlog, pedagogical README | ✅ in progress (2026-08) |
-| **B — Business development** | Finalize the 13 modules of v1.0 (firm scope) | upcoming |
+| **B — Business development** | Finalize the 14 modules of v1.0 (firm scope) | upcoming |
 | **C — Harmonization** | Refactor old modules (1 sprint / module) | after v1.0 |
 | **D — Pedagogical documentation** | Module READMEs, diagrams, exercises | after harmonization |
 
@@ -167,7 +167,7 @@ The business need is to **finalize each module** so that it is:
 - **Stable**: the module does not crash, produce PHP errors, or inconsistent behavior.
 - **Compliant**: the admin interface respects Adobe Commerce 2.4.8 standards (UI Components, ACL, validation).
 
-Today, 7 out of 13 modules have **functional blockers**:
+Today, 6 out of 14 modules have **functional blockers**:
 
 | Module | Functional blocker |
 |---|---|
@@ -177,7 +177,6 @@ Today, 7 out of 13 modules have **functional blockers**:
 | **StorePickup** | No admin interface to manage pickup points. |
 | **StoreLocator** | No admin interface to manage stores. Strong coupling with StorePickup. |
 | **Hreflang** | Module 100% configuration, but its exact scope (pure SEO or entity management) is unclear. |
-| **Training** | Inconsistent demo module: data patch creating store views, no interface. |
 
 ### 5.2 Expected features per module to finalize
 
@@ -234,15 +233,15 @@ Today, 7 out of 13 modules have **functional blockers**:
 | **Hreflang tags** | Automatic injection of `<link rel="alternate" hreflang="...">` tags in the head. | High |
 | **ACL** | Permissions: configure. | High |
 
-#### Training — Demo Module
+#### StoreSetup — Store Configuration
 
 | Feature | Description | Priority |
 |---|---|---|
-| **Role clarification** | Define whether it's a demo module for learners or a functional module. | Critical |
-| **Consistent interface** | Remove the data patch creating store views (abnormal). | High |
-| **Features** | If demo module: implement promised features. If functional: align with standards. | High |
+| **Configuration baseline** | Ship default store configuration (payment, shipping, currencies, store views). | Critical |
+| **Consistent implementation** | Review Data Patch `CreateStores.php` for production use. | High |
+| **Features** | Observers on product, order, checkout, customer login; frontend `StoreInfo` block. | High |
 
-### 5.3 Already stable modules (6)
+### 5.3 Already stable modules (8)
 
 The following modules are considered functionally stable. No new feature is requested in this sprint:
 
@@ -254,6 +253,9 @@ The following modules are considered functionally stable. No new feature is requ
 | ProductQuestions | ✅ Stable |
 | ProductReviews | ✅ Stable |
 | ProductLabels | ✅ Stable |
+| CustomerGrid | ✅ Stable |
+| CustomerCare | ✅ Stable |
+| StoreSetup | ✅ Stable |
 
 ### 5.4 Technical constraints
 
@@ -331,7 +333,7 @@ For each module, the following grid is applied:
 | **StorePickup** | Store CRUD + ACL + Menu | Availability/slots + Advanced config | Checkout works, stores to manage are missing. |
 | **StoreLocator** | Architecture decision + Store CRUD + Frontend map + ACL + Menu | Proximity search + Config | Partially implemented with bad coupling. To restructure. |
 | **Hreflang** | Scope clarification (config-only) + tag injection validation | Manual language-store mapping | Functionally complete module. Architecture decision to document. |
-| **Training** | Role clarification + Remove data patch | Standards alignment (if functional) | Inconsistent module. Needs a scope decision. |
+| **StoreSetup** | Configuration baseline + Data Patch review | Standards alignment | Production store configuration module. Scope clarified. |
 
 ### 6.3 v1.0 Scope (included features)
 
@@ -348,8 +350,8 @@ For each module, the following grid is applied:
 | V1-09 | StoreLocator | Frontend map (block + layout + template) | High |
 | V1-10 | Hreflang | Documented architecture decision (configuration-only) | Critical |
 | V1-11 | Hreflang | Tag injection validation (already done, verification) | High |
-| V1-12 | Training | Documented role clarification | Critical |
-| V1-13 | Training | Remove data patch `CreateStores.php` | High |
+| V1-12 | StoreSetup | Documented configuration baseline | Critical |
+| V1-13 | StoreSetup | Review/remove Data Patch `CreateStores.php` | High |
 
 ### 6.4 v1.1 Deferred Scope
 
@@ -365,7 +367,7 @@ For each module, the following grid is applied:
 | V1.1-08 | StoreLocator | Proximity search | UX refinement. |
 | V1.1-09 | StoreLocator | System configuration | Default values acceptable. |
 | V1.1-10 | Hreflang | Manual language-store mapping | Automatic mapping is sufficient. |
-| V1.1-11 | Training | Full standards alignment | Depends on role decision. |
+| V1.1-11 | StoreSetup | Full standards alignment | Depends on data patch decision. |
 
 ### 6.5 Major architecture decisions
 
@@ -373,7 +375,7 @@ For each module, the following grid is applied:
 |---|---|---|---|---|
 | 1 | **StoreLocator**: coupling with StorePickup or independence? | A: Coupling (read-only on StorePickup) / B: Independence (own entity) | **Option B** | If undecided, the module remains with unmaintainable strong coupling. |
 | 2 | **Hreflang**: configuration-only or business entities? | A: Configuration-only / B: Business entities (language-store mapping) | **Option A** | If undecided, the scope remains vague and risks ballooning. |
-| 3 | **Training**: demo module or functional module? | A: Pedagogical demo / B: Functional module | **Option A** | If undecided, the module remains inconsistent with abnormal data patch. |
+| 3 | **StoreSetup**: keep demo Data Patch or make it production-safe? | A: Keep as demo/reproducible script / B: Remove and replace with manual setup | **Option A** | If undecided, the module may create unwanted store views on deployment. |
 
 > **Required validation**: v1.0 scope (V1-01 → V1-13), deferred v1.1 scope,
 > and the 3 architecture decisions above must be validated by the product owner.

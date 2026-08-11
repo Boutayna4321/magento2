@@ -53,6 +53,7 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
 | ProductQuestions | `modules/PRODUCT_QUESTIONS.md` | ✅ Stable |
 | ProductLabels | `modules/PRODUCT_LABELS.md` | ✅ Stable |
 | CustomerGrid | `modules/CUSTOMER_GRID.md` | ✅ Stable |
+| CustomerCare | `modules/CUSTOMER_CARE.md` | ✅ Stable |
 | Gdpr | `modules/GDPR.md` | 🔄 Finalization (Sprint 1) |
 | StorePickup | `modules/STORE_PICKUP.md` | 🔄 Finalization (Sprint 2) |
 | StoreLocator | `modules/STORE_LOCATOR.md` | 🔄 Finalization (Sprint 3) |

@@ -65,7 +65,7 @@ ways** of doing admin — and no longer knows which is correct. The standards fr
 
 ---
 
-## B-03 — Modules without Service Contract (Hreflang, StoreLocator, Training)
+## B-03 — Modules without Service Contract (Hreflang, StoreLocator, StoreSetup)
 
 **Impact: low to medium — decision to document.**
 
@@ -75,7 +75,7 @@ ways** of doing admin — and no longer knows which is correct. The standards fr
 |---|---|---|
 | Hreflang | 0 | 100% config SEO module (`system.xml` + Block). No business entity → the Service Contract is **questionable**. |
 | StoreLocator | 0 | Has entities (stores) → the Service Contract is **mandatory** (see B-02). |
-| Training | 0 | Introductory demo module (first module, observers). Destined for simplicity → to **explicitly justify**. |
+| StoreSetup | 0 | Introductory demo module (first module, observers). Destined for simplicity → to **explicitly justify**. |
 
 **Why this is a problem for the project**
 The rule "all business logic is behind a Service Contract" must be **uniform**.
@@ -84,7 +84,7 @@ not as oversights.
 
 **Fix**
 - StoreLocator: covered by B-02.
-- Hreflang and Training: add a "Decision" note in their module doc
+- Hreflang and StoreSetup: add a "Decision" note in their module doc
   (Phase D) explaining why the Service Contract is not applicable here.
 - If a module cannot be justified, create the Service Contract.
 
@@ -153,7 +153,7 @@ coverage of 80% and validation reports had to rely on manual tests/curl.
 
 ---
 
-## B-08 — Inconsistent Training module
+## B-08 — Inconsistent StoreSetup module
 
 **Impact: medium.** Demo module with abnormal demo data.
 

@@ -7,7 +7,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │   AlpineCommerce                                              │
-│   ├── E-commerce platform (13 business modules)               │
+│   ├── E-commerce platform (15 business modules)               │
 │   └── Magento 2 Course                                        │
 │       ├── docs/README.md             → the documentation hub  │
 │       ├── docs/ENGINEERING_GUIDE.md  → the standards          │
@@ -107,7 +107,7 @@ See `docs/ENGINEERING_GUIDE.md` → section "❌ What you must NEVER do".
 ## The project in brief
 
 - **Target version**: Magento 2.4.8 (PHP 8.2)
-- **13 business modules** in `src/app/code/AlpineCommerce/` — each illustrates specific Magento
+- **15 business modules** in `src/app/code/AlpineCommerce/` — each illustrates specific Magento
   concepts (see `docs/README.md` → "Module documents")
 - **Frontend**: custom Luma-based theme in `src/app/design/`
 - **API**: REST only for now (GraphQL documented but unused — assumed choice)

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="alpinecommerce" sortOrder="300" translate="label">
+            <label>AlpineCommerce</label>
+        </tab>
+        <section id="customercare" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Customer Care</label>
+            <tab>alpinecommerce</tab>
+            <resource>AlpineCommerce_CustomerCare::config</resource>
+            <group id="vip" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>VIP Program</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable VIP Program</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="bronze_threshold" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Bronze threshold (lifetime spend)</label>
+                </field>
+                <field id="silver_threshold" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Silver threshold (lifetime spend)</label>
+                </field>
+                <field id="gold_threshold" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Gold threshold (lifetime spend)</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

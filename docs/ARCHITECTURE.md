@@ -36,7 +36,7 @@
 │  └───────────────┘  └───────────────┘  └───────────────┘ │
 │  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐ │
 │  │ AlpineCommerce│  │ AlpineCommerce│  │ AlpineCommerce│ │
-│  │ StoreLocator  │  │    Training   │  │   EuVat       │ │
+│  │ StoreLocator  │  │   StoreSetup   │  │   EuVat       │ │
 │  └───────────────┘  └───────────────┘  └───────────────┘ │
 │  ┌───────────────────────────────────────────────────┐     │
 │  │              AlpineCommerce LoyaltyProgram         │     │
@@ -96,12 +96,14 @@ modules **complement** Magento, never replace it.
 | `AlpineCommerce_LegalPages` | Legal pages | `alphacommerce_legal_page` | `/V1/alphacommerce/legal-pages/*` |
 | `AlpineCommerce_StorePickup` | Store pickup | `alphacommerce_pickup_store_info` | `/V1/carts/mine/store-pickup` |
 | `AlpineCommerce_StoreLocator` | Store locator | `alphacommerce_store_locator_store` | None |
-| `AlpineCommerce_Training` | Training module | None | None |
+| `AlpineCommerce_StoreSetup` | Store setup (config, observers, store views) | None | None |
 | `AlpineCommerce_EuVat` | EU VAT validation | `alphacommerce_euvat_validation` | `/V1/alphacommerce/euvat/*` |
 | `AlpineCommerce_LoyaltyProgram` | Loyalty program | `alpinecommerce_loyalty_balance`, `alpinecommerce_loyalty_order_points` | `/V1/carts/mine/loyalty-points` |
 | `AlpineCommerce_ProductReviews` | Product reviews | `alphacommerce_product_review`, `alphacommerce_product_review_image`, `alphacommerce_product_review_helpful` | `/V1/alphacommerce/product-reviews/*` |
 | `AlpineCommerce_ProductQuestions` | Product Q&A | `alphacommerce_product_question`, `alphacommerce_product_answer`, `alphacommerce_product_question_vote` | `/V1/alphacommerce/product-questions/*` |
 | `AlpineCommerce_ProductLabels` | Product labels | `alphacommerce_product_label`, `alphacommerce_product_label_product` | `/V1/alphacommerce/product-labels/*` |
+| `AlpineCommerce_CustomerGrid` | Admin customer grid (columns, labels, visibility) | None | None |
+| `AlpineCommerce_CustomerCare` | Customer care (VIP levels, lifetime spend, attributes) | None (customer EAV attributes) | `/V1/customercare/*` |
 
 ### AlpineCommerce Module Principles
 

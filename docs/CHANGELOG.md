@@ -16,6 +16,49 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.5.7] - 2026-08-11
+
+### Added (customer care — VIP program, attributes, REST, cron)
+
+- New module `AlpineCommerce_CustomerCare` built around the customer lifecycle
+  (profile enrichment + loyalty + automation), covering the core Magento concepts:
+- **Customer EAV attributes** (data patch): `customer_type` (select B2C/B2B/Wholesale,
+  visible in admin + customer account), `customer_notes` (textarea, admin only),
+  `vip_level` (select, computed), `lifetime_spent` (decimal, computed).
+- **VIP program** (config-driven): thresholds Bronze/Silver/Gold (default
+  100/500/1000) in `customercare/vip/*`, editable in **Stores > Settings >
+  Configuration > AlpineCommerce > Customer Care**.
+- **Service contracts + data objects**: `Api/CustomerCareInterface` +
+  `Api/Data/VipStatusInterface`, implemented in `Model/CustomerCare`
+  (getVipStatus, recalculateVipStatus, recalculateAll, resetAll).
+- **Lifetime spend** computed from completed/closed orders
+  (`Model/ResourceModel/LifetimeSpent`, SUM of `grand_total`).
+- **Observer** on `sales_order_place_after` (`Observer/OrderPlacedAfter`)
+  recomputes VIP status when an order is placed.
+- **Cron** `UpdateVipLevels` (daily 02:00) recomputes all customers.
+- **REST API** (`etc/webapi.xml`):
+  - `GET /V1/customercare/vip-status/:customerId` (admin)
+  - `GET /V1/customercare/me/vip-status` (customer, self)
+  - `POST /V1/customercare/vip-status/:customerId` (recalculate)
+  - `POST /V1/customercare/recalculate-all` (recalculate all)
+- **Admin grid** (`customer_listing.xml` override): new columns
+  `Customer Type`, `VIP Level`, `Lifetime Spent`.
+- **ACL** (`etc/acl.xml`): `AlpineCommerce_CustomerCare::config` + `::manage`.
+- Docs: `docs/modules/CUSTOMER_CARE.md`.
+
+### Verified
+
+- `module:enable`, `setup:upgrade` (3 data patches: attributes, form assignments,
+  attribute-set membership), `setup:di:compile`, `cache:flush` — OK.
+- `VipLevelCalculator` boundaries: 50→none, 99.99→none, 100→bronze, 500→silver,
+  1000→gold.
+- Lifetime spend: roni (39.64+205+570) → silver via observer event dispatch.
+- REST: `/me/vip-status` returns `{customer_id, vip_level, lifetime_spent,
+  bronze_threshold, silver_threshold, gold_threshold}`; admin endpoints OK.
+- Admin customer grid + edit form show the 4 new attributes.
+
+---
+
 ## [1.5.6] - 2026-08-11
 
 ### Added (prerequisites documentation)
