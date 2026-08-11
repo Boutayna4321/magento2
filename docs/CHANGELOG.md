@@ -16,6 +16,20 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.6.3] - 2026-08-11
+
+### Added (REST & GraphQL API prerequisite guide)
+
+- New `docs/prerequisites/magento-rest-graphql.md` — beginner-friendly guide covering:
+  - **REST API**: architecture, `webapi.xml` configuration, HTTP methods (GET/POST/PUT/DELETE), authentication (integration token, customer token), response formats, error handling
+  - **GraphQL**: concept, single endpoint, flexible queries, vs REST comparison
+  - **Service Contracts & Data Objects**: how the same interface powers REST, GraphQL, controllers, and blocks
+  - **AlpineCommerce examples**: ProductReviews, ProductQuestions, StorePickup, LoyaltyProgram, CustomerCare API endpoints
+  - **API Security**: ACL resources (`anonymous`, `customer`, admin permissions), rate limiting, input validation
+  - **Testing APIs**: curl commands, JavaScript `mage/storage` examples, common issues (401, 403, 404, class not found)
+
+---
+
 ## [1.6.2] - 2026-08-11
 
 ### Added (Events, Observers & Plugins prerequisite guide)
