@@ -83,8 +83,13 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
   `prerequisites/magento-intro.md`, then `prerequisites/magento-js.md`,
   then `prerequisites/magento-layout-templates.md`, then
   `prerequisites/magento-cli.md`, then `prerequisites/magento-cron-indexers.md`,
-  then `PROJECT_CHARTER.md` (the "why"), then `ARCHITECTURE.md` (the "how"),
-  then the canonical module document `modules/FAQ.md`.
+  then `prerequisites/magento-events-observers-plugins.md`,
+  then `prerequisites/magento-rest-graphql.md`, then `prerequisites/magento-composer.md`,
+  then `prerequisites/magento-debug.md`, then `prerequisites/magento-admin.md`,
+  then `prerequisites/magento-security.md`, then `prerequisites/magento-multistore.md`,
+  then `prerequisites/magento-testing.md`, then `PROJECT_CHARTER.md` (the "why"),
+  then `ARCHITECTURE.md` (the "how"), then the canonical module document
+  `modules/FAQ.md`.
 - **Intermediate developer**: `ENGINEERING_GUIDE.md` is your reference;
   compare each module to the canonical skeleton.
 - **Contributor / maintainer**: `ENGINEERING_GUIDE.md` (validation checklist),
