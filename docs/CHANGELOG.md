@@ -16,6 +16,21 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.6.1] - 2026-08-11
+
+### Added (Cron & Indexers prerequisite guide)
+
+- New `docs/prerequisites/magento-cron-indexers.md` — beginner-friendly guide covering:
+  - **Cron**: 3-level system (system cron → Magento runner → scheduled jobs), cron groups, running cron manually, AlpineCommerce CustomerCare cron example
+  - **Indexers**: purpose (EAV → flat tables), types (Update on Save / Update on Schedule), modes (realtime/schedule), core Magento indexers (product price, stock, search, category)
+  - **Cron + Indexers interaction**: how cron triggers indexer jobs, monitoring cron health
+  - **Custom indexer**: how to create an indexer (indexer.xml, IndexerInterface), example with CustomerCare VIP
+  - **Best practices**: when to use realtime vs schedule, avoiding performance issues
+  - **Common issues**: cron not running, indexer stuck, missing jobs, slow reindex
+- Updated `docs/README.md` with `magento-cron-indexers.md` in prerequisites table and beginner path.
+
+---
+
 ## [1.6.0] - 2026-08-11
 
 ### Added (prerequisites documentation suite)

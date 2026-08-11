@@ -15,7 +15,7 @@ docs/
 ├── ROADMAP.md                ← v1.0 development plan and beyond
 ├── CHANGELOG.md              ← version history and fixes
 ├── BACKLOG.md                ← tracked technical debt (Phase C)
-├── prerequisites/            ← foundational guides (Docker, PHP OOP, Git, Magento intro, Magento JS, Layout/Templates, CLI, Debug, Admin, Coding Standards, CI/CD)
+├── prerequisites/            ← foundational guides (Docker, PHP OOP, Git, Magento intro, Magento JS, Layout/Templates, CLI, Cron & Indexers, Events/Observers/Plugins, REST/GraphQL API, Composer, Debug, Admin, Security, Multi-Store, Testing, Coding Standards, CI/CD)
 │   ├── docker.md
 │   ├── php-oop.md
 │   ├── git-github.md
@@ -23,8 +23,15 @@ docs/
 │   ├── magento-js.md
 │   ├── magento-layout-templates.md
 │   ├── magento-cli.md
+│   ├── magento-cron-indexers.md
+│   ├── magento-events-observers-plugins.md
+│   ├── magento-rest-graphql.md
+│   ├── magento-composer.md
 │   ├── magento-debug.md
 │   ├── magento-admin.md
+│   ├── magento-security.md
+│   ├── magento-multistore.md
+│   ├── magento-testing.md
 │   ├── magento-coding-standards.md
 │   └── ci-cd.md
 ├── modules/                  ← each module's chapter (Phase D)
@@ -75,9 +82,9 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
   `prerequisites/php-oop.md`, then `prerequisites/git-github.md`, then
   `prerequisites/magento-intro.md`, then `prerequisites/magento-js.md`,
   then `prerequisites/magento-layout-templates.md`, then
-  `prerequisites/magento-cli.md`, then `PROJECT_CHARTER.md` (the "why"),
-  then `ARCHITECTURE.md` (the "how"), then the canonical module document
-  `modules/FAQ.md`.
+  `prerequisites/magento-cli.md`, then `prerequisites/magento-cron-indexers.md`,
+  then `PROJECT_CHARTER.md` (the "why"), then `ARCHITECTURE.md` (the "how"),
+  then the canonical module document `modules/FAQ.md`.
 - **Intermediate developer**: `ENGINEERING_GUIDE.md` is your reference;
   compare each module to the canonical skeleton.
 - **Contributor / maintainer**: `ENGINEERING_GUIDE.md` (validation checklist),
@@ -97,8 +104,15 @@ diving into Magento modules:
 | `prerequisites/magento-js.md` | RequireJS, KnockoutJS, jQuery, mage/* libraries, AlpineCommerce JS patterns | Everyone who wants to write or understand Magento frontend JS |
 | `prerequisites/magento-layout-templates.md` | Layout XML, containers, blocks, PHTML templates, fallback system | Everyone who wants to modify the frontend |
 | `prerequisites/magento-cli.md` | `bin/magento` commands: module, upgrade, compile, cache, deploy | Everyone who will develop on Magento |
+| `prerequisites/magento-cron-indexers.md` | Cron jobs, indexers (realtime/schedule), flat tables, cron schedule | Everyone who wants to understand Magento automation and performance |
+| `prerequisites/magento-events-observers-plugins.md` | Events, observers, plugins (interceptors), when to use which | Everyone who will extend Magento without modifying core |
+| `prerequisites/magento-rest-graphql.md` | REST API, GraphQL, authentication, service contracts, AlpineCommerce examples | Everyone who will integrate or consume Magento APIs |
+| `prerequisites/magento-composer.md` | Composer, packages, autoload, updating Magento and modules | Everyone who will install or update dependencies |
 | `prerequisites/magento-debug.md` | Logs, developer mode, Xdebug, common errors, debugging workflow | Everyone (debugging is daily work) |
 | `prerequisites/magento-admin.md` | Admin navigation, ACL, menus, system.xml, UI Components listings/forms | Everyone who needs to use or extend the admin |
+| `prerequisites/magento-security.md` | Form keys, ACL, validation, XSS, CSRF, sanitization, secrets handling | Everyone who will write secure code |
+| `prerequisites/magento-multistore.md` | Websites/stores/store views, scope hierarchy, config fallback, store switching | Everyone who will work with multiple stores or languages |
+| `prerequisites/magento-testing.md` | Unit tests, integration tests, API functional tests, test framework | Everyone who will write or run tests |
 | `prerequisites/magento-coding-standards.md` | PSR-12, naming conventions, module structure, git commit format | Everyone who will write code |
 | `prerequisites/ci-cd.md` | CI/CD concepts, GitHub Actions, automated pipelines | Everyone who wants to understand how code is tested and deployed |
 
