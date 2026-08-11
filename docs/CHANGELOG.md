@@ -16,6 +16,27 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.6.7] - 2026-08-11
+
+### Added (Testing in Magento prerequisite guide)
+
+- New `docs/prerequisites/magento-testing.md` — beginner-friendly guide covering:
+  - **Why test?**: catching bugs early, safe refactoring, maintainability
+  - **Types of tests**: unit, integration, API functional, static — comparison table with speed, DB, use cases
+  - **Unit tests**: testing single class in isolation, PHPUnit, mocking dependencies, practical example (`VipLevelCalculator`)
+  - **Integration tests**: testing multiple classes with real DB, ObjectManager, repository testing
+  - **API functional tests**: testing REST/GraphQL endpoints end-to-end, WebapiAbstract
+  - **Test configuration**: phpunit.xml, test directory structure in modules
+  - **Mocking**: PHPUnit mocks, when and why to mock
+  - **Testing in AlpineCommerce**: current state (no tests yet — BACKLOG B-07), recommended test coverage table
+  - **Running tests**: prerequisites, commands, coverage reports
+  - **Test-Driven Development (TDD)**: cycle, practical example
+  - **CI and tests**: adding tests to GitHub Actions, coverage as CI gate
+  - **Common issues**: class not found, area code not set, database errors
+  - **Recommended AlpineCommerce test plan**: priority, component, type, effort
+
+---
+
 ## [1.6.6] - 2026-08-11
 
 ### Added (Multi-Store Deep Dive prerequisite guide)
