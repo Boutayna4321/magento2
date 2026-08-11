@@ -59,6 +59,27 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.5.8] - 2026-08-11
+
+### Added (CI/CD pipeline)
+
+- New `.github/workflows/ci.yml` — Continuous Integration workflow:
+  - **PHP Lint**: syntax check on all `AlpineCommerce/*` PHP files
+  - **XML Validation**: `module.xml`, `layout/*.xml`, `ui_component/*.xml`, `db_schema.xml`
+  - **Composer Validate**: `composer.json` integrity check
+  - **Docker Build Test**: verify `Dockerfile` builds without error
+  - **Secret Scanning**: TruffleHog scans for leaked credentials
+  - **Markdown Lint**: `.md` files formatting rules
+- New `.github/workflows/cd.yml` — Continuous Deployment workflow:
+  - Triggered on push to `main`
+  - Builds Docker image from `php/Dockerfile`
+  - Pushes to GitHub Container Registry (`ghcr.io`) with tags `latest`, `main-<sha>`
+- New `markdownlint.json` configuration file
+- New `docs/prerequisites/ci-cd.md` — beginner-friendly guide explaining CI/CD concepts, GitHub Actions, and the AlpineCommerce pipeline
+- Updated `docs/README.md` with CI/CD in the prerequisites section
+
+---
+
 ## [1.5.6] - 2026-08-11
 
 ### Added (prerequisites documentation)

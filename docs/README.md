@@ -15,11 +15,12 @@ docs/
 ├── ROADMAP.md                ← v1.0 development plan and beyond
 ├── CHANGELOG.md              ← version history and fixes
 ├── BACKLOG.md                ← tracked technical debt (Phase C)
-├── prerequisites/            ← foundational guides (Docker, PHP OOP, Git, Magento intro)
+├── prerequisites/            ← foundational guides (Docker, PHP OOP, Git, Magento intro, CI/CD)
 │   ├── docker.md
 │   ├── php-oop.md
 │   ├── git-github.md
-│   └── magento-intro.md
+│   ├── magento-intro.md
+│   └── ci-cd.md
 ├── modules/                  ← each module's chapter (Phase D)
 │   ├── BLOG.md
 │   ├── FAQ.md
@@ -85,6 +86,7 @@ diving into Magento modules:
 | `prerequisites/php-oop.md` | Classes, objects, inheritance, interfaces, DI, namespaces | Developers new to OOP |
 | `prerequisites/git-github.md` | Git commands, branching, pull requests, GitHub workflow | Anyone who will contribute code |
 | `prerequisites/magento-intro.md` | Magento architecture, modules, EAV, multi-store, UI Components | Everyone new to Magento |
+| `prerequisites/ci-cd.md` | CI/CD concepts, GitHub Actions, automated pipelines | Everyone who wants to understand how code is tested and deployed |
 
 These guides are written for absolute beginners and use AlpineCommerce
 examples throughout.

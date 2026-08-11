@@ -1,0 +1,88 @@
+name: CI — Continuous Integration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  php-lint:
+    name: PHP Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: intl,gd,zip,xsl,bcmath,pcntl
+      - name: Lint AlpineCommerce PHP files
+        run: |
+          find src/app/code/AlpineCommerce -name '*.php' -print0 | xargs -0 -n1 php -l
+
+  xml-validation:
+    name: XML Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Validate module.xml files
+        run: |
+          find src/app/code/AlpineCommerce -name 'module.xml' -print0 | xargs -0 -n1 php -r 'libxml_use_internal_errors(true); simplexml_load_file($argv[1]); $e = libxml_get_errors(); if ($e) { foreach ($e as $err) { echo $err->message . "\n"; } exit(1); }' 
+      - name: Validate layout XML files
+        run: |
+          find src/app/code/AlpineCommerce -path '*/layout/*.xml' -print0 | xargs -0 -n1 php -r 'libxml_use_internal_errors(true); simplexml_load_file($argv[1]); $e = libxml_get_errors(); if ($e) { foreach ($e as $err) { echo $err->message . "\n"; } exit(1); }'
+      - name: Validate ui_component XML files
+        run: |
+          find src/app/code/AlpineCommerce -path '*/ui_component/*.xml' -print0 | xargs -0 -n1 php -r 'libxml_use_internal_errors(true); simplexml_load_file($argv[1]); $e = libxml_get_errors(); if ($e) { foreach ($e as $err) { echo $err->message . "\n"; } exit(1); }'
+      - name: Validate db_schema.xml files
+        run: |
+          find src/app/code/AlpineCommerce -name 'db_schema.xml' -print0 | xargs -0 -n1 php -r 'libxml_use_internal_errors(true); simplexml_load_file($argv[1]); $e = libxml_get_errors(); if ($e) { foreach ($e as $err) { echo $err->message . "\n"; } exit(1); }'
+
+  composer-validate:
+    name: Composer Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - run: composer validate --no-check-publish --working-dir=src
+
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./php/Dockerfile
+          push: false
+          tags: magento2-alpinecommerce:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+
+  markdown-lint:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          config: markdownlint.json
+          globs: '**/*.md'
