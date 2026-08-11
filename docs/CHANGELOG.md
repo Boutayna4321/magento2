@@ -16,6 +16,24 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.6.6] - 2026-08-11
+
+### Added (Multi-Store Deep Dive prerequisite guide)
+
+- New `docs/prerequisites/magento-multistore.md` — beginner-friendly guide covering:
+  - **Architecture**: websites, stores, store views hierarchy, AlpineCommerce 4-store setup
+  - **Configuration scopes**: Default, Website, Store View — how config cascades
+  - **Store URLs and switching**: base URLs per store view, store switcher, code examples
+  - **Root categories**: product visibility per store, assigning root categories
+  - **Shared vs Separate data**: what's shared across stores vs store-specific
+  - **Fallback system**: config fallback, template fallback, translation fallback
+  - **EAV per store view**: store-specific attribute values, fallback to default
+  - **Currency per website**: configuring currencies, currency conversion
+  - **Working with stores in code**: get current store, get all stores, load product for specific store view
+  - **Common issues**: wrong product name, config not applied, categories not visible
+
+---
+
 ## [1.6.5] - 2026-08-11
 
 ### Added (Security Basics prerequisite guide)
