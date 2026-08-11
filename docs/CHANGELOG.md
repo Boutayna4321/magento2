@@ -16,6 +16,21 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.6.2] - 2026-08-11
+
+### Added (Events, Observers & Plugins prerequisite guide)
+
+- New `docs/prerequisites/magento-events-observers-plugins.md` — beginner-friendly guide covering:
+  - **Events & Observers**: dispatching events, declaring observers in `events.xml`, `execute()` method, multiple observers, AlpineCommerce examples (StoreSetup, CustomerCare)
+  - **Plugins (Interceptors)**: `before`, `after`, `around` plugins, declaration in `di.xml`, method interception, AlpineCommerce examples (StorePickup, LoyaltyProgram)
+  - **Events vs Plugins**: comparison table, when to use which, decision tree
+  - **Preferences**: global interface replacement, when to use (sparingly)
+  - **Common pitfalls**: non-public methods, final classes, multiple plugins, missing returns, event name typos
+  - **Debugging**: listing observers, listing plugins, enabling plugin logging, testing
+  - **AlpineCommerce reference**: table of all events and plugins used in the project
+
+---
+
 ## [1.6.1] - 2026-08-11
 
 ### Added (Cron & Indexers prerequisite guide)
