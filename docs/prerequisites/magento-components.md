@@ -1,74 +1,74 @@
-# Magento 2 — Composants et Interactions
+# Magento 2 — Components and Interactions
 
-> **Target audience**: débutants qui veulent comprendre **qui appelle qui**
-> dans Magento 2. Ce guide montre le flux complet d'une requête, du navigateur
-> jusqu'à la base de données, et comment les composants (Controller, Block,
-> Template, Model, UI Component…) collaborent.
+> **Target audience**: beginners who want to understand **who calls who**
+> in Magento 2. This guide shows the complete flow of a request, from the browser
+> to the database, and how the components (Controller, Block,
+> Template, Model, UI Component…) collaborate.
 
 ---
 
-## 1. Vue d'ensemble des couches
+## 1. Layer overview
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     NAVIGATEUR (client)                      │
+│                     BROWSER (client)                        │
 │                   http://localhost:8080/blog                 │
 └───────────────────────────┬─────────────────────────────────┘
-                            │ HTTP Request
-                            ▼
+                             │ HTTP Request
+                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  NGINX (web server)                                          │
-│  - sert les fichiers statiques (CSS, JS, images)             │
-│  - transmet les requêtes dynamiques à PHP-FPM                │
+│  - serves static files (CSS, JS, images)                     │
+│  - forwards dynamic requests to PHP-FPM                      │
 └───────────────────────────┬─────────────────────────────────┘
-                            │ fastcgi
-                            ▼
+                             │ fastcgi
+                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  PHP-FPM 8.2                                                │
-│  - exécute index.php (point d'entrée unique)                │
+│  - executes index.php (single entry point)                   │
 └───────────────────────────┬─────────────────────────────────┘
-                            │ bootstrap
-                            ▼
+                             │ bootstrap
+                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  MAGENTO FRONT CONTROLLER                                   │
-│  - identifie l'area (frontend / adminhtml / webapi_rest)    │
-│  - instancie le Router                                      │
+│  - identifies the area (frontend / adminhtml / webapi_rest)  │
+│  - instantiates the Router                                   │
 └───────────────────────────┬─────────────────────────────────┘
-                            │ match URL
-                            ▼
+                             │ match URL
+                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  ROUTER                                                      │
-│  - compare l'URL aux routes déclarées dans routes.xml       │
-│  - trouve : module=Blog, controller=index, action=index     │
-│  → classe : AlpineCommerce\Blog\Controller\Index\Index     │
+│  - compares the URL to routes declared in routes.xml          │
+│  - finds: module=Blog, controller=index, action=index        │
+│  → class: AlpineCommerce\Blog\Controller\Index\Index         │
 └───────────────────────────┬─────────────────────────────────┘
-                            │ dispatch
-                            ▼
+                             │ dispatch
+                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  CONTROLLER                                                   │
-│  - orchestre la requête                                      │
-│  - NE contient PAS de logique métier                         │
-│  - appelle le Repository (Service Contract)                  │
-│  - retourne un Result (page, JSON, redirect)                 │
+│  - orchestrates the request                                   │
+│  - does NOT contain business logic                            │
+│  - calls the Repository (Service Contract)                    │
+│  - returns a Result (page, JSON, redirect)                    │
 └───────────────────────────┬─────────────────────────────────┘
-                            │ result
-                            ▼
+                             │ result
+                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  RESPONSE                                                    │
-│  - HTML (page complète) / JSON (REST) / Redirect             │
+│  RESPONSE                                                     │
+│  - HTML (full page) / JSON (REST) / Redirect                   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Le flux complet d'une page Magento
+## 2. The complete flow of a Magento page
 
-### 2.1 Page frontend : `/blog`
+### 2.1 Frontend page: `/blog`
 
 ```mermaid
 flowchart TD
-    A["Navigateur<br/>GET /blog"] --> B["Nginx"]
-    B --> C["index.php<br/>(bootstrap Magento)"]
+    A["Browser<br/>GET /blog"] --> B["Nginx"]
+    B --> C["index.php<br/>(Magento bootstrap)"]
     C --> D["Front Controller<br/>(area = frontend)"]
     D --> E["Router<br/>(routes.xml)"]
     E --> F["Controller<br/>Blog\\Index\\Index"]
@@ -80,26 +80,26 @@ flowchart TD
     G --> F
     F --> J["Block<br/>PostList"]
     J --> K["Template<br/>post/list.phtml"]
-    K --> L["HTML<br/>(liste des posts)"]
-    L --> M["Navigateur"]
+    K --> L["HTML<br/>(list of posts)"]
+    L --> M["Browser"]
 ```
 
-**Étape par étape :**
+**Step by step:**
 
-| # | Composant | Rôle | Exemple AlpineCommerce |
+| # | Component | Role | AlpineCommerce example |
 |---|-----------|------|------------------------|
-| 1 | **Nginx** | Reçoit la requête HTTP, sert les fichiers statiques | `localhost:8080` |
-| 2 | **index.php** | Point d'entrée unique, bootstrappe Magento | `src/index.php` |
-| 3 | **Front Controller** | Identifie l'area (`frontend`, `adminhtml`, `webapi_rest`) | `Framework/App/FrontControllerInterface` |
-| 4 | **Router** | Matche l'URL à une classe Controller via `routes.xml` | `Blog/etc/frontend/routes.xml` |
-| 5 | **Controller** | Orchestre, appelle les services, retourne un Result | `Blog/Controller/Index/Index.php` |
-| 6 | **Repository** | Logique métier (save, getById, getList) | `Blog/Model/PostRepository.php` |
-| 7 | **ResourceModel** | Exécute les requêtes SQL | `Blog/Model/ResourceModel/Post.php` |
-| 8 | **Block** | Prépare les données pour le template | `Blog/Block/PostList.php` |
-| 9 | **Template** | Affiche le HTML (`.phtml`) | `view/frontend/templates/post/list.phtml` |
-| 10 | **Response** | Renvoie le HTML complet au navigateur | `Page/Result.php` |
+| 1 | **Nginx** | Receives the HTTP request, serves static files | `localhost:8080` |
+| 2 | **index.php** | Single entry point, bootstraps Magento | `src/index.php` |
+| 3 | **Front Controller** | Identifies the area (`frontend`, `adminhtml`, `webapi_rest`) | `Framework/App/FrontControllerInterface` |
+| 4 | **Router** | Matches the URL to a Controller class via `routes.xml` | `Blog/etc/frontend/routes.xml` |
+| 5 | **Controller** | Orchestrates, calls services, returns a Result | `Blog/Controller/Index/Index.php` |
+| 6 | **Repository** | Business logic (save, getById, getList) | `Blog/Model/PostRepository.php` |
+| 7 | **ResourceModel** | Executes SQL queries | `Blog/Model/ResourceModel/Post.php` |
+| 8 | **Block** | Prepares data for the template | `Blog/Block/PostList.php` |
+| 9 | **Template** | Displays HTML (`.phtml`) | `view/frontend/templates/post/list.phtml` |
+| 10 | **Response** | Returns the complete HTML to the browser | `Page/Result.php` |
 
-### 2.2 Page admin : formulaire d'édition
+### 2.2 Admin page: edit form
 
 ```mermaid
 flowchart TD
@@ -121,156 +121,156 @@ flowchart TD
     J --> I
     I --> M["Layout XML<br/>_edit.xml"]
     M --> N["Block Container"]
-    N --> O["HTML<br/>(formulaire avec champs)"]
-    O --> P["Navigateur"]
+    N --> O["HTML<br/>(form with fields)"]
+    O --> P["Browser"]
 ```
 
-**Différences avec le frontend :**
-- L'**area** est `adminhtml` (pas `frontend`)
-- Les formulaires admin utilisent des **UI Components** (`<form>` en XML) au lieu de Blocks + Templates classiques
-- Un **DataProvider** alimente le formulaire en données (appelle le Repository)
+**Differences with the frontend:**
+- The **area** is `adminhtml` (not `frontend`)
+- Admin forms use **UI Components** (`<form>` in XML) instead of classic Blocks + Templates
+- A **DataProvider** feeds the form with data (calls the Repository)
 
 ---
 
-## 3. Les composants Magento et leurs relations
+## 3. Magento components and their relationships
 
-### 3.1 Carte des responsabilités
+### 3.1 Responsibility map
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                      NAVIGATEUR                               │
-│            (affiche HTML, CSS, JS, images)                   │
+│                      BROWSER                                   │
+│            (displays HTML, CSS, JS, images)                   │
 └────────────────────────────┬─────────────────────────────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              ▼              ▼              ▼
-        ┌──────────┐  ┌──────────┐  ┌──────────┐
-        │  Nginx   │  │  Nginx   │  │  Nginx   │
-        │ (:8080)  │  │ (:8080)  │  │ (:8080)  │
-        └────┬─────┘  └────┬─────┘  └────┬─────┘
-             │             │             │
-             ▼             ▼             ▼
-        ┌──────────────────────────────────────┐
-        │          PHP-FPM (index.php)          │
-        └──────────────────┬───────────────────┘
-                           │
-                           ▼
-        ┌──────────────────────────────────────┐
-        │      MAGENTO FRAMEWORK                │
-        │  ┌────────────────────────────────┐  │
-        │  │  Object Manager (DI Container) │  │
-        │  │  - construit tous les objets  │  │
-        │  │  - injecte les dépendances    │  │
-        │  └──────────┬─────────────────────┘  │
-        │             │                         │
-        │  ┌──────────┴─────────────────────┐  │
-        │  │                                 │  │
-        │  ▼                                 ▼  │
-        │ ┌─────────────┐          ┌──────────────┐
-        │ │   Router     │          │  WebAPI      │
-        │ │ (frontend,   │          │  (REST,      │
-        │ │  adminhtml)  │          │   GraphQL)   │
-        │ └──────┬──────┘          └──────────────┘
-        │        │
-        │        ▼
-        │ ┌─────────────┐
-        │ │  Controller  │
-        │ │  (orchestre) │
-        │ └──────┬──────┘
-        │        │
-        │        ▼
-        │ ┌─────────────┐      ┌──────────────┐
-        │ │  Repository  │◄────►│   Block /    │
-        │ │  (métier)    │      │   UI DataProv│
-        │ └──────┬──────┘      └──────┬───────┘
-        │        │                    │
-        │        ▼                    ▼
-        │ ┌─────────────┐      ┌──────────────┐
-        │ │ ResourceModel│      │  Template    │
-        │ │  (SQL)       │      │  (.phtml)    │
-        │ └──────┬──────┘      └──────┬───────┘
-        │        │                    │
-        │        ▼                    │
-        │ ┌─────────────┐             │
-        │ │    MySQL     │             │
-        │ │  (données)   │             │
-        │ └─────────────┘             │
-        │                              │
-        │        ┌─────────────────────┘
-        │        ▼
-        │ ┌─────────────┐
-        │ │   Layout     │
-        │ │  (structure) │
-        │ └──────┬──────┘
-        │        │
-        │        ▼
-        │ ┌─────────────┐
-        │ │    HTML      │
-        │ │  (Response)  │
-        │ └─────────────┘
-        │
-        └──────────────────────────────────────┘
+                              │
+               ┌──────────────┼──────────────┐
+               ▼              ▼              ▼
+         ┌──────────┐  ┌──────────┐  ┌──────────┐
+         │  Nginx   │  │  Nginx   │  │  Nginx   │
+         │ (:8080)  │  │ (:8080)  │  │ (:8080)  │
+         └────┬─────┘  └────┬─────┘  └────┬─────┘
+              │             │             │
+              ▼             ▼             ▼
+         ┌──────────────────────────────────────┐
+         │          PHP-FPM (index.php)          │
+         └──────────────────┬───────────────────┘
+                            │
+                            ▼
+         ┌──────────────────────────────────────┐
+         │      MAGENTO FRAMEWORK                │
+         │  ┌────────────────────────────────┐  │
+         │  │  Object Manager (DI Container) │  │
+         │  │  - builds all objects          │  │
+         │  │  - injects dependencies        │  │
+         │  └──────────┬─────────────────────┘  │
+         │             │                         │
+         │  ┌──────────┴─────────────────────┐  │
+         │  │                                 │  │
+         │  ▼                                 ▼  │
+         │ ┌─────────────┐          ┌──────────────┐
+         │ │   Router     │          │  WebAPI      │
+         │ │ (frontend,   │          │  (REST,      │
+         │ │  adminhtml)  │          │   GraphQL)   │
+         │ └──────┬──────┘          └──────────────┘
+         │        │
+         │        ▼
+         │ ┌─────────────┐
+         │ │  Controller  │
+         │ │  (orchestrates) │
+         │ └──────┬──────┘
+         │        │
+         │        ▼
+         │ ┌─────────────┐      ┌──────────────┐
+         │ │  Repository  │◄────►│   Block /    │
+         │ │  (business)  │      │   UI DataProv│
+         │ └──────┬──────┘      └──────┬───────┘
+         │        │                    │
+         │        ▼                    ▼
+         │ ┌─────────────┐      ┌──────────────┐
+         │ │ ResourceModel│      │  Template    │
+         │ │  (SQL)       │      │  (.phtml)    │
+         │ └──────┬──────┘      └──────┬───────┘
+         │        │                    │
+         │        ▼                    │
+         │ ┌─────────────┐             │
+         │ │    MySQL     │             │
+         │ │  (data)      │             │
+         │ └─────────────┘             │
+         │                              │
+         │        ┌─────────────────────┘
+         │        ▼
+         │ ┌─────────────┐
+         │ │   Layout     │
+         │ │  (structure) │
+         │ └──────┬──────┘
+         │        │
+         │        ▼
+         │ ┌─────────────┐
+         │ │    HTML      │
+         │ │  (Response)  │
+         │ └─────────────┘
+         │
+         └──────────────────────────────────────┘
 ```
 
-### 3.2 Qui appelle qui ? (tableau de référence)
+### 3.2 Who calls who? (reference table)
 
-| Composant | Appelle | Appelé par | Rôle |
-|-----------|---------|------------|------|
-| **Router** | Controller | Front Controller | Trouve le bon Controller selon l'URL |
-| **Controller** | Repository, Block, ResultFactory | Router | Orchestre la requête |
-| **Repository** | ResourceModel, autres Repositories | Controller, Block, DataProvider | Logique métier |
-| **ResourceModel** | Connection (MySQL) | Repository | Requêtes SQL |
-| **Block** | Repository, Helper, autres Blocks | Layout XML | Prépare les données pour l'affichage |
-| **Template (.phtml)** | Block (via `$this`) | Block | Affiche le HTML |
-| **UI DataProvider** | Repository | UI Component XML | Alimente les grilles/formulaires admin |
-| **Layout XML** | Block | Controller (via Result) | Définit la structure de la page |
-| **Plugin** | Méthode d'une classe cible | Automatique (DI) | Modifie le comportement d'une méthode |
-| **Observer** | N'importe quel service | Event dispatché | Réagit à un événement métier |
-| **Helper** | Autres services | Block, Template | Outils transversaux (config, logs) |
-| **ResultFactory** | N/A | Controller | Crée la réponse (page, JSON, redirect) |
-| **Object Manager** | Toutes les classes | Automatique | Crée les objets, injecte les dépendances |
+| Component | Calls | Called by | Role |
+|-----------|-------|-----------|------|
+| **Router** | Controller | Front Controller | Finds the right Controller based on the URL |
+| **Controller** | Repository, Block, ResultFactory | Router | Orchestrates the request |
+| **Repository** | ResourceModel, other Repositories | Controller, Block, DataProvider | Business logic |
+| **ResourceModel** | Connection (MySQL) | Repository | SQL queries |
+| **Block** | Repository, Helper, other Blocks | Layout XML | Prepares data for display |
+| **Template (.phtml)** | Block (via `$this`) | Block | Displays HTML |
+| **UI DataProvider** | Repository | UI Component XML | Feeds admin grids/forms |
+| **Layout XML** | Block | Controller (via Result) | Defines page structure |
+| **Plugin** | Method of a target class | Automatic (DI) | Modifies method behavior |
+| **Observer** | Any service | Dispatched Event | Reacts to a business event |
+| **Helper** | Other services | Block, Template | Cross-cutting tools (config, logs) |
+| **ResultFactory** | N/A | Controller | Creates the response (page, JSON, redirect) |
+| **Object Manager** | All classes | Automatic | Creates objects, injects dependencies |
 
 ---
 
-## 4. Flux détaillé par type de page
+## 4. Detailed flow by page type
 
-### 4.1 Page CMS (ex: `/about-us`)
+### 4.1 CMS page (e.g. `/about-us`)
 
 ```
-Navigateur
+Browser
   → Nginx
     → index.php
       → Router (cms_page_view)
         → Controller (Cms/Page/View)
-          → PageRepository (récupère la page en DB)
+          → PageRepository (retrieves the page from DB)
             → ResourceModel (SELECT FROM cms_page)
-          → ResultPage (créé via ResultFactory)
+          → ResultPage (created via ResultFactory)
             → Layout (cms_page_view.xml)
               → Block (page)
                 → Template (page.phtml)
           → Response (HTML)
-    → Navigateur
+    → Browser
 ```
 
-### 4.2 API REST (ex: `GET /rest/V1/blog/posts`)
+### 4.2 REST API (e.g. `GET /rest/V1/blog/posts`)
 
 ```
-Client REST
+REST Client
   → Nginx
     → index.php (area = webapi_rest)
-      → WebAPI Router (lit webapi.xml)
+      → WebAPI Router (reads webapi.xml)
         → Service Contract (PostRepositoryInterface)
           → Implementation (PostRepository)
             → ResourceModel (SELECT FROM blog_post)
               → MySQL
-        → Response JSON
-    → Client REST
+        → JSON Response
+    → REST Client
 ```
 
-**Différence clé** : pas de Controller, pas de Block, pas de Template.
-Le WebAPI Router appelle directement le **Service Contract**.
+**Key difference**: no Controller, no Block, no Template.
+The WebAPI Router calls the **Service Contract** directly.
 
-### 4.3 Formulaire admin avec UI Component
+### 4.3 Admin form with UI Component
 
 ```
 Admin GET /admin/blog/post/edit/id/1
@@ -284,9 +284,9 @@ Admin GET /admin/blog/post/edit/id/1
                 → DataProvider (PostFormDataProvider)
                   → Repository (PostRepository::getById)
                     → MySQL
-                → Form fields (inputs générés par JS)
+                → Form fields (inputs generated by JS)
               → Block (container)
-        → Response (HTML + JS qui initialise le formulaire)
+          → Response (HTML + JS that initializes the form)
 
 Admin POST /admin/blog/post/save
   → Nginx
@@ -296,30 +296,30 @@ Admin POST /admin/blog/post/save
           → Repository (PostRepository::save)
             → ResourceModel (INSERT/UPDATE)
               → MySQL
-          → ResultRedirect (vers la liste)
-        → Response (redirect)
+          → ResultRedirect (to the list)
+          → Response (redirect)
 ```
 
 ---
 
-## 5. Les 3 types de requêtes Magento
+## 5. The 3 types of Magento requests
 
-| Type | Area | Entry point | Réponse | Exemple |
-|------|------|-------------|---------|---------|
-| **Page frontend** | `frontend` | Controller → Block → Template | HTML complet | `/blog`, `/catalog/product/view/id/1` |
-| **Page admin** | `adminhtml` | Controller → UI Component → DataProvider | HTML + JS | `/admin/blog/post/edit` |
-| **API REST** | `webapi_rest` | WebAPI Router → Service Contract | JSON | `/rest/V1/blog/posts` |
-| **API SOAP** | `webapi_soap` | WebAPI Router → Service Contract | XML SOAP | `/soap/?wsdl` |
-| **API GraphQL** | `graphql` | GraphQL Router → Resolver | JSON | `/graphql` |
+| Type | Area | Entry point | Response | Example |
+|------|------|-------------|----------|---------|
+| **Frontend page** | `frontend` | Controller → Block → Template | Full HTML | `/blog`, `/catalog/product/view/id/1` |
+| **Admin page** | `adminhtml` | Controller → UI Component → DataProvider | HTML + JS | `/admin/blog/post/edit` |
+| **REST API** | `webapi_rest` | WebAPI Router → Service Contract | JSON | `/rest/V1/blog/posts` |
+| **SOAP API** | `webapi_soap` | WebAPI Router → Service Contract | SOAP XML | `/soap/?wsdl` |
+| **GraphQL API** | `graphql` | GraphQL Router → Resolver | JSON | `/graphql` |
 
 ---
 
-## 6. Le système de Layout (structure des pages)
+## 6. The Layout system (page structure)
 
-Le **Layout** est le squelette de la page. Il définit quels Blocks
-apparaissent et où.
+The **Layout** is the page skeleton. It defines which Blocks
+appear and where.
 
-### 6.1 Exemple : page blog
+### 6.1 Example: blog page
 
 ```xml
 <!-- view/frontend/layout/blog_index_index.xml -->
@@ -335,52 +335,52 @@ apparaissent et où.
 </page>
 ```
 
-**Ce qui se passe :**
-1. Le Controller retourne un `ResultPage`
-2. Magento charge le layout XML correspondant à la route (`blog_index_index`)
-3. Le layout XML ajoute un block `blog.post.list` dans le container `content`
-4. Le block `PostList` appelle le Repository pour récupérer les posts
-5. Le template `list.phtml` est rendu avec les données du block
+**What happens:**
+1. The Controller returns a `ResultPage`
+2. Magento loads the layout XML corresponding to the route (`blog_index_index`)
+3. The layout XML adds a block `blog.post.list` in the `content` container
+4. The `PostList` block calls the Repository to retrieve the posts
+5. The template `list.phtml` is rendered with the block's data
 
-### 6.2 Les conteneurs (containers)
+### 6.2 Containers
 
-Un **container** est un emplacement vide dans la page :
+A **container** is an empty location in the page:
 
-| Container | Contient | Défini dans |
-|-----------|----------|-------------|
+| Container | Contains | Defined in |
+|-----------|----------|------------|
 | `page.top` | Header | `Magento_Theme/layout/default.xml` |
-| `content` | Contenu principal | `Magento_Theme/layout/default.xml` |
+| `content` | Main content | `Magento_Theme/layout/default.xml` |
 | `page.bottom` | Footer | `Magento_Theme/layout/default.xml` |
-| `sidebar.main` | Sidebar gauche | `Magento_Theme/layout/default.xml` |
-| `sidebar.additional` | Sidebar droite | `Magento_Theme/layout/default.xml` |
+| `sidebar.main` | Left sidebar (filters, categories) | `Magento_Theme/layout/default.xml` |
+| `sidebar.additional` | Right sidebar (widgets) | `Magento_Theme/layout/default.xml` |
 
-Les modules utilisent `<referenceContainer>` pour ajouter du contenu dans
-ces emplacements sans réécrire le layout complet.
+Modules use `<referenceContainer>` to add content in
+these locations without rewriting the complete layout.
 
 ---
 
-## 7. Les UI Components (admin)
+## 7. UI Components (admin)
 
-Dans l'admin, Magento utilise des **UI Components** au lieu de Blocks +
-Templates classiques. C'est un système XML → JavaScript → HTML.
+In the admin, Magento uses **UI Components** instead of classic Blocks +
+Templates. It is an XML → JavaScript → HTML system.
 
-### 7.1 Architecture d'un UI Component
+### 7.1 UI Component architecture
 
 ```
 XML (listing/form)
     ↓
-JS (Magento_Ui/js/core/app interprète le XML)
+JS (Magento_Ui/js/core/app interprets the XML)
     ↓
 JS Components (grid, form, columns, filters)
     ↓
-KO Templates (knockout.js : bindings, affichage conditionnel)
+KO Templates (knockout.js: bindings, conditional display)
     ↓
-HTML (généré par le navigateur)
+HTML (generated by the browser)
     ↓
-AJAX (appels au DataProvider pour les données)
+AJAX (calls to the DataProvider for data)
 ```
 
-### 7.2 Exemple : grille admin Blog
+### 7.2 Example: Blog admin grid
 
 ```xml
 <!-- view/adminhtml/ui_component/alphacommerce_blog_post_listing.xml -->
@@ -422,18 +422,18 @@ AJAX (appels au DataProvider pour les données)
 </listing>
 ```
 
-**Flux d'une UI Component :**
+**UI Component flow:**
 
 ```mermaid
 flowchart TD
-    A["Admin ouvre<br/>/admin/blog/post"] --> B["Controller<br/>Blog\\Adminhtml\\Post\\Index"]
+    A["Admin opens<br/>/admin/blog/post"] --> B["Controller<br/>Blog\\Adminhtml\\Post\\Index"]
     B --> C["ResultPage"]
     C --> D["Layout XML<br/>(_index.xml)"]
     D --> E["UI Component XML<br/>(listing)"]
     E --> F["JavaScript<br/>(Magento_Ui/js/core/app)"]
     F --> G["UI Components JS<br/>(grid, columns, filters)"]
-    G --> H["KO Templates<br/>(rendu HTML)"]
-    H --> I["AJAX initial<br/>(charge les données)"]
+    G --> H["KO Templates<br/>(HTML rendering)"]
+    H --> I["Initial AJAX<br/>(loads data)"]
     I --> J["DataProvider<br/>(PostListingDataProvider)"]
     J --> K["Repository<br/>(getList)"]
     K --> L["Collection<br/>(SQL)"]
@@ -443,12 +443,12 @@ flowchart TD
     K --> J
     J --> N["JSON response"]
     N --> G
-    G --> O["Grille affichée<br/>(avec pagination, filtres, tris)"]
+    G --> O["Grid displayed<br/>(with pagination, filters, sorting)"]
 ```
 
 ---
 
-## 8. Les Design Patterns de Magento
+## 8. Magento Design Patterns
 
 ### 8.1 Service Contract Pattern
 
@@ -456,37 +456,36 @@ flowchart TD
 Controller / REST / GraphQL
          │
          ▼
-  Interface (Api/PostRepositoryInterface.php)
+   Interface (Api/PostRepositoryInterface.php)
          │
          ▼
-  Implementation (Model/PostRepository.php)
+   Implementation (Model/PostRepository.php)
          │
          ▼
-  ResourceModel (Model/ResourceModel/Post.php)
+   ResourceModel (Model/ResourceModel/Post.php)
          │
          ▼
-  Database
+   Database
 ```
 
-**Avantage** : tu peux changer l'implémentation sans toucher au Controller,
-au REST API, ou au GraphQL.
+**Advantage**: you can change the implementation without touching the Controller,
+the REST API, or GraphQL.
 
 ### 8.2 Factory Pattern
 
 ```php
-// Au lieu de new Post()
-$post = $postFactory->create(); // PostFactory injectée par DI
+// Instead of new Post()
+$post = $postFactory->create(); // PostFactory injected by DI
 $post->setTitle('Hello');
 $post->save();
 ```
 
-Les **Factories** créent des objets dynamiquement. Magento les génère
-automatiquement via `di.xml` ou `codeGeneration`.
+**Factories** create objects dynamically. Magento generates
+them automatically via `di.xml` or `codeGeneration`.
 
 ### 8.3 Proxy Pattern
 
-Les **Proxies** retardent le chargement d'une dépendance jusqu'à son
-utilisation effective. Déclaré dans `di.xml` :
+**Proxies** defer loading a dependency until it is actually used. Declared in `di.xml`:
 
 ```xml
 <type name="AlpineCommerce\Blog\Model\PostRepository">
@@ -498,7 +497,7 @@ utilisation effective. Déclaré dans `di.xml` :
 
 ### 8.4 Repository Pattern
 
-Le Repository est la **seule porte d'entrée** pour accéder aux données :
+The Repository is the **only entry point** for accessing data:
 
 ```php
 interface PostRepositoryInterface
@@ -510,7 +509,7 @@ interface PostRepositoryInterface
 }
 ```
 
-Jamais de `$connection->fetchRow()` dans un Controller ou un Block.
+Never use `$connection->fetchRow()` in a Controller or Block.
 
 ### 8.5 Data Patch Pattern
 
@@ -523,104 +522,104 @@ class CreateDefaultCategory implements DataPatchInterface
 }
 ```
 
-Les Data Patches sont des classes PHP versionnées qui modifient les données
-(ou le schéma) lors de `bin/magento setup:upgrade`.
+Data Patches are versioned PHP classes that modify data
+(or schema) during `bin/magento setup:upgrade`.
 
 ---
 
-## 9. Le cycle de vie d'une requête (résumé visuel)
+## 9. The request lifecycle (visual summary)
 
 ```
 ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
 │ Browser  │────▶│  Nginx   │────▶│ index.php│────▶│   Area   │
 │ (URL)    │     │          │     │          │     │Detection │
 └──────────┘     └──────────┘     └──────────┘     └────┬─────┘
-                                                       │
-                    ┌──────────────────────────────────┼──────────┐
-                    ▼                                  ▼          ▼
-             ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-             │   frontend   │                  │ adminhtml   │ │webapi_rest│
-             └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
-                    ▼                               ▼             ▼
-             ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-             │   Router     │                  │   Router     │ │WebAPI    │
-             └──────┬──────┘                  └──────┬──────┘ │Router    │
-                    ▼                               ▼         └────┬─────┘
-             ┌─────────────┐                  ┌─────────────┐        │
-             │  Controller  │                  │  Controller  │       ▼
-             └──────┬──────┘                  └──────┬──────┘ ┌──────────┐
-                    ▼                               ▼         │ Service  │
-             ┌─────────────┐                  ┌─────────────┐ │Contract  │
-             │ Block/Template│                 │ UI Component │ └────┬─────┘
-             └──────┬──────┘                  └──────┬──────┘      │
-                    ▼                               ▼            ▼
-             ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-             │ Repository   │                  │ DataProvider │ │Repository│
-             └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
-                    ▼                               ▼            ▼
-             ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-             │ ResourceModel │                 │ Repository   │ │ResourceModel│
-             └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
-                    ▼                               ▼            ▼
-             ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-             │    MySQL      │                  │    MySQL     │ │   MySQL  │
-             └──────────────┘                  └──────────────┘ └──────────┘
+                                                        │
+                     ┌──────────────────────────────────┼──────────┐
+                     ▼                                  ▼          ▼
+              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+              │   frontend   │                  │ adminhtml   │ │webapi_rest│
+              └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
+                     ▼                               ▼             ▼
+              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+              │   Router     │                  │   Router     │ │WebAPI    │
+              └──────┬──────┘                  └──────┬──────┘ │Router    │
+                     ▼                               ▼         └────┬─────┘
+              ┌─────────────┐                  ┌─────────────┐        │
+              │  Controller  │                  │  Controller  │       ▼
+              └──────┬──────┘                  └──────┬──────┘ ┌──────────┐
+                     ▼                               ▼         │ Service  │
+              ┌─────────────┐                  ┌─────────────┐ │Contract  │
+              │ Block/Template│                 │ UI Component │ └────┬─────┘
+              └──────┬──────┘                  └──────┬──────┘      │
+                     ▼                               ▼            ▼
+              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+              │ Repository   │                  │ DataProvider │ │Repository│
+              └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
+                     ▼                               ▼            ▼
+              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+              │ ResourceModel │                 │ Repository   │ │ResourceModel│
+              └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
+                     ▼                               ▼            ▼
+              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+              │    MySQL      │                  │    MySQL     │ │   MySQL  │
+              └──────────────┘                  └──────────────┘ └──────────┘
 ```
 
 ---
 
-## 10. Tableau de correspondance AlpineCommerce
+## 10. AlpineCommerce mapping table
 
-| Couche | Fichier exemple | Rôle dans le projet |
-|--------|----------------|---------------------|
-| **Router** | `Blog/etc/frontend/routes.xml` | Associe `/blog` au Controller `Blog\Index\Index` |
-| **Controller** | `Blog/Controller/Index/Index.php` | Récupère les posts, retourne une page |
+| Layer | Example file | Role in the project |
+|-------|--------------|---------------------|
+| **Router** | `Blog/etc/frontend/routes.xml` | Maps `/blog` to Controller `Blog\Index\Index` |
+| **Controller** | `Blog/Controller/Index/Index.php` | Retrieves posts, returns a page |
 | **Repository** | `Blog/Model/PostRepository.php` | `getList()`, `save()`, `getById()` |
-| **ResourceModel** | `Blog/Model/ResourceModel/Post.php` | Requêtes SQL |
-| **Block** | `Blog/Block/PostList.php` | `getPosts()` pour le template |
-| **Template** | `Blog/view/frontend/templates/post/list.phtml` | Affiche les posts en HTML |
-| **Layout** | `Blog/view/frontend/layout/blog_index_index.xml` | Place le block dans `content` |
-| **UI DataProvider** | `Blog/Ui/DataProvider/PostFormDataProvider.php` | Alimente le formulaire admin |
-| **UI Component** | `Blog/view/adminhtml/ui_component/blog_post_form.xml` | Définit le formulaire admin |
-| **Plugin** | `StorePickup/Plugin/Shipping/FilterFlatRate.php` | Cache Flat Rate si subtotal ≥ 50 |
-| **Observer** | `StoreSetup/Observer/OrderPlacedAfter.php` | Log après chaque commande |
-| **Helper** | `StoreSetup/Helper/Data.php` | Accès config + store manager |
-| **Service Contract** | `Blog/Api/PostRepositoryInterface.php` | Interface publique du Repository |
+| **ResourceModel** | `Blog/Model/ResourceModel/Post.php` | SQL queries |
+| **Block** | `Blog/Block/PostList.php` | `getPosts()` for the template |
+| **Template** | `Blog/view/frontend/templates/post/list.phtml` | Displays posts in HTML |
+| **Layout** | `Blog/view/frontend/layout/blog_index_index.xml` | Places the block in `content` |
+| **UI DataProvider** | `Blog/Ui/DataProvider/PostFormDataProvider.php` | Feeds the admin form |
+| **UI Component** | `Blog/view/adminhtml/ui_component/blog_post_form.xml` | Defines the admin form |
+| **Plugin** | `StorePickup/Plugin/Shipping/FilterFlatRate.php` | Caches Flat Rate if subtotal ≥ 50 |
+| **Observer** | `StoreSetup/Observer/OrderPlacedAfter.php` | Logs after each order |
+| **Helper** | `StoreSetup/Helper/Data.php` | Config access + store manager |
+| **Service Contract** | `Blog/Api/PostRepositoryInterface.php` | Public Repository interface |
 
 ---
 
-## 11. Résumé mental pour les débutants
+## 11. Mental summary for beginners
 
-| Question | Réponse |
-|----------|---------|
-| **Où commence une requête ?** | `index.php` → Front Controller → Router |
-| **Qui choisit quel Controller ?** | Le `Router` lit `routes.xml` |
-| **Que fait le Controller ?** | Il orchestre : appelle les services, retourne un Result |
-| **Où va la logique métier ?** | Dans le **Repository** (jamais dans le Controller) |
-| **Comment accéder à la DB ?** | Repository → ResourceModel → MySQL |
-| **Comment afficher du HTML ?** | Controller → Block → Template (.phtml) |
-| **Comment fonctionne l'admin ?** | Controller → UI Component → DataProvider → Repository |
-| **Comment ajouter du comportement sans modifier le core ?** | **Plugin** (intercepte une méthode) ou **Observer** (réagit à un event) |
-| **Comment échanger des données avec l'extérieur ?** | **REST API** ou **GraphQL** (appellent directement les Service Contracts) |
-| **Qui construit tous les objets ?** | L'**Object Manager** (DI Container) automatiquement |
+| Question | Answer |
+|----------|--------|
+| **Where does a request start?** | `index.php` → Front Controller → Router |
+| **Who chooses which Controller?** | The `Router` reads `routes.xml` |
+| **What does the Controller do?** | It orchestrates: calls services, returns a Result |
+| **Where does business logic go?** | In the **Repository** (never in the Controller) |
+| **How to access the DB?** | Repository → ResourceModel → MySQL |
+| **How to display HTML?** | Controller → Block → Template (.phtml) |
+| **How does the admin work?** | Controller → UI Component → DataProvider → Repository |
+| **How to add behavior without modifying core?** | **Plugin** (intercepts a method) or **Observer** (reacts to an event) |
+| **How to exchange data with the outside?** | **REST API** or **GraphQL** (call Service Contracts directly) |
+| **Who builds all the objects?** | The **Object Manager** (DI Container) automatically |
 
 ---
 
-## 12. Analogie du restaurant
+## 12. Restaurant analogy
 
-Pour retenir les interactions :
+To remember the interactions:
 
-| Rôle | Composant Magento | Analogie |
-|------|-------------------|----------|
-| Client qui commande | **Navigateur** | Le client qui entre au restaurant |
-| Maître d'hôtel | **Router** | Accueille, regarde la réservation, dirige vers la bonne table |
-| Serveur | **Controller** | Prend la commande, la transmet en cuisine |
-| Cuisinier | **Repository** | Prépare le plat (logique métier) |
-| Garde-manger | **ResourceModel** | Cherche les ingrédients (données) |
-| Caisse / frigo | **MySQL** | Stocke les ingrédients |
-| Plat servi | **Response** | Le plat arrive sur la table |
-| Décorateur | **Layout / UI Component** | Dispose les couverts, l'assiette, la déco |
-| Plat écrit sur papier | **Template (.phtml)** | Le contenu visible du plat |
+| Role | Magento Component | Analogy |
+|------|-------------------|---------|
+| Customer who orders | **Browser** | The customer entering the restaurant |
+| Maître d'hôtel | **Router** | Welcomes, checks the reservation, directs to the right table |
+| Server | **Controller** | Takes the order, sends it to the kitchen |
+| Cook | **Repository** | Prepares the dish (business logic) |
+| Pantry | **ResourceModel** | Looks for ingredients (data) |
+| Cash register / fridge | **MySQL** | Stores ingredients |
+| Served dish | **Response** | The dish arrives at the table |
+| Decorator | **Layout / UI Component** | Arranges cutlery, plate, decor |
+| Dish written on paper | **Template (.phtml)** | The visible content of the dish |
 
 ---
 

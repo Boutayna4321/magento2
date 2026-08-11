@@ -1,52 +1,51 @@
 # Magento 2 — Templates (PHTML) & Layout XML
 
-> **Objectif** : apprendre à lire et écrire les fichiers de template et de
-> layout Magento. Ce sont les fichiers qui contrôlent **ce qui s'affiche**
-> dans le navigateur et **où** ça s'affiche.
+> **Objective**: learn to read and write Magento template and layout files.
+> These are the files that control **what is displayed** in the browser and **where** it is displayed.
 
 ---
 
-## 1. Le concept de Layout
+## 1. The Layout concept
 
-### 1.1 Qu'est-ce que le Layout ?
+### 1.1 What is Layout?
 
-Le **Layout** est le squelette d'une page Magento. Il répond à deux questions :
-- **Quels blocs** (PHP) doivent être créés ?
-- **Où** les placer dans la page ?
+The **Layout** is the skeleton of a Magento page. It answers two questions:
+- Which **blocks** (PHP) must be created?
+- **Where** to place them on the page?
 
-Le Layout est défini en **XML**. Chaque page a son propre fichier XML.
+The Layout is defined in **XML**. Each page has its own XML file.
 
-### 1.2 La structure d'une page Magento
+### 1.2 The structure of a Magento page
 
 ```
-Page HTML
+HTML Page
 ├── <html>
-├── <head>               ← titre, CSS, JS (géré par Magento automatiquement)
+├── <head>               ← title, CSS, JS (managed automatically by Magento)
 └── <body>
     ├── page.top         ← header, logo, menu
-    │   └── header        ← block Magento
-    ├── content           ← contenu principal (variable selon la page)
-    │   └── blog.post.list ← block personnalisé (AlpineCommerce Blog)
-    ├── sidebar.main      ← colonne gauche (filtres, catégories)
-    ├── sidebar.additional ← colonne droite (widgets)
+    │   └── header        ← Magento block
+    ├── content           ← main content (varies by page)
+    │   └── blog.post.list ← custom block (AlpineCommerce Blog)
+    ├── sidebar.main      ← left column (filters, categories)
+    ├── sidebar.additional ← right column (widgets)
     └── page.bottom       ← footer
 ```
 
-Les noms `page.top`, `content`, `sidebar.main` sont des **containers**
-définis par Magento. Les modules ajoutent des **blocks** dans ces containers.
+The names `page.top`, `content`, `sidebar.main` are **containers**
+defined by Magento. Modules add **blocks** into these containers.
 
 ### 1.3 Containers vs Blocks
 
-| Concept | Rôle | Exemple |
+| Concept | Role | Example |
 |---------|------|---------|
-| **Container** | Emplacement vide (comme un panneau vide) | `content`, `page.top` |
-| **Block** | Élément concret (PHP class + template) | `blog.post.list`, `store.info` |
+| **Container** | Empty location (like an empty panel) | `content`, `page.top` |
+| **Block** | Concrete element (PHP class + template) | `blog.post.list`, `store.info` |
 
 ---
 
-## 2. Anatomie d'un fichier Layout XML
+## 2. Anatomy of a Layout XML file
 
-### 2.1 Exemple minimal
+### 2.1 Minimal example
 
 ```xml
 <!-- view/frontend/layout/blog_index_index.xml -->
@@ -62,99 +61,99 @@ définis par Magento. Les modules ajoutent des **blocks** dans ces containers.
 </page>
 ```
 
-### 2.2 Explication ligne par ligne
+### 2.2 Line-by-line explanation
 
 ```xml
-<page>                                          ← Racine : une page entière
-    <body>                                       ← Corps de la page
-        <referenceContainer name="content">      ← Cible : le container "content"
-            <block                                ← Ajoute un nouveau block
-                class="AlpineCommerce\Blog\Block\PostList"   ← Classe PHP
-                name="blog.post.list"                             ← Identifiant unique
-                template="AlpineCommerce_Blog::post/list.phtml"   ← Template .phtml
-                before="-"/>                                      ← Position : avant tout
+<page>                                          ← Root: an entire page
+    <body>                                       ← Page body
+        <referenceContainer name="content">      ← Target: the "content" container
+            <block                                ← Adds a new block
+                class="AlpineCommerce\Blog\Block\PostList"   ← PHP class
+                name="blog.post.list"                             ← Unique identifier
+                template="AlpineCommerce_Blog::post/list.phtml"   ← .phtml template
+                before="-"/>                                      ← Position: before everything
         </referenceContainer>
     </body>
 </page>
 ```
 
-### 2.3 Les attributs de `<block>`
+### 2.3 `<block>` attributes
 
-| Attribut | Obligatoire | Rôle | Exemple |
-|----------|-------------|------|---------|
-| `class` | Oui | Classe PHP qui fournit les données | `AlpineCommerce\Blog\Block\PostList` |
-| `name` | Oui | Identifiant unique dans la page | `blog.post.list` |
-| `template` | Non | Chemin vers le fichier `.phtml` | `AlpineCommerce_Blog::post/list.phtml` |
-| `before` | Non | Positionner AVANT un autre block | `before="-"` (premier) |
-| `after` | Non | Positionner APRÈS un autre block | `after="page.bottom"` |
-| `ifConfig` | Non | Afficher si une config est activée | `ifConfig="blog/general/enabled"` |
-| `if` | Non | Afficher selon une expression | `if="1 == 1"` |
+| Attribute | Mandatory | Role | Example |
+|-----------|-----------|------|---------|
+| `class` | Yes | PHP class that provides data | `AlpineCommerce\Blog\Block\PostList` |
+| `name` | Yes | Unique identifier in the page | `blog.post.list` |
+| `template` | No | Path to the `.phtml` file | `AlpineCommerce_Blog::post/list.phtml` |
+| `before` | No | Position BEFORE another block | `before="-"` (first) |
+| `after` | No | Position AFTER another block | `after="page.bottom"` |
+| `ifConfig` | No | Display if a config is enabled | `ifConfig="blog/general/enabled"` |
+| `if` | No | Display according to an expression | `if="1 == 1"` |
 
 ---
 
-## 3. Les fichiers Layout dans Magento
+## 3. Layout files in Magento
 
-### 3.1 Où se trouvent les fichiers layout ?
+### 3.1 Where are layout files located?
 
 ```
 Module/
 ├── view/
 │   ├── frontend/
-│   │   └── layout/                    ← Layouts frontend
-│   │       ├── default.xml            ← Appliqué à TOUTES les pages frontend
-│   │       ├── catalog_product_view.xml ← Page produit
-│   │       ├── catalog_category_view.xml ← Page catégorie
-│   │       └── blog_index_index.xml   ← Page /blog (route: blog/index/index)
+│   │   └── layout/                    ← Frontend layouts
+│   │       ├── default.xml            ← Applied to ALL frontend pages
+│   │       ├── catalog_product_view.xml ← Product page
+│   │       ├── catalog_category_view.xml ← Category page
+│   │       └── blog_index_index.xml   ← /blog page (route: blog/index/index)
 │   └── adminhtml/
-│       └── layout/                    ← Layouts admin
-│           ├── adminhtml_dashboard_index.xml ← Dashboard admin
-│           └── alphacommerce_blog_post_index.xml ← Listing admin Blog
+│       └── layout/                    ← Admin layouts
+│           ├── adminhtml_dashboard_index.xml ← Admin dashboard
+│           └── alphacommerce_blog_post_index.xml ← Admin Blog listing
 ```
 
-### 3.2 Comment Magento trouve le bon fichier layout
+### 3.2 How Magento finds the right layout file
 
-Magento construit le nom du fichier à partir de l'URL :
+Magento builds the filename from the URL:
 
-| URL | Route | Fichier layout |
-|-----|-------|----------------|
+| URL | Route | Layout file |
+|-----|-------|-------------|
 | `/blog` | `blog/index/index` | `blog_index_index.xml` |
 | `/blog/post/view/id/1` | `blog/post/view` | `blog_post_view.xml` |
 | `/catalog/product/view/id/1` | `catalog/product/view` | `catalog_product_view.xml` |
 | `/admin/blog/post/index` | `adminhtml/blog/post/index` | `adminhtml_blog_post_index.xml` |
 
-**Règle** : `{frontName}_{controller}_{action}.xml`
+**Rule**: `{frontName}_{controller}_{action}.xml`
 
-### 3.3 La cascade de layout (fallback)
+### 3.3 Layout fallback (cascade)
 
-Magento applique plusieurs fichiers layout dans un ordre précis :
+Magento applies multiple layout files in a specific order:
 
 ```
-1. default.xml                  (toutes les pages)
-2. {module}_default.xml        (ex: blog_default.xml)
-3. {area}_default.xml          (ex: frontend_default.xml)
-4. {full_action_name}.xml      (ex: blog_index_index.xml)
+1. default.xml                  (all pages)
+2. {module}_default.xml        (e.g. blog_default.xml)
+3. {area}_default.xml          (e.g. frontend_default.xml)
+4. {full_action_name}.xml      (e.g. blog_index_index.xml)
 ```
 
-Les fichiers sont **fusionnés** : ce qui est déclaré dans `blog_index_index.xml`
-s'ajoute à ce qui est dans `default.xml`.
+Files are **merged**: what is declared in `blog_index_index.xml`
+is added to what is in `default.xml`.
 
 ---
 
-## 4. Les instructions XML essentielles
+## 4. Essential XML instructions
 
-### 4.1 `<referenceContainer>` et `<referenceBlock>`
+### 4.1 `<referenceContainer>` and `<referenceBlock>`
 
-Pour ajouter du contenu dans un container ou un block existant :
+To add content into an existing container or block:
 
 ```xml
-<!-- Ajouter un block dans le container "content" -->
+<!-- Add a block in the "content" container -->
 <referenceContainer name="content">
     <block class="AlpineCommerce\Blog\Block\PostList"
            name="blog.post.list"
            template="AlpineCommerce_Blog::post/list.phtml"/>
 </referenceContainer>
 
-<!-- Ajouter un block APRÈS le block "page.main.title" -->
+<!-- Add a block AFTER the "page.main.title" block -->
 <referenceBlock name="page.main.title">
     <block class="AlpineCommerce\Blog\Block\Breadcrumbs"
            name="blog.breadcrumbs"
@@ -163,13 +162,13 @@ Pour ajouter du contenu dans un container ou un block existant :
 </referenceBlock>
 ```
 
-**Différence** :
-- `<referenceContainer>` : pour les conteneurs (`content`, `page.top`, etc.)
-- `<referenceBlock>` : pour les blocks existants (`page.main.title`, `product.info.main`, etc.)
+**Difference**:
+- `<referenceContainer>`: for containers (`content`, `page.top`, etc.)
+- `<referenceBlock>`: for existing blocks (`page.main.title`, `product.info.main`, etc.)
 
-### 4.2 `<block>` autonome
+### 4.2 Standalone `<block>`
 
-Pour créer un block sans référence (page entièrement custom) :
+To create a block without reference (fully custom page):
 
 ```xml
 <page>
@@ -183,7 +182,7 @@ Pour créer un block sans référence (page entièrement custom) :
 
 ### 4.3 `<container>`
 
-Pour créer un nouveau container (rare, réservé aux cas avancés) :
+To create a new container (rare, reserved for advanced cases):
 
 ```xml
 <referenceContainer name="content">
@@ -197,27 +196,27 @@ Pour créer un nouveau container (rare, réservé aux cas avancés) :
 
 ### 4.4 `<move>`
 
-Pour déplacer un block existant :
+To move an existing block:
 
 ```xml
-<!-- Déplacer le block "product.info.main" dans "sidebar.main" -->
+<!-- Move the "product.info.main" block into "sidebar.main" -->
 <move element="product.info.main" destination="sidebar.main" before="-"/>
 ```
 
 ### 4.5 `<remove>`
 
-Pour supprimer un block :
+To remove a block:
 
 ```xml
-<!-- Supprimer le block "breadcrumbs" de cette page -->
+<!-- Remove the "breadcrumbs" block from this page -->
 <referenceBlock name="breadcrumbs" remove="true"/>
 ```
 
 ---
 
-## 5. Les arguments de block
+## 5. Block arguments
 
-### 5.1 Arguments simples
+### 5.1 Simple arguments
 
 ```xml
 <block class="AlpineCommerce\Blog\Block\PostList"
@@ -230,7 +229,7 @@ Pour supprimer un block :
 </block>
 ```
 
-Dans le Block PHP :
+In the PHP Block:
 ```php
 public function getPageSize(): int
 {
@@ -238,7 +237,7 @@ public function getPageSize(): int
 }
 ```
 
-### 5.2 Arguments complexes
+### 5.2 Complex arguments
 
 ```xml
 <arguments>
@@ -253,10 +252,10 @@ public function getPageSize(): int
 </arguments>
 ```
 
-### 5.3 L'argument `data` (modèle de données)
+### 5.3 The `data` argument (data model)
 
-Quand un block reçoit un argument `data`, Magento le fusionne dans le
-modèle du block. Les clés deviennent accessibles via `$block->getData()` :
+When a block receives a `data` argument, Magento merges it into the
+block model. The keys become accessible via `$block->getData()`:
 
 ```xml
 <block class="..." name="...">
@@ -264,49 +263,49 @@ modèle du block. Les clés deviennent accessibles via `$block->getData()` :
         <argument name="data" xsi:type="array">
             <item name="available_stores" xsi:type="object">StoreInfo</item>
             <item name="carrier_code" xsi:type="string">storepickup</item>
-        </argument>
+        </item>
     </arguments>
 </block>
 ```
 
 ```php
-// Dans le template .phtml :
-$availableStores = $block->getAvailableStores(); // objet StoreInfo
+// In the .phtml template:
+$availableStores = $block->getAvailableStores(); // StoreInfo object
 $carrierCode = $block->getCarrierCode(); // 'storepickup'
 ```
 
 ---
 
-## 6. Les fichiers PHTML (templates)
+## 6. PHTML files (templates)
 
-### 6.1 Qu'est-ce qu'un PHTML ?
+### 6.1 What is a PHTML?
 
-Un fichier **PHTML** = **P**HP + **H**TML. C'est le fichier qui génère
-le HTML final. Il contient :
-- Du HTML
-- Du PHP pour afficher des variables
-- Des appels au Block (`$block->getSomething()`)
-- Des boucles et conditions PHP
+A **PHTML** file = **P**HP + **H**TML. It is the file that generates
+the final HTML. It contains:
+- HTML
+- PHP to display variables
+- Calls to the Block (`$block->getSomething()`)
+- PHP loops and conditions
 
-### 6.2 Chemin d'un template
+### 6.2 Template path
 
 ```xml
 template="AlpineCommerce_Blog::post/list.phtml"
 ```
 
-Se décompose en :
+Decomposes into:
 ```
 AlpineCommerce_Blog  ← Module (Vendor_Module)
-::                   ← Séparateur
-post/list.phtml      ← Chemin dans view/frontend/templates/
+::                   ← Separator
+post/list.phtml      ← Path in view/frontend/templates/
 ```
 
-**Chemin complet sur le disque** :
+**Full path on disk**:
 ```
 src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml
 ```
 
-### 6.3 Exemple de PHTML
+### 6.3 PHTML example
 
 ```php
 <?php /** @var $block AlpineCommerce\Blog\Block\PostList */ ?>
@@ -337,79 +336,79 @@ src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml
 </div>
 ```
 
-### 6.4 Les méthodes essentielles dans un PHTML
+### 6.4 Essential methods in PHTML
 
-| Méthode | Rôle | Exemple |
+| Method | Role | Example |
 |---------|------|---------|
-| `$block->getData('key')` | Lire un argument du layout | `$block->getData('page_size')` |
-| `$block->getUrl('route/path')` | Générer une URL | `$block->getUrl('blog/index/view')` |
-| `$block->escapeHtml($str)` | Échapper le HTML (sécurité) | `$block->escapeHtml($title)` |
-| `$block->escapeUrl($url)` | Échapper une URL | `$block->escapeUrl($post->getUrl())` |
-| `$block->formatDate($date)` | Formater une date | `$block->formatDate($post->getCreatedAt())` |
-| `$block->formatPrice($amount)` | Formater un prix | `$block->formatPrice(29.99)` |
-| `__('string')` | Traduire | `__('No posts found')` |
+| `$block->getData('key')` | Read a layout argument | `$block->getData('page_size')` |
+| `$block->getUrl('route/path')` | Generate a URL | `$block->getUrl('blog/index/view')` |
+| `$block->escapeHtml($str)` | Escape HTML (security) | `$block->escapeHtml($title)` |
+| `$block->escapeUrl($url)` | Escape a URL | `$block->escapeUrl($post->getUrl())` |
+| `$block->formatDate($date)` | Format a date | `$block->formatDate($post->getCreatedAt())` |
+| `$block->formatPrice($amount)` | Format a price | `$block->formatPrice(29.99)` |
+| `__('string')` | Translate | `__('No posts found')` |
 
-### 6.5 Raccourcis dans les PHTML
+### 6.5 Shortcuts in PHTML
 
 ```php
-<?= /* équivalent à <?php echo */ ?>
-<?php /* ... */ ?>       ← Commentaire PHP
-<?= $block->... ?>       ← Appel au block
+<?= /* equivalent to <?php echo */ ?>
+<?php /* ... */ ?>       ← PHP comment
+<?= $block->... ?>       ← Block call
 ```
 
-### 6.6 Sécurité : toujours échapper
+### 6.6 Security: always escape
 
 ```php
-<!-- ❌ DANGEREUX : XSS possible -->
+<!-- ❌ DANGEROUS: XSS possible -->
 <p><?= $post->getTitle() ?></p>
 
-<!-- ✅ SÛR : échappé -->
+<!-- ✅ SAFE: escaped -->
 <p><?= $block->escapeHtml($post->getTitle()) ?></p>
 ```
 
-**Règle d'or** : tout ce qui vient de la base de données ou de l'utilisateur
-doit être échappé avant d'être affiché.
+**Golden rule**: everything coming from the database or the user
+must be escaped before being displayed.
 
 ---
 
-## 7. Le fallback system de templates
+## 7. Template fallback system
 
-### 7.1 Ordre de recherche
+### 7.1 Search order
 
-Quand Magento cherche un template `AlpineCommerce_Blog::post/list.phtml` :
+When Magento looks for a template `AlpineCommerce_Blog::post/list.phtml`:
 
 ```
-1. Thème actif :
-   src/app/design/frontend/AlpineCommerce/theme/AlpineCommerce/Blog/templates/post/list.phtml
+1. Active theme:
+    src/app/design/frontend/AlpineCommerce/theme/AlpineCommerce/Blog/templates/post/list.phtml
 
-2. Module parent :
-   src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml
+2. Parent module:
+    src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml
 
-3. Module Magento (fallback) :
-   src/app/code/Magento/Theme/view/frontend/templates/html/header.phtml
+3. Magento module (fallback):
+    src/app/code/Magento/Theme/view/frontend/templates/html/header.phtml
 ```
 
-### 7.2 Override un template dans le thème
+### 7.2 Override a template in the theme
 
-Pour modifier un template **sans toucher au module**, copie-le dans le thème :
+To modify a template **without touching the module**, copy it to the theme:
 
 ```bash
 # Original (module)
 cp src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml \
    src/app/design/frontend/AlpineCommerce/theme/AlpineCommerce/Blog/templates/post/list.phtml
 
-# Puis modifier la copie dans le thème
+# Then modify the copy in the theme
 ```
 
-Magento utilisera automatiquement la version du thème.
+Magento will automatically use the theme version.
 
 ---
 
-## 8. Exemples concrets AlpineCommerce
+## 8. AlpineCommerce concrete examples
 
-### 8.1 Layout Blog + Template
+### 8.1 Blog Layout + Template
 
-**Layout** (`view/frontend/layout/blog_index_index.xml`) :
+**Layout** (`view/frontend/layout/blog_index_index.xml`):
 ```xml
 <page xmlns:xsi="..." layout="1column">
     <body>
@@ -422,7 +421,7 @@ Magento utilisera automatiquement la version du thème.
 </page>
 ```
 
-**Block PHP** (`Block/PostList.php`) :
+**PHP Block** (`Block/PostList.php`):
 ```php
 class PostList extends Template
 {
@@ -435,7 +434,7 @@ class PostList extends Template
 }
 ```
 
-**Template** (`templates/post/list.phtml`) :
+**Template** (`templates/post/list.phtml`):
 ```php
 <?php /** @var $block AlpineCommerce\Blog\Block\PostList */ ?>
 <?php $posts = $block->getPosts(); ?>
@@ -448,9 +447,9 @@ class PostList extends Template
 </div>
 ```
 
-### 8.2 Layout Admin + Template
+### 8.2 Admin Layout + Template
 
-**Layout** (`view/adminhtml/layout/alphacommerce_blog_post_index.xml`) :
+**Layout** (`view/adminhtml/layout/alphacommerce_blog_post_index.xml`):
 ```xml
 <page xmlns:xsi="...">
     <body>
@@ -461,12 +460,12 @@ class PostList extends Template
 </page>
 ```
 
-Ici, pas de `.phtml` classique : c'est un **UI Component** (grille admin)
-défini en XML (`ui_component/alphacommerce_blog_post_listing.xml`).
+Here, no classic `.phtml`: it is a **UI Component** (admin grid)
+defined in XML (`ui_component/alphacommerce_blog_post_listing.xml`).
 
-### 8.3 Layout avec arguments
+### 8.3 Layout with arguments
 
-**Layout** (`view/frontend/layout/checkout_index_index.xml`) :
+**Layout** (`view/frontend/layout/checkout_index_index.xml`):
 ```xml
 <referenceContainer name="checkout.cart.totals">
     <block class="Magento\Checkout\Block\Cart\Totals"
@@ -483,16 +482,16 @@ défini en XML (`ui_component/alphacommerce_blog_post_listing.xml`).
 
 ---
 
-## 9. Les instructions XML avancées
+## 9. Advanced XML instructions
 
-### 9.1 `<update>` — inclure un autre layout
+### 9.1 `<update>` — include another layout
 
 ```xml
-<!-- Dans catalog_product_view.xml, inclure tout le layout default.xml -->
+<!-- In catalog_product_view.xml, include the entire default.xml layout -->
 <update handle="default"/>
 ```
 
-### 9.2 `<reference name="head">` — ajouter du CSS/JS
+### 9.2 `<reference name="head">` — add CSS/JS
 
 ```xml
 <page>
@@ -504,9 +503,9 @@ défini en XML (`ui_component/alphacommerce_blog_post_listing.xml`).
 </page>
 ```
 
-### 9.3 `<block>` avec `t:type`
+### 9.3 `<block>` with `t:type`
 
-Pour utiliser un VirtualType (défini dans `di.xml`) :
+To use a VirtualType (defined in `di.xml`):
 
 ```xml
 <block class="Magento\Framework\View\Element\Template"
@@ -520,52 +519,52 @@ Pour utiliser un VirtualType (défini dans `di.xml`) :
 
 ---
 
-## 10. Tableau de correspondance
+## 10. Correspondence table
 
-| Élément Layout | Élément PHP | Élément HTML |
+| Layout element | PHP element | HTML element |
 |----------------|-------------|--------------|
 | `<page>` | — | `<html>`, `<head>`, `<body>` |
-| `<referenceContainer name="content">` | Container `content` | `<div class="columns">` |
-| `<block class="...">` | Classe Block PHP | `<div>` généré par le template |
-| `template="Vendor::path/template.phtml"` | Block PHP | Contenu HTML du block |
-| `<arguments>` | `$block->getData()` | Variables dans le template |
+| `<referenceContainer name="content">` | `content` container | `<div class="columns">` |
+| `<block class="...">` | PHP Block class | `<div>` generated by the template |
+| `template="Vendor::path/template.phtml"` | PHP Block | HTML content of the block |
+| `<arguments>` | `$block->getData()` | Variables in the template |
 
 ---
 
-## 11. Erreurs courantes
+## 11. Common errors
 
 ### 11.1 "Template file not found"
 
-**Cause** : chemin du template incorrect.
+**Cause**: incorrect template path.
 
-**Vérifier** :
+**Check**:
 ```xml
 template="AlpineCommerce_Blog::post/list.phtml"
 ```
 
-Doit correspondre à :
+Must correspond to:
 ```
 src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml
 ```
 
-### 11.2 Block qui ne s'affiche pas
+### 11.2 Block not displaying
 
-**Causes possibles** :
-- Le `name` du block est en double (conflit)
-- Le layout XML n'est pas chargé (mauvais nom de fichier)
-- `before`/`after` place le block en dehors de la zone visible
-- Le block est supprimé par un autre layout (`remove="true"`)
+**Possible causes**:
+- The block `name` is duplicated (conflict)
+- The layout XML is not loaded (wrong filename)
+- `before`/`after` places the block outside the visible area
+- The block is removed by another layout (`remove="true"`)
 
-### 11.3 Variable vide dans le template
+### 11.3 Empty variable in template
 
-**Cause** : l'argument n'est pas passé correctement.
+**Cause**: the argument is not passed correctly.
 
-**Vérifier** :
+**Check**:
 ```xml
 <!-- Layout -->
 <argument name="my_var" xsi:type="string">value</argument>
 
-<!-- Block PHP -->
+<!-- PHP Block -->
 public function getMyVar(): string
 {
     return $this->getData('my_var'); // 'value'
@@ -577,20 +576,20 @@ public function getMyVar(): string
 
 ---
 
-## 12. Résumé
+## 12. Summary
 
-| Question | Réponse |
+| Question | Answer |
 |----------|---------|
-| **C'est quoi un layout XML ?** | Le squelette de la page : quels blocks afficher et où |
-| **Où les mettre ?** | `view/frontend/layout/` ou `view/adminhtml/layout/` |
-| **Comment nommer le fichier ?** | `{frontName}_{controller}_{action}.xml` |
-| **C'est quoi un container ?** | Un emplacement vide (`content`, `page.top`) |
-| **C'est quoi un block ?** | Un élément concret (PHP class + template) |
-| **Comment ajouter un block ?** | `<referenceContainer name="content"><block .../></referenceContainer>` |
-| **C'est quoi un PHTML ?** | Un fichier PHP qui génère du HTML |
-| **Où trouver les templates ?** | `view/frontend/templates/` ou `view/adminhtml/templates/` |
-| **Comment appeler un block depuis le template ?** | `$block->getPosts()`, `$block->getUrl()`, etc. |
-| **Comment sécuriser l'affichage ?** | `$block->escapeHtml()`, `$block->escapeUrl()` |
+| **What is a layout XML?** | The page skeleton: which blocks to display and where |
+| **Where to put them?** | `view/frontend/layout/` or `view/adminhtml/layout/` |
+| **How to name the file?** | `{frontName}_{controller}_{action}.xml` |
+| **What is a container?** | An empty location (`content`, `page.top`) |
+| **What is a block?** | A concrete element (PHP class + template) |
+| **How to add a block?** | `<referenceContainer name="content"><block .../></referenceContainer>` |
+| **What is a PHTML?** | A PHP file that generates HTML |
+| **Where to find templates?** | `view/frontend/templates/` or `view/adminhtml/templates/` |
+| **How to call a block from the template?** | `$block->getPosts()`, `$block->getUrl()`, etc. |
+| **How to secure display?** | `$block->escapeHtml()`, `$block->escapeUrl()` |
 
 ---
 

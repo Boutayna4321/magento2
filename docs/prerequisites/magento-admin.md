@@ -1,42 +1,42 @@
 # Magento 2 — Admin Basics
 
-> **Objectif** : comprendre le panneau d'administration Magento :
-> navigation, ACL, configuration système, menus, et comment AlpineCommerce
-> étend l'admin avec ses propres modules.
+> **Objective**: understand the Magento administration panel:
+> navigation, ACL, system configuration, menus, and how AlpineCommerce
+> extends the admin with its own modules.
 
 ---
 
-## 1. Accéder à l'admin
+## 1. Access the admin
 
-### 1.1 URL et identifiants
+### 1.1 URL and credentials
 
 ```
 Admin URL : http://localhost:8080/admin
 Login     : admin / admin123
 ```
 
-Le chemin `/admin` est défini dans `app/etc/env.php` :
+The `/admin` path is defined in `app/etc/env.php`:
 ```php
 'backend' => [
     'frontName' => 'admin'
 ]
 ```
 
-### 1.2 Structure du panneau admin
+### 1.2 Admin panel structure
 
 ```
 Admin
-├── Dashboard                    ← Vue d'ensemble (commandes, clients)
-├── Sales                        ← Ventes
+├── Dashboard                    ← Overview (orders, customers)
+├── Sales                        ← Sales
 │   ├── Orders
 │   ├── Invoices
 │   ├── Shipments
 │   └── Credit Memos
-├── Catalog                      ← Catalogue
+├── Catalog                      ← Catalog
 │   ├── Products
 │   ├── Categories
 │   └── Attributes
-├── Customers                     ← Clients
+├── Customers                     ← Customers
 │   ├── All Customers
 │   ├── Customer Groups
 │   └── Now Online
@@ -44,16 +44,16 @@ Admin
 │   ├── Promotions
 │   ├── SEO & Search
 │   └── Communications
-├── Content                       ← Contenu
+├── Content                       ← Content
 │   ├── Pages
 │   ├── Blocks
 │   └── Widgets
-├── Stores                        ← Boutiques
-│   ├── Settings > Configuration   ← Configuration globale
-│   ├── All Stores                ← Gestion des stores
-│   ├── Attributes                ← Attributs client/produit
+├── Stores                        ← Stores
+│   ├── Settings > Configuration   ← Global configuration
+│   ├── All Stores                ← Store management
+│   ├── Attributes                ← Product/customer attributes
 │   └── Taxes
-└── System                        ← Système
+└── System                        ← System
     ├── Tools > Cache Management
     ├── Tools > Index Management
     ├── Permissions > All Users
@@ -62,13 +62,13 @@ Admin
 
 ---
 
-## 2. Les concepts clés de l'admin
+## 2. Key admin concepts
 
 ### 2.1 ACL (Access Control List)
 
-L'**ACL** contrôle ce que chaque utilisateur admin peut faire.
+**ACL** controls what each admin user can do.
 
-**Structure d'un ACL** :
+**ACL structure**:
 
 ```xml
 <!-- etc/acl.xml -->
@@ -84,13 +84,13 @@ L'**ACL** contrôle ce que chaque utilisateur admin peut faire.
 </acl>
 ```
 
-**Explication** :
-- `AlpineCommerce_Blog::main` : ressource parente (apparaît dans le menu)
-- `AlpineCommerce_Blog::post` : ressource enfant (permission pour les posts)
-- L'utilisateur doit avoir la permission `AlpineCommerce_Blog::post` pour
-  accéder aux posts
+**Explanation**:
+- `AlpineCommerce_Blog::main`: parent resource (appears in the menu)
+- `AlpineCommerce_Blog::post`: child resource (permission for posts)
+- The user must have the `AlpineCommerce_Blog::post` permission to
+  access posts
 
-### 2.2 Menu admin
+### 2.2 Admin menu
 
 ```xml
 <!-- etc/adminhtml/menu.xml -->
@@ -104,16 +104,16 @@ L'**ACL** contrôle ce que chaque utilisateur admin peut faire.
 </menu>
 ```
 
-**Attributs** :
-- `id` : doit correspondre à l'ACL
-- `title` : texte affiché dans le menu
-- `parent` : où placer l'élément (`Magento_Backend::content` = menu principal)
-- `resource` : ressource ACL requise
-- `sortOrder` : position (plus petit = plus haut)
+**Attributes**:
+- `id`: must match the ACL
+- `title`: text displayed in the menu
+- `parent`: where to place the item (`Magento_Backend::content` = main menu)
+- `resource`: required ACL resource
+- `sortOrder`: position (smaller = higher)
 
-### 2.3 Protection des routes
+### 2.3 Route protection
 
-Chaque Controller admin doit vérifier l'ACL :
+Each admin Controller must check the ACL:
 
 ```php
 // Controller/Adminhtml/Post/Index.php
@@ -123,7 +123,7 @@ class Index extends \Magento\Backend\App\Action
     
     public function execute(): void
     {
-        // Si l'utilisateur n'a pas la permission, Magento affiche 403 automatiquement
+        // If the user does not have permission, Magento automatically displays 403
         // ...
     }
 }
@@ -133,41 +133,41 @@ class Index extends \Magento\Backend\App\Action
 
 ## 3. Stores > Configuration
 
-### 3.1 Accéder à la configuration
+### 3.1 Access configuration
 
 ```
 Admin → Stores → Settings → Configuration
 ```
 
-### 3.2 Les sections de configuration
+### 3.2 Configuration sections
 
-La configuration est organisée en **sections** :
+Configuration is organized into **sections**:
 
 ```
 Stores > Configuration
-├── General                     ← Paramètres généraux
+├── General                     ← General settings
 │   ├── General
 │   ├── Web
 │   ├── Currency Setup
 │   └── Store Email Addresses
-├── Catalog                     ← Catalogue
+├── Catalog                     ← Catalog
 │   ├── Catalog
 │   ├── Price
 │   └── Inventory
-├── Customers                   ← Clients
+├── Customers                   ← Customers
 │   ├── Customer Configuration
 │   ├── Customer Groups
 │   └── Login
-├── Sales                       ← Ventes
+├── Sales                       ← Sales
 │   ├── Checkout
 │   ├── Shipping Settings
 │   └── Tax
-└── Advanced                     ← Avancé
+└── Advanced                     ← Advanced
     ├── Admin
     └── System
 ```
 
-### 3.3 system.xml — Définir sa propre config
+### 3.3 system.xml — Define your own config
 
 ```xml
 <!-- etc/adminhtml/system.xml -->
@@ -198,65 +198,65 @@ Stores > Configuration
 </config>
 ```
 
-**Structure** :
-- `<section>` : une section dans la config (`AlpineCommerce_Blog`)
-- `<group>` : un groupe dans la section (`General Configuration`)
-- `<field>` : un champ de configuration
+**Structure**:
+- `<section>`: a section in the config (`AlpineCommerce_Blog`)
+- `<group>`: a group in the section (`General Configuration`)
+- `<field>`: a configuration field
 
-### 3.4 Lire la configuration dans le code
+### 3.4 Read configuration in code
 
 ```php
-// Dans un Block, Helper, Model...
+// In a Block, Helper, Model...
 $isEnabled = $this->scopeConfig->isSetFlag('alphacommerce_blog/general/enabled');
 $postsPerPage = $this->scopeConfig->getValue('alphacommerce_blog/general/posts_per_page');
 
-// Avec le helper (recommandé)
+// With the helper (recommended)
 $helper = \Magento\Framework\App\Config\ScopeConfigInterface::class;
 $isEnabled = $helper->isSetFlag('alphacommerce_blog/general/enabled');
 ```
 
-### 3.5 Les scopes de configuration
+### 3.5 Configuration scopes
 
-| Scope | Niveau | Exemple |
+| Scope | Level | Example |
 |-------|--------|---------|
-| **Default** | Global | Tous les sites |
-| **Website** | Par site | Site UK vs Site FR |
-| **Store View** | Par langue | Anglais vs Français |
+| **Default** | Global | All websites |
+| **Website** | Per website | UK site vs FR site |
+| **Store View** | Per language | English vs French |
 
-Dans `system.xml` :
-- `showInDefault="1"` : visible au niveau global
-- `showInWebsite="1"` : visible par site
-- `showInStore="1"` : visible par store view
+In `system.xml`:
+- `showInDefault="1"`: visible at global level
+- `showInWebsite="1"`: visible per website
+- `showInStore="1"`: visible per store view
 
 ---
 
-## 4. Les listings admin (UI Components)
+## 4. Admin listings (UI Components)
 
-### 4.1 Structure d'un listing admin
+### 4.1 Admin listing structure
 
 ```
 AlpineCommerce/Blog/
 ├── Controller/Adminhtml/Post/
-│   ├── Index.php          ← Controller : affiche la grille
-│   ├── Edit.php           ← Controller : affiche le formulaire
-│   ├── Save.php           ← Controller : sauvegarde
-│   └── Delete.php         ← Controller : suppression
+│   ├── Index.php          ← Controller: displays the grid
+│   ├── Edit.php           ← Controller: displays the form
+│   ├── Save.php           ← Controller: save
+│   └── Delete.php         ← Controller: delete
 ├── Ui/
 │   ├── DataProvider/
-│   │   ├── PostListingDataProvider.php  ← Données de la grille
-│   │   └── PostFormDataProvider.php     ← Données du formulaire
+│   │   ├── PostListingDataProvider.php  ← Grid data
+│   │   └── PostFormDataProvider.php     ← Form data
 │   └── Component/Listing/Column/
-│       └── Actions.php     ← Colonne d'actions (Edit/Delete)
+│       └── Actions.php     ← Actions column (Edit/Delete)
 ├── view/adminhtml/
 │   ├── layout/
-│   │   ├── alphacommerce_blog_post_index.xml  ← Layout listing
-│   │   └── alphacommerce_blog_post_edit.xml   ← Layout formulaire
+│   │   ├── alphacommerce_blog_post_index.xml  ← Listing layout
+│   │   └── alphacommerce_blog_post_edit.xml   ← Form layout
 │   └── ui_component/
-│       ├── alphacommerce_blog_post_listing.xml ← Grille UI Component
-│       └── alphacommerce_blog_post_form.xml     ← Formulaire UI Component
+│       ├── alphacommerce_blog_post_listing.xml ← Grid UI Component
+│       └── alphacommerce_blog_post_form.xml     ← Form UI Component
 ```
 
-### 4.2 Exemple de listing UI Component
+### 4.2 Listing UI Component example
 
 ```xml
 <!-- view/adminhtml/ui_component/alphacommerce_blog_post_listing.xml -->
@@ -298,7 +298,7 @@ AlpineCommerce/Blog/
 </listing>
 ```
 
-### 4.3 Le DataProvider
+### 4.3 The DataProvider
 
 ```php
 // Ui/DataProvider/PostListingDataProvider.php
@@ -331,9 +331,9 @@ class PostListingDataProvider extends AbstractDataProvider
 
 ---
 
-## 5. Les formulaires admin (UI Components)
+## 5. Admin forms (UI Components)
 
-### 5.1 Structure d'un formulaire
+### 5.1 Form structure
 
 ```xml
 <!-- view/adminhtml/ui_component/alphacommerce_blog_post_form.xml -->
@@ -374,9 +374,9 @@ class PostListingDataProvider extends AbstractDataProvider
 </form>
 ```
 
-### 5.2 Les boutons du formulaire
+### 5.2 Form buttons
 
-Dans le layout `_edit.xml` :
+In the `_edit.xml` layout:
 
 ```xml
 <referenceContainer name="content">
@@ -384,7 +384,7 @@ Dans le layout `_edit.xml` :
 </referenceContainer>
 ```
 
-Les boutons sont définis via `ButtonProviderInterface` :
+Buttons are defined via `ButtonProviderInterface`:
 
 ```php
 // Block/Adminhtml/Post/Edit/GenericButton.php
@@ -418,12 +418,12 @@ class GenericButton implements ButtonProviderInterface
 
 ---
 
-## 6. Les modules AlpineCommerce dans l'admin
+## 6. AlpineCommerce modules in the admin
 
-### 6.1 Modules avec interface admin
+### 6.1 Modules with admin interface
 
-| Module | Menu | ACL | Listing | Formulaire |
-|--------|------|-----|---------|------------|
+| Module | Menu | ACL | Listing | Form |
+|--------|------|-----|---------|------|
 | Blog | Content > Blog | `AlpineCommerce_Blog::post`, `::category` | ✅ | ✅ |
 | Faq | Content > FAQ | `AlpineCommerce_Faq::main` | ✅ | ✅ |
 | LegalPages | Content > Legal Pages | `AlpineCommerce_LegalPages::main` | ✅ | ✅ |
@@ -434,32 +434,32 @@ class GenericButton implements ButtonProviderInterface
 | StorePickup | Content > Store Pickup | `AlpineCommerce_StorePickup::main` | ✅ | ✅ |
 | StoreLocator | Content > Store Locator | `AlpineCommerce_StoreLocator::main` | ✅ | ✅ |
 | CustomerCare | Customers > Customer Care | `AlpineCommerce_CustomerCare::manage` | ✅ | ✅ |
-| CustomerGrid | (none — override natif) | (none — utilise ACL natif) | ✅ | ❌ |
+| CustomerGrid | (none — native override) | (none — uses native ACL) | ✅ | ❌ |
 
-### 6.2 Modules sans interface admin
+### 6.2 Modules without admin interface
 
-| Module | Rôle | Admin |
+| Module | Role | Admin |
 |--------|------|-------|
-| StoreSetup | Configuration + observers | System.xml seulement |
-| LoyaltyProgram | Total collector + minicart | System.xml seulement |
-| EuVat | Validation + CLI | System.xml seulement |
-| Hreflang | Tags SEO | System.xml seulement |
+| StoreSetup | Configuration + observers | System.xml only |
+| LoyaltyProgram | Total collector + minicart | System.xml only |
+| EuVat | Validation + CLI | System.xml only |
+| Hreflang | SEO tags | System.xml only |
 
 ---
 
-## 7. Créer une nouvelle entrée admin
+## 7. Create a new admin entry
 
-### 7.1 Étapes
+### 7.1 Steps
 
-1. **Créer l'ACL** (`etc/acl.xml`)
-2. **Créer le menu** (`etc/adminhtml/menu.xml`)
-3. **Créer les routes** (`etc/adminhtml/routes.xml`)
-4. **Créer les Controllers** (`Controller/Adminhtml/...`)
-5. **Créer les layouts** (`view/adminhtml/layout/...`)
-6. **Créer les UI Components** (`view/adminhtml/ui_component/...`)
-7. **Créer les DataProviders** (`Ui/DataProvider/...`)
+1. **Create the ACL** (`etc/acl.xml`)
+2. **Create the menu** (`etc/adminhtml/menu.xml`)
+3. **Create the routes** (`etc/adminhtml/routes.xml`)
+4. **Create the Controllers** (`Controller/Adminhtml/...`)
+5. **Create the layouts** (`view/adminhtml/layout/...`)
+6. **Create the UI Components** (`view/adminhtml/ui_component/...`)
+7. **Create the DataProviders** (`Ui/DataProvider/...`)
 
-### 7.2 Exemple : routes.xml
+### 7.2 Example: routes.xml
 
 ```xml
 <!-- etc/adminhtml/routes.xml -->
@@ -472,9 +472,9 @@ class GenericButton implements ButtonProviderInterface
 </config>
 ```
 
-L'URL admin sera : `/admin/alphacommerce_blog/post/index`
+The admin URL will be: `/admin/alphacommerce_blog/post/index`
 
-### 7.3 Exemple : Controller
+### 7.3 Example: Controller
 
 ```php
 // Controller/Adminhtml/Post/Index.php
@@ -494,18 +494,18 @@ class Index extends \Magento\Backend\App\Action
 
 ---
 
-## 8. Résumé
+## 8. Summary
 
-| Concept | Rôle | Exemple AlpineCommerce |
+| Concept | Role | AlpineCommerce example |
 |---------|------|------------------------|
-| ACL | Contrôle les permissions | `etc/acl.xml` |
-| Menu | Entrée dans le sidebar admin | `etc/adminhtml/menu.xml` |
-| Routes | URLs admin | `etc/adminhtml/routes.xml` |
-| Controller | Logique admin | `Controller/Adminhtml/Post/Index.php` |
-| Layout admin | Structure de la page admin | `view/adminhtml/layout/` |
-| UI Component | Grille admin | `view/adminhtml/ui_component/listing.xml` |
-| DataProvider | Données de la grille/formulaire | `Ui/DataProvider/` |
-| system.xml | Configuration dans Stores > Configuration | `etc/adminhtml/system.xml` |
+| ACL | Controls permissions | `etc/acl.xml` |
+| Menu | Entry in the admin sidebar | `etc/adminhtml/menu.xml` |
+| Routes | Admin URLs | `etc/adminhtml/routes.xml` |
+| Controller | Admin logic | `Controller/Adminhtml/Post/Index.php` |
+| Admin layout | Admin page structure | `view/adminhtml/layout/` |
+| UI Component | Admin grid | `view/adminhtml/ui_component/listing.xml` |
+| DataProvider | Grid/form data | `Ui/DataProvider/` |
+| system.xml | Configuration in Stores > Configuration | `etc/adminhtml/system.xml` |
 
 ---
 

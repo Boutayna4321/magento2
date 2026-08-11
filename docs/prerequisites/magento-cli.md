@@ -1,49 +1,49 @@
-# Magento 2 — CLI (`bin/magento`) : Guide Pratique
+# Magento 2 — CLI (`bin/magento`): Practical Guide
 
-> **Objectif** : maîtriser la ligne de commande Magento. Ces commandes sont
-> utilisées **tous les jours** par les développeurs : installation de modules,
-> compilation, cache, déploiement de contenu statique.
-
----
-
-## 1. Qu'est-ce que `bin/magento` ?
-
-`bin/magento` est le **CLI (Command Line Interface)** de Magento. C'est un
-exécutable PHP qui donne accès à toutes les opérations de maintenance et de
-développement.
-
-**Pourquoi c'est important** :
-- Activer/désactiver des modules : `module:enable`, `module:disable`
-- Mettre à jour la base de données : `setup:upgrade`
-- Compiler le code (production) : `setup:di:compile`
-- Vider les caches : `cache:flush`
-- Créer un admin : `admin:user:create`
+> **Objective**: master the Magento command line. These commands are used
+> **every day** by developers: module installation,
+> compilation, cache, static content deployment.
 
 ---
 
-## 2. Comment exécuter les commandes
+## 1. What is `bin/magento`?
 
-### 2.1 Dans le conteneur Docker (AlpineCommerce)
+`bin/magento` is the Magento **CLI (Command Line Interface)**. It is a
+PHP executable that gives access to all maintenance and development
+operations.
+
+**Why it is important**:
+- Enable/disable modules: `module:enable`, `module:disable`
+- Update the database: `setup:upgrade`
+- Compile code (production): `setup:di:compile`
+- Flush caches: `cache:flush`
+- Create an admin: `admin:user:create`
+
+---
+
+## 2. How to execute commands
+
+### 2.1 Inside the Docker container (AlpineCommerce)
 
 ```bash
-# Méthode recommandée : entrer dans le conteneur PHP
+# Recommended method: enter the PHP container
 docker compose exec php bash
 
-# Puis exécuter les commandes Magento
+# Then execute Magento commands
 php bin/magento module:status
 php bin/magento cache:flush
 ```
 
-### 2.2 Via un script (AlpineCommerce)
+### 2.2 Via a script (AlpineCommerce)
 
-Le projet contient un script helper :
+The project contains a helper script:
 
 ```bash
 ./scripts/magento-cli.sh module:status
 ./scripts/magento-cli.sh cache:flush
 ```
 
-### 2.3 Directement (si PHP est installé localement)
+### 2.3 Directly (if PHP is installed locally)
 
 ```bash
 cd /home/cartware/Desktop/magento/src
@@ -52,146 +52,146 @@ php bin/magento module:status
 
 ---
 
-## 3. Commandes essentielles
+## 3. Essential commands
 
-### 3.1 Gestion des modules
+### 3.1 Module management
 
 ```bash
-# Lister tous les modules et leur statut
+# List all modules and their status
 php bin/magento module:status
 
-# Activer un module
+# Enable a module
 php bin/magento module:enable AlpineCommerce_Blog
 
-# Désactiver un module
+# Disable a module
 php bin/magento module:disable AlpineCommerce_Blog
 
-# Activer plusieurs modules
+# Enable multiple modules
 php bin/magento module:enable AlpineCommerce_Blog AlpineCommerce_Faq
 
-# Vérifier les dépendances (qui dépend de quoi)
+# Check dependencies (who depends on what)
 php bin/magento module:dependency:show AlpineCommerce_Blog
 
-# Voir la configuration d'un module
+# View a module's configuration
 php bin/magento module:config:show AlpineCommerce_Blog
 ```
 
-### 3.2 Mise à jour de la base de données
+### 3.2 Database update
 
 ```bash
-# Appliquer les changements de db_schema.xml et data patches
+# Apply db_schema.xml and data patch changes
 php bin/magento setup:upgrade
 
-# Avec données exemple (sample data)
+# With sample data
 php bin/magento setup:upgrade --sample-data=yes
 
-# Vérifier le statut de la base de données
+# Check database status
 php bin/magento setup:db:status
 ```
 
-**Quand l'utiliser ?**
-- Après avoir créé/modifié un `db_schema.xml`
-- Après avoir créé/modifié un Data Patch
-- Après avoir activé un nouveau module
+**When to use it?**
+- After creating/modifying a `db_schema.xml`
+- After creating/modifying a Data Patch
+- After enabling a new module
 
-### 3.3 Compilation DI (Dependency Injection)
+### 3.3 DI compilation (Dependency Injection)
 
 ```bash
-# Compiler le code pour la production
-# Génère les interceptors, factories, proxies
+# Compile code for production
+# Generates interceptors, factories, proxies
 php bin/magento setup:di:compile
 
-# Vérifier la compilation
+# Verify compilation
 php bin/magento setup:di:compile --dry-run
 ```
 
-**Quand l'utiliser ?**
-- En production (obligatoire)
-- En développement : seulement si tu modifies `di.xml` ou si tu as
-  des erreurs "Class not found"
-- Après avoir ajouté des plugins, préférences, virtual types
+**When to use it?**
+- In production (mandatory)
+- In development: only if you modify `di.xml` or have
+  "Class not found" errors
+- After adding plugins, preferences, virtual types
 
 ### 3.4 Cache
 
 ```bash
-# Vider tous les caches
+# Flush all caches
 php bin/magento cache:flush
 
-# Vider un cache spécifique
+# Flush a specific cache
 php bin/magento cache:clean layout
 php bin/magento cache:clean block_html
 php bin/magento cache:clean config
 
-# Activer/désactiver un type de cache
+# Enable/disable a cache type
 php bin/magento cache:enable layout
 php bin/magento cache:disable layout
 
-# Voir le statut des caches
+# View cache status
 php bin/magento cache:status
 
-# Vider le cache de configuration
+# Flush configuration cache
 php bin/magento app:config:dump
 ```
 
-**Quand utiliser `cache:flush` vs `cache:clean` ?**
-- `cache:clean` : vide le cache mais garde la configuration
-- `cache:flush` : vide TOUT (plus radical, en dev c'est OK)
+**When to use `cache:flush` vs `cache:clean`?**
+- `cache:clean`: empties the cache but keeps the configuration
+- `cache:flush`: empties EVERYTHING (more drastic, OK in dev)
 
-### 3.5 Contenu statique
+### 3.5 Static content
 
 ```bash
-# Déployer le contenu statique (CSS, JS, fonts)
+# Deploy static content (CSS, JS, fonts)
 php bin/magento setup:static-content:deploy -f
 
-# Pour une locale spécifique
+# For a specific locale
 php bin/magento setup:static-content:deploy -f fr_FR de_DE
 
-# Pour un thème spécifique
+# For a specific theme
 php bin/magento setup:static-content:deploy -f --theme="AlpineCommerce/theme"
 
-# En mode développement : pas besoin de cette commande
-# Les fichiers sont générés à la volée
+# In development mode: no need for this command
+# Files are generated on the fly
 ```
 
-### 3.6 Indexation
+### 3.6 Indexing
 
 ```bash
-# Réindexer tous les indexeurs
+# Reindex all indexers
 php bin/magento indexer:reindex
 
-# Réindexer un indexeur spécifique
+# Reindex a specific indexer
 php bin/magento indexer:reindex catalogsearch_fulltext
 
-# Voir le statut des indexeurs
+# View indexer status
 php bin/magento indexer:status
 
-# Mettre en mode "update on schedule" (cron)
+# Set "update on schedule" mode (cron)
 php bin/magento indexer:set-mode schedule
 
-# Mettre en mode "update on save" (immédiat)
+# Set "update on save" mode (immediate)
 php bin/magento indexer:set-mode realtime
 ```
 
-### 3.7 Gestion des déploiements
+### 3.7 Deployment management
 
 ```bash
-# Mettre le site en maintenance
+# Put the site in maintenance mode
 php bin/magento maintenance:enable
 
-# Mettre le site hors maintenance
+# Take the site out of maintenance mode
 php bin/magento maintenance:disable
 
-# Voir qui est en mode maintenance
+# See who is in maintenance mode
 php bin/magento maintenance:status
 
-# Autoriser une IP à accéder pendant la maintenance
+# Allow an IP to access during maintenance
 php bin/magento maintenance:enable --ip=192.168.1.100
 ```
 
 ### 3.8 Admin
 
 ```bash
-# Créer un utilisateur admin
+# Create an admin user
 php bin/magento admin:user:create \
     --admin-name="Admin" \
     --admin-email="admin@example.com" \
@@ -200,342 +200,342 @@ php bin/magento admin:user:create \
     --admin-user="admin" \
     --admin-password="Admin123!"
 
-# Lister les admins
+# List admins
 php bin/magento admin:user:list
 
-# Changer le mot de passe
+# Change password
 php bin/magento admin:user:change-password --admin-user=admin
 
-# Supprimer un admin
+# Delete an admin
 php bin/magento admin:user:delete --admin-user=admin
 ```
 
 ---
 
-## 4. Commandes utiles pour le développement
+## 4. Useful development commands
 
-### 4.1 Mode de Magento
+### 4.1 Magento mode
 
 ```bash
-# Voir le mode actuel
+# View current mode
 php bin/magento deploy:mode:show
 
-# Passer en mode développement
+# Switch to developer mode
 php bin/magento deploy:mode:set developer
 
-# Passer en mode production
+# Switch to production mode
 php bin/magento deploy:mode:set production
 
-# Passer en mode default
+# Switch to default mode
 php bin/magento deploy:mode:set default
 ```
 
-| Mode | Usage | Caractéristiques |
+| Mode | Usage | Characteristics |
 |------|-------|-----------------|
-| **developer** | Développement local | Pas de compilation, erreurs affichées, cache simplifié |
-| **production** | Serveur live | Code compilé, erreurs masquées, cache agressif |
-| **default** | Entre les deux | Compilation optionnelle, erreurs affichées |
+| **developer** | Local development | No compilation, errors displayed, simplified cache |
+| **production** | Live server | Compiled code, hidden errors, aggressive cache |
+| **default** | In between | Optional compilation, errors displayed |
 
-### 4.2 Informations système
+### 4.2 System information
 
 ```bash
-# Voir la version de Magento
+# View Magento version
 php bin/magento --version
 
-# Voir toutes les commandes disponibles
+# View all available commands
 php bin/magento list
 
-# Voir les infos d'environnement
+# View environment info
 php bin/magento info:backup:info
 ```
 
-### 4.3 Gestion des thèmes
+### 4.3 Theme management
 
 ```bash
-# Voir les thèmes installés
+# View installed themes
 php bin/magento theme:list
 
-# Installer un thème
+# Install a theme
 php bin/magento theme:install AlpineCommerce_theme
 ```
 
-### 4.4 Gestion des traductions
+### 4.4 Translation management
 
 ```bash
-# Générer les fichiers de traduction
+# Generate translation files
 php bin/magento i18n:collect-phrases -f -o src/app/code/AlpineCommerce/Blog/i18n/fr_FR.csv src/app/code/AlpineCommerce/Blog
 
-# Vérifier les traductions manquantes
+# Check missing translations
 php bin/magento i18n:check src/app/code/AlpineCommerce/Blog/i18n/fr_FR.csv
 ```
 
 ---
 
-## 5. Workflow de développement typique
+## 5. Typical development workflow
 
-### 5.1 Après avoir modifié un module
+### 5.1 After modifying a module
 
 ```bash
-# 1. Activer le module (si nouveau)
+# 1. Enable the module (if new)
 php bin/magento module:enable AlpineCommerce_Blog
 
-# 2. Mettre à jour la DB (si db_schema.xml ou data patch modifié)
+# 2. Update the DB (if db_schema.xml or data patch modified)
 php bin/magento setup:upgrade
 
-# 3. Compiler (si erreur "class not found" ou modification di.xml)
+# 3. Compile (if "class not found" error or di.xml modification)
 php bin/magento setup:di:compile
 
-# 4. Vider les caches
+# 4. Flush caches
 php bin/magento cache:flush
 
-# 5. Si tu modifies du JS/CSS :
+# 5. If you modify JS/CSS:
 php bin/magento setup:static-content:deploy -f
-# Ou en mode developer : juste vider le cache
+# Or in developer mode: just flush cache
 ```
 
-### 5.2 Après avoir modifié un layout ou un template
+### 5.2 After modifying a layout or template
 
 ```bash
-# En mode DEVELOPER : juste vider le cache
+# In DEVELOPER mode: just flush cache
 php bin/magento cache:flush
 
-# Les modifications sont prises en compte immédiatement
+# Changes take effect immediately
 ```
 
-### 5.3 Après avoir modifié des fichiers PHP (hors di.xml)
+### 5.3 After modifying PHP files (outside di.xml)
 
 ```bash
-# En mode DEVELOPER : rien à faire !
-# Magento régénère le code automatiquement
+# In DEVELOPER mode: nothing to do!
+# Magento regenerates code automatically
 
-# En mode PRODUCTION :
+# In PRODUCTION mode:
 php bin/magento setup:di:compile
 ```
 
-### 5.4 Workflow complet après un git pull
+### 5.4 Complete workflow after a git pull
 
 ```bash
-# 1. Mettre à jour les dépendances Composer
+# 1. Update Composer dependencies
 composer install --no-dev
 
-# 2. Activer les modules (si nouveaux)
+# 2. Enable modules (if new)
 php bin/magento module:enable AlpineCommerce_Blog AlpineCommerce_Faq
 
-# 3. Mettre à jour la DB
+# 3. Update the DB
 php bin/magento setup:upgrade
 
-# 4. Compiler
+# 4. Compile
 php bin/magento setup:di:compile
 
-# 5. Déployer le contenu statique
+# 5. Deploy static content
 php bin/magento setup:static-content:deploy -f
 
-# 6. Réindexer
+# 6. Reindex
 php bin/magento indexer:reindex
 
-# 7. Vider les caches
+# 7. Flush caches
 php bin/magento cache:flush
 
-# 8. Vérifier le mode
+# 8. Check mode
 php bin/magento deploy:mode:set developer
 ```
 
 ---
 
-## 6. Les commandes par scénario
+## 6. Commands by scenario
 
-### 6.1 "J'ai créé un nouveau module"
+### 6.1 "I created a new module"
 
 ```bash
-# 1. Créer les fichiers (registration.php, module.xml, etc.)
-# 2. Activer le module
-php bin/magento module:enable AlpineCommerce_MonModule
+# 1. Create files (registration.php, module.xml, etc.)
+# 2. Enable the module
+php bin/magento module:enable AlpineCommerce_MyModule
 
-# 3. Mettre à jour la DB (si db_schema.xml)
+# 3. Update the DB (if db_schema.xml)
 php bin/magento setup:upgrade
 
-# 4. Compiler
+# 4. Compile
 php bin/magento setup:di:compile
 
-# 5. Vider les caches
+# 5. Flush caches
 php bin/magento cache:flush
 ```
 
-### 6.2 "J'ai modifié un template PHTML"
+### 6.2 "I modified a PHTML template"
 
 ```bash
-# En mode developer : juste vider le cache
+# In developer mode: just flush cache
 php bin/magento cache:flush
 ```
 
-### 6.3 "J'ai modifié un layout XML"
+### 6.3 "I modified a layout XML"
 
 ```bash
-# En mode developer : juste vider le cache
+# In developer mode: just flush cache
 php bin/magento cache:flush
 ```
 
-### 6.4 "J'ai ajouté un plugin dans di.xml"
+### 6.4 "I added a plugin in di.xml"
 
 ```bash
-# Recompiler
+# Recompile
 php bin/magento setup:di:compile
 
-# Vider les caches
+# Flush caches
 php bin/magento cache:flush
 ```
 
-### 6.5 "J'ai ajouté une colonne dans db_schema.xml"
+### 6.5 "I added a column in db_schema.xml"
 
 ```bash
-# Mettre à jour la DB
+# Update the DB
 php bin/magento setup:upgrade
 
-# Recompiler
+# Recompile
 php bin/magento setup:di:compile
 
-# Vider les caches
+# Flush caches
 php bin/magento cache:flush
 ```
 
-### 6.6 "Le site est lent / les CSS ne se chargent pas"
+### 6.6 "The site is slow / CSS not loading"
 
 ```bash
-# Redéployer le contenu statique
+# Redeploy static content
 php bin/magento setup:static-content:deploy -f
 
-# Vider les caches
+# Flush caches
 php bin/magento cache:flush
 
-# Réindexer
+# Reindex
 php bin/magento indexer:reindex
 ```
 
-### 6.7 "Je veux tester en mode production"
+### 6.7 "I want to test in production mode"
 
 ```bash
-# Passer en mode production
+# Switch to production mode
 php bin/magento deploy:mode:set production
 
-# Compiler
+# Compile
 php bin/magento setup:di:compile
 
-# Déployer le contenu statique
+# Deploy static content
 php bin/magento setup:static-content:deploy -f
 ```
 
 ---
 
-## 7. Erreurs courantes
+## 7. Common errors
 
 ### 7.1 "Area code is not set"
 
-**Cause** : tu exécutes une commande qui nécessite un area, mais Magento
-ne sait pas dans quel contexte s'exécuter.
+**Cause**: you are running a command that requires an area, but Magento
+does not know in which context to run.
 
-**Solution** :
+**Solution**:
 ```bash
-# Ajouter l'option --area
+# Add the --area option
 php bin/magento setup:upgrade --area=frontend
 ```
 
 ### 7.2 "Class not found"
 
-**Cause** : le code n'est pas compilé (mode production) ou les interceptors
-sont obsolètes.
+**Cause**: the code is not compiled (production mode) or interceptors
+are outdated.
 
-**Solution** :
+**Solution**:
 ```bash
 php bin/magento setup:di:compile
 php bin/magento cache:flush
 ```
 
-### 7.3 "Permission denied" sur var/, pub/, generated/
+### 7.3 "Permission denied" on var/, pub/, generated/
 
-**Cause** : les permissions de fichiers sont incorrectes.
+**Cause**: file permissions are incorrect.
 
-**Solution** :
+**Solution**:
 ```bash
 # Linux
 sudo chown -R 1000:1000 src/var/ src/pub/ src/generated/
 sudo chmod -R 755 src/var/ src/pub/ src/generated/
 
-# Ou dans le conteneur
+# Or in the container
 docker compose exec php bash -c "chown -R www-data:www-data /var/www/html/var /var/www/html/pub /var/www/html/generated"
 ```
 
 ### 7.4 "The command did not stop after 10 seconds"
 
-**Cause** : `setup:upgrade` est bloqué (data patch lent, DB inaccessible).
+**Cause**: `setup:upgrade` is blocked (slow data patch, DB inaccessible).
 
-**Solution** :
+**Solution**:
 ```bash
-# Augmenter le timeout
+# Increase the timeout
 php -d max_execution_time=600 bin/magento setup:upgrade
 ```
 
 ### 7.5 "Cache storage is not writable"
 
-**Cause** : permissions sur `var/cache/` ou `var/page_cache/`.
+**Cause**: permissions on `var/cache/` or `var/page_cache/`.
 
-**Solution** :
+**Solution**:
 ```bash
 sudo chmod -R 777 src/var/cache/ src/var/page_cache/
 ```
 
 ---
 
-## 8. Tableau de référence rapide
+## 8. Quick reference table
 
-| Tâche | Commande |
-|--------|---------|
-| Activer un module | `module:enable AlpineCommerce_Blog` |
-| Mettre à jour la DB | `setup:upgrade` |
-| Compiler le code | `setup:di:compile` |
-| Vider les caches | `cache:flush` |
-| Déployer le contenu statique | `setup:static-content:deploy -f` |
-| Réindexer | `indexer:reindex` |
-| Créer un admin | `admin:user:create` |
-| Voir le mode | `deploy:mode:show` |
-| Passer en dev | `deploy:mode:set developer` |
-| Passer en prod | `deploy:mode:set production` |
+| Task | Command |
+|------|---------|
+| Enable a module | `module:enable AlpineCommerce_Blog` |
+| Update the DB | `setup:upgrade` |
+| Compile code | `setup:di:compile` |
+| Flush caches | `cache:flush` |
+| Deploy static content | `setup:static-content:deploy -f` |
+| Reindex | `indexer:reindex` |
+| Create an admin | `admin:user:create` |
+| View mode | `deploy:mode:show` |
+| Switch to dev | `deploy:mode:set developer` |
+| Switch to prod | `deploy:mode:set production` |
 | Maintenance ON | `maintenance:enable` |
 | Maintenance OFF | `maintenance:disable` |
-| Voir toutes les commandes | `list` |
+| View all commands | `list` |
 
 ---
 
-## 9. Résumé
+## 9. Summary
 
-| Concept | Explication |
+| Concept | Explanation |
 |---------|------------|
-| `bin/magento` | CLI Magento, point d'entrée de toutes les commandes |
-| `module:enable/disable` | Active/désactive un module |
-| `setup:upgrade` | Applique les changements de schema/DB |
-| `setup:di:compile` | Génère le code DI (interceptors, factories, proxies) |
-| `cache:flush` | Vide tous les caches |
-| `setup:static-content:deploy` | Génère CSS, JS, fonts (production) |
-| `indexer:reindex` | Réindexe les données (recherche, catégories...) |
-| `deploy:mode` | Bascule entre developer / production |
-| `maintenance:enable` | Active le mode maintenance |
+| `bin/magento` | Magento CLI, entry point for all commands |
+| `module:enable/disable` | Enables/disables a module |
+| `setup:upgrade` | Applies schema/DB changes |
+| `setup:di:compile` | Generates DI code (interceptors, factories, proxies) |
+| `cache:flush` | Flushes all caches |
+| `setup:static-content:deploy` | Generates CSS, JS, fonts (production) |
+| `indexer:reindex` | Reindexes data (search, categories...) |
+| `deploy:mode` | Switches between developer / production |
+| `maintenance:enable` | Enables maintenance mode |
 
-### Ordre de travail quotidien (développement)
+### Daily work order (development)
 
 ```bash
-# Matin : démarrer Docker
+# Morning: start Docker
 docker compose up -d
 
-# Après avoir codé :
+# After coding:
 php bin/magento cache:flush
 
-# Si erreur "class not found" :
+# If "class not found" error:
 php bin/magento setup:di:compile
 php bin/magento cache:flush
 
-# Si modification CSS/JS :
+# If CSS/JS modification:
 php bin/magento setup:static-content:deploy -f
 
-# Si modification DB (db_schema.xml / data patch) :
+# If DB modification (db_schema.xml / data patch):
 php bin/magento setup:upgrade
 php bin/magento cache:flush
 ```
