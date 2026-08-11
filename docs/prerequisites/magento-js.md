@@ -1,368 +1,482 @@
-# Magento 2 — JavaScript pour Débutants
+# Magento 2 — JavaScript : Cours Complet
 
-> **Target audience**: développeurs qui savent faire du JS classique mais
-> découvrent le JS dans Magento 2. Ce guide explique **Pourquoi** Magento
-> utilise des outils spécifiques (RequireJS, KnockoutJS) et **Comment**
-> écrire du JS compatible avec le projet AlpineCommerce.
+> **Objectif** : comprendre et écrire du JavaScript dans Magento 2, du
+> premier `define()` jusqu'au composant interactif dans le checkout.
+> Ce cours suppose que tu sais déjà ce qu'est une variable, une fonction,
+> un objet et une classe en JavaScript.
 
 ---
 
-## 1. Le problème que Magento résout
+## Table des matières
 
-### 1.1 Sans système de modules
+1. [Pourquoi Magento a son propre JavaScript ?](#1)
+2. [RequireJS — Le système de modules](#2)
+3. [KnockoutJS — L'interface réactive](#3)
+4. [jQuery — DOM et AJAX](#4)
+5. [Les bibliothèques `mage/*`](#5)
+6. [Les 3 patterns JS du projet](#6)
+7. [Intégrer du JS dans Magento](#7)
+8. [Debugger du JS dans Magento](#8)
+9. [Exercices pratiques](#9)
+10. [Résumé](#10)
+
+---
+
+## 1. Pourquoi Magento a son propre JavaScript ? {#1}
+
+### 1.1 Le problème du JavaScript "classique"
 
 ```html
-<script src="jquery.js"></script>
-<script src="bootstrap.js"></script>
-<script src="mon-script.js"></script>
-<script src="autre-script.js"></script>
+<!-- Ancienne façon : plein de <script> dans le HTML -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/mon-script.js"></script>
+<script src="js/autre-script.js"></script>
 ```
 
-Problèmes :
-- **Conflits de noms** : deux scripts déclarent `var $`
-- **Ordre de chargement** : si `mon-script.js` charge avant `jquery.js`, ça casse
-- **Fichiers inutiles chargés** : la page produit charge 500 Ko de JS alors qu'elle n'a besoin que de 50 Ko
+**Problèmes** :
+- **Conflits de noms** : deux fichiers déclarent `var $`
+- **Ordre critique** : si `mon-script.js` charge avant `jquery.js`, ça casse
+- **Fichiers inutiles** : la page produit charge 500 Ko de JS alors qu'elle n'a besoin que de 50 Ko
+- **Pas de réutilisabilité** : impossible de partager un composant entre deux pages
 
-### 1.2 La solution Magento : RequireJS
+### 1.2 La solution Magento : RequireJS + KnockoutJS
 
-Magento utilise **RequireJS** (bibliothèque AMD) pour charger les scripts
-**à la demande**, avec des **dépendances explicites**.
+Magento 2 utilise deux outils :
 
-```js
-// Au lieu de charger 10 fichiers dans le HTML, on déclare :
-define(['jquery', 'ko', 'mage/storage'], function ($, ko, storage) {
-    // Magento charge automatiquement jquery, puis ko, puis mage/storage
-    // puis exécute ce code
-});
-```
+| Outil | Rôle | Analogie |
+|-------|------|----------|
+| **RequireJS** | Charger les scripts **à la demande**, avec dépendances explicites | Un chef qui ne commande en cuisine que les ingrédients nécessaires |
+| **KnockoutJS** | Créer des interfaces **réactives** (quand le JS change, le HTML se met à jour tout seul) | Un tableau de bord qui se met à jour automatiquement quand les données changent |
+
+### 1.3 Ce que tu dois retenir
+
+- Tout fichier JS Magento commence par `define([...])`
+- Les composants complexes (checkout) utilisent KnockoutJS
+- Les formulaires simples utilisent jQuery
+- Les appels au serveur passent par `mage/storage` (jamais `$.ajax` direct)
 
 ---
 
-## 2. RequireJS — Le système de modules de Magento
+## 2. RequireJS — Le système de modules {#2}
 
-### 2.1 Qu'est-ce que AMD ?
+### 2.1 Qu'est-ce qu'un module AMD ?
 
-**AMD** = Asynchronous Module Definition. C'est un standard pour définir
-des modules JavaScript qui :
-- Déclarent leurs dépendances
-- Sont chargés asynchronement (en parallèle)
-- Évitent les conflits de noms globaux
-
-### 2.2 La fonction `define()`
-
-Tout fichier JS Magento commence par `define()` :
+**AMD** = *Asynchronous Module Definition*. C'est une façon de déclarer
+un fichier JS qui :
+- liste ses **dépendances** (quels autres fichiers il faut charger avant lui)
+- retourne ce qu'il **expose** aux autres fichiers
 
 ```js
-define([
-    'jquery',           // Dépendance 1
-    'ko',               // Dépendance 2
-    'mage/storage',     // Dépendance 3
-    'mage/translate'    // Dépendance 4
-], function ($, ko, storage, $t) {
-    // Le corps du module
-    // Les paramètres correspondent aux dépendances dans l'ordre
-    
+// Ce fichier JS EST un module AMD
+define(['jquery', 'mage/translate'], function ($, $t) {
     'use strict';
     
-    // Ton code ici
+    // Code du module...
+    
     return {
-        init: function () {
-            // ...
+        // Ce que les autres peuvent utiliser
+        hello: function () {
+            return $t('Hello');
         }
     };
 });
 ```
 
-**Règles d'or** :
-- Le nom des paramètres (`$`, `ko`, `storage`) **doit correspondre** à l'ordre des dépendances
-- `'use strict';` est **obligatoire** dans Magento
-- Le `return` expose ce que le module fournit aux autres
-
-### 2.3 La fonction `require()`
-
-Pour exécuter du code **une fois** que les dépendances sont chargées :
+### 2.2 La fonction `define()` — syntaxe obligatoire
 
 ```js
-require(['jquery', 'mage/translate'], function ($, $t) {
-    $(document).ready(function () {
-        console.log($t('Hello Magento'));
-    });
+define([
+    'jquery',           // Dépendance 1
+    'mage/translate'    // Dépendance 2
+], function ($, $t) {   // Paramètres : même ordre que les dépendances
+    'use strict';
+    
+    // Ton code ici
+    
+    return { /* API publique */ };
 });
 ```
 
-Utilisé principalement dans les `.phtml` pour initialiser un composant.
+**Règles strictes** :
+1. Le nom des paramètres **doit** correspondre à l'ordre des dépendances
+2. `'use strict';` est **obligatoire** en première ligne du corps
+3. Le `return` expose l'API publique (ce qui n'est pas returné est privé)
 
-### 2.4 `requirejs-config.js` — La carte des modules
+### 2.3 Les chemins des dépendances
 
-Dans chaque module, on peut créer un `requirejs-config.js` pour :
-- **Raccourcir** les chemins longs
-- **Remplacer** un module par un autre (override)
+| Chemins | Exemple | Explication |
+|---------|---------|-------------|
+| **Alias court** | `'jquery'` | Module natif Magento, disponible partout |
+| **Module Magento** | `'mage/storage'` | Librairie Magento (AJAX, traduction...) |
+| **Module custom** | `'AlpineCommerce_StorePickup/js/view/store-pickup'` | Ton propre module |
+| **Alias custom** | `'alphacommerceStorePickup'` | Défini dans `requirejs-config.js` |
+
+### 2.4 `requirejs-config.js` — la carte des modules
+
+Chaque module peut créer un alias pour raccourcir les chemins :
 
 ```js
 // StorePickup/view/frontend/requirejs-config.js
 var config = {
     map: {
         '*': {
-            // 'alphacommerceStorePickup' est un alias
-            // Pour charger 'AlpineCommerce_StorePickup/js/view/store-pickup'
+            // 'alphacommerceStorePickup' est maintenant un alias pour :
             alphacommerceStorePickup: 'AlpineCommerce_StorePickup/js/view/store-pickup'
         }
     }
 };
 ```
 
-Ainsi, dans un layout XML, on peut écrire :
+Utilisation dans un layout XML :
 ```xml
 <item name="component" xsi:type="string">alphacommerceStorePickup</item>
 ```
-au lieu de :
-```xml
-<item name="component" xsi:type="string">AlpineCommerce_StorePickup/js/view/store-pickup</item>
-```
 
----
+### 2.5 `require()` — exécution ponctuelle
 
-## 3. KnockoutJS — L'UI réactive de Magento
-
-### 3.1 Qu'est-ce que KnockoutJS ?
-
-**KnockoutJS** (KO) est une bibliothèque de **data-binding** :
-- Le HTML a des `data-bind` qui "écoutent" le JS
-- Quand le JS change, le HTML se met à jour **automatiquement**
-- Quand l'utilisateur change le HTML (input, select), le JS est mis à jour
-
-### 3.2 Les concepts clés
-
-#### Observables
+Pour exécuter du code **une seule fois** (pas un module réutilisable) :
 
 ```js
-// Dans le JS
-this.pointsUsed = ko.observable(0);          // Variable réactive
-this.isSyncing = ko.observable(false);       // Boolean réactif
-this.availableStores = ko.observableArray([]); // Array réactif
-
-// Lire la valeur
-var used = this.pointsUsed();   // 0
-
-// Écrire la valeur
-this.pointsUsed(100);           // Maintenant c'est 100
-```
-
-#### Computed (dérivés)
-
-```js
-// Ce computed se met à jour automatiquement quand pointsUsed ou redemptionRate change
-this.discount = ko.computed(function () {
-    return this.pointsUsed() * this.redemptionRate;
-}, this);
-```
-
-#### Bindings dans le HTML
-
-```html
-<!-- Afficher la valeur -->
-<span data-bind="text: pointsUsed"></span>
-
-<!-- Input lié à un observable -->
-<input type="number" data-bind="value: pointsUsed, valueUpdate: 'input'" />
-
-<!-- Affichage conditionnel -->
-<div data-bind="visible: pointsUsed() > 0">Discount applied</div>
-
-<!-- Liste déroulante -->
-<select data-bind="
-    options: availableStores,
-    optionsText: 'name',
-    optionsValue: 'source_code',
-    value: selectedSourceCode">
-</select>
-
-<!-- Texte traduit -->
-<span data-bind="i18n: 'Choose your pickup store'"></span>
-```
-
-### 3.3 Exemple complet : StorePickup
-
-**JS** (`store-pickup.js`) :
-```js
-define(['ko', 'Magento_Checkout/js/view/summary/abstract-total', ...], 
-function (ko, Component, ...) {
-    return Component.extend({
-        initialize: function () {
-            this._super();
-            
-            // Observables
-            this.availableStores = ko.observableArray([]);
-            this.selectedSourceCode = ko.observable();
-            this.isSaving = ko.observable(false);
-            this.syncMessage = ko.observable('');
-            
-            // Computed : visible seulement si méthode pickup ET stores disponibles
-            this.isVisible = ko.computed(function () {
-                return this.isPickupMethod() && this.availableStores().length > 0;
-            }, this);
-            
-            // Computed : texte d'info sur le store sélectionné
-            this.selectedStoreInfo = ko.computed(function () {
-                var code = this.selectedSourceCode();
-                var store = this.findStore(code);
-                return store ? store.street + ', ' + store.city : '';
-            }, this);
-        },
-        
-        // Appelé quand l'utilisateur change le select
-        saveStore: function () {
-            var code = this.selectedSourceCode() || '';
-            storage.post('/carts/mine/store-pickup', JSON.stringify({sourceCode: code}), ...);
-        }
-    });
-});
-```
-
-**HTML** (`store-pickup.html`) :
-```html
-<select data-bind="
-    options: availableStores,
-    optionsText: 'name',
-    optionsValue: 'source_code',
-    value: selectedSourceCode,
-    event: {change: saveStore}">
-</select>
-
-<p data-bind="text: selectedStoreInfo"></p>
-<p data-bind="text: syncMessage, visible: syncMessage"></p>
-```
-
-**Flux** :
-1. L'utilisateur change le `<select>`
-2. Knockout met à jour `selectedSourceCode`
-3. Le `data-bind="event: {change: saveStore}"` appelle `saveStore()`
-4. `saveStore()` fait un AJAX vers le REST API
-5. Le serveur répond → `syncMessage` est mis à jour
-6. Le `<p data-bind="text: syncMessage">` se met à jour automatiquement
-
----
-
-## 4. jQuery dans Magento
-
-### 4.1 jQuery est inclus mais avec des précautions
-
-jQuery est disponible via RequireJS :
-```js
-define(['jquery'], function ($) {
-    'use strict';
-    
+require(['jquery', 'mage/translate'], function ($, $t) {
     $(document).ready(function () {
-        // Ton code jQuery
+        console.log($t('Page loaded'));
     });
 });
 ```
 
-### 4.2 Pattern classique : formulaire + AJAX
+**Quand l'utiliser** : dans un `.phtml` pour initialiser quelque chose.
 
-Utilisé dans **ProductReviews** et **ProductQuestions**.
+---
+
+## 3. KnockoutJS — L'interface réactive {#3}
+
+### 3.1 Le concept de binding
+
+Avec KnockoutJS, tu lies (`bind`) le HTML au JavaScript :
+
+```html
+<!-- HTML -->
+<input data-bind="value: userName">
+<p data-bind="text: userName"></p>
+```
 
 ```js
-define(['jquery', 'mage/utils', 'mage/mage'], function ($, utils) {
+// JavaScript
+this.userName = ko.observable('Alice');
+```
+
+**Résultat** :
+- L'input affiche "Alice"
+- Si tu changes l'input → le `<p>` se met à jour tout seul
+- Si tu changes `this.userName('Bob')` en JS → l'input ET le `<p>` se mettent à jour
+
+### 3.2 Les observables (`ko.observable`)
+
+Un **observable** est une variable "réactive" : quand sa valeur change,
+tout ce qui y est lié se met à jour.
+
+```js
+// DÉCLARATION
+var count = ko.observable(0);          // nombre
+var name = ko.observable('Alice');      // texte
+var isActive = ko.observable(true);     // boolean
+var items = ko.observableArray([]);     // tableau
+
+// LECTURE → ajouter les parenthèses ()
+console.log(count());        // 0
+console.log(name());         // 'Alice'
+
+// ÉCRITURE → appeler comme une fonction
+count(10);
+name('Bob');
+isActive(false);
+items.push({id: 1, title: 'Product 1'});
+```
+
+### 3.3 Les computed (`ko.computed`)
+
+Un **computed** est une valeur **calculée automatiquement** à partir
+d'autres observables :
+
+```js
+var firstName = ko.observable('Alice');
+var lastName = ko.observable('Dupont');
+
+// Ce computed se recalcule AUTOMATIQUEMENT
+// quand firstName ou lastName change
+var fullName = ko.computed(function () {
+    return firstName() + ' ' + lastName();
+});
+
+console.log(fullName()); // 'Alice Dupont'
+
+firstName('Bob');
+console.log(fullName()); // 'Bob Dupont' (recalculé automatiquement)
+```
+
+### 3.4 Les bindings dans le HTML
+
+| Binding | Rôle | Exemple |
+|---------|------|---------|
+| `text` | Afficher du texte | `data-bind="text: userName"` |
+| `value` | Lier un input à une variable | `data-bind="value: count"` |
+| `visible` | Afficher/masquer | `data-bind="visible: count() > 0"` |
+| `click` | Clic sur un bouton | `data-bind="click: increment"` |
+| `event` | Autres événements | `data-bind="event: {change: save}"` |
+| `options` | Liste déroulante | `data-bind="options: items, optionsText: 'name'"` |
+| `foreach` | Boucler sur une liste | `data-bind="foreach: items"` |
+| `i18n` | Traduire | `data-bind="i18n: 'Hello'"` |
+| `attr` | Attribut HTML dynamique | `data-bind="attr: {for: inputId}"` |
+
+### 3.5 Exemple complet : StorePickup
+
+**JavaScript** (`store-pickup.js`) :
+```js
+define(['ko', 'mage/storage', 'mage/translate'], function (ko, storage, $t) {
     'use strict';
     
     return {
-        init: function () {
-            $('#submit-review').on('click', function () {
-                var title = $('#review-title').val();
-                var detail = $('#review-detail').val();
-                
-                $.ajax({
-                    url: '/rest/V1/alphacommerce/product-reviews',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        productId: parseInt(productId),
-                        title: title,
-                        detail: detail
-                    }),
-                    success: function () {
-                        alert('Review submitted!');
-                        window.location.reload();
-                    },
-                    error: function (xhr) {
-                        alert('Error: ' + xhr.responseText);
-                    }
-                });
+        initialize: function () {
+            // 1. Observables (état)
+            this.availableStores = ko.observableArray([]);
+            this.selectedStore = ko.observable('');
+            this.isSaving = ko.observable(false);
+            this.message = ko.observable('');
+            
+            // 2. Computed (dérivés)
+            this.isVisible = ko.computed(function () {
+                return this.selectedStore() !== '';
+            }, this);
+            
+            this.selectedStoreName = ko.computed(function () {
+                var code = this.selectedStore();
+                var store = this.findStore(code);
+                return store ? store.name : '';
+            }, this);
+        },
+        
+        findStore: function (code) {
+            return this.availableStores().find(function (s) {
+                return s.code === code;
+            });
+        },
+        
+        saveStore: function () {
+            var self = this;
+            this.isSaving(true);
+            
+            storage.post('/carts/mine/store-pickup', 
+                JSON.stringify({sourceCode: this.selectedStore()}), 
+                false, 
+                'application/json'
+            ).done(function () {
+                self.message($t('Store saved'));
+            }).fail(function () {
+                self.message($t('Error saving store'));
+            }).always(function () {
+                self.isSaving(false);
             });
         }
     };
 });
 ```
 
-### 4.3 Initialisation depuis un `.phtml`
-
+**HTML** (`store-pickup.html`) :
 ```html
-<!-- Dans le template -->
-<div id="review-form-container">
-    <button id="submit-review">Submit</button>
+<div data-bind="visible: isVisible">
+    <label data-bind="i18n: 'Choose your store'"></label>
+    
+    <select data-bind="
+        options: availableStores,
+        optionsText: 'name',
+        optionsValue: 'code',
+        value: selectedStore,
+        event: {change: saveStore}">
+    </select>
+    
+    <p data-bind="text: selectedStoreName"></p>
+    <p data-bind="text: message, visible: message"></p>
 </div>
-
-<script type="text/x-magento-init">
-{
-    "#review-form-container": {
-        "reviewForm": {
-            "submitBtnSelector": "#submit-review"
-        }
-    }
-}
-</script>
 ```
 
-Magento lit ce `data-mage-init` (ou `<script type="text/x-magento-init">`) et
-appelle automatiquement `reviewForm.init(submitBtnSelector)`.
+**Flux** :
+1. L'utilisateur change le `<select>`
+2. Knockout met à jour `selectedStore`
+3. Le `event: {change: saveStore}` déclenche `saveStore()`
+4. `saveStore()` appelle le REST via `mage/storage`
+5. Le serveur répond → `message` est mis à jour
+6. Le `<p data-bind="text: message">` se met à jour **tout seul**
 
 ---
 
-## 5. Les bibliothèques `mage/*` (Magento core)
+## 4. jQuery — DOM et AJAX {#4}
 
-Magento emballe ses propres utilitaires sous le namespace `mage/`.
+### 4.1 jQuery dans Magento
 
-| Module | Usage | Exemple |
-|--------|-------|---------|
-| `mage/storage` | AJAX avec gestion de session/cookies | `storage.post(url, data, false, 'application/json')` |
-| `mage/translate` | Traduction côté client | `$t('Hello')` |
-| `mage/mage` | Initialisation jQuery UI/Magento | `$('.selector').mage(...)` |
-| `mage/utils` | Utilitaires (validation, templates) | `utils.stringify(object)` |
-
-### 5.1 `mage/storage` vs `$.ajax`
-
-**Ne jamais utiliser `$.ajax` directement** pour les appels Magento :
-- `mage/storage` gère les cookies de session automatiquement
-- Il gère les erreurs 401 (redirection vers login)
-- Il ajoute les headers `X-Requested-With: XMLHttpRequest`
+jQuery est disponible via RequireJS. **Ne jamais utiliser `$` en global** :
 
 ```js
-// ✅ Bien : mage/storage
-define(['mage/storage'], function (storage) {
-    storage.post('/rest/V1/cart', JSON.stringify(data), false, 'application/json')
-        .done(function (response) { /* ... */ });
+// ✅ Correct
+define(['jquery'], function ($) {
+    'use strict';
+    $('#mon-element').click(function () { ... });
 });
 
-// ❌ Éviter : $.ajax brut
-$.ajax({ url: '/rest/V1/cart', ... });
+// ❌ Faux (ne marche pas dans Magento)
+$('#mon-element').click(function () { ... });
 ```
 
-### 5.2 `mage/translate`
+### 4.2 Sélection et manipulation du DOM
+
+```js
+define(['jquery'], function ($) {
+    'use strict';
+    
+    // Sélectionner
+    var $btn = $('#submit-btn');           // par ID
+    var $form = $('.review-form');         // par classe
+    var $item = $('[data-product-id="5"]'); // par attribut
+    
+    // Lire des valeurs
+    var title = $('#review-title').val();
+    var rating = $('input[name="rating"]:checked').val();
+    
+    // Modifier le DOM
+    $btn.prop('disabled', true);
+    $form.addClass('loading');
+    $('#result').html('<p>Done</p>');
+    
+    // Événements
+    $btn.on('click', function () {
+        console.log('Clicked');
+    });
+    
+    // Délégué (pour les éléments dynamiques)
+    $(document).on('click', '.vote-btn', function () {
+        var reviewId = $(this).data('review-id');
+    });
+});
+```
+
+### 4.3 AJAX avec `$.ajax`
+
+```js
+define(['jquery', 'mage/translate'], function ($, $t) {
+    'use strict';
+    
+    function submitReview() {
+        var data = {
+            productId: parseInt($('#product-id').val()),
+            title: $('#review-title').val(),
+            detail: $('#review-detail').val()
+        };
+        
+        $.ajax({
+            url: '/rest/V1/alphacommerce/product-reviews',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert($t('Review submitted'));
+            },
+            error: function (xhr) {
+                alert($t('Error') + ': ' + xhr.responseText);
+            }
+        });
+    }
+});
+```
+
+---
+
+## 5. Les bibliothèques `mage/*` {#5}
+
+Magento fournit des utilitaires encapsulés sous le namespace `mage/`.
+
+### 5.1 `mage/storage` — AJAX sécurisé
+
+```js
+define(['mage/storage'], function (storage) {
+    'use strict';
+    
+    // POST avec JSON
+    storage.post(
+        '/rest/V1/cart',           // URL
+        JSON.stringify(data),       // Corps de la requête
+        false,                      // parallèle (pas d'overlay de chargement)
+        'application/json'          // Content-Type
+    ).done(function (response) {
+        // Succès
+    }).fail(function (xhr) {
+        // Erreur
+    });
+    
+    // GET
+    storage.get('/rest/V1/products/1', false)
+        .done(function (product) { ... });
+    
+    // PUT
+    storage.put('/rest/V1/cart/1', JSON.stringify(data), false, 'application/json')
+        .done(function () { ... });
+    
+    // DELETE
+    storage.delete('/rest/V1/cart/1', false)
+        .done(function () { ... });
+});
+```
+
+**Pourquoi `mage/storage` au lieu de `$.ajax` ?**
+- Gère automatiquement les cookies de session
+- Gère les erreurs 401 (redirection vers login)
+- Ajoute le header `X-Requested-With: XMLHttpRequest`
+- Formate les erreurs Magento
+
+### 5.2 `mage/translate` — Traduction côté client
 
 ```js
 define(['mage/translate'], function ($t) {
-    return $t('Pickup store saved.');
+    'use strict';
+    
+    var msg = $t('Hello World');
+    // Cherche la traduction dans i18n/fr_FR.csv, i18n/de_DE.csv, etc.
+    
+    // Avec paramètres
+    var msg2 = $t('Hello %1, you have %2 products').replace('%1', 'Alice').replace('%2', '5');
 });
 ```
 
-Magento cherche la traduction dans les fichiers CSV (`i18n/fr_FR.csv`, etc.).
+### 5.3 `mage/mage` — Initialisation jQuery UI
+
+```js
+define(['jquery', 'mage/mage'], function ($) {
+    'use strict';
+    
+    // Initialise les composants Magento sur un élément
+    $('#my-form').mage('validation', { /* règles de validation */ });
+});
+```
+
+### 5.4 `mage/utils` — Utilitaires
+
+```js
+define(['mage/utils'], function (utils) {
+    'use strict';
+    
+    // Sérialiser un objet en query string
+    var query = utils.stringify({page: 1, limit: 10});
+    // → "page=1&limit=10"
+    
+    // Cloner un objet profondément
+    var copy = utils.copy(original);
+});
+```
 
 ---
 
-## 6. Les 3 patterns JS dans AlpineCommerce
+## 6. Les 3 patterns JS du projet {#6}
 
-### 6.1 Pattern UI Component + KnockoutJS (moderne)
+### 6.1 Pattern 1 : UI Component + KnockoutJS
 
 **Utilisé pour** : checkout, composants interactifs complexes
 
@@ -371,7 +485,7 @@ Magento cherche la traduction dans les fichiers CSV (`i18n/fr_FR.csv`, etc.).
 **Structure** :
 ```
 view/frontend/
-├── requirejs-config.js      # alias du module
+├── requirejs-config.js       # Alias du module
 ├── web/
 │   ├── js/
 │   │   └── view/
@@ -380,12 +494,14 @@ view/frontend/
 │       └── store-pickup.html     # Template KO (data-bind)
 ```
 
-**Quand l'utiliser** :
-- Interface réactive avec beaucoup d'états
-- Besoin de computed values
-- Intégration dans le checkout Magento (qui utilise massivement KO)
+**Caractéristiques** :
+- `define(['ko', ...], function (ko, ...)`
+- Retourne un objet avec `initialize()` (pattern Magento)
+- Observables pour l'état, computed pour les dérivés
+- Template HTML avec `data-bind`
+- Intégré via layout XML (`js_config/component`)
 
-### 6.2 Pattern jQuery + AJAX (classique)
+### 6.2 Pattern 2 : jQuery + AJAX
 
 **Utilisé pour** : formulaires simples, interactions ponctuelles
 
@@ -401,14 +517,16 @@ view/frontend/
 │       └── review_form.phtml    # HTML + data-mage-init
 ```
 
-**Quand l'utiliser** :
-- Formulaire de soumission simple
-- Vote / like
-- Peu d'états à gérer
+**Caractéristiques** :
+- `define(['jquery', ...], function ($, ...)`
+- Retourne un objet avec `init()`
+- Événements jQuery (`$('#id').on('click', ...)`)
+- AJAX avec `$.ajax` ou `mage/storage`
+- Initialisé via `data-mage-init` dans le `.phtml`
 
-### 6.3 Pattern Vanilla JS (léger)
+### 6.3 Pattern 3 : Vanilla JS (léger)
 
-**Utilisé pour** : filtres, recherche côté client, micro-interactions
+**Utilisé pour** : filtres, recherche côté client
 
 **Modules** : StoreLocator
 
@@ -420,36 +538,21 @@ view/frontend/
         └── store-locator.js     # Pas de jQuery, pas de KO
 ```
 
-**Quand l'utiliser** :
-- Aucune dépendance externe nécessaire
-- Performance critique
-- Logique simple (filter, sort)
+**Caractéristiques** :
+- `define(['mage/translate'], function ($t) { ... })`
+- Retourne une fonction `(config, element) => { ... }`
+- DOM natif (`querySelector`, `addEventListener`)
+- Aucune dépendance lourde
 
 ---
 
-## 7. Comment intégrer du JS dans Magento
+## 7. Intégrer du JS dans Magento {#7}
 
-### 7.1 Via le Layout XML (composants UI)
-
-```xml
-<!-- view/frontend/layout/checkout_cart_index.xml -->
-<referenceBlock name="checkout.cart.totals">
-    <arguments>
-        <argument name="js_config" xsi:type="array">
-            <item name="component" xsi:type="string">alphacommerceStorePickup</item>
-        </argument>
-        <argument name="data" xsi:type="array">
-            <item name="availableStores" xsi:type="object">AlpineCommerce\StorePickup\Block\Adminhtml\Store\Source\StoreInfo</item>
-        </argument>
-    </arguments>
-</referenceBlock>
-```
-
-### 7.2 Via `data-mage-init` dans un `.phtml`
+### 7.1 Méthode 1 : `data-mage-init` dans un `.phtml`
 
 ```php
-<!-- view/frontend/templates/review/form.phtml -->
-<div id="review-form" 
+<!-- review_form.phtml -->
+<div id="review-form"
      data-mage-init='{"reviewForm": {"submitBtnSelector": "#submit-review"}}'>
     <button id="submit-review">Submit</button>
 </div>
@@ -465,13 +568,33 @@ view/frontend/
 </script>
 ```
 
-Magento charge automatiquement `reviewForm` (défini dans `review-form.js`)
-et appelle `init(submitBtnSelector)`.
+Magento charge `reviewForm` et appelle `init(submitBtnSelector)`.
 
-### 7.3 Via `requirejs-config.js` + composant KO
+### 7.2 Méthode 2 : Layout XML (composants UI)
 
 ```xml
-<!-- view/frontend/layout/checkout_index_index.xml -->
+<referenceContainer name="product.info.main">
+    <block class="Magento\Framework\View\Element\Template"
+           name="store.pickup"
+           template="AlpineCommerce_StorePickup::store-pickup.phtml">
+        <arguments>
+            <argument name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">alphacommerceStorePickup</item>
+            </argument>
+            <argument name="data" xsi:type="array">
+                <item name="availableStores" xsi:type="object">
+                    AlpineCommerce\StorePickup\Block\Adminhtml\Store\Source\StoreInfo
+                </item>
+            </argument>
+        </arguments>
+    </block>
+</referenceContainer>
+```
+
+### 7.3 Méthode 3 : `requirejs-config.js` + KO Component
+
+```xml
+<!-- checkout_index_index.xml -->
 <referenceContainer name="checkout.cart.totals">
     <block class="Magento\Checkout\Block\Cart\Totals"
            name="loyalty.points"
@@ -489,106 +612,9 @@ Le composant KO est automatiquement instancié par Magento.
 
 ---
 
-## 8. Bonnes pratiques Magento
+## 8. Debugger du JS dans Magento {#8}
 
-| Pratique | Raison | AlpineCommerce |
-|----------|--------|----------------|
-| **Toujours utiliser `define()`** | RequireJS est obligatoire | ✅ Tous les fichiers |
-| **Toujours mettre `'use strict';`** | Détecte les erreurs de scope | ✅ Tous les fichiers |
-| **Utiliser `mage/storage` pour l'AJAX** | Gère session + erreurs | ✅ StorePickup, LoyaltyProgram |
-| **Utiliser `mage/translate` pour les strings** | i18n automatique | ✅ Tous les modules |
-| **Nommer les paramètres de `define()` correctement** | `$` pour jQuery, `ko` pour KO | ✅ |
-| **Éviter les IDs en dur dans jQuery** | Conflits possibles | ⚠️ Review/Question utilisent `#submit-review` |
-| **Ne pas polluer le scope global** | RequireJS isole les modules | ✅ Pas de `var` global |
-| **Utiliser KO pour l'UI complexe** | Réactivité, computed values | ✅ StorePickup, LoyaltyProgram |
-| **Utiliser jQuery pour les formulaires simples** | Rapide à écrire | ✅ Review, Question |
-
----
-
-## 9. Pièges courants
-
-### 9.1 Oublier `'use strict';`
-
-```js
-// ❌ Sans 'use strict'
-function test() {
-    x = 5; // Crée une variable globale (erreur silencieuse)
-}
-
-// ✅ Avec 'use strict'
-function test() {
-    'use strict';
-    x = 5; // ReferenceError: x is not defined
-}
-```
-
-### 9.2 Mauvais ordre des paramètres dans `define()`
-
-```js
-// ❌ ERREUR : les paramètres ne correspondent pas aux dépendances
-define(['jquery', 'ko'], function (ko, $) {
-    // $ est en fait KO, ko est en fait jQuery
-});
-
-// ✅ Correct
-define(['jquery', 'ko'], function ($, ko) {
-    // $ = jQuery, ko = Knockout
-});
-```
-
-### 9.3 Utiliser `$` en global
-
-```js
-// ❌ $ n'existe pas forcément dans le scope global (protect mode jQuery)
-$('#id').click(...);
-
-// ✅ Utiliser le $ injecté par RequireJS
-define(['jquery'], function ($) {
-    $('#id').click(...);
-});
-```
-
-### 9.4 Oublier `return` dans le module
-
-```js
-// ❌ Le module ne retourne rien, les autres ne peuvent pas l'utiliser
-define(['jquery'], function ($) {
-    function init() { ... }
-});
-
-// ✅ Retourner l'objet public
-define(['jquery'], function ($) {
-    return {
-        init: function () { ... }
-    };
-});
-```
-
-### 9.5 Knockout : oublier les parenthèses pour lire un observable
-
-```js
-// ❌ Affiche "[object Function]" car pointsUsed est la fonction elle-même
-console.log(this.pointsUsed);
-
-// ✅ Affiche la valeur (ex: 100)
-console.log(this.pointsUsed());
-```
-
-### 9.6 `mage/storage` : oublier le 4ème paramètre
-
-```js
-// ❌ Erreur de Content-Type
-storage.post(url, JSON.stringify(data));
-
-// ✅ Spécifier le Content-Type pour le JSON
-storage.post(url, JSON.stringify(data), false, 'application/json');
-```
-
----
-
-## 10. Debugger du JS dans Magento
-
-### 10.1 Chrome DevTools
+### 8.1 Chrome DevTools
 
 ```
 F12 → Console
@@ -597,6 +623,7 @@ F12 → Console
 **Voir les modules RequireJS chargés** :
 ```js
 require.s.contexts._.defined
+// Affiche tous les modules chargés avec leurs exports
 ```
 
 **Tester un module** :
@@ -606,69 +633,186 @@ require(['AlpineCommerce_StorePickup/js/view/store-pickup'], function (Module) {
 });
 ```
 
-**Inspecter un observable KO** :
-```js
-// Dans la console, si tu as accès au composant :
-$t('Pickup store saved.');
-```
+### 8.2 Erreurs courantes
 
-### 10.2 Activer les erreurs RequireJS
+| Erreur | Cause | Solution |
+|--------|-------|----------|
+| `Uncaught Error: Module name ... has not been loaded yet` | Dépendance mal orthographiée | Vérifier le nom dans `define([...])` |
+| `$ is not a function` | jQuery pas chargé ou mal injecté | Vérifier l'ordre des paramètres dans `define()` |
+| `ko is not defined` | Knockout pas déclaré comme dépendance | Ajouter `'ko'` dans `define([...])` |
+| `define is not defined` | Fichier pas chargé via RequireJS | Utiliser `define()`, pas de `<script>` inline |
+| `data-bind` ne fonctionne pas | Template KO pas lié au composant | Vérifier `template:` et `component:` dans le layout |
 
-Dans le navigateur :
+### 8.3 Activer les erreurs RequireJS
+
 ```js
+// Dans la console navigateur
 requirejs.onError = function (err) {
-    console.error('RequireJS error:', err);
+    console.error('RequireJS error:', err.requireModules);
 };
 ```
 
-### 10.3 Voir les fichiers JS chargés
+### 8.4 Voir le réseau JS
 
 ```
 F12 → Network → Filtrer par "JS"
 ```
 
----
-
-## 11. Tableau de correspondance AlpineCommerce
-
-| Concept JS | Fichier AlpineCommerce | Ligne | Explication |
-|------------|------------------------|-------|-------------|
-| `define([...])` | Tous les `.js` | 1 | Chargement modulaire |
-| `ko.observable()` | `store-pickup.js` | 22-25 | Variables réactives |
-| `ko.computed()` | `store-pickup.js` | 27-33 | Valeurs dérivées |
-| `data-bind="visible: ..."` | `store-pickup.html` | 6 | Binding KO |
-| `data-bind="options: ..."` | `store-pickup.html` | 15-20 | Liste KO |
-| `mage/storage.post()` | `store-pickup.js` | 74 | AJAX Magento |
-| `mage/translate` | `store-pickup.js` | 80 | Traduction |
-| `requirejs-config.js` | `store-pickup/requirejs-config.js` | 1 | Alias module |
-| `$.ajax()` | `review-form.js` | 42 | AJAX jQuery |
-| `data-mage-init` | `review_form.phtml` | — | Initialisation auto |
-| Vanilla JS | `store-locator.js` | 1 | Pas de dépendance |
+Permet de voir quels fichiers sont chargés, dans quel ordre, et si un
+fichier est manquant (404).
 
 ---
 
-## 12. Ressources pour aller plus loin
+## 9. Exercices pratiques {#9}
 
-- **RequireJS** : https://requirejs.org/docs/api.html
-- **KnockoutJS** : https://knockoutjs.com/documentation/
-- **Magento JS Dev Guide** : https://developer.adobe.com/commerce/frontend/core-js/
-- **mage/translate** : https://github.com/magento/magento2/blob/2.4/lib/web/mage/translate.js
-- **AlpineCommerce exemples** : `src/app/code/AlpineCommerce/StorePickup/view/frontend/web/js/`
+### Exercice 1 : Premier module RequireJS
+
+**Objectif** : créer un module qui affiche "Hello Magento" dans un `<div>`.
+
+**Étapes** :
+1. Créer `src/app/code/AlpineCommerce/Blog/view/frontend/web/js/hello.js`
+2. Créer un template `src/app/code/AlpineCommerce/Blog/view/frontend/templates/hello.phtml`
+3. Ajouter un layout `view/frontend/layout/blog_index_index.xml`
+4. Ajouter `data-mage-init` dans le template
+
+**Solution** :
+```js
+// hello.js
+define(['jquery', 'mage/translate'], function ($, $t) {
+    'use strict';
+    return {
+        run: function () {
+            $('#hello-container').html('<p>' + $t('Hello Magento') + '</p>');
+        }
+    };
+});
+```
+
+```html
+<!-- hello.phtml -->
+<div id="hello-container"></div>
+<script type="text/x-magento-init">
+{
+    "#hello-container": {
+        "AlpineCommerce_Blog/js/hello": {}
+    }
+}
+</script>
+```
+
+### Exercice 2 : Observable KO simple
+
+**Objectif** : créer un compteur avec un bouton + et -.
+
+**Solution** :
+```js
+define(['ko'], function (ko) {
+    'use strict';
+    return {
+        initialize: function () {
+            this.count = ko.observable(0);
+        },
+        increment: function () {
+            this.count(this.count() + 1);
+        },
+        decrement: function () {
+            this.count(this.count() - 1);
+        }
+    };
+});
+```
+
+```html
+<div data-bind="with: $parent">
+    <p>Count: <span data-bind="text: count"></span></p>
+    <button data-bind="click: increment">+</button>
+    <button data-bind="click: decrement">-</button>
+</div>
+```
+
+### Exercice 3 : AJAX vers le REST
+
+**Objectif** : soumettre un formulaire et afficher la réponse.
+
+**Solution** :
+```js
+define(['jquery', 'mage/storage', 'mage/translate'], function ($, storage, $t) {
+    'use strict';
+    return {
+        submit: function () {
+            var data = {
+                title: $('#title').val(),
+                detail: $('#detail').val()
+            };
+            storage.post('/rest/V1/alphacommerce/product-reviews',
+                JSON.stringify(data), false, 'application/json'
+            ).done(function () {
+                alert($t('Submitted'));
+            });
+        }
+    };
+});
+```
+
+### Exercice 4 : Computed KO
+
+**Objectif** : calculer le prix total (quantité × prix unitaire) en temps réel.
+
+**Solution** :
+```js
+define(['ko'], function (ko) {
+    'use strict';
+    return function () {
+        this.quantity = ko.observable(1);
+        this.unitPrice = 29.99;
+        this.total = ko.computed(function () {
+            return (this.quantity() * this.unitPrice).toFixed(2);
+        }, this);
+    };
+});
+```
+
+```html
+<input type="number" data-bind="value: quantity, valueUpdate: 'input'">
+<p>Total: $<span data-bind="text: total"></span></p>
+```
 
 ---
 
-## 13. Résumé
+## 10. Résumé {#10}
 
-| Question | Réponse |
-|----------|---------|
-| **Pourquoi RequireJS ?** | Chargement modulaire, pas de conflits, pas de fichier inutile |
-| **Qu'est-ce qu'un module AMD ?** | Un fichier JS qui déclare ses dépendances avec `define([...])` |
-| **Quand utiliser KO ?** | UI réactive (checkout, formulaires dynamiques) |
-| **Quand utiliser jQuery ?** | Formulaires simples, interactions ponctuelles |
-| **Quand utiliser Vanilla JS ?** | Aucune dépendance nécessaire, logique simple |
-| **Comment appeler le REST ?** | `mage/storage.post(url, data, false, 'application/json')` |
-| **Comment traduire ?** | `define(['mage/translate'], function ($t) { $t('string'); })` |
-| **Comment initialiser un composant ?** | `data-mage-init` dans le `.phtml` ou layout XML |
+| Concept | Magento équivalent | AlpineCommerce exemple |
+|---------|-------------------|------------------------|
+| Module JS | `define([...], function (...) { ... })` | Tous les `.js` |
+| Chargement modulaire | RequireJS | `requirejs-config.js` |
+| UI réactive | KnockoutJS | StorePickup, LoyaltyProgram |
+| DOM + AJAX | jQuery | ProductReviews, ProductQuestions |
+| AJAX sécurisé | `mage/storage` | StorePickup `saveStore()` |
+| Traduction | `mage/translate` | Tous les modules |
+| Initialisation | `data-mage-init` | `review_form.phtml` |
+| Composant UI | `js_config/component` | Layout XML checkout |
+| Observable | `ko.observable()` | `selectedStore`, `pointsUsed` |
+| Computed | `ko.computed()` | `isVisible`, `totalPrice` |
+| Template | `web/template/*.html` | `store-pickup.html` |
+| Alias | `requirejs-config.js` | `alphacommerceStorePickup` |
+
+### Ce qu'il faut maîtriser
+
+1. **`define([...], function (...) { ... })`** — structure obligatoire de tout fichier JS Magento
+2. **`ko.observable()`** — pour les variables réactives
+3. **`ko.computed()`** — pour les valeurs calculées
+4. **`mage/storage`** — pour les appels REST
+5. **`mage/translate`** — pour les traductions
+6. **`data-bind`** — pour lier le HTML au JS
+7. **`data-mage-init`** — pour initialiser un composant depuis un `.phtml`
+8. **Layout XML** — pour intégrer un composant UI dans une page
+
+### Prochaines étapes
+
+- Lire les fichiers JS d'AlpineCommerce : `StorePickup/view/frontend/web/js/view/store-pickup.js`
+- Créer un module JS simple (exercice 1)
+- Ajouter un composant KO dans le checkout
+- Explorer les fichiers `mage/*` dans `lib/web/`
 
 ---
 
