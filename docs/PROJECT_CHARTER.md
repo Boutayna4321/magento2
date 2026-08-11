@@ -36,7 +36,7 @@ developer can clone, read, browse, and understand **progressively**.
 | Phase | Content | Status |
 |---|---|---|
 | **A — Standards** | Engineering Bible, Learning Path, Backlog, pedagogical README | ✅ in progress (2026-08) |
-| **B — Business development** | Finalize the 14 modules of v1.0 (firm scope) | upcoming |
+| **B — Business development** | Finalize the 15 modules of v1.0 (firm scope) | upcoming |
 | **C — Harmonization** | Refactor old modules (1 sprint / module) | after v1.0 |
 | **D — Pedagogical documentation** | Module READMEs, diagrams, exercises | after harmonization |
 
@@ -167,7 +167,7 @@ The business need is to **finalize each module** so that it is:
 - **Stable**: the module does not crash, produce PHP errors, or inconsistent behavior.
 - **Compliant**: the admin interface respects Adobe Commerce 2.4.8 standards (UI Components, ACL, validation).
 
-Today, 6 out of 14 modules have **functional blockers**:
+Today, 6 out of 15 modules have **functional blockers**:
 
 | Module | Functional blocker |
 |---|---|

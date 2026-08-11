@@ -124,9 +124,14 @@ See `docs/ENGINEERING_GUIDE.md` → section "❌ What you must NEVER do".
 | `docs/ROADMAP.md` | 🗺️ The product roadmap and version history |
 | `docs/CHANGELOG.md` | 📜 Version history and fixes |
 | `docs/BACKLOG.md` | 🛠️ Tracked technical debt (Phase C) |
-| `docs/modules/*.md` | 📚 Each module's chapter (13 documents) |
+| `docs/modules/*.md` | 📚 Each module's chapter (15 documents) |
 
----
+## Prerequisites for new developers
+
+If you are new to Magento, start with the **prerequisites guides** in `docs/prerequisites/`:
+Docker, PHP OOP, Git, Magento intro, JavaScript, Layout/Templates, CLI, Cron & Indexers,
+Events/Observers/Plugins, REST/GraphQL API, Composer, Debug, Admin, Security, Multi-Store,
+Testing, Coding Standards, and CI/CD.
 
 ---
 

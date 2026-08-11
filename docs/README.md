@@ -46,7 +46,7 @@ docs/
 | Document | Role | Essential content |
 |---|---|---|
 | `PROJECT_CHARTER.md` | 🎯 The charter | Dual vision (platform + learning reference), philosophy, specifications and functional analysis v1.0, major architecture decisions |
-| `ARCHITECTURE.md` | 🏗️ Architecture | Overview, Magento Core, 14 modules, DB tables, REST API, multi-store, security, performance, deployment, ADR registry (ADR-001 → 014) |
+| `ARCHITECTURE.md` | 🏗️ Architecture | Overview, Magento Core, 15 modules, DB tables, REST API, multi-store, security, performance, deployment, ADR registry (ADR-001 → 014) |
 | `ENGINEERING_GUIDE.md` | 📐 The Engineering Bible | Canonical module skeleton, principles (SOLID/DRY/KISS/YAGNI), PSR-12, Adobe Commerce patterns, ACL/UI Components, sprint workflow, anti-patterns, checklist, glossary |
 | `ROADMAP.md` | 🗺️ Roadmap | 6 stable modules, 7 in finalization, planned/future modules, Magento extensions, prioritization, version history |
 | `CHANGELOG.md` | 📜 History | Versions 0.1.0 → 1.5.2, Phase 1 fixes (14 critical bugs), Sprint 6 integration, admin form resolution |
