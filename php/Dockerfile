@@ -58,15 +58,15 @@ RUN pecl install redis \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # PHP configuration
-COPY php.ini /usr/local/etc/php/conf.d/99-magento.ini
+COPY php/php.ini /usr/local/etc/php/conf.d/99-magento.ini
 
 # OPcache configuration
-COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # Set working directory
 WORKDIR /var/www/html
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY php/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 9000
