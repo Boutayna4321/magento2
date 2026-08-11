@@ -16,6 +16,23 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.6.5] - 2026-08-11
+
+### Added (Security Basics prerequisite guide)
+
+- New `docs/prerequisites/magento-security.md` — beginner-friendly guide covering:
+  - **Form Keys (CSRF protection)**: hidden tokens in forms, AJAX form keys, GraphQL bearer tokens
+  - **ACL**: defining permissions in `acl.xml`, using `ADMIN_RESOURCE` in controllers, restricting `system.xml` fields
+  - **XSS Prevention**: `escapeHtml()`, `escapeUrl()`, `escapeJs()`, when not to escape
+  - **Input Validation**: in controllers, data objects, repositories
+  - **SQL Injection Prevention**: parameter binding, ResourceModel safety, never concatenate SQL
+  - **Secrets Management**: `env.php`, `.env` files, never commit secrets
+  - **Safe Coding Checklist**: escape output, validate input, form keys, ACL, HTTPS, file uploads
+  - **Common Vulnerabilities**: XSS in templates, SQL injection, missing form keys, missing ACL
+  - **AlpineCommerce security review**: what the project does right, what to watch for
+
+---
+
 ## [1.6.4] - 2026-08-11
 
 ### Added (Composer & Dependency Management prerequisite guide)
