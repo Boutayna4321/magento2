@@ -16,6 +16,25 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.6.4] - 2026-08-11
+
+### Added (Composer & Dependency Management prerequisite guide)
+
+- New `docs/prerequisites/magento-composer.md` — beginner-friendly guide covering:
+  - **Composer basics**: packages, versions, dependencies, lock file, autoloader
+  - **Core commands**: install, update, require, remove, dump-autoload, validate
+  - **Magento's composer.json**: structure, `magento/product-community-edition`, autoload mapping
+  - **AlpineCommerce modules and Composer**: how local modules work without separate packages
+  - **Common workflows**: first installation, adding a library, updating Magento, installing from Packagist
+  - **composer.lock**: why it matters, Git workflow, when to update
+  - **Version constraints**: operators (`^`, `~`, `>=`, `*`), Magento conventions
+  - **Composer scripts**: Magento's built-in scripts, custom scripts
+  - **Autoloading in Magento**: PSR-4, Composer autoloader, Magento code generator, ComponentRegistrar
+  - **Common issues**: class not found, package not found, memory limit, dependency conflicts
+  - **Best practices**: commit lock file, use install in CI, never edit vendor/
+
+---
+
 ## [1.6.3] - 2026-08-11
 
 ### Added (REST & GraphQL API prerequisite guide)
