@@ -16,6 +16,26 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.5.5] - 2026-08-11
+
+### Added (admin Customers grid — AlpineCommerce_CustomerGrid)
+
+- New module `AlpineCommerce_CustomerGrid` customises the admin
+  **Customers > All Customers** listing **without editing Magento core**.
+- It re-declares columns of the native `customer_listing` UI component:
+  - `billing_telephone` relabelled to **Phone** (text filter, sortOrder 60);
+  - `dob` (Date of Birth), `taxvat` (Tax VAT Number), `gender` (Gender)
+    forced to `<visible>false</visible>`.
+- The module contains **no PHP classes** — only `registration.php`,
+  `module.xml` (sequence `Magento_Customer`, `Magento_Ui`) and the UI component
+  XML override, so it is upgrade-safe.
+- Ran `module:enable`, `setup:upgrade`, `setup:di:compile`, `cache:flush`.
+- Verified live: the merged `customer_listing` resolves `dob`/`taxvat`/`gender`
+  to `visible=false` and `billing_telephone` to label "Phone" in the
+  `adminhtml` area (core declares none of these `visible` settings).
+
+---
+
 ## [1.5.4] - 2026-08-11
 
 ### Fixed (multishipping — per-address subtotal)
