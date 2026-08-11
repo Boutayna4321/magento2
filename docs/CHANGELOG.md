@@ -16,6 +16,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.5.6] - 2026-08-11
+
+### Added (prerequisites documentation)
+
+- New `docs/prerequisites/` section with beginner-friendly guides:
+  - `docker.md` — Docker installation, containers, volumes, docker-compose, AlpineCommerce workflow
+  - `php-oop.md` — PHP OOP basics: classes, objects, inheritance, interfaces, DI, namespaces, autoloading
+  - `git-github.md` — Git installation, essential commands, branching, GitHub workflow, PR process
+  - `magento-intro.md` — Magento architecture, modules, EAV, multi-store, themes, UI Components, Service Contracts
+- Updated `docs/README.md` with a dedicated "Prerequisites" section and updated entry points by profile.
+
+---
+
 ## [1.5.5] - 2026-08-11
 
 ### Added (admin Customers grid — AlpineCommerce_CustomerGrid)
@@ -257,7 +270,7 @@ fatals discovered by the compiler. The `setup:di:compile` compilation was
 
 ### Added
 
-- `AlpineCommerce_Training`: training and demo module
+- `AlpineCommerce_StoreSetup`: store setup module (configuration, observers, store views)
   - Data Patch for store view creation (⚠️ to remove — see `BACKLOG.md` B-08)
   - Observers on product, order, checkout, customer login
   - Multi-store configuration
@@ -361,7 +374,7 @@ fatals discovered by the compiler. The `setup:di:compile` compilation was
 ### v1.1 (planned)
 
 - Complete the finalization of the 7 modules in progress (admin interface for
-  LoyaltyProgram, EuVat, Hreflang, Training — see `ROADMAP.md`)
+  LoyaltyProgram, EuVat, Hreflang, StoreSetup — see `ROADMAP.md`)
 - GDPR admin anonymization (Art. 17), GDPR system configuration
 - LoyaltyProgram transaction management, StorePickup availability,
   StoreLocator proximity search
