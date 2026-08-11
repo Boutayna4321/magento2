@@ -15,12 +15,17 @@ docs/
 ├── ROADMAP.md                ← v1.0 development plan and beyond
 ├── CHANGELOG.md              ← version history and fixes
 ├── BACKLOG.md                ← tracked technical debt (Phase C)
-├── prerequisites/            ← foundational guides (Docker, PHP OOP, Git, Magento intro, Magento JS, CI/CD)
+├── prerequisites/            ← foundational guides (Docker, PHP OOP, Git, Magento intro, Magento JS, Layout/Templates, CLI, Debug, Admin, Coding Standards, CI/CD)
 │   ├── docker.md
 │   ├── php-oop.md
 │   ├── git-github.md
 │   ├── magento-intro.md
 │   ├── magento-js.md
+│   ├── magento-layout-templates.md
+│   ├── magento-cli.md
+│   ├── magento-debug.md
+│   ├── magento-admin.md
+│   ├── magento-coding-standards.md
 │   └── ci-cd.md
 ├── modules/                  ← each module's chapter (Phase D)
 │   ├── BLOG.md
@@ -68,7 +73,9 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
 
 - **Beginner developer**: start with `prerequisites/docker.md` and
   `prerequisites/php-oop.md`, then `prerequisites/git-github.md`, then
-  `prerequisites/magento-intro.md`, then `PROJECT_CHARTER.md` (the "why"),
+  `prerequisites/magento-intro.md`, then `prerequisites/magento-js.md`,
+  then `prerequisites/magento-layout-templates.md`, then
+  `prerequisites/magento-cli.md`, then `PROJECT_CHARTER.md` (the "why"),
   then `ARCHITECTURE.md` (the "how"), then the canonical module document
   `modules/FAQ.md`.
 - **Intermediate developer**: `ENGINEERING_GUIDE.md` is your reference;
@@ -88,6 +95,11 @@ diving into Magento modules:
 | `prerequisites/git-github.md` | Git commands, branching, pull requests, GitHub workflow | Anyone who will contribute code |
 | `prerequisites/magento-intro.md` | Magento architecture, modules, EAV, multi-store, themes, UI Components | Everyone new to Magento |
 | `prerequisites/magento-js.md` | RequireJS, KnockoutJS, jQuery, mage/* libraries, AlpineCommerce JS patterns | Everyone who wants to write or understand Magento frontend JS |
+| `prerequisites/magento-layout-templates.md` | Layout XML, containers, blocks, PHTML templates, fallback system | Everyone who wants to modify the frontend |
+| `prerequisites/magento-cli.md` | `bin/magento` commands: module, upgrade, compile, cache, deploy | Everyone who will develop on Magento |
+| `prerequisites/magento-debug.md` | Logs, developer mode, Xdebug, common errors, debugging workflow | Everyone (debugging is daily work) |
+| `prerequisites/magento-admin.md` | Admin navigation, ACL, menus, system.xml, UI Components listings/forms | Everyone who needs to use or extend the admin |
+| `prerequisites/magento-coding-standards.md` | PSR-12, naming conventions, module structure, git commit format | Everyone who will write code |
 | `prerequisites/ci-cd.md` | CI/CD concepts, GitHub Actions, automated pipelines | Everyone who wants to understand how code is tested and deployed |
 
 These guides are written for absolute beginners and use AlpineCommerce

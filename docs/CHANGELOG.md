@@ -16,6 +16,20 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.6.0] - 2026-08-11
+
+### Added (prerequisites documentation suite)
+
+- New `docs/prerequisites/` section expanded with 6 new beginner-friendly guides:
+  - `magento-layout-templates.md` — Layout XML (containers, blocks, arguments), PHTML templates (security, methods, fallback), AlpineCommerce examples
+  - `magento-cli.md` — `bin/magento` commands: module management, setup:upgrade, compile, cache, static content, indexers, admin user, maintenance, deploy modes
+  - `magento-debug.md` — Logs (`var/log/`, `report/`), developer mode, Xdebug setup, common errors (500, class not found, ACL, XML ignored), JS/PHP debugging workflow
+  - `magento-admin.md` — Admin navigation, ACL (ac.xml), menus (menu.xml), system.xml configuration, UI Components listings/forms, AlpineCommerce admin modules reference
+  - `magento-coding-standards.md` — PSR-12, `declare(strict_types=1)`, naming conventions, module canonical structure, PHPDoc, XML/JS/PHTML standards, git commit format, validation tools
+- Updated `docs/README.md` with all new prerequisites in the table and beginner path.
+
+---
+
 ## [1.5.7] - 2026-08-11
 
 ### Added (customer care — VIP program, attributes, REST, cron)
