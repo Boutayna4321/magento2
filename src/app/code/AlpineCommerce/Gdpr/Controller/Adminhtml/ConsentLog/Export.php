@@ -7,6 +7,7 @@ use AlpineCommerce\Gdpr\Api\GdprExportInterface;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\Json;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 class Export extends Action

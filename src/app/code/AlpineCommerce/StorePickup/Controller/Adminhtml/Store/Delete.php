@@ -14,7 +14,7 @@ class Delete extends AbstractAction
     public function __construct(
         Context $context,
         private readonly StoreInfoRepositoryInterface $storeInfoRepository,
-        protected readonly PageFactory $pageFactory
+        PageFactory $pageFactory
     ) {
         parent::__construct($context, $pageFactory);
     }

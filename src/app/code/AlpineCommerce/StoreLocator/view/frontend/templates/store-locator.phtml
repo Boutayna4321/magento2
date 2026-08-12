@@ -38,7 +38,7 @@
                     <?php if ($store->getOpeningHours()): ?>
                         <div class="store-card-hours">
                             <strong><?= $block->escapeHtml(__('Opening Hours:')) ?></strong>
-                            <div><?= nl2br($block->escapeHtml($store->getOpeningHours())) ?></div>
+                            <div><?= /* @noEscape */ nl2br($block->escapeHtml($store->getOpeningHours())) ?></div>
                         </div>
                     <?php endif; ?>
 

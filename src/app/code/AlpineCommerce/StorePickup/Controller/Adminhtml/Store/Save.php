@@ -31,7 +31,7 @@ class Save extends AbstractAction
         private readonly StoreInfoRepositoryInterface $storeInfoRepository,
         private readonly StoreInfoInterfaceFactory $storeInfoFactory,
         private readonly DataPersistorInterface $dataPersistor,
-        protected readonly PageFactory $pageFactory
+        PageFactory $pageFactory
     ) {
         parent::__construct($context, $pageFactory);
     }

@@ -5,13 +5,17 @@ namespace AlpineCommerce\ProductLabels\Block\Adminhtml\Label;
 
 use Magento\Backend\Block\Widget\Context;
 use Magento\Backend\Block\Widget\Form\Container;
+use Magento\Framework\Registry;
 
 class Edit extends Container
 {
     protected $_blockGroup = 'AlpineCommerce_ProductLabels';
 
-    public function __construct(Context $context, array $data = [])
-    {
+    public function __construct(
+        Context $context,
+        private readonly Registry $coreRegistry,
+        array $data = []
+    ) {
         parent::__construct($context, $data);
     }
 
@@ -19,13 +23,12 @@ class Edit extends Container
     {
         $this->_objectId = 'entity_id';
         $this->_controller = 'label';
-        $this->_moduleName = 'AlpineCommerce_ProductLabels';
         parent::_construct();
     }
 
     public function getHeaderText(): string
     {
-        $labelRegistry = $this->_coreRegistry->registry('productlabels_label');
+        $labelRegistry = $this->coreRegistry->registry('productlabels_label');
         if ($labelRegistry && $labelRegistry->getEntityId()) {
             return __('Edit Product Label') . ' - ' . $labelRegistry->getName();
         }

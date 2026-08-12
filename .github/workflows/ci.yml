@@ -94,6 +94,12 @@ jobs:
         working-directory: src/dev/tests/unit
         run: |
           ../../../vendor/bin/phpunit -c phpunit.xml.dist ../../../app/code/AlpineCommerce/CustomerCare/Test/Unit --coverage-clover build/coverage.xml --log-junit build/junit.xml
+      - name: Static analysis (PHPStan)
+        working-directory: src
+        run: vendor/bin/phpstan analyse app/code/AlpineCommerce --level=0 --no-progress --memory-limit=1G
+      - name: Coding standards (PHPCS, errors only)
+        working-directory: src
+        run: vendor/bin/phpcs --standard=Magento2 app/code/AlpineCommerce --warning-severity=0
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4

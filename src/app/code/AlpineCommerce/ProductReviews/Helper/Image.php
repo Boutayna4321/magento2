@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\ProductReviews\Helper;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\UrlInterface;
 
 class Image extends AbstractHelper
