@@ -1,0 +1,58 @@
+<h2>Auto Invoice Module</h2>
+
+<p><strong>Module:</strong> AlpineCommerce_AutoInvoice</p>
+<p><strong>Purpose:</strong> Automatically create invoices when orders are placed</p>
+
+<h3>Status</h3>
+<p>
+    <strong>Module Status:</strong>
+    <span style="color: <?= $block->escapeHtmlAttr($block->getModuleStatusClass()) ?>; font-weight: bold;">
+        <?= $block->escapeHtml($block->getModuleStatus()) ?>
+    </span>
+</p>
+
+<h3>Configuration</h3>
+<p>Go to <strong>Stores → Configuration → Sales → Auto Invoice</strong></p>
+
+<?php if ($block->getPaymentMethods()): ?>
+<p><strong>Allowed Payment Methods:</strong> <?= $block->escapeHtml($block->getPaymentMethods()) ?></p>
+<?php else: ?>
+<p><strong>Allowed Payment Methods:</strong> All methods</p>
+<?php endif; ?>
+
+<h3>How it works</h3>
+<ol>
+    <li>Customer places an order</li>
+    <li>Observer <code>checkout_onepage_controller_success_action</code> is triggered</li>
+    <li>If enabled, an invoice is automatically created</li>
+    <li>Invoice is marked as paid</li>
+    <li>Order status changes from <code>pending_payment</code> to <code>processing</code></li>
+</ol>
+
+<h3>Quick Links</h3>
+<ul>
+    <li><a href="<?= $block->escapeUrl($block->getUrl(sales/invoice/index)) ?>">View All Invoices</a></li>
+    <li><a href="<?= $block->escapeUrl($block->getUrl(sales/order/index)) ?>">View All Orders</a></li>
+</ul>
+
+<h3>Recent Orders</h3>
+<?php
+$orders = $block->getRecentOrders(10);
+?>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <th>Order ID</th>
+        <th>Status</th>
+        <th>Grand Total</th>
+        <th>Created At</th>
+    </tr>
+    <?php foreach ($orders as $order): ?>
+    <tr>
+        <td><?= $block->escapeHtml($order->getIncrementId()) ?></td>
+        <td><?= $block->escapeHtml($order->getStatus()) ?></td>
+        <td><?= $block->escapeHtml($order->getBaseGrandTotal()) ?></td>
+        <td><?= $block->escapeHtml($order->getCreatedAt()) ?></td>
+    </tr>
+    <?php endforeach; ?>
+</table>

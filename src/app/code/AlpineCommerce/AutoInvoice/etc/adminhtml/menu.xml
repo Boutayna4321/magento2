@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_AutoInvoice::main"
+             title="Auto Invoice"
+             module="AlpineCommerce_AutoInvoice"
+             sortOrder="95"
+             resource="AlpineCommerce_AutoInvoice::main"
+             parent="Magento_Backend::sales"
+             action="autoinvoice/invoice/index"/>
+    </menu>
+</config>
