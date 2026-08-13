@@ -9,7 +9,7 @@
     <settings>
         <buttons>
             <button name="add">
-                <url path="alphacommerce_pickup/store/edit"/>
+                <url path="storepickup/store/edit"/>
                 <class>primary</class>
                 <label translate="true">Add New Store</label>
             </button>

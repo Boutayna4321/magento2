@@ -41,7 +41,7 @@ class Save extends AbstractAction
         $data = (array) $this->getRequest()->getPostValue();
 
         if (!$data) {
-            return $this->_redirect('alphacommerce_pickup/store/index');
+            return $this->_redirect('storepickup/store/index');
         }
 
         $id = (int) ($data['entity_id'] ?? 0);

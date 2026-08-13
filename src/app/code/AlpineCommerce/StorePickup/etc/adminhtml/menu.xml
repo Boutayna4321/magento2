@@ -7,6 +7,7 @@
              module="AlpineCommerce_StorePickup"
              sortOrder="100"
              resource="AlpineCommerce_StorePickup::store"
+             action="storepickup/store/index"
              parent="Magento_Backend::content"/>
     </menu>
 </config>

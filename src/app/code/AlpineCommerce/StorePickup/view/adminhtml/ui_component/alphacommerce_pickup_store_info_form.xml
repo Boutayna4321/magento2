@@ -21,7 +21,7 @@
             </item>
         </argument>
         <settings>
-            <submitUrl path="alphacommerce_pickup/store/save"/>
+            <submitUrl path="storepickup/store/save"/>
         </settings>
         <dataProvider class="AlpineCommerce\StorePickup\Ui\DataProvider\StoreInfoFormDataProvider"
                       name="alphacommerce_pickup_store_info_form_data_source">

@@ -10,8 +10,8 @@ use Magento\Ui\Component\Listing\Columns\Column;
 
 class Actions extends Column
 {
-    private const URL_PATH_EDIT = 'alphacommerce_pickup/store/edit';
-    private const URL_PATH_DELETE = 'alphacommerce_pickup/store/delete';
+    private const URL_PATH_EDIT = 'storepickup/store/edit';
+    private const URL_PATH_DELETE = 'storepickup/store/delete';
 
     public function __construct(
         ContextInterface $context,
