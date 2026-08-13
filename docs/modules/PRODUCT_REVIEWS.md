@@ -21,7 +21,7 @@ exposure via REST.
 AlpineCommerce/ProductReviews/
 ├── Api/                        # Service Contracts
 ├── Block/Frontend/ReviewList.php  # use SortOrder (fix C2)
-├── Helper/Image.php             # fix C1 (Context)
+├── Service/ImageProcessor.php   # pure calculation service (replaced Helper)
 ├── Model/
 │   ├── Status.php               # getLabel(): string (match cast — Sprint 6 fix)
 │   └── Rest/                    # REST services
@@ -59,12 +59,12 @@ No dedicated command.
 |---|---|
 | `Status implements OptionSourceInterface` | Fixes wrong namespace (fatal di:compile) |
 | `getLabel()` cast `(string)` | `Phrase` → `string` (PHP 8.2 strict_types TypeError) |
+| Service class replaces Helper | ImageProcessor has no Magento dependencies, pure service |
 
 ## 10. Known bugs / limitations
 
 | # | Problem | Status |
 |---|---|---|
-| C1 | `Helper/Image.php`: ctor without `Context` + `parent::__construct` | ✅ Fixed (Phase 1) |
 | C2 | `Block/Frontend/ReviewList.php`: `use SortOrder` missing (fatal) | ✅ Fixed (Phase 1) |
 | C3 | `Ui/Source/Status.php`: class in wrong namespace (fatal compile) | ✅ Fixed (Phase 1) |
 | — | `getCurrentCustomer()` non-existent in 2.4.8 (API) | ✅ Fixed (Sprint 5) — `UserContextInterface::getUserId()` |
@@ -77,6 +77,7 @@ No dedicated command.
 - `UserContextInterface` (replacement for `getCurrentCustomer()` in 2.4.8)
 - `OptionSourceInterface` for listing sources
 - `SortOrder` (SearchCriteria)
+- Service classes (no Helper anti-pattern)
 
 ## 12. Validation & status
 

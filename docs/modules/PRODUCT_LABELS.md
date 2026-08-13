@@ -23,7 +23,6 @@ visual rendering on the product page and category listings.
 AlpineCommerce/ProductLabels/
 ├── Api/                        # Service Contracts + SearchResults
 ├── Block/
-│   ├── Adminhtml/Label/Grid.php   # fix C7 — rewritten (native massaction)
 │   └── Frontend/                  # label rendering
 ├── Controller/                 # Adminhtml (CRUD) + REST
 ├── Model/                      # Entities, repositories, ResourceModel/Collection
@@ -52,8 +51,7 @@ AlpineCommerce/ProductLabels/
 
 ## 6. Admin
 
-- Grid rewritten in 2.4.8 format: removal of `primaryDataSource`, obsolete
-  `<templates><filters><select>` block, **`<dataProvider class="...">` child added**
+- UI component listing (native 2.4.8 format)
 - VirtualType data source removed from `di.xml`
 - Form: `use_container => true`, action URL via `getUrl()`, `Registry` explicitly
   injected in `Edit` controller
@@ -73,14 +71,13 @@ No dedicated command.
 | Decision | Justification |
 |---|---|
 | `CatalogBlock` plugin for rendering | Display without touching core templates |
-| Native Magento 2.4.8 Grid | The `<templates><filters><select>` block is obsolete; native massaction |
+| Native Magento 2.4.8 Grid | Native massaction + Add New button |
 | `<dataProvider class="...">` mandatory child | `definition.map.xml` requirement (module-ui) |
 
 ## 10. Known bugs / limitations
 
 | # | Problem | Status |
 |---|---|---|
-| C7 | `Block/Adminhtml/Label/Grid.php`: `use Magento\Backend\Block\Widget\Grid` (fatal collision), invalid ctor, renderer + non-existent constant | ✅ Fixed (Phase 1) |
 | — | Grid not 2.4.8 compliant (`primaryDataSource`, `<templates><filters><select>`) | ✅ Fixed (v1.5.0) |
 | — | Labels never rendered (referenceContainer on blocks) | ✅ Fixed (Sprint 6) |
 | P5 | Observer: N+1 on label application | 📋 BACKLOG B-06 P5 |

@@ -11,8 +11,8 @@ and incentive messaging.
 
 | Feature | Description |
 |---|---|
-| **Point earning** | Observer: point allocation on invoice |
-| **Point spending** | Observer: deduction on order |
+| **Point earning** | Plugin: point allocation on invoice |
+| **Point spending** | Plugin: deduction on order |
 | **Cart discount** | Total collector |
 | **Minicart** | Plugin: incentive message |
 | **REST API** | `/V1/carts/mine/loyalty-points` |
@@ -26,8 +26,11 @@ AlpineCommerce/LoyaltyProgram/
 ├── Model/
 │   ├── Total/                  # Total collector (cart discount)
 │   └── (Repository in base — InMemory removed)
-├── Observer/                   # On invoice (earning) and order (spending)
-├── Plugin/Minicart.php         # incentive message
+├── Plugin/
+│   ├── Invoice/AfterSave.php   # earning plugin
+│   ├── Order/AfterSave.php     # deduction plugin
+│   └── LoyaltyIncentive.php    # minicart message
+├── Service/PointsCalculator.php # pure calculation service (replaced Helper)
 └── etc/db_schema.xml           # referenceId prefix ALPINECOMMERCE_*
 ```
 
@@ -62,8 +65,9 @@ No dedicated command.
 
 | Decision | Justification |
 |---|---|
-| Observers (invoice/order) | Earning and deduction delegated to Magento events |
+| Plugins (invoice/order) | Earning and deduction delegated to Magento plugins |
 | Total collector | Native cart discount (extension of the total process) |
+| Service class replaces Helper | PointsCalculator is pure calculation, no Magento dependencies |
 | Removal of `InMemory/LoyaltyBalanceRepository.php` | Unnecessary — base repository |
 | Removal of `InstallSchema.php` / `InstallData.php` | Replaced by `db_schema.xml` / data patches |
 
@@ -74,13 +78,15 @@ No dedicated command.
 | — | Incorrect `referenceId` in `db_schema.xml` | ✅ Fixed — prefix `ALPINECOMMERCE_*` |
 | — | Legacy files `Setup/InstallSchema.php` / `InstallData.php` | ✅ Fixed — removed |
 | — | Legacy in-memory repository | ✅ Fixed — removed |
+| — | Observer-to-plugin conversion complete | ✅ Done — invoice/order hooks now use plugins |
 | — | Transactions / complete admin interface | 📋 v1.1 — `ROADMAP.md` |
 
 ## 11. Magento concepts taught
 
 - **Total collector** (`collect` on the total process)
-- **Observers** (invoice, order)
+- **Plugins** (invoice, order)
 - **Plugin** on minicart
+- **Service classes** (no Helper anti-pattern)
 - Data patches + `db_schema.xml` (referenceId)
 
 ## 12. Validation & status

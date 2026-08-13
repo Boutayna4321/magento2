@@ -16,9 +16,9 @@ infrastructure module**.
 |---|---|
 | **Default configuration** | `config.xml` sets: payment (checkmo, banktransfer), shipping (flatrate 5.00, freeshipping >= 50.00, tablerate disabled), currencies, locales |
 | **Store view configuration** | Default website (UK, GBP, EUR) + store views: french (fr_FR/EUR), german (de_DE/EUR), spanish (es_ES/EUR), default_fr (fr_FR/EUR) |
-| **Observers** | `product_save_after`, `order_place_after`, `checkout_onepage_controller_success_action`, `customer_login` |
+| **Plugins** | `product_save_after` (BeforeSave) |
 | **Frontend block** | `StoreInfo` block displays current store name/id/url/currency |
-| **Helper** | `Data` helper wraps store/config access + logging |
+| **Service** | `Config` service provides store/config access + logging |
 
 ### Assumed exclusions
 
@@ -33,11 +33,11 @@ AlpineCommerce/StoreSetup/
 ├── etc/
 │   ├── module.xml                        # sequence: Magento_Store, Magento_Backend, Magento_Catalog, Magento_Sales, Magento_Inventory
 │   ├── config.xml                        # default config values (payment, shipping, currency, store views)
-│   ├── di.xml                            # observers + block/helper preferences
+│   ├── di.xml                            # plugins + block/service preferences
 │   └── system.xml                        # admin system config (demo)
 ├── Block/StoreInfo.php                   # frontend block
-├── Helper/Data.php                       # store/config helper
-├── Observer/                             # product, order, checkout, customer_login
+├── Service/Config.php                    # store/config service
+├── Plugin/Product/BeforeSave.php         # product save hook
 ├── Setup/Patch/Data/CreateStores.php     # store view creation (demo data)
 └── view/frontend/                        # templates + i18n
 ```
@@ -69,7 +69,9 @@ No dedicated command.
 |---|---|
 | Rename from `Training` to `StoreSetup` | The module graduated from demo/training to production store configuration |
 | Configuration-only via `config.xml` | Magento-native way to ship default values; no install scripts needed |
-| Observers for cross-cutting concerns | Pedagogical examples + functional hooks for other modules |
+| Plugin for product save (BeforeSave) | More targeted than observer; only intercepts ProductRepositoryInterface::save |
+| Placeholder observers removed | CheckoutBefore, CustomerLogin, OrderPlacedAfter were training code with no logic |
+| Service class replaces Helper | Config service follows DI best practices |
 | `CreateStores.php` kept as Data Patch | Reproducible demo store views; see BACKLOG B-08 for production concern |
 
 ## 10. Known bugs / limitations
@@ -82,9 +84,9 @@ No dedicated command.
 
 - `config.xml` default values (payment, shipping, currency)
 - Multi-store configuration (store views, locales, currencies)
-- Observers (`product_save_after`, `order_place_after`, `checkout_onepage_controller_success_action`, `customer_login`)
+- Plugins (before on ProductRepositoryInterface::save)
 - Data Patches for store creation
-- Frontend block + helper pattern
+- Frontend block + service pattern
 
 ## 12. Validation & status
 

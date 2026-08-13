@@ -19,7 +19,7 @@ VIP status over **REST** and keeps it up to date via an **observer** and a
 | **Customer attributes (EAV)** | `customer_type` (B2C/B2B/Wholesale, admin + account form), `customer_notes` (textarea, admin), `vip_level` (select, computed), `lifetime_spent` (decimal, computed) |
 | **VIP program** | Bronze / Silver / Gold, thresholds configurable per website |
 | **Service contracts** | `Api/CustomerCareInterface` + `Api/Data/VipStatusInterface` |
-| **Observer** | `sales_order_place_after` → recompute VIP for the order's customer |
+| **Plugin** | `sales_order_place_after` → recompute VIP for the order's customer |
 | **Cron** | `UpdateVipLevels` daily at 02:00 — recompute all customers |
 | **REST API** | `/V1/customercare/*` (see §5) |
 | **Admin grid** | `Customer Type`, `VIP Level`, `Lifetime Spent` columns |
@@ -48,7 +48,7 @@ AlpineCommerce/CustomerCare/
 │   └── Attribute/Source/                  # select option sources
 │       ├── CustomerType.php
 │       └── VipLevelSource.php
-├── Observer/OrderPlacedAfter.php          # event listener
+├── Plugin/Order/AfterPlace.php            # event listener
 ├── Cron/UpdateVipLevels.php               # nightly recompute
 ├── Setup/Patch/Data/
 │   ├── AddCustomerCareAttributes.php      # EAV attributes
@@ -134,8 +134,8 @@ php bin/magento cron:run            # schedules UpdateVipLevels
 
 - **Service contracts**: business logic behind `Api/` interfaces (Magento
   best practice for any module).
-- **Observer over plugin**: `sales_order_place_after` is the natural hook —
-  no need to intercept a specific method.
+- **Plugin on Order::place() instead of observer** — more targeted, avoids
+  event overhead.
 - **Cron + observer**: the observer is real-time for new orders; the nightly
   cron repairs data (e.g. orders completed offline) — idempotent and cheap.
 - **EAV attributes**: customer data lives in EAV, so profile fields are
@@ -161,7 +161,7 @@ php bin/magento cron:run            # schedules UpdateVipLevels
 - Customer EAV attributes (`CustomerSetup`), form assignments, attribute sets
 - Service contracts + `@api` interfaces (WebAPI serialization requires
   docblocks on interface methods)
-- Observers + events (`sales_order_place_after`)
+- Plugins (after on Order::place)
 - Cron jobs (`crontab.xml`)
 - System configuration (`system.xml`, `config.xml` defaults, per-website scope)
 - REST routing (`webapi.xml`, `self` resource, `%customer_id%`)
