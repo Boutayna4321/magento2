@@ -14,8 +14,7 @@ $productName = $block->getProductName();
 
     <?php if ($block->isLoggedIn()): ?>
         <div class="product-reviews-write">
-            <a href="<?= $block->escapeUrl($block->getUrl('productreviews/index/view', ['id' => $block->getProductId()])) ?>"
-               class="action primary">
+            <a href="<?= $block->escapeUrl($block->getWriteReviewUrl()) ?>" class="action primary" data-write-review-url="<?= $block->escapeUrl($block->getWriteReviewUrl()) ?>">
                 <span><?= $block->escapeHtml(__('Write a Review')) ?></span>
             </a>
         </div>

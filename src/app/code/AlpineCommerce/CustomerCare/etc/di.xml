@@ -5,4 +5,10 @@
                 type="AlpineCommerce\CustomerCare\Model\CustomerCare"/>
     <preference for="AlpineCommerce\CustomerCare\Api\Data\VipStatusInterface"
                 type="AlpineCommerce\CustomerCare\Model\VipStatus"/>
+
+    <type name="Magento\Sales\Model\Order">
+        <plugin name="alpinecommerce_customercare_order_after_place"
+                type="AlpineCommerce\CustomerCare\Plugin\Order\AfterPlace"
+                sortOrder="10"/>
+    </type>
 </config>

@@ -1,0 +1,28 @@
+{
+    "resource": "default",
+    "tables": {
+        "alphacommerce_gdpr_consent_log": {
+            "entity_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "customer_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "consent_type": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "status": {
+                "COLUMN_TYPE": "boolean"
+            },
+            "ip_address": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "user_agent": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        }
+    }
+}

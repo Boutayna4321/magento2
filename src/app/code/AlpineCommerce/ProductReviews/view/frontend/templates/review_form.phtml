@@ -5,7 +5,8 @@ if (!$block->isLoggedIn()):
     <p><?= $block->escapeHtml(__('Please log in to write a review.')) ?></p>
 <?php return; endif; ?>
 
-<div class="product-review-form" id="write-review">
+<?php $reviewFormInit = json_encode(['AlpineCommerce_ProductReviews/js/review-form' => ['submitBtn' => '#submit-review', 'submitUrl' => $block->getSubmitUrl(), 'voteBaseUrl' => $block->getVoteBaseUrl()]]); ?>
+<div class="product-review-form" id="write-review" data-mage-init='<?= /* @noEscape */ $reviewFormInit ?>'>
     <h2><?= $block->escapeHtml(__('Write Your Review')) ?></h2>
     <div class="review-form-content">
         <div class="field rating-field">
@@ -37,11 +38,3 @@ if (!$block->isLoggedIn()):
         </div>
     </div>
 </div>
-<script>
-    require([
-        'jquery',
-        'AlpineCommerce_ProductReviews/js/review-form'
-    ], function ($, reviewForm) {
-        reviewForm.init('#submit-review', '#review-title');
-    });
-</script>

@@ -15,4 +15,16 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Magento\Sales\Api\InvoiceRepositoryInterface">
+        <plugin name="alpinecommerce_loyalty_invoice_after_save"
+                type="AlpineCommerce\LoyaltyProgram\Plugin\Invoice\AfterSave"
+                sortOrder="10"/>
+    </type>
+
+    <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="alpinecommerce_loyalty_order_after_save"
+                type="AlpineCommerce\LoyaltyProgram\Plugin\Order\AfterSave"
+                sortOrder="10"/>
+    </type>
 </config>

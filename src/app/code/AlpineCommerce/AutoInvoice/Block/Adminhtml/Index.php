@@ -31,12 +31,12 @@ class Index extends Template
 
     public function getModuleStatus(): string
     {
-        return $this->isModuleEnabled() ? __(Enabled) : __(Disabled);
+        return $this->isModuleEnabled() ? __('Enabled') : __('Disabled');
     }
 
     public function getModuleStatusClass(): string
     {
-        return $this->isModuleEnabled() ? green : red;
+        return $this->isModuleEnabled() ? 'enabled' : 'disabled';
     }
 
     public function getRecentOrders(int $limit = 10): array
@@ -44,7 +44,7 @@ class Index extends Template
         $collection = $this->orderGridCollectionFactory->create();
         $collection->setPageSize($limit)
             ->setCurPage(1)
-            ->setOrder(entity_id, DESC);
+            ->setOrder('entity_id', 'DESC');
 
         return $collection->getItems();
     }
@@ -55,5 +55,15 @@ class Index extends Template
             'autoinvoice/general/payment_methods',
             ScopeInterface::SCOPE_STORE
         );
+    }
+
+    public function getInvoiceUrl(): string
+    {
+        return $this->getUrl('sales/invoice/index');
+    }
+
+    public function getOrderUrl(): string
+    {
+        return $this->getUrl('sales/order/index');
     }
 }

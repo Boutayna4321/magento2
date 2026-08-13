@@ -6,6 +6,7 @@
             <resource id="Magento_Backend::admin">
                 <resource id="AlpineCommerce_LegalPages::legal" title="Legal Pages" sortOrder="42">
                     <resource id="AlpineCommerce_LegalPages::legal_page" title="Manage Legal Pages" sortOrder="10"/>
+                    <resource id="AlpineCommerce_LegalPages::config" title="Configuration" sortOrder="20"/>
                 </resource>
             </resource>
         </resources>

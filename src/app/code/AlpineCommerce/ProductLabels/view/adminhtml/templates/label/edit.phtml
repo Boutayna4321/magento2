@@ -12,22 +12,8 @@
         </div>
     </div>
 <?php endif; ?>
-<?= $block->getChildHtml('form') ?>
-<?php $scriptString = <<<script
-require([
-    'jquery',
-    'mage/mage'
-], function($){
-
-    $('#edit_form').mage('form').mage('validation', {
-        validationUrl: '{$block->escapeJs($block->getValidationUrl())}',
-        highlight: function(element) {
-            $(element).trigger('highlight.validate');
-        }
-    });
-});
-
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+<?php $editFormInit = json_encode(['AlpineCommerce_ProductLabels/js/label/edit' => ['validationUrl' => $block->getValidationUrl()]]); ?>
+<div data-mage-init='<?= /* @noEscape */ $editFormInit ?>'>
+    <?= $block->getChildHtml('form') ?>
+</div>
 <?= /* @noEscape */ $block->getFormScripts() ?>

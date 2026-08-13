@@ -1,0 +1,54 @@
+{
+    "resource": "default",
+    "tables": {
+        "alphacommerce_product_label": {
+            "entity_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "name": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "code": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "color": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "text_color": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "priority": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "position": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "icon": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "start_date": {
+                "COLUMN_TYPE": "datetime"
+            },
+            "end_date": {
+                "COLUMN_TYPE": "datetime"
+            },
+            "is_active": {
+                "COLUMN_TYPE": "boolean"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            },
+            "updated_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        },
+        "alphacommerce_product_label_product": {
+            "label_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "product_id": {
+                "COLUMN_TYPE": "int"
+            }
+        }
+    }
+}

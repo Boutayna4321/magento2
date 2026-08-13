@@ -6,6 +6,7 @@
             <resource id="Magento_Backend::admin">
                 <resource id="AlpineCommerce_ProductQuestions::menu" title="Product Questions" sortOrder="50">
                     <resource id="AlpineCommerce_ProductQuestions::question" title="Manage Questions" sortOrder="10"/>
+                    <resource id="AlpineCommerce_ProductQuestions::config" title="Configuration" sortOrder="20"/>
                 </resource>
             </resource>
         </resources>

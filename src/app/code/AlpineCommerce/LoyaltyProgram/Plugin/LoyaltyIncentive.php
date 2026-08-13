@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\LoyaltyProgram\Plugin;
 
-use AlpineCommerce\LoyaltyProgram\Helper\Points;
+use AlpineCommerce\LoyaltyProgram\Service\PointsCalculator;
 use Magento\Checkout\Block\Cart\Sidebar;
 use Magento\Customer\Model\Session as CustomerSession;
 
@@ -11,12 +11,8 @@ class LoyaltyIncentive
 {
     public const CHILD_ALIAS = 'minicart.addons';
 
-    /**
-     * @param Points $pointsHelper
-     * @param CustomerSession $customerSession
-     */
     public function __construct(
-        private readonly Points $pointsHelper,
+        private readonly PointsCalculator $pointsHelper,
         private readonly CustomerSession $customerSession
     ) {
     }

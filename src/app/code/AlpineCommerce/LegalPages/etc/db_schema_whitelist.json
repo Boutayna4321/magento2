@@ -1,0 +1,34 @@
+{
+    "resource": "default",
+    "tables": {
+        "alphacommerce_legal_page": {
+            "page_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "title": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "content": {
+                "COLUMN_TYPE": "text"
+            },
+            "url_key": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "type": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "sort_order": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "is_active": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            },
+            "updated_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        }
+    }
+}

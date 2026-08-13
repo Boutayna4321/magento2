@@ -3,7 +3,8 @@
 $questions = $block->getQuestions();
 $productName = $block->getProductName();
 ?>
-<div class="product-questions-wrapper">
+<?php $questionListInit = json_encode(['AlpineCommerce_ProductQuestions/js/question/list' => ['submitUrl' => '/rest/V1/alphacommerce/product-questions', 'voteBaseUrl' => '/rest/V1/alphacommerce/product-questions']]); ?>
+<div class="product-questions-wrapper" data-mage-init='<?= /* @noEscape */ $questionListInit ?>'>
     <h2 class="product-questions-title"><?= $block->escapeHtml(__('Customer Questions')) ?></h2>
 
     <?php if ($questions): ?>
@@ -78,12 +79,3 @@ $productName = $block->getProductName();
         <p class="login-prompt"><?= $block->escapeHtml(__('Please log in to ask a question.')) ?></p>
     <?php endif; ?>
 </div>
-
-<script>
-    require([
-        'jquery',
-        'AlpineCommerce_ProductQuestions/js/question'
-    ], function ($, question) {
-        question.init();
-    });
-</script>

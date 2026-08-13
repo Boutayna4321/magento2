@@ -1,0 +1,56 @@
+{
+    "resource": "default",
+    "tables": {
+        "quote": {
+            "alphacommerce_pickup_source_code": {
+                "COLUMN_TYPE": "varchar"
+            }
+        },
+        "sales_order": {
+            "alphacommerce_pickup_source_code": {
+                "COLUMN_TYPE": "varchar"
+            }
+        },
+        "alphacommerce_pickup_store_info": {
+            "entity_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "source_code": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "name": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "street": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "city": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "region": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "postcode": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "country_id": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "phone": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "latitude": {
+                "COLUMN_TYPE": "decimal"
+            },
+            "longitude": {
+                "COLUMN_TYPE": "decimal"
+            },
+            "opening_hours": {
+                "COLUMN_TYPE": "text"
+            },
+            "is_active": {
+                "COLUMN_TYPE": "smallint"
+            }
+        }
+    }
+}

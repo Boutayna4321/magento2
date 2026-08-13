@@ -30,4 +30,14 @@ class ReviewForm extends Template
     {
         return $this->customerSession->getCustomerId();
     }
+
+    public function getSubmitUrl(): string
+    {
+        return '/rest/V1/alphacommerce/product-reviews';
+    }
+
+    public function getVoteBaseUrl(): string
+    {
+        return '/rest/V1/alphacommerce/product-reviews';
+    }
 }

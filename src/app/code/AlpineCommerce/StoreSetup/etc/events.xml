@@ -1,24 +1,4 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    
-    <!-- Fires after product is saved in admin -->
-    <event name="catalog_product_save_after">
-        <observer name="storesetup_product_save" instance="AlpineCommerce\StoreSetup\Observer\ProductSaveAfter"/>
-    </event>
-
-    <!-- Fires after order is placed -->
-    <event name="sales_order_place_after">
-        <observer name="storesetup_order_placed" instance="AlpineCommerce\StoreSetup\Observer\OrderPlacedAfter"/>
-    </event>
-
-    <!-- Fires before checkout -->
-    <event name="checkout_controller_before_action">
-        <observer name="storesetup_checkout_before" instance="AlpineCommerce\StoreSetup\Observer\CheckoutBefore"/>
-    </event>
-
-    <!-- Fires after customer login -->
-    <event name="customer_customer_login">
-        <observer name="storesetup_customer_login" instance="AlpineCommerce\StoreSetup\Observer\CustomerLogin"/>
-    </event>
-
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 </config>

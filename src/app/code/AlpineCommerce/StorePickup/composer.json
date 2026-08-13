@@ -1,0 +1,19 @@
+{
+    "name": "alpinecommerce/module-StorePickup",
+    "description": "StorePickup module for Magento 2",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "MIT",
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0",
+        "magento/framework": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "AlpineCommerce\\StorePickup\\": ""
+        }
+    }
+}

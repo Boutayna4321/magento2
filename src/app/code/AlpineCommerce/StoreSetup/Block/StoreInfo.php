@@ -3,39 +3,39 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\StoreSetup\Block;
 
-use AlpineCommerce\StoreSetup\Helper\Data;
+use AlpineCommerce\StoreSetup\Service\Config;
 use Magento\Framework\View\Element\Template;
 
 class StoreInfo extends Template
 {
-    private readonly Data $helper;
+    private readonly Config $config;
 
     public function __construct(
         Template\Context $context,
-        Data $helper,
+        Config $config,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->helper = $helper;
+        $this->config = $config;
     }
 
     public function getStoreName(): string
     {
-        return $this->helper->getStoreName();
+        return $this->config->getStoreName();
     }
 
     public function getStoreId(): int
     {
-        return $this->helper->getStoreId();
+        return $this->config->getStoreId();
     }
 
     public function getStoreUrl(): string
     {
-        return $this->helper->getStoreUrl();
+        return $this->config->getStoreUrl();
     }
 
     public function isDisplayStoreInfo(): bool
     {
-        return $this->helper->isDisplayStoreInfo();
+        return $this->config->isDisplayStoreInfo();
     }
 }

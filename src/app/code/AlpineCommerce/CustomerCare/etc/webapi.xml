@@ -4,7 +4,7 @@
     <route url="/V1/customercare/vip-status/:customerId" method="GET">
         <service class="AlpineCommerce\CustomerCare\Api\CustomerCareInterface" method="getVipStatus"/>
         <resources>
-            <resource ref="AlpineCommerce_CustomerCare::manage"/>
+            <resource ref="admin"/>
         </resources>
     </route>
     <route url="/V1/customercare/me/vip-status" method="GET">
@@ -19,13 +19,13 @@
     <route url="/V1/customercare/vip-status/:customerId" method="POST">
         <service class="AlpineCommerce\CustomerCare\Api\CustomerCareInterface" method="recalculateVipStatus"/>
         <resources>
-            <resource ref="AlpineCommerce_CustomerCare::manage"/>
+            <resource ref="admin"/>
         </resources>
     </route>
     <route url="/V1/customercare/recalculate-all" method="POST">
         <service class="AlpineCommerce\CustomerCare\Api\CustomerCareInterface" method="recalculateAll"/>
         <resources>
-            <resource ref="AlpineCommerce_CustomerCare::manage"/>
+            <resource ref="admin"/>
         </resources>
     </route>
 </routes>

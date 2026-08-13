@@ -1,0 +1,31 @@
+{
+    "resource": "default",
+    "tables": {
+        "alphacommerce_faq": {
+            "faq_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "title": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "content": {
+                "COLUMN_TYPE": "text"
+            },
+            "url_key": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "sort_order": {
+                "COLUMN_TYPE": "int"
+            },
+            "is_active": {
+                "COLUMN_TYPE": "boolean"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            },
+            "updated_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        }
+    }
+}

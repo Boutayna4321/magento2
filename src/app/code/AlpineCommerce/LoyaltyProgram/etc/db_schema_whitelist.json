@@ -1,0 +1,41 @@
+{
+    "resource": "default",
+    "tables": {
+        "alpinecommerce_loyalty_balance": {
+            "entity_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "customer_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "points": {
+                "COLUMN_TYPE": "int"
+            },
+            "updated_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        },
+        "alpinecommerce_loyalty_order_points": {
+            "entity_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "order_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "type": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "points": {
+                "COLUMN_TYPE": "int"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        },
+        "quote": {
+            "alpinecommerce_loyalty_points_used": {
+                "COLUMN_TYPE": "int"
+            }
+        }
+    }
+}

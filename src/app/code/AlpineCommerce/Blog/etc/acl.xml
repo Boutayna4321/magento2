@@ -7,6 +7,7 @@
                 <resource id="AlpineCommerce_Blog::blog" title="Blog" sortOrder="41">
                     <resource id="AlpineCommerce_Blog::post" title="Manage Blog Posts" sortOrder="10"/>
                     <resource id="AlpineCommerce_Blog::category" title="Manage Blog Categories" sortOrder="20"/>
+                    <resource id="AlpineCommerce_Blog::config" title="Configuration" sortOrder="30"/>
                 </resource>
             </resource>
         </resources>

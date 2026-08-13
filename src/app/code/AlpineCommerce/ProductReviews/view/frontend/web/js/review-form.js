@@ -1,34 +1,15 @@
-// review-form.js - Handles review submission and helpful voting
 define([
     'jquery',
     'mage/utils',
     'mage/mage'
-], function ($, utils) {
+], function ($) {
     'use strict';
+    return function (config, element) {
+        var submitBtnSelector = config.submitBtn || '#submit-review';
+        var submitUrl = config.submitUrl || '/rest/V1/alphacommerce/product-reviews';
+        var voteBaseUrl = config.voteBaseUrl || '/rest/V1/alphacommerce/product-reviews';
 
-    return {
-        config: {
-            reviewForm: {
-                submitButton: '#submit-review',
-                form: '#review-form'
-            }
-        },
-
-        init: function (submitBtnSelector) {
-            var self = this;
-
-            $(submitBtnSelector).on('click', function () {
-                self.submitReview();
-            });
-
-            $('.vote-yes, .vote-no').on('click', function () {
-                var reviewId = $(this).data('review-id');
-                var helpful = $(this).data('helpful');
-                self.voteHelpful(reviewId, helpful);
-            });
-        },
-
-        submitReview: function () {
+        $(submitBtnSelector).on('click', function () {
             var title = $('#review-title').val();
             var detail = $('#review-detail').val();
             var rating = $('input[name="rating"]:checked').val();
@@ -40,7 +21,7 @@ define([
             }
 
             $.ajax({
-                url: '/rest/V1/alphacommerce/product-reviews',
+                url: submitUrl,
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -57,11 +38,13 @@ define([
                     alert('Error submitting review: ' + xhr.responseText);
                 }
             });
-        },
+        });
 
-        voteHelpful: function (reviewId, helpful) {
+        $('.vote-yes, .vote-no').on('click', function () {
+            var reviewId = $(this).data('review-id');
+            var helpful = $(this).data('helpful');
             $.ajax({
-                url: '/rest/V1/alphacommerce/product-reviews/' + reviewId + '/vote',
+                url: voteBaseUrl + '/' + reviewId + '/vote',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ helpful: helpful }),
@@ -72,6 +55,6 @@ define([
                     alert('Error recording vote: ' + xhr.responseText);
                 }
             });
-        }
+        });
     };
 });

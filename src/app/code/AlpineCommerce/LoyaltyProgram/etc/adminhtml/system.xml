@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="loyaltyprogram" translate="label" type="text" sortOrder="360" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Loyalty Program</label>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Loyalty Program</label>
+                    <comment>Enable or disable the Loyalty Program module</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="discount_percent" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Loyalty Discount Sort Order</label>
+                    <comment>Sort order for the loyalty discount total in cart and order totals</comment>
+                    <validate>digits</validate>
+                    <default>25</default>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

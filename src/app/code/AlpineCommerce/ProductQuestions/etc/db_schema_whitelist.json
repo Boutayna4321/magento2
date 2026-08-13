@@ -1,0 +1,83 @@
+{
+    "resource": "default",
+    "tables": {
+        "alphacommerce_product_question": {
+            "question_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "product_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "customer_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "customer_name": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "customer_email": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "question": {
+                "COLUMN_TYPE": "text"
+            },
+            "status": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "is_verified_purchase": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "helpful_count": {
+                "COLUMN_TYPE": "int"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            },
+            "updated_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        },
+        "alphacommerce_product_answer": {
+            "answer_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "question_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "admin_user_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "customer_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "answer": {
+                "COLUMN_TYPE": "text"
+            },
+            "is_official": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        },
+        "alphacommerce_product_question_vote": {
+            "vote_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "question_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "customer_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "ip": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "value": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        }
+    }
+}

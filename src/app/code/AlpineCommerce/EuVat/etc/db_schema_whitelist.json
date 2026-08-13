@@ -1,0 +1,31 @@
+{
+    "resource": "default",
+    "tables": {
+        "alphacommerce_euvat_validation": {
+            "entity_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "country_id": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "vat_number": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "is_valid": {
+                "COLUMN_TYPE": "boolean"
+            },
+            "request_date": {
+                "COLUMN_TYPE": "text"
+            },
+            "name": {
+                "COLUMN_TYPE": "text"
+            },
+            "address": {
+                "COLUMN_TYPE": "text"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        }
+    }
+}

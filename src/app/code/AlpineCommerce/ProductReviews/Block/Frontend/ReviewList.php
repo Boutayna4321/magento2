@@ -5,7 +5,7 @@ namespace AlpineCommerce\ProductReviews\Block\Frontend;
 
 use AlpineCommerce\ProductReviews\Api\Data\ReviewInterface;
 use AlpineCommerce\ProductReviews\Api\ReviewRepositoryInterface;
-use AlpineCommerce\ProductReviews\Helper\Image as ImageHelper;
+use AlpineCommerce\ProductReviews\Service\ImageProcessor;
 use AlpineCommerce\ProductReviews\Model\Status;
 use AlpineCommerce\ProductReviews\Model\ResourceModel\ReviewImage\CollectionFactory as ImageCollectionFactory;
 use AlpineCommerce\ProductReviews\Model\ResourceModel\ReviewHelpful\CollectionFactory as HelpfulCollectionFactory;
@@ -24,7 +24,7 @@ class ReviewList extends Template
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
         private readonly SortOrderBuilder $sortOrderBuilder,
         private readonly ProductRepositoryInterface $productRepository,
-        private readonly ImageHelper $imageHelper,
+        private readonly ImageProcessor $imageProcessor,
         private readonly Session $customerSession,
         private readonly ImageCollectionFactory $imageCollectionFactory,
         private readonly HelpfulCollectionFactory $helpfulCollectionFactory,
@@ -96,7 +96,7 @@ class ReviewList extends Template
 
     public function getImageUrl(string $path): string
     {
-        return $this->imageHelper->getUploadUrl() . '/' . $path;
+        return $this->imageProcessor->getUploadUrl() . '/' . $path;
     }
 
     public function getHelpfulCount(int $reviewId, int $helpful): int
@@ -111,5 +111,10 @@ class ReviewList extends Template
     public function isLoggedIn(): bool
     {
         return $this->customerSession->isLoggedIn();
+    }
+
+    public function getWriteReviewUrl(): string
+    {
+        return $this->getUrl('productreviews/index/view', ['id' => $this->getProductId()]);
     }
 }

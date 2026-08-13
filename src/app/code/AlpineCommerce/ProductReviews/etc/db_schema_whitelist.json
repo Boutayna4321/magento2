@@ -1,0 +1,71 @@
+{
+    "resource": "default",
+    "tables": {
+        "alphacommerce_product_review": {
+            "review_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "product_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "customer_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "title": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "detail": {
+                "COLUMN_TYPE": "text"
+            },
+            "rating": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "status": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "is_verified": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            },
+            "updated_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        },
+        "alphacommerce_product_review_image": {
+            "image_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "review_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "image_path": {
+                "COLUMN_TYPE": "varchar"
+            },
+            "status": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        },
+        "alphacommerce_product_review_helpful": {
+            "entity_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "review_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "customer_id": {
+                "COLUMN_TYPE": "int"
+            },
+            "helpful": {
+                "COLUMN_TYPE": "smallint"
+            },
+            "created_at": {
+                "COLUMN_TYPE": "timestamp"
+            }
+        }
+    }
+}
