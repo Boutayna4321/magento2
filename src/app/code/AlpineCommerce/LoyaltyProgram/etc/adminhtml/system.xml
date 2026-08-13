@@ -15,7 +15,6 @@
                     <label>Loyalty Discount Sort Order</label>
                     <comment>Sort order for the loyalty discount total in cart and order totals</comment>
                     <validate>digits</validate>
-                    <default>25</default>
                 </field>
             </group>
         </section>

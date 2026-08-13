@@ -16,7 +16,6 @@
                     <label>Posts Per Page</label>
                     <comment>Number of blog posts to display per page</comment>
                     <validate>digits</validate>
-                    <default>10</default>
                 </field>
             </group>
         </section>

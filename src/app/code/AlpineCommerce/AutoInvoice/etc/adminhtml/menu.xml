@@ -7,7 +7,6 @@
              module="AlpineCommerce_AutoInvoice"
              sortOrder="95"
              resource="AlpineCommerce_AutoInvoice::main"
-             parent="Magento_Backend::sales"
              action="autoinvoice/invoice/index"/>
     </menu>
 </config>

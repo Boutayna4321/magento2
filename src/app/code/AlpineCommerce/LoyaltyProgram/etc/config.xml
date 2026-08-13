@@ -2,6 +2,12 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
+        <loyaltyprogram>
+            <general>
+                <enabled>1</enabled>
+                <discount_percent>25</discount_percent>
+            </general>
+        </loyaltyprogram>
         <sales>
             <totals_sort>
                 <alpinecommerce_loyalty_discount>25</alpinecommerce_loyalty_discount>
