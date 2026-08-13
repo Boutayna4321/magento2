@@ -582,8 +582,8 @@ Data Patches are versioned PHP classes that modify data
 | **UI DataProvider** | `Blog/Ui/DataProvider/PostFormDataProvider.php` | Feeds the admin form |
 | **UI Component** | `Blog/view/adminhtml/ui_component/blog_post_form.xml` | Defines the admin form |
 | **Plugin** | `StorePickup/Plugin/Shipping/FilterFlatRate.php` | Caches Flat Rate if subtotal ≥ 50 |
-| **Observer** | `StoreSetup/Observer/OrderPlacedAfter.php` | Logs after each order |
-| **Helper** | `StoreSetup/Helper/Data.php` | Config access + store manager |
+| **Observer** | `AutoInvoice/Observer/AutoInvoice.php` | Creates invoice on checkout success |
+| **Service** | `StoreSetup/Service/Config.php` | Config access + store manager |
 | **Service Contract** | `Blog/Api/PostRepositoryInterface.php` | Public Repository interface |
 
 ---

@@ -550,8 +550,7 @@ vendor/bin/phpunit --bootstrap dev/tests/integration/bootstrap.php \
 | High | `VipLevelCalculator` | Unit | Low |
 | High | `PostRepository` | Integration | Medium |
 | High | REST endpoints | API Functional | Medium |
-| Medium | Plugins (StorePickup, Loyalty) | Unit | Low |
-| Medium | Observers (StoreSetup, CustomerCare) | Unit | Low |
+| Medium | Plugins (StorePickup, Loyalty, CustomerCare, StoreSetup) | Unit | Low |
 | Low | Full checkout flow | API Functional | High |
 
 ---

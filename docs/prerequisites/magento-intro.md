@@ -514,8 +514,8 @@ bin/magento list
 | Service Contracts | Blog, Faq, Gdpr, StorePickup… |
 | Repository pattern | All modules with database |
 | UI Components (admin) | Gdpr, StorePickup, StoreLocator… |
-| Plugins | StorePickup (shipping filter), LoyaltyProgram (minicart) |
-| Observers | StoreSetup, LoyaltyProgram, Training |
+| Plugins | StorePickup (shipping filter), LoyaltyProgram (minicart, invoice), CustomerCare (VIP), StoreSetup (product save) |
+| Observers | AutoInvoice (checkout success) |
 | Data Patches | StoreSetup (CreateStores), all modules |
 | ACL + Menu | Gdpr, StorePickup, StoreLocator… |
 | REST API | Blog, Faq, Gdpr, StorePickup… |

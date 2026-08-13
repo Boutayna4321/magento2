@@ -112,7 +112,7 @@ Namespace: AlpineCommerce\Blog\Model
 | **Controller** | `Controller/{Area}/{Controller}/{Action}.php` | `Controller/Index/Index.php` |
 | **Plugin** | `Plugin/{Entity}/{Method}.php` | `Plugin/Post/Slugify.php` |
 | **Observer** | `Observer/{Event}.php` | `Observer/SavePostAfter.php` |
-| **Helper** | `Helper/Data.php` | `Helper/Data.php` |
+| **Service** | `Service/{Name}.php` | `Service/Config.php` |
 | **Data Patch** | `Setup/Patch/Data/{Name}.php` | `Setup/Patch/Data/CreateDefaultCategory.php` |
 
 ### 2.5 Property visibility

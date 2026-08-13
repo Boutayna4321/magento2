@@ -50,23 +50,23 @@ $this->eventManager->dispatch('customer_login', [
 ```xml
 <!-- etc/events.xml -->
 <config xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <event name="customer_login">
-        <observer name="store_setup_log_login"
-                  instance="AlpineCommerce\StoreSetup\Observer\CustomerLogin"/>
+    <event name="checkout_onepage_controller_success_action">
+        <observer name="autoinvoice_create_invoice"
+                  instance="AlpineCommerce\AutoInvoice\Observer\AutoInvoice"/>
     </event>
 </config>
 ```
 
 ```php
-// Observer/CustomerLogin.php
-class CustomerLogin
+// Observer/AutoInvoice.php
+class AutoInvoice
 {
-    private LoggerInterface $logger;
+    private ScopeConfigInterface $scopeConfig;
     
     public function execute(Event $event): void
     {
-        $customer = $event->getData('customer');
-        $this->logger->info('Customer logged in: ' . $customer->getEmail());
+        $order = $event->getEvent()->getOrder();
+        // Auto-create invoice based on payment method config
     }
 }
 ```
@@ -75,16 +75,19 @@ class CustomerLogin
 
 ```xml
 <event name="sales_order_place_after">
-    <observer name="store_setup_log_order"
-              instance="AlpineCommerce\StoreSetup\Observer\OrderPlacedAfter"/>
-    <observer name="customercare_recalculate_vip"
-              instance="AlpineCommerce\CustomerCare\Observer\OrderPlacedAfter"/>
-    <observer name="loyalty_add_points"
-              instance="AlpineCommerce\LoyaltyProgram\Observer\OrderPlacedAfter"/>
+    <observer name="module_a_order_action"
+              instance="Vendor\ModuleA\Observer\OrderAction"/>
+    <observer name="module_b_order_action"
+              instance="Vendor\ModuleB\Observer\OrderAction"/>
 </event>
 ```
 
-All three observers execute **in order** (sorted by `sortOrder` if specified).
+All observers execute **in order** (sorted by `sortOrder` if specified).
+
+> **Note**: In AlpineCommerce, we now prefer **plugins** over multiple observers
+> on the same event when modifying behavior. Observers are reserved for
+> controller action events (e.g., `checkout_onepage_controller_success_action`)
+> or genuine side effects.
 
 ### 2.5 Observer attributes
 
@@ -102,48 +105,59 @@ All three observers execute **in order** (sorted by `sortOrder` if specified).
 
 ### 2.6 AlpineCommerce examples
 
-**StoreSetup** — log customer login:
+**AutoInvoice** — create invoice on checkout success:
 ```xml
 <!-- etc/events.xml -->
-<event name="customer_login">
-    <observer name="store_setup_log_login"
-              instance="AlpineCommerce\StoreSetup\Observer\CustomerLogin"/>
+<event name="checkout_onepage_controller_success_action">
+    <observer name="autoinvoice_create_invoice"
+              instance="AlpineCommerce\AutoInvoice\Observer\AutoInvoice"/>
 </event>
 ```
 
 ```php
-// Observer/CustomerLogin.php
-public function execute(Event $event): void
+// Observer/AutoInvoice.php
+class AutoInvoice
 {
-    $customer = $event->getEvent()->getCustomer();
-    $this->logger->info('Training CustomerLogin: ' . $customer->getEmail());
+    private ScopeConfigInterface $scopeConfig;
+    
+    public function execute(Event $event): void
+    {
+        $order = $event->getEvent()->getOrder();
+        // Auto-create invoice based on payment method config
+    }
 }
 ```
 
 **CustomerCare** — recalculate VIP on order placement:
 ```xml
-<!-- etc/events.xml -->
-<event name="sales_order_place_after">
-    <observer name="customercare_order_placed"
-              instance="AlpineCommerce\CustomerCare\Observer\OrderPlacedAfter"/>
-</event>
+<!-- etc/di.xml -->
+<type name="Magento\Sales\Model\Order">
+    <plugin name="customercare_recalculate_vip"
+            type="AlpineCommerce\CustomerCare\Plugin\Order\AfterPlace"/>
+</type>
 ```
 
 ```php
-// Observer/OrderPlacedAfter.php
-public function execute(Event $event): void
+// Plugin/Order/AfterPlace.php
+class AfterPlace
 {
-    $order = $event->getEvent()->getOrder();
-    $this->customerCare->recalculateVipStatus((int) $order->getCustomerId());
+    private CustomerCareInterface $customerCare;
+    
+    public function afterPlace(Order $subject, Order $result): Order
+    {
+        $this->customerCare->recalculateVipStatus((int) $result->getCustomerId());
+        return $result;
+    }
 }
 ```
 
 **StoreSetup** — log product save:
 ```xml
-<event name="model_save_after">
-    <observer name="store_setup_log_product_save"
-              instance="AlpineCommerce\StoreSetup\Observer\ProductSaveAfter"/>
-</event>
+<!-- etc/di.xml -->
+<type name="Magento\Catalog\Api\ProductRepositoryInterface">
+    <plugin name="storesetup_log_product_save"
+            type="AlpineCommerce\StoreSetup\Plugin\Product\BeforeSave"/>
+</type>
 ```
 
 ---
@@ -293,18 +307,48 @@ class FilterFlatRate
 }
 ```
 
-**LoyaltyProgram** — modify minicart totals:
+**LoyaltyProgram** — award points after invoice save:
+```xml
+<!-- etc/di.xml -->
+<type name="AlpineCommerce\LoyaltyProgram\Api\LoyaltyBalanceRepositoryInterface">
+    <plugin name="loyaltyprogram_award_points"
+            type="AlpineCommerce\LoyaltyProgram\Plugin\Invoice\AfterSave"/>
+</type>
+```
+
 ```php
-// Plugin/Cart/Total/LoyaltyDiscount.php
-class LoyaltyDiscount
+// Plugin/Invoice/AfterSave.php
+class AfterSave
 {
-    public function aroundCollectTotal(
-        \Magento\Quote\Model\Quote $subject,
-        callable $proceed
-    ): void {
-        // Add loyalty discount to totals
-        $proceed(); // Call original
-        // Modify the total
+    public function afterSave(
+        LoyaltyBalanceRepositoryInterface $subject,
+        LoyaltyBalanceInterface $result
+    ): LoyaltyBalanceInterface {
+        // Award points after invoice is saved
+        return $result;
+    }
+}
+```
+
+**CustomerCare** — recalculate VIP after order placement:
+```xml
+<!-- etc/di.xml -->
+<type name="Magento\Sales\Model\Order">
+    <plugin name="customercare_recalculate_vip"
+            type="AlpineCommerce\CustomerCare\Plugin\Order\AfterPlace"/>
+</type>
+```
+
+```php
+// Plugin/Order/AfterPlace.php
+class AfterPlace
+{
+    private CustomerCareInterface $customerCare;
+    
+    public function afterPlace(Order $subject, Order $result): Order
+    {
+        $this->customerCare->recalculateVipStatus((int) $result->getCustomerId());
+        return $result;
     }
 }
 ```
@@ -536,18 +580,17 @@ php bin/magento setup:di:compile
 
 | Event | Module | Observer | Purpose |
 |-------|--------|----------|---------|
-| `customer_login` | StoreSetup | `CustomerLogin` | Log customer login |
-| `sales_order_place_after` | StoreSetup | `OrderPlacedAfter` | Log order placement |
-| `sales_order_place_after` | CustomerCare | `OrderPlacedAfter` | Recalculate VIP status |
-| `checkout_onepage_controller_success_action` | StoreSetup | `CheckoutSuccess` | Log checkout completion |
-| `model_save_after` | StoreSetup | `ProductSaveAfter` | Log product save |
+| `checkout_onepage_controller_success_action` | AutoInvoice | `AutoInvoice` | Create invoice on checkout success |
 
 ### 9.2 Plugins used
 
 | Target class | Plugin class | Type | Purpose |
 |--------------|--------------|------|---------|
 | `Magento\Shipping\Model\Carrier\FlatRate` | `StorePickup\Plugin\Shipping\FilterFlatRate` | before | Filter flat rate when free shipping threshold met |
-| `Magento\Checkout\Block\Cart\Sidebar` | `LoyaltyProgram\Plugin\Cart\Sidebar` | after | Add loyalty points display to minicart |
+| `Magento\Checkout\Block\Cart\Sidebar` | `LoyaltyProgram\Plugin\LoyaltyIncentive` | after | Add loyalty points display to minicart |
+| `Magento\Sales\Model\Order` | `CustomerCare\Plugin\Order\AfterPlace` | after | Recalculate VIP status after order placement |
+| `Magento\Catalog\Api\ProductRepositoryInterface` | `StoreSetup\Plugin\Product\BeforeSave` | before | Log product save |
+| `AlpineCommerce\LoyaltyProgram\Api\LoyaltyBalanceRepositoryInterface` | `LoyaltyProgram\Plugin\Invoice\AfterSave` | after | Award points after invoice save |
 
 ---
 
@@ -572,10 +615,11 @@ php bin/magento setup:di:compile
 
 ### AlpineCommerce patterns
 
-- **StoreSetup**: uses events for logging (customer_login, sales_order_place_after)
-- **CustomerCare**: uses event to recalculate VIP on order placement
+- **AutoInvoice**: uses observer for checkout success event
+- **CustomerCare**: uses plugin on `Order::place()` to recalculate VIP after order placement
+- **StoreSetup**: uses plugin on `ProductRepositoryInterface::save()` to log product save
 - **StorePickup**: uses plugin to modify Flat Rate carrier behavior
-- **LoyaltyProgram**: uses plugin to modify minicart sidebar
+- **LoyaltyProgram**: uses plugins for minicart incentive and invoice point awarding
 
 ---
 

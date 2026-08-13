@@ -89,8 +89,8 @@ class MyClass
 ### 1.5 Logs in AlpineCommerce
 
 ```php
-// StoreSetup Observer
-$this->logger->error('Training CustomerLogin: ' . $e->getMessage());
+// StoreSetup Plugin / CustomerCare Plugin
+$this->logger->error('StoreSetup/AfterSave: ' . $e->getMessage());
 $this->logger->info("Training DataPatch: Created store '$code' (ID: {$store->getId()})");
 ```
 

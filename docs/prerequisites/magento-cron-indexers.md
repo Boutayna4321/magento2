@@ -309,22 +309,23 @@ class VipStatus implements IndexerInterface
 ```xml
 <!-- etc/events.xml -->
 <config xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <event name="sales_order_place_after">
-        <observer name="customercare_recalculate_vip" instance="AlpineCommerce\CustomerCare\Observer\OrderPlacedAfter"/>
+    <event name="checkout_onepage_controller_success_action">
+        <observer name="autoinvoice_create_invoice" instance="AlpineCommerce\AutoInvoice\Observer\AutoInvoice"/>
     </event>
 </config>
 ```
 
 ```php
-// Observer/OrderPlacedAfter.php
-class OrderPlacedAfter
+// Observer/AutoInvoice.php
+class AutoInvoice
 {
-    private IndexerInterface $vipIndexer;
+    private ScopeConfigInterface $scopeConfig;
+    private OrderServiceInterface $orderService;
     
     public function execute(Event $event): void
     {
         $order = $event->getEvent()->getOrder();
-        $this->vipIndexer->executeRow($order->getCustomerId());
+        // Auto-create invoice based on config
     }
 }
 ```
