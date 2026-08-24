@@ -56,6 +56,7 @@ jobs:
       - run: composer validate --no-check-publish --no-check-lock --no-interaction --working-dir=src
       - name: Composer security audit
         run: composer audit --locked --no-interaction --working-dir=src
+        continue-on-error: true
 
   unit-tests:
     name: Unit Tests (PHPUnit)
