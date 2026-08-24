@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:Backend/etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_PartialInvoice::main" title="Partial Invoice" parent="Magento_Sales::sales" module="AlpineCommerce_PartialInvoice" sortOrder="51" resource="AlpineCommerce_PartialInvoice::main"/>
+    </menu>
+</config>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="partialinvoice" translate="label" type="text" sortOrder="910" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Partial Invoice</label>
+            <tab>sales</tab>
+            <resource>AlpineCommerce_PartialInvoice::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>General Configuration</label>
+                <field id="enabled" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Partial Invoice</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="payment_methods" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment Methods (comma separated, empty for all)</label>
+                    <comment>Leave empty to allow all payment methods. Example: checkmo, banktransfer</comment>
+                </field>
+                <field id="allow_backorders" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Allow Backorders</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If Yes, items with qty below stock threshold will still be invoiced</comment>
+                </field>
+                <field id="min_qty_to_invoice" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Minimum Qty to Invoice</label>
+                    <comment>Minimum quantity per item to create a partial invoice. Leave 0 for no minimum.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

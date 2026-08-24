@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/config.xsd">
+    <default>
+        <partialinvoice>
+            <general>
+                <enabled>0</enabled>
+                <payment_methods></payment_methods>
+                <allow_backorders>1</allow_backorders>
+                <min_qty_to_invoice>0</min_qty_to_invoice>
+            </general>
+        </partialinvoice>
+    </default>
+</config>

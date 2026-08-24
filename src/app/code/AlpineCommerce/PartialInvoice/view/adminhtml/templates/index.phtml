@@ -1,0 +1,40 @@
+<?php /** @var $block \AlpineCommerce\PartialInvoice\Block\Adminhtml\Index */ ?>
+<?php $invoices = $block->getInvoices(); ?>
+
+<div class="admin__data-grid-wrap" data-role="grid">
+    <table class="data-grid">
+        <thead>
+            <tr>
+                <th class="data-grid-th"><?= __('Invoice #') ?></th>
+                <th class="data-grid-th"><?= __('Order #') ?></th>
+                <th class="data-grid-th"><?= __('Customer') ?></th>
+                <th class="data-grid-th"><?= __('Items') ?></th>
+                <th class="data-grid-th"><?= __('Amount') ?></th>
+                <th class="data-grid-th"><?= __('Status') ?></th>
+                <th class="data-grid-th"><?= __('Created At') ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($invoices as $invoice): ?>
+                <?php
+                    $order = $invoice->getOrder();
+                    $customerName = $order ? $order->getCustomerName() : __('Guest');
+                ?>
+                <tr>
+                    <td class="data-grid-td"><?= $invoice->getIncrementId() ?></td>
+                    <td class="data-grid-td"><?= $order ? $order->getIncrementId() : __('N/A') ?></td>
+                    <td class="data-grid-td"><?= $customerName ?></td>
+                    <td class="data-grid-td"><?= (int) $invoice->getTotalQty() ?></td>
+                    <td class="data-grid-td"><?= $block->escapeHtml($invoice->getBaseCurrency()->format($invoice->getBaseGrandTotal())) ?></td>
+                    <td class="data-grid-td"><?= $invoice->getState() ? __('Paid') : __('Pending') ?></td>
+                    <td class="data-grid-td"><?= $block->formatDate($invoice->getCreatedAt()) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            <?php if (!$invoices->getSize()): ?>
+                <tr>
+                    <td colspan="7" class="data-grid-td"><?= __('No partial invoices found.') ?></td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
