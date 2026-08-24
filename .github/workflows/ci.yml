@@ -53,9 +53,9 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-      - run: composer validate --no-check-publish --no-check-lock --working-dir=src
+      - run: composer validate --no-check-publish --no-check-lock --no-interaction --working-dir=src
       - name: Composer security audit
-        run: composer audit --locked --working-dir=src
+        run: composer audit --locked --no-interaction --working-dir=src
 
   unit-tests:
     name: Unit Tests (PHPUnit)
@@ -124,17 +124,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # secret-scan:
-  #   name: Secret Scanning
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: trufflesecurity/trufflehog@v3.96.0
-  #       with:
-  #         path: ./
-  #         base: main
-  #         head: HEAD
-
   markdown-lint:
     name: Markdown Lint
     runs-on: ubuntu-latest
@@ -143,5 +132,8 @@ jobs:
       - uses: DavidAnson/markdownlint-cli2-action@v19
         with:
           config: markdownlint.json
-          globs: '**/*.md,!vendor/**,!vendor.bak/**,!node_modules/**'
-# CI fixes verified - Mon Aug 24 11:32:11 AM +01 2026
+          globs: |
+            *.md
+            !vendor/**
+            !vendor.bak/**
+            !node_modules/**
