@@ -1,0 +1,28 @@
+<?php /** @var $block \AlpineCommerce\Rma\Block\Customer\Request */ ?>
+<?php $orders = $block->getRecentOrders(); ?>
+
+<div class="rma-request-form">
+    <h2><?= __('Request a Return') ?></h2>
+
+    <?php if (!$orders): ?>
+        <p><?= __('You have no orders eligible for return.') ?></p>
+    <?php else: ?>
+        <form action="<?= $block->getUrl('rma/index/request') ?>" method="post" id="rma-request-form">
+            <?= $block->getBlockHtml('formkey') ?>
+            <div class="field required">
+                <label for="order_id" class="label"><?= __('Select Order') ?></label>
+                <select name="order_id" id="order_id" class="select">
+                    <?php foreach ($orders as $order): ?>
+                        <option value="<?= (int) $order->getEntityId() ?>">
+                            #<?= $block->escapeHtml($order->getIncrementId()) ?> -
+                            <?= $block->escapeHtml($order->getCreatedAt()) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <button type="submit" class="action primary">
+                <span><?= __('Submit Return Request') ?></span>
+            </button>
+        </form>
+    <?php endif; ?>
+</div>

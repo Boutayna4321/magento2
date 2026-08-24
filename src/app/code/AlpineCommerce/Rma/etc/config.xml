@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/config.xsd">
+    <default>
+        <rma>
+            <general>
+                <enabled>0</enabled>
+                <allow_return_days>30</allow_return_days>
+                <require_approval>1</require_approval>
+                <auto_generate_rma>1</auto_generate_rma>
+                <rma_prefix>RMA</rma_prefix>
+                <notify_customer>1</notify_customer>
+                <notify_admin>1</notify_admin>
+            </general>
+            <reason>
+                <item_code_1>Wrong Item</item_code_1>
+                <item_code_2>Damaged</item_code_2>
+                <item_code_3>No longer needed</item_code_3>
+                <item_code_4>Ordered by mistake</item_code_4>
+            </reason>
+        </rma>
+    </default>
+</config>

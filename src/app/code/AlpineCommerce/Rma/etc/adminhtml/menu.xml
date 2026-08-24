@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:Backend/etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_Rma::main" title="RMA" parent="Magento_Sales::sales" module="AlpineCommerce_Rma" sortOrder="52" resource="AlpineCommerce_Rma::main"/>
+    </menu>
+</config>
