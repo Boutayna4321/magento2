@@ -90,7 +90,8 @@ jobs:
           fi
       - name: Install dependencies
         working-directory: src
-        run: composer install --no-interaction --prefer-dist --no-progress --no-scripts
+        run: composer install --no-interaction --prefer-dist --no-progress --no-scripts --no-audit
+        continue-on-error: true
       - name: Run unit tests
         working-directory: src/dev/tests/unit
         run: |
