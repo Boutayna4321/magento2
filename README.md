@@ -243,7 +243,7 @@ Example: `.\scripts\magento-cli.ps1 cache:flush`
 
 If you have a database dump or media backup:
 1. Start containers: `docker compose up -d`
-2. Import database: `docker compose exec mysql mysql -u root -proot123 magento2 < backup.sql`
+2. Import database: `docker compose exec mysql mysql -u root -pYOUR_MYSQL_ROOT_PASSWORD magento2 < backup.sql`
 3. Copy media files: `cp -r /path/to/media/* src/pub/media/`
 4. Reindex: `./scripts/magento-cli.sh indexer:reindex`
 5. Flush cache: `./scripts/magento-cli.sh cache:flush`

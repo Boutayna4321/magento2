@@ -384,7 +384,7 @@ php bin/magento setup:install \
     --db-host=localhost \
     --db-name=magento_test \
     --db-user=root \
-    --db-password=root123 \
+    --db-password=changeme \
     --backend-frontname=admin \
     --admin-firstname=Admin \
     --admin-lastname=User \

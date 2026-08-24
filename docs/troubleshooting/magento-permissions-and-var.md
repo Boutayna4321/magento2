@@ -238,13 +238,13 @@ Admin permission problem?
 
 ```bash
 # Database backup (always do this first)
-docker exec magento2-mysql mysqldump -u magento -pmagento123 magento2 > backup.sql
+docker exec magento2-mysql mysqldump -u magento -pYOUR_MYSQL_PASSWORD magento2 > backup.sql
 
 # Check ACL rules
-docker exec magento2-mysql mysql -u magento -pmagento123 magento2 -e "SELECT * FROM authorization_rule WHERE role_id = 1;"
+docker exec magento2-mysql mysql -u magento -pYOUR_MYSQL_PASSWORD magento2 -e "SELECT * FROM authorization_rule WHERE role_id = 1;"
 
 # Check admin user role
-docker exec magento2-mysql mysql -u magento -pmagento123 magento2 -e "SELECT * FROM authorization_role WHERE user_id = 1;"
+docker exec magento2-mysql mysql -u magento -pYOUR_MYSQL_PASSWORD magento2 -e "SELECT * FROM authorization_role WHERE user_id = 1;"
 
 # Clean caches
 bin/magento cache:clean

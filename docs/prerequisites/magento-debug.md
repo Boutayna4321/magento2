@@ -399,7 +399,7 @@ curl -X POST \
 
 ```bash
 # Connect to MySQL
-docker compose exec mysql mysql -u root -proot123 magento2
+docker compose exec mysql mysql -u root -pYOUR_MYSQL_ROOT_PASSWORD magento2
 
 # View a module's tables
 SHOW TABLES LIKE 'alphacommerce_%';

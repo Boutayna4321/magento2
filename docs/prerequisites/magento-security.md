@@ -321,7 +321,7 @@ return [
 
 ```bash
 # .env (NOT committed to Git)
-MYSQL_ROOT_PASSWORD=root123
+MYSQL_ROOT_PASSWORD=changeme
 MAGENTO_PUBLIC_KEY=abc123
 MAGENTO_PRIVATE_KEY=def456
 ```
