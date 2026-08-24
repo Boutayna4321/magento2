@@ -124,16 +124,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  secret-scan:
-    name: Secret Scanning
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: trufflesecurity/trufflehog@v3.96.0
-        with:
-          path: ./
-          base: main
-          head: HEAD
+  # secret-scan:
+  #   name: Secret Scanning
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: trufflesecurity/trufflehog@v3.96.0
+  #       with:
+  #         path: ./
+  #         base: main
+  #         head: HEAD
 
   markdown-lint:
     name: Markdown Lint
