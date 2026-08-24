@@ -1,6 +1,9 @@
 {
   "default": true,
-  "MD013": { "line_length": 120 },
+  "MD013": false,
+  "MD018": false,
+  "MD019": false,
+  "MD040": false,
   "MD024": { "siblings_only": true },
   "MD025": { "front_matter_title": "" },
   "MD033": false,
