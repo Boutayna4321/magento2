@@ -1,0 +1,38 @@
+<?php /** @var $block \AlpineCommerce\CreditMemo\Block\Adminhtml\Index */ ?>
+<?php $creditMemos = $block->getCreditMemos(); ?>
+
+<div class="admin__data-grid-wrap" data-role="grid">
+    <table class="data-grid">
+        <thead>
+            <tr>
+                <th class="data-grid-th"><?= __('Credit Memo #') ?></th>
+                <th class="data-grid-th"><?= __('Order #') ?></th>
+                <th class="data-grid-th"><?= __('Customer') ?></th>
+                <th class="data-grid-th"><?= __('Amount') ?></th>
+                <th class="data-grid-th"><?= __('Status') ?></th>
+                <th class="data-grid-th"><?= __('Created At') ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($creditMemos as $creditMemo): ?>
+                <?php
+                    $order = $creditMemo->getOrder();
+                    $customerName = $order ? $order->getCustomerName() : __('Guest');
+                ?>
+                <tr>
+                    <td class="data-grid-td"><?= $creditMemo->getIncrementId() ?></td>
+                    <td class="data-grid-td"><?= $order ? $order->getIncrementId() : __('N/A') ?></td>
+                    <td class="data-grid-td"><?= $customerName ?></td>
+                    <td class="data-grid-td"><?= $block->escapeHtml($creditMemo->getBaseCurrency()->format($creditMemo->getBaseGrandTotal())) ?></td>
+                    <td class="data-grid-td"><?= $creditMemo->getState() ? __('Refunded') : __('Pending') ?></td>
+                    <td class="data-grid-td"><?= $block->formatDate($creditMemo->getCreatedAt()) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            <?php if (!$creditMemos->getSize()): ?>
+                <tr>
+                    <td colspan="6" class="data-grid-td"><?= __('No credit memos found.') ?></td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>

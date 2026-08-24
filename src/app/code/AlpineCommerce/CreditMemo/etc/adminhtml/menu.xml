@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:Backend/etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_CreditMemo::main" title="Auto Credit Memo" parent="Magento_Sales::sales" module="AlpineCommerce_CreditMemo" sortOrder="50" resource="AlpineCommerce_CreditMemo::main"/>
+    </menu>
+</config>

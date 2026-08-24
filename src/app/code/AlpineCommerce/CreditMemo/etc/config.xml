@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/config.xsd">
+    <default>
+        <autocreditmemo>
+            <general>
+                <enabled>0</enabled>
+                <payment_methods></payment_methods>
+                <auto_refund>0</auto_refund>
+            </general>
+        </autocreditmemo>
+    </default>
+</config>
