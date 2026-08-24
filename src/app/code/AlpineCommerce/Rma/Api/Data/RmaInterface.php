@@ -30,6 +30,18 @@ interface RmaInterface extends ExtensibleDataInterface
     public function setCreatedAt(string $createdAt): self;
     public function getUpdatedAt(): ?string;
     public function setUpdatedAt(string $updatedAt): self;
+    /**
+     * Get extension attributes.
+     *
+     * @return \AlpineCommerce\Rma\Api\Data\RmaExtensionInterface|null
+     */
     public function getExtensionAttributes(): ?\AlpineCommerce\Rma\Api\Data\RmaExtensionInterface;
+
+    /**
+     * Set extension attributes.
+     *
+     * @param \AlpineCommerce\Rma\Api\Data\RmaExtensionInterface|null $extensionAttributes
+     * @return $this
+     */
     public function setExtensionAttributes(?\AlpineCommerce\Rma\Api\Data\RmaExtensionInterface $extensionAttributes): self;
 }
