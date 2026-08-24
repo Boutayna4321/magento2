@@ -144,3 +144,4 @@ jobs:
         with:
           config: markdownlint.json
           globs: '**/*.md,!vendor/**,!vendor.bak/**,!node_modules/**'
+# CI fixes verified - Mon Aug 24 11:32:11 AM +01 2026
