@@ -1,0 +1,20 @@
+{
+    "alpinecommerce_rma": {
+        "column": {
+            "rma_id": true,
+            "order_id": true,
+            "customer_id": true,
+            "status": true,
+            "reason": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "ALPINECOMMERCE_RMA_ORDER_ID": true,
+            "ALPINECOMMERCE_RMA_CUSTOMER_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

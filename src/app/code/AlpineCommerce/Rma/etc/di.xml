@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="AlpineCommerce\Rma\Api\RmaRepositoryInterface" type="AlpineCommerce\Rma\Model\RmaRepository"/>
+    <preference for="AlpineCommerce\Rma\Api\Data\RmaInterface" type="AlpineCommerce\Rma\Model\Rma"/>
+    <virtualType name="AlpineCommerceRmaSearchResults" type="AlpineCommerce\Rma\Model\RmaSearchResults">
+        <arguments>
+            <argument name="searchResultFactory" xsi:type="object">AlpineCommerceRmaSearchResultsFactory</argument>
+        </arguments>
+    </virtualType>
+    <type name="AlpineCommerce\Rma\Model\RmaRepository">
+        <arguments>
+            <argument name="searchResultsFactory" xsi:type="object">AlpineCommerceRmaSearchResultsFactory</argument>
+        </arguments>
+    </type>
+</config>

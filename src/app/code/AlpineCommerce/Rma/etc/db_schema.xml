@@ -11,11 +11,11 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="rma_id"/>
         </constraint>
-        <constraint xsi:type="index" referenceId="RMA_ORDER_ID">
+        <index referenceId="ALPINECOMMERCE_RMA_ORDER_ID" indexType="btree">
             <column name="order_id"/>
-        </constraint>
-        <constraint xsi:type="index" referenceId="RMA_CUSTOMER_ID">
+        </index>
+        <index referenceId="ALPINECOMMERCE_RMA_CUSTOMER_ID" indexType="btree">
             <column name="customer_id"/>
-        </constraint>
+        </index>
     </table>
 </schema>
