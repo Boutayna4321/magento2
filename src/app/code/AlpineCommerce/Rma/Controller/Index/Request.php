@@ -8,6 +8,8 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use AlpineCommerce\Rma\Api\Data\RmaInterface;
+use AlpineCommerce\Rma\Model\ResourceModel\Rma\CollectionFactory as RmaCollectionFactory;
 use AlpineCommerce\Rma\Model\RmaFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
@@ -20,9 +22,11 @@ class Request extends Action
         private readonly CustomerSession $customerSession,
         private readonly OrderRepositoryInterface $orderRepository,
         private readonly RmaFactory $rmaFactory,
+        private readonly RmaCollectionFactory $rmaCollectionFactory,
         private readonly ScopeConfigInterface $scopeConfig,
         private readonly TimezoneInterface $timezone
     ) {
+        parent::__construct($context);
     }
 
     public function execute()
@@ -60,10 +64,21 @@ class Request extends Action
                 return $resultRedirect;
             }
 
+            $existing = $this->rmaCollectionFactory->create()
+                ->addFieldToFilter('order_id', $orderId)
+                ->addFieldToFilter('customer_id', (int) $this->customerSession->getCustomerId())
+                ->addFieldToFilter('status', ['neq' => RmaInterface::STATUS_CLOSED])
+                ->setPageSize(1)
+                ->getFirstItem();
+            if ($existing && $existing->getId()) {
+                $this->messageManager->addErrorMessage(__('A return request is already in progress for this order.'));
+                return $resultRedirect;
+            }
+
             $rma = $this->rmaFactory->create();
             $rma->setOrderId($orderId);
             $rma->setCustomerId((int) $this->customerSession->getCustomerId());
-            $rma->setStatus('pending');
+            $rma->setStatus(RmaInterface::STATUS_PENDING);
             $rma->setCreatedAt($this->timezone->date()->format('Y-m-d H:i:s'));
             $rma->save();
 

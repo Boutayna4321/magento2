@@ -29,6 +29,10 @@ class AutoInvoice implements ObserverInterface
             return;
         }
 
+        if ((int) $order->getTotalInvoiced() > 0) {
+            return;
+        }
+
         $storeId = (int) $order->getStoreId();
 
         if (!$this->isModuleEnabled($storeId)) {

@@ -16,6 +16,11 @@ interface RmaInterface extends ExtensibleDataInterface
     public const KEY_CREATED_AT = 'created_at';
     public const KEY_UPDATED_AT = 'updated_at';
 
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
+    public const STATUS_CLOSED = 'closed';
+
     public function getRmaId(): ?int;
     public function setRmaId(int $rmaId): self;
     public function getOrderId(): ?int;

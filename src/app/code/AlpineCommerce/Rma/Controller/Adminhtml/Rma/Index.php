@@ -15,6 +15,7 @@ class Index extends Action
         private readonly PageFactory $resultPageFactory,
         private readonly RmaCollectionFactory $rmaCollectionFactory
     ) {
+        parent::__construct($context);
     }
 
     public function execute()
