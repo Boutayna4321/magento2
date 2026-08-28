@@ -31,7 +31,7 @@ class Index extends Template
 
     public function getModuleStatus(): string
     {
-        return $this->isModuleEnabled() ? __('Enabled') : __('Disabled');
+        return $this->isModuleEnabled() ? (string) __('Enabled') : (string) __('Disabled');
     }
 
     public function getModuleStatusClass(): string
