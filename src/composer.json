@@ -47,19 +47,15 @@
         "exclude-from-classmap": [
             "**/dev/**",
             "**/update/**",
-            "*/*/Test/**/*Test"
+            "*/*/Test/**/*Test",
+            "generated/code/**"
         ],
         "files": [
             "app/etc/NonComposerComponentRegistration.php"
         ],
-        "psr-0": {
-            "": [
-                "app/code/",
-                "generated/code/"
-            ]
-        },
         "psr-4": {
-            "Magento\\Setup\\": "setup/src/Magento/Setup/"
+            "Magento\\Setup\\": "setup/src/Magento/Setup/",
+            "AlpineCommerce\\": "app/code/AlpineCommerce/"
         }
     },
     "require-dev": {
