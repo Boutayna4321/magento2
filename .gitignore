@@ -42,3 +42,23 @@ src/auth.json
 
 # Cartware modules (local only, not on GitHub)
 src/app/code/Cartware/
+src/composer.lock.corrupted
+src/pub/probe_which_tree.txt
+
+# Local-only deployment/infra files (not for publication)
+app/
+test_autoload.php
+.smoketest/
+
+# Local-only composer.json snapshots (NOT for publication)
+src/composer.json.bak
+src/composer.json.before-autoload-fix
+
+# Local-only static-analysis / dependency artifacts (NOT for publication)
+src/phpstan.neon
+src/phpstan-baseline.neon
+src/modules-dependencies.csv
+
+# Local-only test/health-check scaffolding (NOT for publication)
+src/app/code/AlpineCommerce/Test/
+src/app/code/AlpineCommerce/HealthCheck/
