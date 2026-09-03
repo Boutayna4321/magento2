@@ -1,5 +1,21 @@
 cluster.name: "docker-cluster"
+
+# ROOT-CAUSE FIX for java.net.UnknownHostException from the Magento ES client.
+#
+# Elasticsearch derives node.name from the container hostname when it is not
+# set. Because the original compose service defined no `hostname:`, Docker gave
+# the container a random ID (e.g. "468b9bde2466") and Elasticsearch advertised
+# THAT as its node name / publish address. Any client that resolves a sniffed
+# node address then tries to connect to "468b9bde2466", which does not exist in
+# Docker's DNS -> UnknownHostException.
+#
+# Pinning node.name and network.publish_host to the compose service name makes
+# every advertised address a name that Docker DNS can actually resolve, and it
+# stays stable across container recreation.
+node.name: elasticsearch
 network.host: 0.0.0.0
+network.publish_host: elasticsearch
+
 discovery.type: single-node
 xpack.security.enabled: false
 xpack.security.http.ssl.enabled: false

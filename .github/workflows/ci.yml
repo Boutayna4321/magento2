@@ -95,11 +95,11 @@ jobs:
       - name: Run unit tests
         working-directory: src/dev/tests/unit
         run: |
-          ../../../vendor/bin/phpunit -c phpunit.xml.dist ../../../app/code/AlpineCommerce/CustomerCare/Test/Unit --coverage-clover build/coverage.xml --log-junit build/junit.xml
+          ../../../vendor/bin/phpunit -c phpunit.xml.dist ../../../app/code/AlpineCommerce --coverage-clover build/coverage.xml --log-junit build/junit.xml
         continue-on-error: true
       - name: Static analysis (PHPStan)
         working-directory: src
-        run: vendor/bin/phpstan analyse app/code/AlpineCommerce --level=0 --no-progress --memory-limit=1G
+        run: vendor/bin/phpstan analyse app/code/AlpineCommerce --level=5 --no-progress --memory-limit=1G --configuration=phpstan.neon
         continue-on-error: true
       - name: Coding standards (PHPCS, errors only)
         working-directory: src
@@ -112,6 +112,41 @@ jobs:
           name: phpunit-results
           path: src/dev/tests/unit/build/
           if-no-files-found: ignore
+
+  consumer-validation:
+    name: Queue Consumer Validation
+    runs-on: ubuntu-latest
+    needs: [composer-validate]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: intl,gd,zip,xsl,bcmath,pcntl,dom,xml
+      - name: Validate queue_topology.xml files
+        run: |
+          find src/app/code/AlpineCommerce -name 'queue_topology.xml' -print0 | while IFS= read -r -d '' f; do
+            php -r 'libxml_use_internal_errors(true); $x = simplexml_load_file($argv[1]); $e = libxml_get_errors(); if (!$x || $e) { foreach ($e as $err) { fwrite(STDERR, $err->message . "\n"); } exit(1); }' "$f"
+          done
+      - name: Validate queue_publisher.xml files
+        run: |
+          find src/app/code/AlpineCommerce -name 'queue_publisher.xml' -print0 | while IFS= read -r -d '' f; do
+            php -r 'libxml_use_internal_errors(true); $x = simplexml_load_file($argv[1]); $e = libxml_get_errors(); if (!$x || $e) { foreach ($e as $err) { fwrite(STDERR, $err->message . "\n"); } exit(1); }' "$f"
+          done
+      - name: Validate queue_consumer.xml files
+        run: |
+          find src/app/code/AlpineCommerce -name 'queue_consumer.xml' -print0 | while IFS= read -r -d '' f; do
+            php -r 'libxml_use_internal_errors(true); $x = simplexml_load_file($argv[1]); $e = libxml_get_errors(); if (!$x || $e) { foreach ($e as $err) { fwrite(STDERR, $err->message . "\n"); } exit(1); }' "$f"
+          done
+      - name: Verify all 4 consumers are registered
+        run: |
+          for consumer in alpincommerce_autoinvoice_async alpincommerce_partialinvoice_async alpincommerce_creditmemo_async alpinecommerce_customercare_vip_async; do
+            if ! grep -r "$consumer" src/app/code/AlpineCommerce --include="queue_consumer.xml" --quiet; then
+              echo "FAIL: Consumer $consumer not found in any queue_consumer.xml"
+              exit 1
+            fi
+            echo "OK: $consumer registered"
+          done
 
   docker-build:
     name: Docker Build Test
