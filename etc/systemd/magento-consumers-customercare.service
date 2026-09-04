@@ -1,0 +1,17 @@
+[Unit]
+Description=Magento 2 CustomerCare VIP Queue Consumer
+After=network.target mysql.service redis.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/html
+ExecStart=/usr/bin/php /var/www/html/bin/magento queue:consumers:start alpincommerce_customercare_vip_async --max-messages=1000
+Restart=always
+RestartSec=3
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

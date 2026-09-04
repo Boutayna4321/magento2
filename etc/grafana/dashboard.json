@@ -1,0 +1,27 @@
+{
+  "dashboard": {
+    "title": "AlpineCommerce Platform Monitoring",
+    "panels": [
+      {
+        "title": "Queue Pending Messages",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "alpinecommerce_queue_pending_messages",
+            "legendFormat": "{{queue}}"
+          }
+        ]
+      },
+      {
+        "title": "Health Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "alpincommerce_health_status",
+            "legendFormat": "Overall Health"
+          }
+        ]
+      }
+    ]
+  }
+}
