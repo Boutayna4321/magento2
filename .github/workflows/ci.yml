@@ -140,7 +140,7 @@ jobs:
           done
       - name: Verify all 4 consumers are registered
         run: |
-          for consumer in alpincommerce_autoinvoice_async alpincommerce_partialinvoice_async alpincommerce_creditmemo_async alpinecommerce_customercare_vip_async; do
+          for consumer in alpincommerce_autoinvoice_async alpincommerce_partialinvoice_async alpincommerce_creditmemo_async alpincommerce_customercare_vip_async; do
             if ! grep -r "$consumer" src/app/code/AlpineCommerce --include="queue_consumer.xml" --quiet; then
               echo "FAIL: Consumer $consumer not found in any queue_consumer.xml"
               exit 1
@@ -157,7 +157,7 @@ jobs:
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./php
           file: ./php/Dockerfile
           push: false
           tags: magento2-alpinecommerce:ci

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Queue topology: binds the topic to the destination queue.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
+    <exchange name="magento">
+        <binding id="autoinvoice_process_binding"
+                 topic="alpinecommerce.autoinvoice.process"
+                 destination="alpinecommerce.autoinvoice.process"/>
+    </exchange>
+</config>

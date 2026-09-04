@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Queue consumer configuration.
+ * Retry strategy: Magento's built-in retry via consumer configuration.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
+    <consumer name="alpincommerce_partialinvoice_async"
+              queue="alpincommerce.partialinvoice.process"
+              handler="AlpineCommerce\PartialInvoice\Model\Queue\PartialInvoiceConsumer::process"
+              maxMessages="1000"
+              maxIdleTime="3600"/>
+</config>
