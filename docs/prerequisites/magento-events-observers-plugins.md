@@ -84,11 +84,6 @@ class AutoInvoice
 
 All observers execute **in order** (sorted by `sortOrder` if specified).
 
-> **Note**: In AlpineCommerce, we now prefer **plugins** over multiple observers
-> on the same event when modifying behavior. Observers are reserved for
-> controller action events (e.g., `checkout_onepage_controller_success_action`)
-> or genuine side effects.
-
 ### 2.5 Observer attributes
 
 ```xml
@@ -415,6 +410,17 @@ Need to extend Magento behavior?
     │
     └─ You may need to modify core (last resort)
 ```
+
+### 4.5 AlpineCommerce Team Convention
+
+> **Team Convention (AlpineCommerce)**: In this project, we prefer
+> **plugins** over multiple observers on the same event when modifying
+> behavior. Observers are reserved for controller action events
+> (e.g., `checkout_onepage_controller_success_action`) or genuine side
+> effects.
+>
+> This is a **project preference**, not a Magento requirement. Magento
+> core supports both approaches equally.
 
 ---
 

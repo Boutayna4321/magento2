@@ -216,8 +216,11 @@ catalog_product_entity_varchar
 ### 6.2 Flat tables
 
 For performance, Magento can flatten EAV into flat tables
-(`catalog_product_flat_*`). AlpineCommerce modules use standard SQL
-tables (no EAV) for simplicity.
+(`catalog_product_flat_*`).
+
+> **Team Convention**: The AlpineCommerce project uses standard SQL
+> tables (no EAV) for simplicity. This is a project architecture
+> decision, not a Magento core requirement.
 
 ---
 
@@ -239,8 +242,10 @@ Website (base)
 - **Store**: groups store views, shares cart/customers
 - **Store View**: language/currency
 
-AlpineCommerce uses 4 store views (English, French, German, Spanish)
-configured in `StoreSetup/etc/config.xml`.
+> **AlpineCommerce Example**: AlpineCommerce uses 4 store views
+> (English, French, German, Spanish) configured in
+> `StoreSetup/etc/config.xml`. This is project-specific configuration,
+> not a Magento core feature.
 
 ---
 
@@ -506,10 +511,13 @@ bin/magento list
 
 ---
 
-## 17. Summary — Magento concepts taught in AlpineCommerce
+## 17. Summary
 
-| Concept | Where used in AlpineCommerce |
-|---------|------------------------------|
+The following table maps **Magento Core concepts** introduced in this
+guide to their **AlpineCommerce usage** in the project.
+
+| Magento Core Concept | AlpineCommerce Usage |
+|----------------------|----------------------|
 | Module structure | All modules |
 | Service Contracts | Blog, Faq, Gdpr, StorePickup… |
 | Repository pattern | All modules with database |

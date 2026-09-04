@@ -86,14 +86,6 @@ class MyClass
 }
 ```
 
-### 1.5 Logs in AlpineCommerce
-
-```php
-// StoreSetup Plugin / CustomerCare Plugin
-$this->logger->error('StoreSetup/AfterSave: ' . $e->getMessage());
-$this->logger->info("Training DataPatch: Created store '$code' (ID: {$store->getId()})");
-```
-
 ---
 
 ## 2. Developer mode
@@ -141,23 +133,7 @@ Xdebug is a PHP extension that allows you to:
 - Inspect **variables** at each step
 - See the **call stack** (who calls who)
 
-### 3.2 Docker configuration
-
-```yaml
-# docker-compose.yml (excerpt)
-services:
-  php:
-    build:
-      context: ./php
-      dockerfile: Dockerfile
-    volumes:
-      - ./src:/var/www/html
-    environment:
-      - XDEBUG_MODE=develop,debug
-      - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003
-```
-
-### 3.3 VS Code configuration
+### 3.2 VS Code configuration
 
 `.vscode/launch.json`:
 ```json
@@ -177,7 +153,7 @@ services:
 }
 ```
 
-### 3.4 Usage
+### 3.3 Usage
 
 1. In VS Code, click **Run** → **Start Debugging** (F5)
 2. In the PHP code, add a breakpoint (click to the left of the line number)
@@ -501,6 +477,48 @@ php bin/magento setup:upgrade --keep-generated
 | `php -l` | Check PHP syntax |
 | `grep` | Search in logs |
 | `tail -f` | Follow logs in real time |
+
+---
+
+## 11. Debugging in AlpineCommerce
+
+### 11.1 Project-specific logging patterns
+
+In AlpineCommerce modules, logging follows the same Magento standards
+(`Psr\Log\LoggerInterface`) but with project-specific contexts:
+
+```php
+// StoreSetup Plugin / CustomerCare Plugin
+$this->logger->error('StoreSetup/AfterSave: ' . $e->getMessage());
+$this->logger->info("Training DataPatch: Created store '$code' (ID: {$store->getId()})");
+```
+
+> **Team Convention**: AlpineCommerce modules prefix log messages with
+> the module name (e.g., `StoreSetup/AfterSave`) for easier filtering
+> in `var/log/system.log`.
+
+---
+
+## 12. Xdebug Setup in AlpineCommerce (Docker)
+
+### 12.1 Docker configuration
+
+> **Project-Specific**: The following Docker configuration is specific
+> to the AlpineCommerce project setup.
+
+```yaml
+# docker-compose.yml (excerpt)
+services:
+  php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/var/www/html
+    environment:
+      - XDEBUG_MODE=develop,debug
+      - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003
+```
 
 ---
 

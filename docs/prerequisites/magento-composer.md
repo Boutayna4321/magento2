@@ -113,27 +113,7 @@ composer validate
 }
 ```
 
-### 3.2 AlpineCommerce modules and Composer
-
-AlpineCommerce modules are **not** separate Composer packages. They are
-installed in `src/app/code/AlpineCommerce/` directly.
-
-However, they can still use Composer autoloading:
-
-```json
-// src/app/code/AlpineCommerce/Blog/composer.json (optional)
-{
-    "name": "alpinecommerce/module-blog",
-    "description": "Blog module",
-    "autoload": {
-        "psr-4": {
-            "AlpineCommerce\\Blog\\": ""
-        }
-    }
-}
-```
-
-### 3.3 Autoloading (PSR-4)
+### 3.2 Autoloading (PSR-4)
 
 Composer maps namespaces to directories:
 
@@ -152,6 +132,27 @@ This means:
 **After modifying `composer.json`**:
 ```bash
 composer dump-autoload
+```
+
+### 3.3 AlpineCommerce modules and Composer
+
+> **Project-Specific Note**: Unlike third-party packages, AlpineCommerce
+> modules are **not** separate Composer packages. They are installed in
+> `src/app/code/AlpineCommerce/` directly.
+>
+> However, they can still use Composer autoloading:
+
+```json
+// src/app/code/AlpineCommerce/Blog/composer.json (optional)
+{
+    "name": "alpinecommerce/module-blog",
+    "description": "Blog module",
+    "autoload": {
+        "psr-4": {
+            "AlpineCommerce\\Blog\\": ""
+        }
+    }
+}
 ```
 
 ---

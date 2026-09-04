@@ -23,7 +23,21 @@ operations.
 
 ## 2. How to execute commands
 
-### 2.1 Inside the Docker container (AlpineCommerce)
+The standard way to run Magento CLI commands is directly from the
+Magento root directory using `php bin/magento`. The AlpineCommerce
+project provides Docker and helper script conveniences on top of this
+standard.
+
+### 2.1 Direct execution (Magento standard)
+
+```bash
+cd /home/cartware/Desktop/magento/src
+
+php bin/magento module:status
+php bin/magento cache:flush
+```
+
+### 2.2 Inside the Docker container (AlpineCommerce)
 
 ```bash
 # Recommended method: enter the PHP container
@@ -34,20 +48,13 @@ php bin/magento module:status
 php bin/magento cache:flush
 ```
 
-### 2.2 Via a script (AlpineCommerce)
+### 2.3 Via a helper script (AlpineCommerce)
 
 The project contains a helper script:
 
 ```bash
 ./scripts/magento-cli.sh module:status
 ./scripts/magento-cli.sh cache:flush
-```
-
-### 2.3 Directly (if PHP is installed locally)
-
-```bash
-cd /home/cartware/Desktop/magento/src
-php bin/magento module:status
 ```
 
 ---

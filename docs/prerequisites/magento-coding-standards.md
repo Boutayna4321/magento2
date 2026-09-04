@@ -3,6 +3,17 @@
 > **Objective**: know the mandatory coding rules in Magento 2
 > and in the AlpineCommerce project. These standards ensure that the code
 > is readable, maintainable, and compatible with Magento tools.
+>
+> **Scope of this document**:
+>
+> - **Magento Core Standards** (Sections 2–6, 8): mandatory conventions
+>   for all Magento 2 / Adobe Commerce development.
+> - **AlpineCommerce Project Standards** (Sections 7, 9): team preferences
+>   and workflows specific to this project.
+>
+> AlpineCommerce examples are used throughout for illustration, but the
+> underlying standards are Magento requirements unless explicitly marked
+> as "Team Convention" or "Project-Specific."
 
 ---
 
@@ -347,6 +358,9 @@ foreach ($collection as $post) {
 
 ### 6.1 Mandatory tree
 
+> **Note**: The tree below uses `AlpineCommerce/Blog` as an example.
+> The same pattern applies to any `Vendor/Module` in Magento.
+
 ```
 AlpineCommerce/Blog/
 ├── registration.php          ← MANDATORY
@@ -415,7 +429,7 @@ AlpineCommerce/Blog/
 
 ---
 
-## 7. Git — Commit conventions
+## 7. AlpineCommerce — Git Commit Conventions
 
 ### 7.1 Message format
 

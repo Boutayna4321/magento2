@@ -28,19 +28,6 @@ Website (base)
 | **Store (group)** | Groups store views | Cart, checkout, customer session | Root category, design |
 | **Store View** | Language/currency view | Products, categories | Language, currency, theme |
 
-### 1.3 Real-world example
-
-**AlpineCommerce** uses one website with 4 store views:
-
-```
-Website: AlpineCommerce (ID: 1)
-├── Store Group: Default (ID: 1)
-│   ├── Store View: English (code: default, locale: en_US, currency: USD)
-│   ├── Store View: French (code: french, locale: fr_FR, currency: EUR)
-│   ├── Store View: German (code: german, locale: de_DE, currency: EUR)
-│   └── Store View: Spanish (code: spanish, locale: es_ES, currency: EUR)
-```
-
 ---
 
 ## 2. Configuration Scopes
