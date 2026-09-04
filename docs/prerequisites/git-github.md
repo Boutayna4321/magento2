@@ -330,7 +330,7 @@ Check `.github/workflows/` in the repo.
 
 - Read the project's `CONTRIBUTING.md` (if it exists)
 - Browse `.github/workflows/` to see CI checks
-- Continue with `docs/prerequisites/magento-intro.md`
+- Continue with `docs/magento2/magento-intro.md`
 
 ---
 
