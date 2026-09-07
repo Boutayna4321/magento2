@@ -1,856 +1,667 @@
-# AlpineCommerce — Project Summary
+# AlpineCommerce — What We Built, Why, and How
 
-> **Objective**: This document provides a **complete, detailed overview** of everything done in the AlpineCommerce project. It is the single source of truth for understanding the current state, history, architecture, and roadmap.
+> **Objective**: Explain exactly what AlpineCommerce adds to Magento 2, why each
+> custom module exists, which Magento 2 Core concepts it extends, and how it
+> changes the standard order/customer/product flows. This is the document to
+> read when you want to understand the **delta between Magento Core and the
+> actual project**.
 
 ---
 
 ## Table of Contents
 
-1. [What is AlpineCommerce?](#1-what-is-alpinecommerce)
-2. [What existed before we started?](#2-what-existed-before-we-started)
-3. [What did we do? — Detailed breakdown](#3-what-did-we-do--detailed-breakdown)
-4. [What did we add? — Complete inventory](#4-what-did-we-add--complete-inventory)
-5. [Why did we do it? — Rationale](#5-why-did-we-do-it--rationale)
-6. [Current state — What we have now](#6-current-state--what-we-have-now)
-7. [What do we still need? — Roadmap](#7-what-do-we-still-need--roadmap)
-8. [Architecture — How it all fits together](#8-architecture--how-it-all-fits-together)
-9. [Module inventory — 19 modules](#9-module-inventory--19-modules)
-10. [Documentation inventory — Complete index](#10-documentation-inventory--complete-index)
-11. [Key decisions and lessons learned](#11-key-decisions-and-lessons-learned)
+1. [The starting point: Magento 2 Core](#1-the-starting-point-magento-2-core)
+2. [What was missing for AlpineCommerce?](#2-what-was-missing-for-alpinecommerce)
+3. [The 19 custom modules — why each one exists](#3-the-19-custom-modules--why-each-one-exists)
+4. [How we extended Magento — extension points used](#4-how-we-extended-magento--extension-points-used)
+5. [Database — custom tables added](#5-database--custom-tables-added)
+6. [Flows — Core vs AlpineCommerce](#6-flows--core-vs-alpinecommerce)
+7. [What is reused as-is from Core](#7-what-is-reused-as-is-from-core)
+8. [Current gaps and next steps](#8-current-gaps-and-next-steps)
 
 ---
 
-## 1. What is AlpineCommerce?
+## 1. The starting point: Magento 2 Core
 
-AlpineCommerce is a **professional e-commerce platform** built on **Magento 2.4.8** (Adobe Commerce Open Source). It has a dual purpose:
+Magento 2 Core provides a complete e-commerce foundation:
 
-1. **Production platform**: A real, deployable Magento 2 store with 19 custom business modules
-2. **Learning reference**: A structured, documented course for developers who want to master Magento 2 by example
-
-### Key facts
-
-| Aspect | Detail |
-|--------|--------|
-| **Magento version** | 2.4.8 (PHP 8.2) |
-| **Edition** | Adobe Commerce Open Source (free) |
-| **Custom modules** | 19 in `src/app/code/AlpineCommerce/` |
-| **Frontend** | Custom Luma-based theme in `src/app/design/` |
+| Area | Magento 2.4.8 provides |
+|------|------------------------|
+| **Catalog** | Products, categories, attributes, search |
+| **Sales** | Quote → Order → Invoice → Shipment → Credit Memo |
+| **Customer** | Accounts, addresses, groups |
+| **Checkout** | One-page checkout, cart, totals |
+| **Payment** | Checkmo, banktransfer, cashondelivery, PayPal, Braintree |
+| **Shipping** | Flatrate, freeshipping, tablerates |
+| **Admin** | Grids, forms, ACL, system configuration |
 | **API** | REST + GraphQL |
-| **Environment** | Docker (PHP-FPM, Nginx, MySQL, Redis, Elasticsearch) |
-| **Documentation** | 50+ Markdown files, 15,000+ lines |
-| **Repository** | https://github.com/Boutayna4321/magento2 |
+| **MSI** | Multi-source inventory |
+| **Promotions** | Cart rules, catalog rules |
+
+Magento Core is **generic**. It does not know AlpineCommerce's specific business rules.
 
 ---
 
-## 2. What existed before we started?
+## 2. What was missing for AlpineCommerce?
 
-### 2.1 Codebase
+AlpineCommerce needed capabilities that Magento Core does not provide out of the box:
 
-Before any documentation work, the repository contained:
-
-```
-src/app/code/AlpineCommerce/
-├── AutoInvoice/       ← Automatic invoicing
-├── Blog/              ← Blog posts & categories
-├── CreditMemo/        ← Automatic credit memos
-├── CustomerCare/      ← VIP management
-├── CustomerGrid/      ← Customer admin grid
-├── EuVat/             ← EU VAT validation
-├── Faq/               ← FAQ management
-├── Gdpr/              ← GDPR compliance
-├── HealthCheck/       ← System health checks
-├── Hreflang/          ← SEO hreflang tags
-├── LegalPages/        ← Legal pages CMS
-├── LoyaltyProgram/    ← Loyalty points
-├── PartialInvoice/    ← Partial invoicing
-├── ProductLabels/     ← Product labels
-├── ProductQuestions/  ← Product Q&A
-├── ProductReviews/    ← Product reviews
-├── Rma/               ← Return merchandise authorization
-├── StoreLocator/      ← Store locator
-├── StorePickup/       ← Store pickup shipping
-├── StoreSetup/        ← Store initialization
-└── Test/              ← Performance & E2E tests
-```
-
-All 19 modules were **functional** but **undocumented**. There was no centralized documentation explaining:
-- What each module does
-- How it fits into the Magento ecosystem
-- How to use it
-- How to extend it
-
-### 2.2 Existing documentation
-
-Before our work, the repository had:
-
-| File | Status | Content |
-|------|--------|---------|
-| `README.md` | ❌ Outdated | Missing modules, broken links, no navigation |
-| `docs/README.md` | ❌ Missing | No documentation hub |
-| `docs/PROJECT_CHARTER.md` | ✅ Exists | Vision, philosophy, specifications |
-| `docs/ARCHITECTURE.md` | ✅ Exists | Architecture overview |
-| `docs/ENGINEERING_GUIDE.md` | ✅ Exists | Standards and patterns |
-| `docs/ROADMAP.md` | ✅ Exists | Product roadmap |
-| `docs/CHANGELOG.md` | ✅ Exists | Version history |
-| `docs/BACKLOG.md` | ✅ Exists | Technical debt |
-| `docs/modules/*.md` | ⚠️ Partial | Some modules documented, others missing |
-| `docs/prerequisites/*.md` | ⚠️ Partial | Some guides existed, many missing |
-| `docs/magento2/*.md` | ⚠️ Partial | Some Magento Core docs existed |
-
-### 2.3 Problems with existing state
-
-1. **No documentation hub**: Users couldn't find their way around the documentation
-2. **Broken links**: README.md had links to non-existent files
-3. **Incomplete coverage**: 19 modules but only ~10 had documentation
-4. **No Magento Core reference**: No comprehensive guides for Magento 2 concepts
-5. **Inconsistent structure**: Each module doc followed different patterns
-6. **No AlpineCommerce overview**: No single document explaining the full AlpineCommerce ecosystem
+| Need | Magento Core | AlpineCommerce solution |
+|------|--------------|------------------------|
+| Auto-create invoices on order | ❌ Manual only | `AlpineCommerce_AutoInvoice` |
+| Partial invoicing for available items | ❌ Manual only | `AlpineCommerce_PartialInvoice` |
+| Auto-credit memo on cancellation | ❌ Manual only | `AlpineCommerce_CreditMemo` |
+| Customer VIP levels | ❌ None | `AlpineCommerce_CustomerCare` |
+| Loyalty points | ❌ None | `AlpineCommerce_LoyaltyProgram` |
+| Return window management | ❌ Basic RMA only | `AlpineCommerce_Rma` |
+| Store pickup shipping | ❌ None | `AlpineCommerce_StorePickup` |
+| EU VAT validation | ❌ None | `AlpineCommerce_EuVat` |
+| GDPR consent tracking | ❌ Basic only | `AlpineCommerce_Gdpr` |
+| Blog | ❌ None | `AlpineCommerce_Blog` |
+| FAQ | ❌ None | `AlpineCommerce_Faq` |
+| Product reviews | ❌ Basic only | `AlpineCommerce_ProductReviews` |
+| Product questions | ❌ None | `AlpineCommerce_ProductQuestions` |
+| Product labels | ❌ None | `AlpineCommerce_ProductLabels` |
+| Customer grid enhancements | ⚠️ Basic | `AlpineCommerce_CustomerGrid` |
+| SEO hreflang tags | ❌ None | `AlpineCommerce_Hreflang` |
+| Store locator | ❌ None | `AlpineCommerce_StoreLocator` |
+| Legal pages CMS | ❌ None | `AlpineCommerce_LegalPages` |
+| Store initialization | ❌ Manual setup | `AlpineCommerce_StoreSetup` |
 
 ---
 
-## 3. What did we do? — Detailed breakdown
+## 3. The 19 custom modules — why each one exists
 
-### Phase 1: Foundation — Core Magento Documentation
+### 3.1 Order lifecycle extensions (7 modules)
 
-**Goal**: Create comprehensive Magento 2 Core reference documentation.
-
-**What we did**:
-
-1. **Created `docs/magento2/magento-order-lifecycle.md`** (1675 lines)
-   - Complete order lifecycle: Quote → Order → Invoice → Shipment → Credit Memo
-   - All database entities, tables, relationships
-   - All events, observers, plugins
-   - State machine, status flows
-   - MSI integration
-   - Source: `vendor/magento/module-sales/`, `vendor/magento/module-quote/`
-
-2. **Created `docs/magento2/magento-payment-providers.md`** (934 lines)
-   - Payment architecture: MethodInterface, AbstractMethod, Adapter
-   - All Core payment methods (checkmo, banktransfer, cashondelivery, purchaseorder)
-   - PayPal, Braintree integration
-   - Transaction management: authorization, capture, void, refund
-   - Database: `sales_order_payment`, `sales_payment_transaction`
-   - Source: `vendor/magento/module-payment/`, `vendor/magento/module-offline-payments/`
-
-3. **Restructured 13 remaining `docs/magento2/*.md` files** (Core-first, AlpineCommerce-last)
-   - magento-intro.md (715 lines)
-   - magento-cli.md (631 lines)
-   - magento-coding-standards.md (589 lines)
-   - magento-components.md (719 lines)
-   - magento-composer.md (486 lines)
-   - magento-cron-indexers.md (602 lines)
-   - magento-debug.md (566 lines)
-   - magento-js.md (849 lines)
-   - magento-layout-templates.md (532 lines)
-   - magento-multistore.md (425 lines)
-   - magento-rest-graphql.md (518 lines)
-   - magento-security.md (533 lines)
-   - magento-testing.md (620 lines)
-
-   Each file now has:
-   - **Sections 1-N**: 100% Magento 2 Core concepts
-   - **Final section**: "AlpineCommerce Reference" with project-specific implementations
-
-4. **Created 14 prerequisite docs** (`docs/prerequisites/`)
-   - docker.md, php-oop.md, git-github.md, ci-cd.md
-   - Plus 10 Magento-specific prerequisites (later removed as duplicates)
-
-### Phase 2: AlpineCommerce Module Documentation
-
-**Goal**: Document all 19 AlpineCommerce modules.
-
-**What we did**:
-
-1. **Created 3 new module docs**:
-   - `docs/modules/CREDIT_MEMO.md` (~150 lines)
-   - `docs/modules/PARTIAL_INVOICE.md` (~150 lines)
-   - `docs/modules/RMA.md` (~250 lines)
-
-2. **Finalized 3 existing module docs**:
-   - `docs/modules/LOYALTY_PROGRAM.md` (expanded from 99 to ~200 lines)
-   - `docs/modules/EU_VAT.md` (expanded from 81 to ~150 lines)
-   - `docs/modules/HREFLANG.md` (expanded from 76 to ~150 lines)
-
-3. **Created cross-cutting lifecycle doc**:
-   - `docs/modules/alpinecommerce-order-lifecycle.md` (1003 lines)
-   - Shows how AutoInvoice, PartialInvoice, CreditMemo, CustomerCare, LoyaltyProgram, Rma, StorePickup interact
-
-### Phase 3: Navigation & Hub Documentation
-
-**Goal**: Make the documentation discoverable and navigable.
-
-**What we did**:
-
-1. **Completely rewrote `README.md`** (root)
-   - Added project overview with ASCII diagram
-   - Added Magento 2 explanation (what, why, when to use)
-   - Added AlpineCommerce philosophy
-   - Added complete repository structure with descriptions
-   - Added documentation tables with direct links
-   - Added quick links section
-   - Added entry points by profile (beginner, intermediate, contributor)
-   - Fixed all broken links
-
-2. **Completely rewrote `docs/README.md`** (documentation hub)
-   - Added complete documentation tree
-   - Added tables for all 17 Magento 2 reference docs
-   - Added tables for all 19 module docs
-   - Added prerequisites guides table
-   - Added quick links
-   - Fixed all broken links
-
-### Phase 4: Quality & Consistency
-
-**Goal**: Ensure technical accuracy and consistency.
-
-**What we did**:
-
-1. **Fixed AlpineCommerce contamination in payment doc**
-   - Removed AlpineCommerce-specific references from `magento-payment-providers.md`
-   - Verified 0 contamination
-
-2. **Fixed CustomerCare plugin target**
-   - Corrected from `OrderRepositoryInterface::afterSave()` to `Order::afterPlace()`
-   - Removed incorrect loyalty points logic from CustomerCare
-
-3. **Fixed database schema in payment doc**
-   - Corrected `sales_payment_transaction` columns: `payment_id`, `varchar(100)`, `varchar(15)`, `blob`
-   - Removed non-existent columns from `sales_order_payment`: `should_close_parent_transaction`, `created_at`, `updated_at`
-
-4. **Fixed broken Adobe documentation links**
-   - Updated 5 broken URLs from `architecture/` to `development/components/`
-   - Removed 7 unsupported URLs (404)
-   - Verified all remaining links return 200
-
-5. **Removed duplicate prerequisite docs**
-   - Deleted duplicate `magento-*.md` files from `docs/prerequisites/`
-   - Kept only the canonical versions in `docs/magento2/`
-
-6. **Verified Core-first structure**
-   - Checked all 15 restructured files
-   - Verified 0 AlpineCommerce references in Core sections
-   - Verified AlpineCommerce Reference sections at end of each file
-
----
-
-## 4. What did we add? — Complete inventory
-
-### New files created (23)
-
-**Magento 2 Core documentation** (17 files):
-1. `docs/magento2/magento-order-lifecycle.md` (1675 lines)
-2. `docs/magento2/magento-payment-providers.md` (934 lines)
-3. `docs/magento2/magento-intro.md` (715 lines)
-4. `docs/magento2/magento-components.md` (719 lines)
-5. `docs/magento2/magento-js.md` (849 lines)
-6. `docs/magento2/magento-layout-templates.md` (532 lines)
-7. `docs/magento2/magento-rest-graphql.md` (518 lines)
-8. `docs/magento2/magento-cli.md` (631 lines)
-9. `docs/magento2/magento-coding-standards.md` (589 lines)
-10. `docs/magento2/magento-cron-indexers.md` (602 lines)
-11. `docs/magento2/magento-debug.md` (566 lines)
-12. `docs/magento2/magento-security.md` (533 lines)
-13. `docs/magento2/magento-testing.md` (620 lines)
-14. `docs/magento2/magento-multistore.md` (425 lines)
-15. `docs/magento2/magento-composer.md` (486 lines)
-16. `docs/magento2/magento-admin.md` (653 lines)
-17. `docs/magento2/magento-events-observers-plugins.md` (646 lines)
-
-**AlpineCommerce module docs** (6 files):
-18. `docs/modules/CREDIT_MEMO.md` (~150 lines)
-19. `docs/modules/PARTIAL_INVOICE.md` (~150 lines)
-20. `docs/modules/RMA.md` (~250 lines)
-21. `docs/modules/LOYALTY_PROGRAM.md` (expanded, ~200 lines)
-22. `docs/modules/EU_VAT.md` (expanded, ~150 lines)
-23. `docs/modules/HREFLANG.md` (expanded, ~150 lines)
-
-### Files significantly updated (4)
-
-1. `README.md` (root) — Complete rewrite
-2. `docs/README.md` — Complete rewrite
-3. `docs/modules/alpinecommerce-order-lifecycle.md` — Created (1003 lines)
-4. Various `docs/modules/*.md` — Finalized and linked
-
-### Documentation statistics
-
-| Metric | Value |
-|--------|-------|
-| **Total documentation files** | 50+ |
-| **Total lines** | 15,000+ |
-| **Magento 2 Core docs** | 17 files, ~9,000 lines |
-| **Module docs** | 19 files, ~3,000 lines |
-| **Prerequisites** | 4 files, ~500 lines |
-| **Hub/README** | 2 files, ~500 lines |
-| **Cross-cutting** | 1 file (alpinecommerce-order-lifecycle.md), 1003 lines |
-
----
-
-## 5. Why did we do it? — Rationale
-
-### Problem 1: No documentation hub
-
-**Before**: Users landing on the repository had no idea where to start. The README was outdated, links were broken, and there was no navigation.
-
-**After**: Complete README with:
-- Project overview
-- Documentation tables with direct links
-- Entry points by profile (beginner, intermediate, contributor)
-- Quick links section
-
-### Problem 2: Incomplete module coverage
-
-**Before**: 19 modules existed but only ~10 had documentation. The rest were undocumented mysteries.
-
-**After**: All 19 modules documented with consistent structure:
-- Responsibility & scope
-- Architecture tree
-- Database schema
-- REST API
-- Admin & frontend pages
-- CLI commands
-- Architecture decisions
-- Known bugs
-- Magento concepts taught
-
-### Problem 3: No Magento Core reference
-
-**Before**: No comprehensive guides for Magento 2 concepts. Developers had to rely on external resources.
-
-**After**: 17 comprehensive Magento 2 Core reference docs covering:
-- Order lifecycle
-- Payment providers
-- Admin basics
-- CLI commands
-- Coding standards
-- Components
-- Composer
-- Cron & indexers
-- Debugging
-- JavaScript
-- Layout & templates
-- Multi-store
-- REST & GraphQL
-- Security
-- Testing
-- Events, observers, plugins
-
-### Problem 4: Inconsistent structure
-
-**Before**: Each module doc followed different patterns. Some had tables, some didn't. Some had architecture trees, some didn't.
-
-**After**: All docs follow a consistent 12-section structure:
-1. Responsibility
-2. Scope & features
-3. Architecture
-4. Database
-5. REST API
-6. Admin
-7. Frontend
-8. CLI
-9. Architecture decisions
-10. Known bugs / limitations
-11. Magento concepts taught
-12. Validation & status
-
-### Problem 5: AlpineCommerce contamination in Core docs
-
-**Before**: Some Magento Core docs contained AlpineCommerce-specific examples mixed into Core sections, making them confusing for developers learning Magento.
-
-**After**: Strict Core-first, AlpineCommerce-last pattern:
-- Sections 1-N: 100% Magento 2 Core with generic `Vendor\Module` examples
-- Final section: "AlpineCommerce Reference" with ONLY project-specific implementations
-
-### Problem 6: Broken links
-
-**Before**: Multiple broken links in READMEs pointing to non-existent files or outdated Adobe documentation URLs.
-
-**After**: All links verified:
-- 0 broken internal links
-- 0 broken Adobe documentation links
-- All files exist and are accessible
-
----
-
-## 6. Current state — What we have now
-
-### Repository structure
-
-```
-magento2/
-├── src/
-│   ├── app/
-│   │   ├── code/AlpineCommerce/    ← 19 custom modules
-│   │   ├── design/                  ← Custom theme
-│   │   └── etc/config.php           ← Module status
-│   ├── vendor/                      ← Composer dependencies
-│   └── pub/                         ← Public assets
-├── docs/                            ← Complete documentation
-│   ├── README.md                    ← Documentation hub
-│   ├── PROJECT_CHARTER.md           ← Vision & philosophy
-│   ├── ENGINEERING_GUIDE.md         ← Standards & patterns
-│   ├── ARCHITECTURE.md              ← Architecture overview
-│   ├── ROADMAP.md                   ← Product roadmap
-│   ├── CHANGELOG.md                 ← Version history
-│   ├── BACKLOG.md                   ← Technical debt
-│   ├── magento2/                    ← 17 Magento Core docs
-│   ├── modules/                     ← 19 module docs
-│   ├── prerequisites/               ← 4 foundational guides
-│   └── alpinecommerce-order-lifecycle.md ← Cross-cutting lifecycle
-├── docker-compose.yml
-├── Dockerfile
-├── README.md                        ← Project hub
-└── ...
-```
-
-### Module status
-
-| Category | Count | Modules |
-|----------|-------|---------|
-| **Stable** | 9 | Blog, Faq, LegalPages, ProductReviews, ProductQuestions, ProductLabels, CustomerGrid, CustomerCare, StoreSetup |
-| **Done** | 4 | AutoInvoice, CreditMemo, PartialInvoice, Rma |
-| **Finalization** | 3 | Gdpr, StorePickup, StoreLocator |
-| **To be finalized** | 3 | LoyaltyProgram, EuVat, Hreflang |
-
-### Documentation status
-
-| Category | Count | Status |
-|----------|-------|--------|
-| **Magento 2 Core docs** | 17 | ✅ Complete |
-| **Module docs** | 19 | ✅ Complete |
-| **Prerequisites** | 4 | ✅ Complete |
-| **Hub docs** | 7 | ✅ Complete |
-| **Cross-cutting** | 1 | ✅ Complete |
-| **Total** | 48 | ✅ Complete |
-
-### Git status
-
-```
-Commits: 14 (all pushed to origin/main)
-Working tree: CLEAN
-Protected files: UNCHANGED
-  - docs/magento2/magento-order-lifecycle.md (7aff959)
-  - docs/magento2/magento-payment-providers.md (d29436f)
-```
-
----
-
-## 7. What do we still need? — Roadmap
-
-### Immediate (v1.1)
-
-| Priority | Item | Description |
-|----------|------|-------------|
-| High | LoyaltyProgram admin interface | Complete admin UI for points management |
-| High | EuVat admin interface | Complete admin UI for validation history |
-| High | Hreflang SEO testing | Validate hreflang tags with Google tools |
-| Medium | Automated tests | Add unit/integration tests for all modules |
-| Medium | CI/CD pipeline | GitHub Actions for testing and deployment |
-
-### Short-term (v1.2)
-
-| Priority | Item | Description |
-|----------|------|-------------|
-| Medium | Performance optimization | Redis caching, Varnish, flat tables |
-| Medium | Advanced search | Elasticsearch/OpenSearch integration |
-| Low | Mobile app | React Native or Flutter frontend |
-| Low | Multi-warehouse | MSI advanced inventory management |
-
-### Long-term (v2.0)
-
-| Priority | Item | Description |
-|----------|------|-------------|
-| Low | Microservices | Split into microservices architecture |
-| Low | Headless CMS | Decouple content management |
-| Low | AI integration | Product recommendations, search |
-
----
-
-## 8. Architecture — How it all fits together
-
-### High-level architecture
-
-```mermaid
-graph TB
-    subgraph "Magento 2 Core"
-        CORE[Magento 2.4.8 Core]
-        MODULES[Core Modules]
-        FRAMEWORK[Framework]
-    end
-    
-    subgraph "AlpineCommerce Layer"
-        AC[AlpineCommerce Modules]
-        THEME[Custom Theme]
-        API[REST + GraphQL]
-    end
-    
-    subgraph "Infrastructure"
-        DOCKER[Docker]
-        DB[(MySQL)]
-        REDIS[(Redis)]
-        ES[(Elasticsearch)]
-    end
-    
-    CORE --> MODULES
-    CORE --> FRAMEWORK
-    AC --> CORE
-    THEME --> CORE
-    API --> CORE
-    
-    CORE --> DB
-    CORE --> REDIS
-    CORE --> ES
-    
-    DOCKER --> CORE
-    DOCKER --> DB
-    DOCKER --> REDIS
-    DOCKER --> ES
-```
-
-### Module interaction map
+These modules modify the standard Magento order flow:
 
 ```mermaid
 graph LR
-    subgraph "Order Lifecycle"
-        ORDER[Order Placed]
-        INVOICE[Invoice Created]
-        SHIPMENT[Shipment Created]
-        CREDIT[Credit Memo]
+    subgraph "Magento Core Flow"
+        C1[Order Placed] --> C2[Manual Invoice]
+        C2 --> C3[Manual Shipment]
+        C3 --> C4[Manual Credit Memo]
     end
     
-    subgraph "AlpineCommerce Modules"
-        AUTO_INV[AutoInvoice]
-        PART_INV[PartialInvoice]
-        CREDIT_MEMO[CreditMemo]
-        CUSTOMER_CARE[CustomerCare]
-        LOYALTY[LoyaltyProgram]
-        RMA[Rma]
-        STORE_PICKUP[StorePickup]
+    subgraph "AlpineCommerce Flow"
+        A1[Order Placed] --> A2[AutoInvoice<br/>AutoPartialInvoice]
+        A2 --> A3[AutoShipment]
+        A3 --> A4[AutoCreditMemo on Cancel]
+        A1 --> A5[CustomerCare<br/>VIP Recalc]
+        A1 --> A6[LoyaltyPoints<br/>Deduction]
+        A1 --> A7[Rma<br/>Return Window]
     end
-    
-    ORDER --> AUTO_INV
-    ORDER --> PART_INV
-    ORDER --> CUSTOMER_CARE
-    ORDER --> LOYALTY
-    ORDER --> RMA
-    ORDER --> STORE_PICKUP
-    
-    AUTO_INV --> INVOICE
-    PART_INV --> INVOICE
-    INVOICE --> SHIPMENT
-    SHIPMENT --> CREDIT
-    CREDIT --> CREDIT_MEMO
 ```
 
-### Documentation architecture
+#### `AlpineCommerce_AutoInvoice`
+
+**What it does**: Automatically creates invoices when orders are placed.
+
+**Why it exists**: Magento Core requires manual invoice creation. For high-volume stores, this is a bottleneck. AutoInvoice automates it based on payment method filters.
+
+**Extension point**: Observer on `sales_order_place_after`
+
+**Database**: No custom tables. Uses `sales_invoice`.
+
+**Config**: `autoinvoice/general/enabled`, `autoinvoice/general/payment_methods`
+
+---
+
+#### `AlpineCommerce_PartialInvoice`
+
+**What it does**: Automatically creates partial invoices for in-stock items only.
+
+**Why it exists**: When orders contain backordered items, Magento Core does not allow invoicing until stock arrives. PartialInvoice invoices available items immediately, keeping backordered items pending.
+
+**Extension point**: Observer on `checkout_onepage_controller_success_action`
+
+**Database**: No custom tables. Uses `sales_invoice`.
+
+**Config**: `partialinvoice/general/enabled`, `partialinvoice/general/allow_backorders`, `partialinvoice/general/min_qty_to_invoice`
+
+---
+
+#### `AlpineCommerce_CreditMemo`
+
+**What it does**: Automatically creates credit memos when orders are canceled.
+
+**Why it exists**: Magento Core requires manual credit memo creation. CreditMemo automates this and optionally processes refunds automatically.
+
+**Extension point**: Plugin on `Magento\Sales\Model\Order::afterCancel()`
+
+**Database**: No custom tables. Uses `sales_creditmemo`.
+
+**Config**: `autocreditmemo/general/enabled`, `autocreditmemo/general/payment_methods`, `autocreditmemo/general/auto_refund`
+
+---
+
+#### `AlpineCommerce_CustomerCare`
+
+**What it does**: Recalculates customer VIP status after each order.
+
+**Why it exists**: Magento Core has no customer tier/level concept. CustomerCare implements Bronze/Silver/Gold VIP levels based on lifetime spend.
+
+**Extension point**: Plugin on `Magento\Sales\Model\Order::afterPlace()`
+
+**Database**: Adds `vip_level`, `lifetime_spent` columns to `customer_entity`.
+
+**Config**: `customercare/general/vip_enabled`, `customercare/general/vip_thresholds`
+
+---
+
+#### `AlpineCommerce_LoyaltyProgram`
+
+**What it does**: Manages loyalty points — earning on invoice, spending on order, cart discount, minicart display.
+
+**Why it exists**: Magento Core has no loyalty/points system. LoyaltyProgram implements a complete points economy.
+
+**Extension point**: 
+- Plugin on `InvoiceRepositoryInterface::afterSave()` — earning
+- Plugin on `OrderRepositoryInterface::afterSave()` — spending
+- Total collector registered in `etc/sales.xml` — cart discount
+- Plugin on `Magento\Checkout\Block\Cart\Sidebar` — minicart
+
+**Database**: 
+- `alpinecommerce_loyalty_balance` — point balance per customer
+- `alpinecommerce_loyalty_order_points` — points ledger per order
+- `quote.alpinecommerce_loyalty_points_used` — points used at checkout
+
+**Config**: `loyaltyprogram/general/enabled`
+
+**REST API**: `POST /V1/carts/mine/loyalty-points` (`setPointsUsed`)
+
+---
+
+#### `AlpineCommerce_Rma`
+
+**What it does**: Complete return merchandise authorization workflow with return window.
+
+**Why it exists**: Magento Core RMA is basic. AlpineCommerce needs automated return windows, approval workflows, and customer-initiated returns.
+
+**Extension point**: Observer on `sales_order_place_after`
+
+**Database**: 
+- `alpinecommerce_rma` — RMA requests
+- `alpinecommerce_rma_item` — RMA items with qty tracking
+
+**Config**: `rma/general/enabled`, `rma/general/allow_return_days`
+
+**REST API**: Full CRUD for RMA management
+
+---
+
+#### `AlpineCommerce_StorePickup`
+
+**What it does**: Adds store pickup as a shipping method.
+
+**Why it exists**: Magento Core only supports flatrate, freeshipping, and tablerates. StorePickup adds a carrier for in-store pickup.
+
+**Extension point**: 
+- Plugins on `Magento\Shipping\Model\Carrier\FlatRate` and `Freeshipping` to filter them when store pickup is selected
+- New carrier `AlpineCommerce\StorePickup\Model\Carrier\StorePickup`
+
+**Database**: No custom tables. Uses `sales_order.shipping_method`.
+
+**Config**: `storepickup/general/enabled`, `storepickup/general/stores`
+
+---
+
+### 3.2 Content & Marketing modules (8 modules)
+
+These modules add content and marketing capabilities:
+
+#### `AlpineCommerce_Blog`
+
+**Why**: Magento Core has no blog. Blog adds a complete blog with categories, tags, SEO-friendly URLs, and RSS feeds.
+
+**Extension points**: CRUD with UI Components, admin grid, frontend routes
+
+#### `AlpineCommerce_Faq`
+
+**Why**: Magento Core has no FAQ. Faq adds a question/answer system with categories and search.
+
+**Extension points**: CRUD with UI Components, search integration
+
+#### `AlpineCommerce_ProductReviews`
+
+**Why**: Magento Core reviews are basic. ProductReviews adds ratings, moderation, email notifications, and admin management.
+
+**Extension points**: Plugins on review submission, email notifications
+
+#### `AlpineCommerce_ProductQuestions`
+
+**Why**: Magento Core has no Q&A for products. ProductQuestions lets customers ask questions and receive answers.
+
+**Extension points**: CRUD with UI Components, email notifications
+
+#### `AlpineCommerce_ProductLabels`
+
+**Why**: Magento Core has no product labeling. ProductLabels adds visual labels (New, Sale, etc.) with assignment rules.
+
+**Extension points**: Plugins on product collection, admin grid
+
+#### `AlpineCommerce_LegalPages`
+
+**Why**: Magento Core CMS pages are generic. LegalPages adds specialized pages for Terms, Privacy, Returns with versioning.
+
+**Extension points**: CMS page extensions, admin UI
+
+#### `AlpineCommerce_Hreflang`
+
+**Why**: Magento Core does not generate hreflang tags for multi-store SEO. Hreflang auto-generates `<link rel="alternate">` tags.
+
+**Extension point**: Layout XML injection into `head.additional`
+
+**Database**: No custom tables. Config in `core_config_data`.
+
+---
+
+### 3.3 Infrastructure & Compliance (4 modules)
+
+#### `AlpineCommerce_Gdpr`
+
+**Why**: Magento Core has basic GDPR features but lacks comprehensive consent logging and data export. Gdpr adds consent tracking and data portability.
+
+**Extension points**: Plugins on customer registration, admin export controller
+
+**Database**: `alphacommerce_gdpr_consent` — consent records
+
+#### `AlpineCommerce_EuVat`
+
+**Why**: Magento Core has no EU VAT validation. EuVat integrates with the VIES SOAP service for intra-community VAT validation.
+
+**Extension points**: CLI command, REST API
+
+**Database**: `alphacommerce_euvat_validation` — validation results
+
+#### `AlpineCommerce_CustomerGrid`
+
+**Why**: Magento Core customer grid is basic. CustomerGrid adds columns, filters, and mass actions.
+
+**Extension point**: Plugin on `Magento\Customer\Model\ResourceModel\Customer\Collection` to add joins/filters
+
+#### `AlpineCommerce_StoreSetup`
+
+**Why**: Magento Core requires manual store configuration. StoreSetup automates initial setup with default settings, sample data, and configuration.
+
+**Extension point**: Observer on `admin_init`
+
+---
+
+## 4. How we extended Magento — extension points used
+
+### 4.1 Extension order (least to most intrusive)
+
+```
+Plugin        → intercept an existing method
+Observer      → react to a business event
+Layout XML    → modify the page structure
+DI Preference → replace a class (last resort)
+New module    → only for new business value
+```
+
+### 4.2 What we used and why
+
+| Extension point | Modules using it | Why |
+|-----------------|------------------|-----|
+| **Observer** | AutoInvoice, PartialInvoice, CreditMemo, Rma, StoreSetup | React to events without modifying core |
+| **Plugin (after)** | CustomerCare, LoyaltyProgram, CreditMemo, StorePickup | Modify behavior after original method |
+| **Plugin (before)** | StorePickup, StoreSetup | Modify arguments before original method |
+| **Plugin (around)** | None | Not needed — before/after sufficient |
+| **DI Preference** | None | Avoided — too intrusive |
+| **Layout XML** | Hreflang, LoyaltyProgram | Modify page structure without PHP |
+| **New Carrier** | StorePickup | Add new shipping method |
+| **New Controller** | Blog, Faq, Rma, etc. | Add new admin/frontend pages |
+| **New UI Component** | Blog, Faq, LegalPages, etc. | Add new admin grids/forms |
+| **Service Contract** | LoyaltyProgram, EuVat, Rma | Expose API via REST |
+| **Total Collector** | LoyaltyProgram | Extend cart total calculation |
+| **Console Command** | EuVat | Add CLI validation command |
+
+### 4.3 Concrete examples
+
+#### Example 1: AutoInvoice — Observer
+
+```php
+// src/app/code/AlpineCommerce/AutoInvoice/Observer/AutoInvoice.php
+public function execute(Observer $observer): void
+{
+    $order = $observer->getEvent()->getOrder();
+    
+    if (!$order instanceof OrderInterface) {
+        return;
+    }
+    
+    // Check conditions: enabled, payment method, canInvoice
+    // ...
+    
+    // Create invoice automatically
+    $invoice = $this->invoiceService->prepareInvoice($order);
+    $invoice->setCaptureCase(Invoice::CAPTURE_ONLINE);
+    $invoice->register();
+    $invoice->save();
+}
+```
+
+**Event**: `sales_order_place_after`
+**Source**: `src/app/code/AlpineCommerce/AutoInvoice/etc/events.xml`
+
+---
+
+#### Example 2: CreditMemo — Plugin
+
+```php
+// src/app/code/AlpineCommerce/CreditMemo/Plugin/OrderCancelPlugin.php
+public function afterCancel(Order $subject, bool $result): bool
+{
+    if (!$result) {
+        return $result;
+    }
+    
+    // Check conditions: enabled, payment method, canCreditmemo
+    // ...
+    
+    // Create credit memo automatically
+    $creditmemo = $this->creditmemoService->createByOrder($subject);
+    $creditmemo->save();
+}
+```
+
+**Target**: `Magento\Sales\Model\Order::afterCancel()`
+**Type**: `after` plugin
+**Source**: `src/app/code/AlpineCommerce/CreditMemo/etc/di.xml`
+
+---
+
+#### Example 3: StorePickup — Plugin (before)
+
+```php
+// src/app/code/AlpineCommerce/StorePickup/Plugin/Shipping/FilterFlatRate.php
+public function aroundCollectRates(
+    \Magento\OfflineShipping\Model\Carrier\FlatRate $subject,
+    \Closure $proceed
+): ?\Magento\Shipping\Model\Rate\Result {
+    // If store pickup is selected, return false (hide flatrate)
+    if ($this->isStorePickupSelected()) {
+        return false;
+    }
+    
+    return $proceed();
+}
+```
+
+**Target**: `Magento\Shipping\Model\Carrier\FlatRate::collectRates()`
+**Type**: `around` plugin
+**Source**: `src/app/code/AlpineCommerce/StorePickup/etc/di.xml`
+
+---
+
+#### Example 4: LoyaltyProgram — Total Collector
+
+```php
+// src/app/code/AlpineCommerce/LoyaltyProgram/Model/Total/Quote/LoyaltyDiscount.php
+public function collect(
+    \Magento\Quote\Model\Quote $quote,
+    \Magento\Quote\Api\Data\ShippingAssignmentInterface $shippingAssignment,
+    \Magento\Quote\Model\Quote\Address\Total $total
+) {
+    // Calculate discount based on points used
+    $pointsUsed = $quote->getData('alpinecommerce_loyalty_points_used');
+    $discount = $this->pointsCalculator->calculateDiscount($pointsUsed);
+    
+    $total->addTotalAmount('loyalty_discount', -$discount);
+    $total->addBaseTotalAmount('loyalty_discount', -$discount);
+}
+```
+
+**Extension point**: Registered in `etc/sales.xml` as a total collector
+**Source**: `src/app/code/AlpineCommerce/LoyaltyProgram/etc/sales.xml`
+
+---
+
+## 5. Database — custom tables added
+
+### 5.1 Complete list
+
+| Table | Module | Purpose |
+|-------|--------|---------|
+| `alpinecommerce_loyalty_balance` | LoyaltyProgram | Point balance per customer |
+| `alpinecommerce_loyalty_order_points` | LoyaltyProgram | Points ledger per order |
+| `alpinecommerce_rma` | Rma | RMA requests |
+| `alpinecommerce_rma_item` | Rma | RMA items with qty tracking |
+| `alphacommerce_euvat_validation` | EuVat | VAT validation results |
+| `alphacommerce_gdpr_consent` | Gdpr | GDPR consent records |
+
+### 5.2 Columns added to Core tables
+
+| Table | Column | Module | Purpose |
+|-------|--------|--------|---------|
+| `customer_entity` | `vip_level` | CustomerCare | VIP level (bronze/silver/gold) |
+| `customer_entity` | `lifetime_spent` | CustomerCare | Lifetime spend amount |
+| `quote` | `alpinecommerce_loyalty_points_used` | LoyaltyProgram | Points used at checkout |
+| `sales_order` | `rma_allowed_until` | Rma | Return window deadline |
+| `sales_order` | `rma_enabled` | Rma | Whether RMA is enabled |
+
+### 5.3 Database diagram
 
 ```mermaid
 graph TB
-    subgraph "Documentation Hub"
-        README[README.md]
-        DOCS_README[docs/README.md]
+    subgraph "Magento Core Tables"
+        CUSTOMER[customer_entity]
+        QUOTE[quote]
+        ORDER[sales_order]
+        INVOICE[sales_invoice]
+        CREDITMEMO[sales_creditmemo]
     end
     
-    subgraph "Magento 2 Core Reference"
-        MAGENTO2[docs/magento2/]
-        ORDER_LIFECYCLE[magento-order-lifecycle.md]
-        PAYMENT[magento-payment-providers.md]
-        ADMIN[magento-admin.md]
-        CLI[magento-cli.md]
-        OTHER[13 other docs...]
+    subgraph "AlpineCommerce Tables"
+        LOYALTY_BAL[alpinecommerce_loyalty_balance]
+        LOYALTY_PTS[alpinecommerce_loyalty_order_points]
+        RMA_TBL[alpinecommerce_rma]
+        RMA_ITEM[alpinecommerce_rma_item]
+        EUVAT[alphacommerce_euvat_validation]
+        GDPR[alphacommerce_gdpr_consent]
     end
     
-    subgraph "AlpineCommerce Modules"
-        MODULES[docs/modules/]
-        AUTO_INVOICE[AUTO_INVOICE.md]
-        BLOG[BLOG.md]
-        OTHER_MOD[17 other docs...]
-        LIFECYCLE[alpinecommerce-order-lifecycle.md]
-    end
+    CUSTOMER --> LOYALTY_BAL
+    CUSTOMER --> GDPR
+    QUOTE --> LOYALTY_PTS
+    ORDER --> RMA_TBL
+    ORDER --> RMA_ITEM
+    ORDER --> EUVAT
     
-    subgraph "Prerequisites"
-        PREREQ[docs/prerequisites/]
-        DOCKER[docker.md]
-        PHP_OOP[php-oop.md]
-        GIT[git-github.md]
-        CI_CD[ci-cd.md]
-    end
-    
-    README --> MAGENTO2
-    README --> MODULES
-    README --> PREREQ
-    
-    DOCS_README --> ORDER_LIFECYCLE
-    DOCS_README --> PAYMENT
-    DOCS_README --> ADMIN
-    DOCS_README --> LIFECYCLE
-    DOCS_README --> AUTO_INVOICE
-    DOCS_README --> BLOG
-    DOCS_README --> DOCKER
-    DOCS_README --> PHP_OOP
+    style CUSTOMER fill:#f9f9f9
+    style QUOTE fill:#f9f9f9
+    style ORDER fill:#f9f9f9
 ```
 
-### Extension order (least to most intrusive)
+---
+
+## 6. Flows — Core vs AlpineCommerce
+
+### 6.1 Order placement flow
 
 ```mermaid
-graph LR
-    PLUGIN[Plugin<br/>Intercept method] --> OBSERVER[Observer<br/>React to event]
-    OBSERVER --> LAYOUT[Layout XML<br/>Modify structure]
-    LAYOUT --> DI_PREF[DI Preference<br/>Replace class]
-    DI_PREF --> NEW_MOD[New Module<br/>New business value]
+graph TB
+    subgraph "Magento Core"
+        C1[Customer places order] --> C2[Order saved]
+        C2 --> C3[Admin creates invoice]
+        C3 --> C4[Admin creates shipment]
+        C4 --> C5[Admin creates credit memo if needed]
+    end
     
-    style PLUGIN fill:#90EE90
-    style OBSERVER fill:#90EE90
-    style LAYOUT fill:#FFFF90
-    style DI_PREF fill:#FFCCCB
-    style NEW_MOD fill:#FFCCCB
+    subgraph "AlpineCommerce"
+        A1[Customer places order] --> A2[Order saved]
+        A2 --> A3[AutoInvoice: auto-create invoice]
+        A2 --> A4[CustomerCare: recalc VIP]
+        A2 --> A5[LoyaltyProgram: deduct points]
+        A2 --> A6[Rma: set return window]
+        A2 --> A7[StorePickup: if selected]
+        A3 --> A8[PartialInvoice: if backorders]
+        A8 --> A9[AutoShipment]
+    end
+```
+
+### 6.2 Payment flow
+
+```mermaid
+graph TB
+    subgraph "Magento Core"
+        C1[Customer selects payment] --> C2[Payment authorized]
+        C2 --> C3[Payment captured]
+        C3 --> C4[Invoice created]
+    end
+    
+    subgraph "AlpineCommerce"
+        A1[Customer selects payment] --> A2[Payment authorized]
+        A2 --> A3[AutoInvoice: auto-create invoice]
+        A3 --> A4[Payment captured]
+        A4 --> A5[LoyaltyProgram: add points]
+        A5 --> A6[Invoice created]
+    end
+```
+
+### 6.3 Customer lifecycle flow
+
+```mermaid
+graph TB
+    subgraph "Magento Core"
+        C1[Customer registers] --> C2[Customer places orders]
+        C2 --> C3[Customer lifetime value tracked in reports]
+    end
+    
+    subgraph "AlpineCommerce"
+        A1[Customer registers] --> A2[Customer places orders]
+        A2 --> A3[CustomerCare: recalc VIP level]
+        A2 --> A4[LoyaltyProgram: earn points]
+        A4 --> A5[LoyaltyProgram: discount on next order]
+        A3 --> A6[VIP benefits applied]
+    end
+```
+
+### 6.4 Return flow
+
+```mermaid
+graph TB
+    subgraph "Magento Core"
+        C1[Customer requests return] --> C2[Admin approves]
+        C2 --> C3[Admin creates credit memo]
+        C3 --> C4[Refund processed]
+    end
+    
+    subgraph "AlpineCommerce"
+        A1[Customer requests return] --> A2[Rma: validate return window]
+        A2 --> A3[Rma: create RMA record]
+        A3 --> A4[Admin approves]
+        A4 --> A5[Rma: mark received]
+        A5 --> A6[AutoCreditMemo: auto-create credit memo]
+        A6 --> A7[Refund processed]
+    end
 ```
 
 ---
 
-## 9. Module inventory — 19 modules
+## 7. What is reused as-is from Core
 
-### Stable modules (9)
+AlpineCommerce does NOT reimplement everything. The following are used **as-is** from Magento 2 Core:
 
-| Module | Purpose | Key Concepts | Status |
-|--------|---------|--------------|--------|
-| **Blog** | Blog posts & categories | CRUD, categories, tags, SEO | ✅ Stable |
-| **Faq** | FAQ management | CRUD, categories, search | ✅ Stable |
-| **LegalPages** | Legal pages CMS | CMS pages, GDPR compliance | ✅ Stable |
-| **ProductReviews** | Product reviews | Ratings, moderation, email notifications | ✅ Stable |
-| **ProductQuestions** | Product Q&A | Questions, answers, email notifications | ✅ Stable |
-| **ProductLabels** | Product labels | Label management, assignment | ✅ Stable |
-| **CustomerGrid** | Customer admin grid | Grid override, mass actions | ✅ Stable |
-| **CustomerCare** | VIP management | VIP levels, lifetime spend, plugins | ✅ Stable |
-| **StoreSetup** | Store initialization | Setup scripts, observers | ✅ Stable |
+| Area | Core component | AlpineCommerce usage |
+|------|---------------|----------------------|
+| **Order management** | `Magento_Sales` | Used directly, no modifications |
+| **Quote management** | `Magento_Quote` | Used directly, no modifications |
+| **Customer management** | `Magento_Customer` | Extended with VIP columns |
+| **Checkout** | `Magento_Checkout` | Used directly, loyalty discount via total collector |
+| **Payment** | `Magento_Payment` | Used directly, AutoInvoice triggers capture |
+| **Shipping** | `Magento_Shipping` | Extended with StorePickup carrier |
+| **Inventory** | `Magento_Inventory` (MSI) | Used directly |
+| **Catalog** | `Magento_Catalog` | Used directly for product modules |
+| **Admin grids** | `Magento_Ui` | UI Components reused for all admin pages |
+| **REST API** | `Magento_Webapi` | Service contracts exposed via webapi.xml |
+| **GraphQL** | `Magento_GraphQl` | Available but not heavily used yet |
 
-### Done modules (4)
-
-| Module | Purpose | Key Concepts | Status |
-|--------|---------|--------------|--------|
-| **AutoInvoice** | Automatic invoicing | Observer on `sales_order_place_after`, CAPTURE_ONLINE | ✅ Done |
-| **CreditMemo** | Automatic credit memos | Plugin on `Order::afterCancel()`, auto-refund | ✅ Done |
-| **PartialInvoice** | Partial invoicing | Observer on checkout success, item-level qty | ✅ Done |
-| **Rma** | Return merchandise | Custom tables, return window, admin workflow | ✅ Done |
-
-### Finalization modules (3)
-
-| Module | Purpose | Key Concepts | Status |
-|--------|---------|--------------|--------|
-| **Gdpr** | GDPR compliance | Consent log, data export, privacy | 🔄 Finalization |
-| **StorePickup** | Store pickup shipping | Carrier plugin, flatrate/freeshipping filter | 🔄 Finalization |
-| **StoreLocator** | Store locator | Map integration, search, distance calculation | 🔄 Finalization |
-
-### To be finalized modules (3)
-
-| Module | Purpose | Key Concepts | Status |
-|--------|---------|--------------|--------|
-| **LoyaltyProgram** | Loyalty points | Points earning/spending, total collector, minicart | ⏳ To be finalized |
-| **EuVat** | EU VAT validation | VIES SOAP service, CLI, REST API | ⏳ To be finalized |
-| **Hreflang** | SEO hreflang tags | Multi-store SEO, layout injection, x-default | ⏳ To be finalized |
+**Key principle**: We extend, we don't replace. Every Magento Core feature is preserved and used as the foundation.
 
 ---
 
-## 10. Documentation inventory — Complete index
+## 8. Current gaps and next steps
 
-### Magento 2 Core Reference (`docs/magento2/`)
+### 8.1 What works today
 
-| File | Lines | Topics Covered |
-|------|-------|----------------|
-| `magento-order-lifecycle.md` | 1675 | Quote → Order → Invoice → Shipment → Credit Memo |
-| `magento-payment-providers.md` | 934 | Payment methods, gateways, transactions |
-| `magento-admin.md` | 653 | ACL, menus, UI Components, system config |
-| `magento-events-observers-plugins.md` | 646 | Events, observers, plugins, preferences |
-| `magento-cli.md` | 631 | bin/magento commands, workflows |
-| `magento-components.md` | 719 | Magento architecture, request lifecycle |
-| `magento-js.md` | 849 | RequireJS, KnockoutJS, UI Components |
-| `magento-layout-templates.md` | 532 | Layout XML, blocks, templates |
-| `magento-rest-graphql.md` | 518 | REST API, GraphQL, service contracts |
-| `magento-coding-standards.md` | 589 | PSR-12, Magento conventions |
-| `magento-cron-indexers.md` | 602 | Cron jobs, indexers, MView |
-| `magento-debug.md` | 566 | Logs, Xdebug, developer mode |
-| `magento-security.md` | 533 | ACL, CSRF, XSS, validation |
-| `magento-testing.md` | 620 | Unit, integration, functional tests |
-| `magento-multistore.md` | 425 | Websites, stores, store views |
-| `magento-composer.md` | 486 | Composer, dependencies, autoload |
-| `magento-intro.md` | 715 | Magento overview, architecture, EAV |
+✅ Order auto-invoicing (full and partial)
+✅ Auto-credit memo on cancellation
+✅ Customer VIP management
+✅ Loyalty points (earning, spending, cart discount)
+✅ RMA with return windows
+✅ Store pickup shipping
+✅ Blog, FAQ, Reviews, Questions, Labels
+✅ GDPR consent tracking
+✅ EU VAT validation
+✅ Customer grid enhancements
+✅ Store setup automation
+✅ SEO hreflang tags
+✅ Legal pages CMS
+✅ Complete documentation (50+ files, 15,000+ lines)
 
-### Module Docs (`docs/modules/`)
+### 8.2 What needs work
 
-| File | Lines | Status |
-|------|-------|--------|
-| `RMA.md` | ~250 | ✅ Done |
-| `STORE_PICKUP.md` | ~189 | 🔄 Finalization |
-| `STORE_LOCATOR.md` | ~154 | 🔄 Finalization |
-| `CREDIT_MEMO.md` | ~150 | ✅ Done |
-| `PARTIAL_INVOICE.md` | ~150 | ✅ Done |
-| `LOYALTY_PROGRAM.md` | ~200 | ⏳ To be finalized |
-| `EU_VAT.md` | ~150 | ⏳ To be finalized |
-| `HREFLANG.md` | ~150 | ⏳ To be finalized |
-| `AUTO_INVOICE.md` | ~200 | ✅ Done |
-| `BLOG.md` | ~150 | ✅ Stable |
-| `CUSTOMER_CARE.md` | ~180 | ✅ Stable |
-| `CUSTOMER_GRID.md` | ~120 | ✅ Stable |
-| `FAQ.md` | ~140 | ✅ Stable |
-| `GDPR.md` | ~128 | 🔄 Finalization |
-| `LEGAL_PAGES.md` | ~160 | ✅ Stable |
-| `PRODUCT_LABELS.md` | ~130 | ✅ Stable |
-| `PRODUCT_QUESTIONS.md` | ~140 | ✅ Stable |
-| `PRODUCT_REVIEWS.md` | ~150 | ✅ Stable |
-| `STORE_SETUP.md` | ~170 | ✅ Stable |
-| `alpinecommerce-order-lifecycle.md` | 1003 | 🔄 Cross-cutting lifecycle |
+| Priority | Gap | Module | Next step |
+|----------|-----|--------|-----------|
+| **High** | LoyaltyProgram admin UI | LoyaltyProgram | Complete admin interface for points management |
+| **High** | EuVat admin UI | EuVat | Complete admin interface for validation history |
+| **High** | Hreflang SEO validation | Hreflang | Test with Google Search Console |
+| **Medium** | Automated tests | All | Add unit/integration tests |
+| **Medium** | CI/CD pipeline | All | GitHub Actions for testing |
+| **Medium** | Performance | All | Redis, Varnish, flat tables |
+| **Low** | Mobile app | All | React Native or Flutter |
+| **Low** | Microservices | All | Split into microservices |
 
-### Prerequisites (`docs/prerequisites/`)
+### 8.3 Documentation gaps
 
-| File | Topic |
-|------|-------|
-| `docker.md` | Docker installation, containers, volumes |
-| `php-oop.md` | Classes, objects, inheritance, interfaces, DI |
-| `git-github.md` | Git commands, branching, pull requests |
-| `ci-cd.md` | CI/CD concepts, GitHub Actions |
-
-### Hub Documentation
-
-| File | Purpose |
-|------|---------|
-| `README.md` | Project hub, quick links, entry points |
-| `docs/README.md` | Documentation hub, complete index |
-| `PROJECT_CHARTER.md` | Vision, philosophy, specifications v1.0 |
-| `ENGINEERING_GUIDE.md` | Standards, patterns, anti-patterns, glossary |
-| `ARCHITECTURE.md` | Magento + AlpineCommerce architecture, ADR registry |
-| `ROADMAP.md` | Product roadmap, version history |
-| `CHANGELOG.md` | Version history, fixes, sprint reports |
-| `BACKLOG.md` | Technical debt tracker |
+| Priority | Gap | Solution |
+|----------|-----|----------|
+| **High** | Module docs for Gdpr, StorePickup, StoreLocator | Finalize existing docs |
+| **Medium** | Prerequisite guides | Add missing Magento-specific guides |
+| **Low** | Video tutorials | Create video walkthroughs |
 
 ---
 
-## 11. Key decisions and lessons learned
+## Quick reference
 
-### Decision 1: Core-first documentation structure
+### By extension point
 
-**What**: All Magento 2 Core docs follow a strict Core-first, AlpineCommerce-last pattern.
+| Extension point | Count | Modules |
+|-----------------|-------|---------|
+| Observer | 7 | AutoInvoice, PartialInvoice, CreditMemo, Rma, StoreSetup, CustomerCare, Gdpr |
+| Plugin (after) | 8 | CustomerCare, LoyaltyProgram, CreditMemo, StorePickup, ProductReviews, ProductQuestions, ProductLabels, Hreflang |
+| Plugin (before) | 3 | StorePickup, StoreSetup, CustomerGrid |
+| Total Collector | 1 | LoyaltyProgram |
+| New Carrier | 1 | StorePickup |
+| New UI Component | 8 | Blog, Faq, LegalPages, ProductReviews, ProductQuestions, ProductLabels, CustomerGrid, Gdpr |
+| Service Contract | 5 | LoyaltyProgram, EuVat, Rma, CreditMemo, PartialInvoice |
+| Console Command | 1 | EuVat |
+| Layout XML | 2 | Hreflang, LoyaltyProgram |
 
-**Why**: 
-- Makes docs reusable as generic Magento 2 references
-- Prevents confusion between Magento Core and AlpineCommerce customizations
-- Allows developers to learn Magento without knowing AlpineCommerce
+### By database impact
 
-**Result**: 15 files restructured, 0 AlpineCommerce contamination in Core sections.
+| Impact | Count | Modules |
+|--------|-------|---------|
+| Custom tables | 6 | LoyaltyProgram, Rma, EuVat, Gdpr |
+| Core table extensions | 5 | CustomerCare, LoyaltyProgram, Rma, StorePickup |
+| No DB changes | 8 | Blog, Faq, LegalPages, ProductReviews, ProductQuestions, ProductLabels, Hreflang, StoreSetup |
 
-### Decision 2: Consistent 12-section module structure
+### By business domain
 
-**What**: All module docs follow the same 12-section structure.
-
-**Why**:
-- Predictable navigation
-- Easy comparison between modules
-- Complete coverage of all aspects
-
-**Result**: All 19 modules documented consistently.
-
-### Decision 3: Real source citations
-
-**What**: All technical claims cite actual Magento 2.4.8 source files.
-
-**Why**:
-- Verifiable claims
-- Builds trust with readers
-- Enables deeper exploration
-
-**Result**: Every section includes source paths like `vendor/magento/module-sales/Model/Order/Payment/Transaction.php`.
-
-### Decision 4: Generic examples in Core docs
-
-**What**: Core docs use `Vendor\Module` examples, not AlpineCommerce-specific ones.
-
-**Why**:
-- Reusable by any Magento developer
-- No dependency on AlpineCommerce
-- Clear distinction between Core and custom
-
-**Result**: Docs serve as universal Magento 2 references.
-
-### Decision 5: AlpineCommerce Reference section at end
-
-**What**: Each Core doc ends with an "AlpineCommerce Reference" section.
-
-**Why**:
-- Shows real-world application of Magento concepts
-- Provides project-specific context
-- Keeps Core content pure
-
-**Result**: Best of both worlds — Core reference + project examples.
-
-### Decision 6: Complete README overhaul
-
-**What**: Rewrote both README.md files from scratch.
-
-**Why**:
-- Old READMEs were outdated and broken
-- No navigation or discovery
-- Missing critical information
-
-**Result**: Professional, navigable documentation hub with 0 broken links.
-
-### Decision 7: Mermaid diagrams
-
-**What**: Added ASCII and Mermaid diagrams throughout docs.
-
-**Why**:
-- Visual understanding of complex flows
-- Architecture overview at a glance
-- Better retention of information
-
-**Result**: Documentation is more accessible and easier to understand.
-
-### Lessons learned
-
-1. **Documentation is as important as code**: A well-documented project is 10x more valuable than an undocumented one.
-
-2. **Structure matters**: Consistent structure across all docs makes them predictable and easy to navigate.
-
-3. **Source verification is critical**: Never make claims without verifying against actual source code.
-
-4. **Core vs Custom separation**: Clear separation between Magento Core and project-specific code prevents confusion.
-
-5. **Links are fragile**: Documentation links break frequently. Regular audits are necessary.
-
-6. **Iterative improvement**: Start with structure, then refine content. Don't try to perfect everything at once.
-
-7. **Background agents are powerful**: Using subagents for large tasks (like restructuring 13 files) accelerates work significantly.
-
----
-
-## Quick reference — What we have now
-
-### By the numbers
-
-- **19** AlpineCommerce modules
-- **17** Magento 2 Core reference docs
-- **4** Prerequisite guides
-- **7** Hub documentation files
-- **50+** Total documentation files
-- **15,000+** Total lines of documentation
-- **0** Broken links
-- **0** AlpineCommerce contamination in Core docs
-- **14** Git commits
-- **2** Protected files (unchanged)
-
-### By status
-
-- ✅ **Complete**: 9 stable modules, 4 done modules, all Core docs, all prerequisites
-- 🔄 **In finalization**: 3 modules (Gdpr, StorePickup, StoreLocator)
-- ⏳ **To be finalized**: 3 modules (LoyaltyProgram, EuVat, Hreflang)
-
-### By quality
-
-- ✅ Core-first structure verified
-- ✅ AlpineCommerce isolated to reference sections
-- ✅ All sources verified against actual code
-- ✅ All links verified (0 broken)
-- ✅ Markdown integrity validated
-- ✅ Cross-document consistency checked
+| Domain | Modules | Count |
+|--------|---------|-------|
+| **Order management** | AutoInvoice, PartialInvoice, CreditMemo, Rma | 4 |
+| **Customer management** | CustomerCare, LoyaltyProgram, CustomerGrid | 3 |
+| **Content** | Blog, Faq, LegalPages, ProductLabels | 4 |
+| **Marketing** | ProductReviews, ProductQuestions, Hreflang | 3 |
+| **Compliance** | Gdpr, EuVat | 2 |
+| **Shipping** | StorePickup, StoreLocator | 2 |
+| **Infrastructure** | StoreSetup, HealthCheck, Test | 3 |
 
 ---
 
 *Last updated: 2026-09-07*
-*This document is the single source of truth for understanding the AlpineCommerce project state, history, and roadmap.*
+*This document explains the "why" behind every AlpineCommerce custom module and how it extends Magento 2 Core.*
