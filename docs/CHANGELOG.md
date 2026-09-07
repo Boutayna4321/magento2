@@ -16,6 +16,33 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.7.0] - 2026-09-07
+
+### Added (LoyaltyProgram Admin UI)
+
+- `AlpineCommerce_LoyaltyProgram`: complete admin interface for loyalty balance management
+  - **Admin Menu**: Customers → Loyalty Balances (`loyalty/balance/index`)
+  - **Admin Route**: `/admin/loyalty/balance` (frontName: `loyalty`)
+  - **Balance Grid**: lists customer_id, name, email, points, updated_at with View action column
+  - **Balance View Page**: customer details with points history (order_id, type, points, created_at)
+  - **Manual Adjustment**: earn/deduct points via POST form with form key validation
+  - **ACL Resources**: `AlpineCommerce_LoyaltyProgram::balance` (view), `AlpineCommerce_LoyaltyProgram::adjust` (modify)
+  - **Atomic Transactions**: balance mutations wrapped in database transactions
+- Security features: ACL on all controllers, `(int)` cast on customer_id, `$block->escapeHtml()`, form key enforcement
+
+### Fixed
+
+- `loyalty_order_points_listing.xml`: removed invalid `<option>` element, used `component="Magento_Ui/js/grid/columns/select"`
+- `view.phtml`: corrected `getEntityId()` → `getId()` for Customer data object
+- `ViewAction.php`: hardcoded URL path replaced with `UrlInterface` injection
+
+### Updated
+
+- `docs/modules/LOYALTY_PROGRAM.md`: status changed to ✅ Stable, Admin section updated with new UI features
+- `docs/README.md`: LoyaltyProgram status changed to "✅ Done"
+
+---
+
 ## [1.6.7] - 2026-08-11
 
 ### Added (Testing in Magento prerequisite guide)

@@ -122,7 +122,7 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
 | Gdpr | [`GDPR.md`](docs/modules/GDPR.md) | 🔄 Finalization |
 | StorePickup | [`STORE_PICKUP.md`](docs/modules/STORE_PICKUP.md) | 🔄 Finalization |
 | StoreLocator | [`STORE_LOCATOR.md`](docs/modules/STORE_LOCATOR.md) | 🔄 Finalization |
-| LoyaltyProgram | [`LOYALTY_PROGRAM.md`](docs/modules/LOYALTY_PROGRAM.md) | ⏳ To be finalized |
+| LoyaltyProgram | [`LOYALTY_PROGRAM.md`](docs/modules/LOYALTY_PROGRAM.md) | ✅ Done |
 | EuVat | [`EU_VAT.md`](docs/modules/EU_VAT.md) | ⏳ To be finalized |
 | Hreflang | [`HREFLANG.md`](docs/modules/HREFLANG.md) | ⏳ To be finalized |
 

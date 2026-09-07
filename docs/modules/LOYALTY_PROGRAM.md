@@ -1,6 +1,6 @@
 # AlpineCommerce_LoyaltyProgram Module — Loyalty Program
 
-> **Status**: 🔄 In finalization (v1.4.0)
+> **Status**: ✅ Stable (v1.7.0)
 
 ## 1. Responsibility
 
@@ -17,7 +17,7 @@ and incentive messaging.
 | **Minicart** | Plugin on `Magento\Checkout\Block\Cart\Sidebar` |
 | **Customer balance page** | Frontend route `/loyalty/customer/balance` |
 | **REST API** | `POST /V1/carts/mine/loyalty-points` (`setPointsUsed`) |
-| **Admin** | System config only; no admin interface in v1.0 |
+| **Admin** | Menu Customers → Loyalty Balances, balance grid, points history, manual adjustment |
 
 ## 3. Architecture
 
@@ -32,8 +32,20 @@ AlpineCommerce/LoyaltyProgram/
 │   └── Customer/
 │       └── Balance.php                  # customer balance page
 ├── Controller/
+│   ├── Adminhtml/
+│   │   └── Balance/
+│   │       ├── Index.php               # /admin/loyalty/balance/index
+│   │       ├── View.php               # /admin/loyalty/balance/view
+│   │       └── Adjust.php             # POST adjust points
 │   └── Customer/
-│       └── Balance.php                  # /loyalty/customer/balance
+│       └── Balance.php                # /loyalty/customer/balance
+├── Ui/
+│   ├── Component/
+│   │   └── Listing/
+│   │       └── Column/
+│   │           └── ViewAction.php     # View column for balance grid
+│   └── DataProvider/
+│       └── Balance.php                # DataProvider for loyalty_balance_listing
 ├── Model/
 │   ├── Checkout/
 │   │   ├── LoyaltyCartManagement.php    # setPointsUsed()
@@ -62,8 +74,10 @@ AlpineCommerce/LoyaltyProgram/
 │   └── Handler/
 │       └── Loyalty.php
 ├── etc/
-│   ├── acl.xml                          # main > config
+│   ├── acl.xml                          # main > config > loyalty balance
 │   ├── adminhtml/
+│   │   ├── menu.xml                    # Customers → Loyalty Balances
+│   │   ├── routes.xml                  # admin frontName: loyalty
 │   │   └── system.xml                   # enable + discount_sort_order
 │   ├── config.xml                       # defaults
 │   ├── db_schema.xml                    # ALPINECOMMERCE_LOYALTY_*
@@ -76,6 +90,15 @@ AlpineCommerce/LoyaltyProgram/
 │   ├── sales.xml                        # total collector registration
 │   └── webapi.xml                       # POST /V1/carts/mine/loyalty-points
 └── view/
+    ├── adminhtml/
+    │   ├── layout/
+    │   │   ├── loyalty_balance_index.xml  # Balance grid page
+    │   │   └── loyalty_balance_view.xml  # Balance view + history page
+    │   ├── templates/
+    │   │   └── balance/view.phtml        # Balance detail template
+    │   └── ui_component/
+    │       ├── loyalty_balance_listing.xml        # Balance grid
+    │       └── loyalty_order_points_listing.xml  # Points history grid
     └── frontend/
         ├── layout/
         │   ├── checkout_index_index.xml
@@ -101,8 +124,13 @@ AlpineCommerce/LoyaltyProgram/
 
 ## 6. Admin
 
+- **Menu**: Customers → Loyalty Balances (`loyalty/balance/index`)
+- **Route**: `/admin/loyalty/balance` (frontName: `loyalty`)
 - **Stores > Configuration > Sales > Loyalty Program**: enable flag + discount sort order (per website/store view)
-- No admin grid or interface in v1.0
+- **Balance Grid**: lists customer_id, name, email, points, updated_at with View action
+- **Balance View**: customer details, points history (order_id, type, points, created_at)
+- **Manual Adjustment**: earn/deduct points via POST form with transaction safety
+- **ACL Resources**: `AlpineCommerce_LoyaltyProgram::balance` (view), `AlpineCommerce_LoyaltyProgram::adjust` (modify)
 
 ## 7. Frontend
 
@@ -133,7 +161,7 @@ No dedicated command.
 | — | Legacy files `Setup/InstallSchema.php` / `InstallData.php` | ✅ Fixed — removed |
 | — | Legacy in-memory repository | ✅ Fixed — removed |
 | — | Observer-to-plugin conversion complete | ✅ Done — invoice/order hooks now use plugins |
-| — | Transactions / complete admin interface | 📋 v1.1 — `ROADMAP.md` |
+| — | Transactions / complete admin interface | ✅ Done — atomic balance mutations with transaction safety |
 
 ## 11. Magento concepts taught
 
@@ -143,10 +171,14 @@ No dedicated command.
 - **Config providers** (`CompositeConfigProvider` for checkout JS)
 - **Service classes** (no Helper anti-pattern)
 - **Database schema** (`db_schema.xml` with referenceId prefix)
+- **Admin UI Components** (listing, dataSource, columns, actions)
+- **Admin menu & routes** (`adminhtml/menu.xml`, `adminhtml/routes.xml`)
+- **ACL resources** (`acl.xml` with hierarchical permissions)
+- **Atomic transactions** (balance mutations with transaction safety)
 
 ## 12. Validation & status
 
-- **Status**: 🔄 In finalization — functional core validated (Sprint 6), admin interface to complete
+- **Status**: ✅ Stable — functional core validated (Sprint 6), admin UI completed (v1.7.0)
 
 ---
 

@@ -121,7 +121,7 @@ responsibility, scope, architecture, API, decisions, and known bugs.
 | Gdpr | [`GDPR.md`](modules/GDPR.md) | 🔄 Finalization |
 | StorePickup | [`STORE_PICKUP.md`](modules/STORE_PICKUP.md) | 🔄 Finalization |
 | StoreLocator | [`STORE_LOCATOR.md`](modules/STORE_LOCATOR.md) | 🔄 Finalization |
-| LoyaltyProgram | [`LOYALTY_PROGRAM.md`](modules/LOYALTY_PROGRAM.md) | ⏳ To be finalized |
+| LoyaltyProgram | [`LOYALTY_PROGRAM.md`](modules/LOYALTY_PROGRAM.md) | ✅ Done |
 | EuVat | [`EU_VAT.md`](modules/EU_VAT.md) | ⏳ To be finalized |
 | Hreflang | [`HREFLANG.md`](modules/HREFLANG.md) | ⏳ To be finalized |
 
