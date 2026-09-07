@@ -5,6 +5,18 @@
     <preference for="AlpineCommerce\StorePickup\Api\StoreAvailabilityInterface" type="AlpineCommerce\StorePickup\Model\StoreAvailability"/>
     <preference for="AlpineCommerce\StorePickup\Api\StorePickupCartManagementInterface" type="AlpineCommerce\StorePickup\Model\Checkout\StorePickupCartManagement"/>
 
+    <virtualType name="StorePickupFormDataProviderCollection" type="AlpineCommerce\StorePickup\Model\ResourceModel\StoreInfo\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">alphacommerce_pickup_store_info</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="AlpineCommerce\StorePickup\Ui\DataProvider\StoreInfoFormDataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object">StorePickupFormDataProviderCollection</argument>
+        </arguments>
+    </type>
+
     <type name="Magento\OfflineShipping\Model\Carrier\Flatrate">
         <plugin name="alpinecommerce_filter_flatrate"
                 type="AlpineCommerce\StorePickup\Plugin\Shipping\FilterFlatRate"

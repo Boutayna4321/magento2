@@ -5,7 +5,7 @@ namespace AlpineCommerce\StorePickup\Ui\DataProvider;
 
 use AlpineCommerce\StorePickup\Api\Data\StoreInfoInterfaceFactory;
 use AlpineCommerce\StorePickup\Api\StoreInfoRepositoryInterface;
-use AlpineCommerce\StorePickup\Model\ResourceModel\StoreInfo\CollectionFactory;
+use AlpineCommerce\StorePickup\Model\ResourceModel\StoreInfo\Collection;
 use Magento\Framework\App\RequestInterface;
 use Magento\Ui\DataProvider\ModifierPoolDataProvider;
 
@@ -19,13 +19,13 @@ class StoreInfoFormDataProvider extends ModifierPoolDataProvider
         $requestFieldName,
         StoreInfoRepositoryInterface $storeInfoRepository,
         StoreInfoInterfaceFactory $storeInfoFactory,
-        CollectionFactory $collectionFactory,
+        Collection $collection,
         RequestInterface $request,
         array $meta = [],
         array $data = []
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
-        $this->collection = $collectionFactory->create();
+        $this->collection = $collection;
         $this->storeInfoRepository = $storeInfoRepository;
         $this->storeInfoFactory = $storeInfoFactory;
         $this->request = $request;
