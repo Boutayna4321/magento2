@@ -118,9 +118,9 @@ responsibility, scope, architecture, API, decisions, and known bugs.
 | CreditMemo | [`CREDIT_MEMO.md`](modules/CREDIT_MEMO.md) | ✅ Done |
 | PartialInvoice | [`PARTIAL_INVOICE.md`](modules/PARTIAL_INVOICE.md) | ✅ Done |
 | Rma | [`RMA.md`](modules/RMA.md) | ✅ Done |
-| Gdpr | [`GDPR.md`](modules/GDPR.md) | 🔄 Finalization |
-| StorePickup | [`STORE_PICKUP.md`](modules/STORE_PICKUP.md) | 🔄 Finalization |
-| StoreLocator | [`STORE_LOCATOR.md`](modules/STORE_LOCATOR.md) | 🔄 Finalization |
+| Gdpr | [`GDPR.md`](modules/GDPR.md) | ✅ Done |
+| StorePickup | [`STORE_PICKUP.md`](modules/STORE_PICKUP.md) | ✅ Done |
+| StoreLocator | [`STORE_LOCATOR.md`](modules/STORE_LOCATOR.md) | ✅ Done |
 | LoyaltyProgram | [`LOYALTY_PROGRAM.md`](modules/LOYALTY_PROGRAM.md) | ✅ Done |
 | EuVat | [`EU_VAT.md`](modules/EU_VAT.md) | ⏳ To be finalized |
 | Hreflang | [`HREFLANG.md`](modules/HREFLANG.md) | ⏳ To be finalized |

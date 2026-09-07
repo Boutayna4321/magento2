@@ -36,9 +36,9 @@ These modules have a functional core and need an admin interface to be usable in
 
 | Order | Module | Description | Status | Finalization sprint |
 |---|---|---|---|---|
-| 1 | `AlpineCommerce_Gdpr` | GDPR consent management and user rights | 🔄 Code done — Magento validation pending | Sprint 1 |
-| 2 | `AlpineCommerce_StorePickup` | Store pickup option for orders | 🔄 Code done — Magento validation pending | Sprint 2 |
-| 3 | `AlpineCommerce_StoreLocator` | Physical store locator | 🔄 Code done — Magento validation pending | Sprint 3 |
+| 1 | `AlpineCommerce_Gdpr` | GDPR consent management and user rights | ✅ Stable — Admin UI completed | Sprint 1 |
+| 2 | `AlpineCommerce_StorePickup` | Store pickup option for orders | ✅ Stable — Admin UI completed | Sprint 2 |
+| 3 | `AlpineCommerce_StoreLocator` | Physical store locator | ✅ Stable — Admin UI completed | Sprint 3 |
 | 4 | `AlpineCommerce_LoyaltyProgram` | Loyalty program (earn/spend points) | ✅ Stable — Admin UI completed v1.7.0 | Sprint 4 |
 | 5 | `AlpineCommerce_EuVat` | European VAT validation via VIES service | ⏳ To be finalized | Sprint 5 |
 | 6 | `AlpineCommerce_Hreflang` | Hreflang tags for multi-store SEO | ⏳ To be finalized | Sprint 6 |

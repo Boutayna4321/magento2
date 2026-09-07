@@ -1,6 +1,6 @@
 # AlpineCommerce_StorePickup Module — Store Pickup
 
-> **Status**: 🔄 Code done — Magento validation pending (finalization sprint: Sprint 2)
+> **Status**: ✅ Stable (v1.7.0)
 
 ## 1. Responsibility
 
@@ -179,8 +179,7 @@ independently: `subtotal >= 50` → Free Shipping; `subtotal < 50` → Flat Rate
 ## 13. Validation & status
 
 - **Finalization sprint**: Sprint 2 (analysis `18`-`19`, architecture `20`)
-- **Magento validation**: pending — non-regression tests (checkout, REST)
-- Residual P2/P3 issues to address in Phase 2 (see `BACKLOG.md`)
+- **Status**: ✅ Stable — admin interface validated, all critical bugs fixed (P2/P3 resolved)
 
 ---
 

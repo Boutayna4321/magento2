@@ -1,6 +1,6 @@
 # AlpineCommerce_StoreLocator Module — Store Locator
 
-> **Status**: 🔄 Code done — Magento validation pending (finalization sprint: Sprint 3)
+> **Status**: ✅ Stable (v1.7.0)
 
 ## 1. Responsibility
 
@@ -142,9 +142,7 @@ No dedicated command.
 
 - **Finalization sprint**: Sprint 3 (analysis `22`-`23`, architecture `24`, review `26`,
   fixes `27`)
-- **Review verdict**: functionally OK v1.0 (code review complete)
-- **Magento validation**: pending — non-regression tests (frontend routes, admin
-  CRUD, filters) are part of global validation (Sprint 5)
+- **Status**: ✅ Stable — functionally validated, all critical bugs fixed
 
 ---
 

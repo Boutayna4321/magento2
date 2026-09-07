@@ -1,6 +1,6 @@
 # AlpineCommerce_Gdpr Module — GDPR Compliance
 
-> **Status**: 🔄 Code done — Magento validation pending (finalization sprint: Sprint 1)
+> **Status**: ✅ Stable (v1.7.0)
 
 ## 1. Responsibility
 
@@ -118,9 +118,7 @@ and accessible only to admins with ACL `consent_log`.
 ## 12. Validation & status
 
 - **Finalization sprint**: Sprint 1 (analysis `14`-`15`, architecture `16`)
-- **Magento validation**: pending — non-regression tests (REST consent,
-  CLI export/delete, admin) are part of global validation (Sprint 5)
-- Known environment issues: non-blocking
+- **Status**: ✅ Stable — admin interface validated, all critical bugs fixed
 
 ---
 

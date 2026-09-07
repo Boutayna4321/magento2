@@ -119,9 +119,9 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
 | CreditMemo | [`CREDIT_MEMO.md`](docs/modules/CREDIT_MEMO.md) | ✅ Done |
 | PartialInvoice | [`PARTIAL_INVOICE.md`](docs/modules/PARTIAL_INVOICE.md) | ✅ Done |
 | Rma | [`RMA.md`](docs/modules/RMA.md) | ✅ Done |
-| Gdpr | [`GDPR.md`](docs/modules/GDPR.md) | 🔄 Finalization |
-| StorePickup | [`STORE_PICKUP.md`](docs/modules/STORE_PICKUP.md) | 🔄 Finalization |
-| StoreLocator | [`STORE_LOCATOR.md`](docs/modules/STORE_LOCATOR.md) | 🔄 Finalization |
+| Gdpr | [`GDPR.md`](docs/modules/GDPR.md) | ✅ Done |
+| StorePickup | [`STORE_PICKUP.md`](docs/modules/STORE_PICKUP.md) | ✅ Done |
+| StoreLocator | [`STORE_LOCATOR.md`](docs/modules/STORE_LOCATOR.md) | ✅ Done |
 | LoyaltyProgram | [`LOYALTY_PROGRAM.md`](docs/modules/LOYALTY_PROGRAM.md) | ✅ Done |
 | EuVat | [`EU_VAT.md`](docs/modules/EU_VAT.md) | ⏳ To be finalized |
 | Hreflang | [`HREFLANG.md`](docs/modules/HREFLANG.md) | ⏳ To be finalized |

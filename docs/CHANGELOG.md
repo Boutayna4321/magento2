@@ -41,6 +41,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 - `docs/modules/LOYALTY_PROGRAM.md`: status changed to ✅ Stable, Admin section updated with new UI features
 - `docs/README.md`: LoyaltyProgram status changed to "✅ Done"
 
+### Finalized (All modules now Stable)
+
+- `AlpineCommerce_Gdpr`: Status ✅ Stable — admin interface (consent log, export) validated
+- `AlpineCommerce_StorePickup`: Status ✅ Stable — admin CRUD validated, shipping filters working
+- `AlpineCommerce_StoreLocator`: Status ✅ Stable — admin CRUD + frontend validated
+- Updated `docs/modules/GDPR.md`, `docs/modules/STORE_PICKUP.md`, `docs/modules/STORE_LOCATOR.md`
+- Updated `docs/README.md`, `README.md`, `docs/ROADMAP.md` with new statuses
+
 ---
 
 ## [1.6.7] - 2026-08-11
