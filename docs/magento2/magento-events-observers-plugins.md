@@ -154,7 +154,7 @@ Return to caller
 
 **Source**: `vendor/magento/framework/Interception/Interceptor.php` — the generated interceptor class that wraps original methods.
 
-**Official documentation**: [Plugins (Interceptors)](https://developer.adobe.com/commerce/php/architecture/modules/extension-attributes/plugins/)
+**Official documentation**: [Plugins (Interceptors)](https://developer.adobe.com/commerce/php/development/components/plugins)
 
 ### 3.2 Plugin types
 
@@ -624,7 +624,7 @@ built on top of Magento 2 Core extension mechanisms.
 |-------|------|
 | Extend Magento | [developer.adobe.com/commerce/php/architecture/modules/extension-attributes/](https://developer.adobe.com/commerce/php/architecture/modules/extension-attributes/) |
 | Events and Observers | [developer.adobe.com/commerce/php/architecture/event-driven-architecture/](https://developer.adobe.com/commerce/php/architecture/event-driven-architecture/) |
-| Plugins (Interceptors) | [developer.adobe.com/commerce/php/architecture/modules/extension-attributes/plugins/](https://developer.adobe.com/commerce/php/architecture/modules/extension-attributes/plugins/) |
+| Plugins (Interceptors) | [developer.adobe.com/commerce/php/architecture/modules/extension-attributes/plugins/](https://developer.adobe.com/commerce/php/development/components/plugins) |
 | Dependency Injection | [developer.adobe.com/commerce/php/architecture/modules/di/](https://developer.adobe.com/commerce/php/architecture/modules/di/) |
 | Module Configuration | [developer.adobe.com/commerce/php/architecture/modules/module-configuration/](https://developer.adobe.com/commerce/php/architecture/modules/module-configuration/) |
 | Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
