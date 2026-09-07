@@ -1,0 +1,100 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig */
+/** @var \Magento\Store\Model\StoreManagerInterface $storeManager */
+$scopeConfig = $block->getLayout()->createBlock(\Magento\Framework\View\Element\Context::class)->getScopeConfig();
+$storeManager = $block->getLayout()->createBlock(\Magento\Framework\View\Element\Context::class)->getStoreManager();
+
+$enabledPath = 'alphacommerce_hreflang/general/enabled';
+$xDefaultPath = 'alphacommerce_hreflang/general/x_default';
+?>
+<div class="admin__scope-old">
+    <div class="page-actions">
+        <div class="page-actions-inner">
+            <div class="page-actions-buttons">
+                <a href="<?= $block->escapeUrl($block->getUrl('adminhtml/system_config/edit/section/alphacommerce_hreflang')) ?>"
+                   class="action-default primary">
+                    <span><?= $block->escapeHtml(__('Go to Configuration')) ?></span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <fieldset class="admin__fieldset">
+        <legend class="admin__legend">
+            <span><?= $block->escapeHtml(__('Hreflang Module Information')) ?></span>
+        </legend>
+
+        <div class="admin__field">
+            <label class="admin__field-label">
+                <span><?= $block->escapeHtml(__('Module')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <strong>AlpineCommerce_Hreflang</strong>
+            </div>
+        </div>
+
+        <div class="admin__field">
+            <label class="admin__field-label">
+                <span><?= $block->escapeHtml(__('Purpose')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <?= $block->escapeHtml(__('Automatic generation of hreflang tags for multi-store SEO')) ?>
+            </div>
+        </div>
+
+        <div class="admin__field">
+            <label class="admin__field-label">
+                <span><?= $block->escapeHtml(__('Features')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li><?= $block->escapeHtml(__('Automatic hreflang tag injection in page head')) ?></li>
+                    <li><?= $block->escapeHtml(__('Multi-store support (one tag per active store view)')) ?></li>
+                    <li><?= $block->escapeHtml(__('x-default link support')) ?></li>
+                    <li><?= $block->escapeHtml(__('Per-store-view configuration')) ?></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="admin__field">
+            <label class="admin__field-label">
+                <span><?= $block->escapeHtml(__('Configuration Path')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <code>Stores > Configuration > General > Hreflang</code>
+            </div>
+        </div>
+
+        <div class="admin__field">
+            <label class="admin__field-label">
+                <span><?= $block->escapeHtml(__('Active Stores')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <?php
+                $stores = $storeManager->getStores();
+                $activeStores = [];
+                foreach ($stores as $store) {
+                    if ($store->getIsActive()) {
+                        $activeStores[] = $store->getName() . ' (' . $store->getCode() . ')';
+                    }
+                }
+                echo $block->escapeHtml(implode(', ', $activeStores));
+                ?>
+            </div>
+        </div>
+
+        <div class="admin__field">
+            <label class="admin__field-label">
+                <span><?= $block->escapeHtml(__('Frontend Output')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <code>
+                    &lt;link rel="alternate" hreflang="fr-FR" href="..."&gt;<br/>
+                    &lt;link rel="alternate" hreflang="en-GB" href="..."&gt;<br/>
+                    &lt;link rel="alternate" hreflang="x-default" href="..."&gt;
+                </code>
+            </div>
+        </div>
+    </fieldset>
+</div>

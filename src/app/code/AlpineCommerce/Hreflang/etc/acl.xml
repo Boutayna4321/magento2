@@ -7,6 +7,9 @@
                 <resource id="AlpineCommerce_Hreflang::config"
                           title="Hreflang Configuration"
                           sortOrder="10"/>
+                <resource id="AlpineCommerce_Hreflang::settings"
+                          title="Hreflang Settings"
+                          sortOrder="20"/>
             </resource>
         </resources>
     </acl>

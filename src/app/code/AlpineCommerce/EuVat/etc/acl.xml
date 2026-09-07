@@ -7,6 +7,16 @@
                 <resource id="AlpineCommerce_EuVat::config"
                           title="EU VAT Configuration"
                           sortOrder="10"/>
+                <resource id="AlpineCommerce_EuVat::validation"
+                          title="EU VAT Validation"
+                          sortOrder="20">
+                    <resource id="AlpineCommerce_EuVat::validation_history"
+                              title="Validation History"
+                              sortOrder="10"/>
+                    <resource id="AlpineCommerce_EuVat::validation_validate"
+                              title="Manual Validation"
+                              sortOrder="20"/>
+                </resource>
             </resource>
         </resources>
     </acl>

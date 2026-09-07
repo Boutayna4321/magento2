@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="styles"/>
+    <body>
+        <referenceContainer name="content">
+            <container name="euvat.validate.form">
+                <block class="Magento\Backend\Block\Widget\Form\Element\Element" name="euvat_validate_form"/>
+            </container>
+            <block class="Magento\Backend\Block\Template" template="AlpineCommerce_EuVat::validation/validate.phtml"
+                   name="euvat_validate_template">
+                <arguments>
+                    <argument name="validation_result" xsi:type="array"/>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

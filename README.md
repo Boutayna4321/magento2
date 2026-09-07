@@ -123,8 +123,8 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
 | StorePickup | [`STORE_PICKUP.md`](docs/modules/STORE_PICKUP.md) | ✅ Done |
 | StoreLocator | [`STORE_LOCATOR.md`](docs/modules/STORE_LOCATOR.md) | ✅ Done |
 | LoyaltyProgram | [`LOYALTY_PROGRAM.md`](docs/modules/LOYALTY_PROGRAM.md) | ✅ Done |
-| EuVat | [`EU_VAT.md`](docs/modules/EU_VAT.md) | ⏳ To be finalized |
-| Hreflang | [`HREFLANG.md`](docs/modules/HREFLANG.md) | ⏳ To be finalized |
+| EuVat | [`EU_VAT.md`](docs/modules/EU_VAT.md) | ✅ Done |
+| Hreflang | [`HREFLANG.md`](docs/modules/HREFLANG.md) | ✅ Done |
 
 ### Cross-Cutting Documentation
 

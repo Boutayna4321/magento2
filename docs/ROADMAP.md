@@ -40,8 +40,8 @@ These modules have a functional core and need an admin interface to be usable in
 | 2 | `AlpineCommerce_StorePickup` | Store pickup option for orders | ✅ Stable — Admin UI completed | Sprint 2 |
 | 3 | `AlpineCommerce_StoreLocator` | Physical store locator | ✅ Stable — Admin UI completed | Sprint 3 |
 | 4 | `AlpineCommerce_LoyaltyProgram` | Loyalty program (earn/spend points) | ✅ Stable — Admin UI completed v1.7.0 | Sprint 4 |
-| 5 | `AlpineCommerce_EuVat` | European VAT validation via VIES service | ⏳ To be finalized | Sprint 5 |
-| 6 | `AlpineCommerce_Hreflang` | Hreflang tags for multi-store SEO | ⏳ To be finalized | Sprint 6 |
+| 5 | `AlpineCommerce_EuVat` | European VAT validation via VIES service | ✅ Stable — Admin UI completed v1.7.0 | Sprint 5 |
+| 6 | `AlpineCommerce_Hreflang` | Hreflang tags for multi-store SEO | ✅ Stable — Admin UI completed v1.7.0 | Sprint 6 |
 | 7 | `AlpineCommerce_StoreSetup` | Store setup (configuration, observers, store views) | ✅ Stable | — |
 
 > **Status note**: for Gdpr, StorePickup and StoreLocator, the admin interface

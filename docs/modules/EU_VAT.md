@@ -1,6 +1,6 @@
 # AlpineCommerce_EuVat Module — European VAT Validation
 
-> **Status**: 🔄 In finalization (v1.0.0)
+> **Status**: ✅ Stable (v1.7.0)
 
 ## 1. Responsibility
 
@@ -15,6 +15,7 @@ Exchange System, SOAP request), with CLI command, REST API, and admin configurat
 | **CLI** | `alphacommerce:euvat:validate` command |
 | **REST API** | POST/GET validation endpoints |
 | **Admin configuration** | Activation, WSDL URL, timeout |
+| **Admin UI** | Validation history grid, manual validation form |
 | **Validation history** | Stores results in `alphacommerce_euvat_validation` |
 | **i18n** | French translation |
 
@@ -31,6 +32,11 @@ AlpineCommerce/EuVat/
 ├── Console/
 │   └── Command/
 │       └── ValidateVatCommand.php       # alphacommerce:euvat:validate
+├── Controller/
+│   └── Adminhtml/
+│       └── Validation/
+│           ├── Index.php                # Validation history listing
+│           └── Validate.php             # Manual VAT validation form
 ├── Model/
 │   ├── ResourceModel/
 │   │   ├── VatValidation.php
@@ -39,14 +45,34 @@ AlpineCommerce/EuVat/
 │   ├── VatValidation.php                # model
 │   ├── VatValidationRepository.php      # repository implementation
 │   └── VatValidationService.php         # business logic
+├── Ui/
+│   ├── Component/
+│   │   └── Listing/
+│   │       └── Column/
+│   │           └── ValidationActions.php # View action column
+│   └── DataProvider/
+│       └── ValidationDataProvider.php    # Listing data provider
 ├── etc/
-│   ├── acl.xml                          # config ACL
+│   ├── acl.xml                          # config, validation, validation_history, validation_validate
+│   ├── adminhtml/
+│   │   ├── menu.xml                     # Sales → EU VAT Validation
+│   │   └── routes.xml                   # frontName: euvat
 │   ├── config.xml                       # defaults
 │   ├── db_schema.xml                    # alphacommerce_euvat_validation
 │   ├── di.xml                           # preferences + SOAP client
 │   ├── module.xml
 │   ├── system.xml                       # admin config
 │   └── webapi.xml                       # REST routes
+├── view/
+│   └── adminhtml/
+│       ├── layout/
+│       │   ├── euvat_validation_index.xml
+│       │   └── euvat_validation_validate.xml
+│       ├── templates/
+│       │   └── validation/
+│       │       └── validate.phtml       # Manual validation form
+│       └── ui_component/
+│           └── euvat_validation_listing.xml
 └── registration.php
 ```
 
@@ -67,7 +93,12 @@ Index: `country_id + vat_number` (unique lookup)
 
 ## 6. Admin
 
+- **Menu**: Sales → EU VAT Validation (History, Validate VAT)
+- **Route**: `/admin/euvat/validation` (frontName: `euvat`)
+- **Validation History Grid**: lists country_id, vat_number, is_valid, name, request_date, created_at
+- **Manual Validation Form**: country selection, VAT number input, VIES validation
 - **Stores > Configuration > General > EU VAT**: enable flag, VIES WSDL URL, request timeout (per store view)
+- **ACL Resources**: `AlpineCommerce_EuVat::config`, `AlpineCommerce_EuVat::validation`, `AlpineCommerce_EuVat::validation_history`, `AlpineCommerce_EuVat::validation_validate`
 
 ## 7. Frontend
 
@@ -92,7 +123,7 @@ No dedicated frontend.
 
 | # | Problem | Status |
 |---|---|---|
-| — | Complete admin interface to finalize | 📋 v1.1 — `ROADMAP.md` |
+| — | Admin interface | ✅ Done — validation history grid + manual validation form |
 
 ## 11. Magento concepts taught
 
@@ -101,10 +132,14 @@ No dedicated frontend.
 - System configuration (`system.xml`)
 - Service contracts + Repository pattern
 - REST API with anonymous access
+- **Admin UI Components** (listing, dataSource, columns, actions)
+- **Admin menu & routes** (`adminhtml/menu.xml`, `adminhtml/routes.xml`)
+- **ACL resources** (hierarchical permissions)
+- **Data persistence forms** (manual validation)
 
 ## 12. Validation & status
 
-- **Status**: 🔄 In finalization — global validation OK (Sprint 6), admin finalization planned
+- **Status**: ✅ Stable — admin UI completed (v1.7.0)
 
 ---
 

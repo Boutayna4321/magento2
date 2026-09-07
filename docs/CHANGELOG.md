@@ -49,6 +49,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 - Updated `docs/modules/GDPR.md`, `docs/modules/STORE_PICKUP.md`, `docs/modules/STORE_LOCATOR.md`
 - Updated `docs/README.md`, `README.md`, `docs/ROADMAP.md` with new statuses
 
+### Added (EuVat & Hreflang Admin UIs)
+
+- `AlpineCommerce_EuVat`: Complete admin interface
+  - **Admin Menu**: Sales → EU VAT Validation
+  - **Validation History Grid**: country_id, vat_number, is_valid, name, request_date, created_at
+  - **Manual Validation Form**: VIES SOAP validation with result display
+  - **ACL Resources**: validation, validation_history, validation_validate
+- `AlpineCommerce_Hreflang`: Admin settings page
+  - **Admin Menu**: Content → Hreflang → Settings Info
+  - **Settings Info Page**: Module info, active stores, configuration link
+  - **ACL Resources**: config, settings
+- Updated `docs/modules/EU_VAT.md`, `docs/modules/HREFLANG.md` with new status ✅ Stable
+
 ---
 
 ## [1.6.7] - 2026-08-11

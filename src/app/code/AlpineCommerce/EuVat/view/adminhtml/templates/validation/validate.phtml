@@ -1,0 +1,80 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \Magento\Framework\Data\Form\FormKey $formKey */
+$formKey = $block->getLayout()->createBlock(\Magento\Framework\Data\Form\FormKey::class);
+$validationResult = $block->getData('validation_result') ?? [];
+?>
+<div class="admin__scope-old">
+    <form action="<?= $block->escapeUrl($block->getUrl('euvat/validation/validate')) ?>" method="post">
+        <input name="form_key" type="hidden" value="<?= $block->escapeHtmlAttr($formKey->getFormKey()) ?>"/>
+        <fieldset class="admin__fieldset">
+            <legend class="admin__legend">
+                <span><?= $block->escapeHtml(__('Validate VAT Number via VIES')) ?></span>
+            </legend>
+            <div class="admin__field">
+                <label class="admin__field-label">
+                    <span><?= $block->escapeHtml(__('Country Code')) ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="country_id" class="admin__control-select" required>
+                        <option value="">-- <?= $block->escapeHtml(__('Select Country')) ?> --</option>
+                        <?php foreach (['AT','BE','BG','CY','CZ','DE','DK','EE','EL','ES','FI','FR','HR','HU','IE','IT','LT','LU','LV','MT','NL','PL','PT','RO','SE','SI','SK'] as $country): ?>
+                            <option value="<?= $block->escapeHtmlAttr($country) ?>"><?= $block->escapeHtml($country) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="admin__field">
+                <label class="admin__field-label">
+                    <span><?= $block->escapeHtml(__('VAT Number')) ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input type="text" name="vat_number" class="admin__control-text" placeholder="FR12345678901" required/>
+                </div>
+            </div>
+            <div class="admin__field">
+                <button type="submit" class="admin__action-primary">
+                    <span><?= $block->escapeHtml(__('Validate')) ?></span>
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<?php if (!empty($validationResult) && isset($validationResult['is_valid'])): ?>
+<div class="admin__scope-old" style="margin-top: 20px;">
+    <fieldset class="admin__fieldset">
+        <legend class="admin__legend">
+            <span><?= $block->escapeHtml(__('Validation Result')) ?></span>
+        </legend>
+        <div class="admin__field">
+            <label class="admin__field-label"><span><?= $block->escapeHtml(__('VAT Number')) ?></span></label>
+            <div class="admin__field-control"><?= $block->escapeHtml($validationResult['vat_number'] ?? '') ?></div>
+        </div>
+        <div class="admin__field">
+            <label class="admin__field-label"><span><?= $block->escapeHtml(__('Status')) ?></span></label>
+            <div class="admin__field-control">
+                <strong style="color: <?= $validationResult['is_valid'] ? 'green' : 'red' ?>">
+                    <?= $validationResult['is_valid'] ? __('VALID') : __('INVALID') ?>
+                </strong>
+            </div>
+        </div>
+        <?php if ($validationResult['is_valid'] && !empty($validationResult['name'])): ?>
+        <div class="admin__field">
+            <label class="admin__field-label"><span><?= $block->escapeHtml(__('Company Name')) ?></span></label>
+            <div class="admin__field-control"><?= $block->escapeHtml($validationResult['name']) ?></div>
+        </div>
+        <div class="admin__field">
+            <label class="admin__field-label"><span><?= $block->escapeHtml(__('Address')) ?></span></label>
+            <div class="admin__field-control"><?= $block->escapeHtml($validationResult['address'] ?? 'N/A') ?></div>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($validationResult['request_date'])): ?>
+        <div class="admin__field">
+            <label class="admin__field-label"><span><?= $block->escapeHtml(__('VIES Request Date')) ?></span></label>
+            <div class="admin__field-control"><?= $block->escapeHtml($validationResult['request_date']) ?></div>
+        </div>
+        <?php endif; ?>
+    </fieldset>
+</div>
+<?php endif; ?>

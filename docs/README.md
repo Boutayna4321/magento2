@@ -122,8 +122,8 @@ responsibility, scope, architecture, API, decisions, and known bugs.
 | StorePickup | [`STORE_PICKUP.md`](modules/STORE_PICKUP.md) | ✅ Done |
 | StoreLocator | [`STORE_LOCATOR.md`](modules/STORE_LOCATOR.md) | ✅ Done |
 | LoyaltyProgram | [`LOYALTY_PROGRAM.md`](modules/LOYALTY_PROGRAM.md) | ✅ Done |
-| EuVat | [`EU_VAT.md`](modules/EU_VAT.md) | ⏳ To be finalized |
-| Hreflang | [`HREFLANG.md`](modules/HREFLANG.md) | ⏳ To be finalized |
+| EuVat | [`EU_VAT.md`](modules/EU_VAT.md) | ✅ Done |
+| Hreflang | [`HREFLANG.md`](modules/HREFLANG.md) | ✅ Done |
 
 ### Cross-Cutting Documentation
 

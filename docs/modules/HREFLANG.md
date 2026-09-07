@@ -1,6 +1,6 @@
 # AlpineCommerce_Hreflang Module — SEO Hreflang Tags
 
-> **Status**: 🔄 In finalization (v1.0.0)
+> **Status**: ✅ Stable (v1.7.0)
 
 ## 1. Responsibility
 
@@ -15,6 +15,7 @@ tags for each store's pages.
 | **Multi-store** | One tag per active store view |
 | **x-default** | Optional x-default link to default store view |
 | **Admin configuration** | Enable/disable + x-default toggle (per store view) |
+| **Admin UI** | Settings info page with configuration link |
 | **i18n** | French translation |
 
 ## 3. Architecture
@@ -23,12 +24,25 @@ tags for each store's pages.
 AlpineCommerce/Hreflang/
 ├── Block/
 │   └── Hreflang.php                    # generates alternate links array
+├── Controller/
+│   └── Adminhtml/
+│       └── Settings/
+│           └── Index.php               # Admin settings info page
 ├── etc/
-│   ├── acl.xml                          # config ACL
+│   ├── acl.xml                          # config, settings
+│   ├── adminhtml/
+│   │   ├── menu.xml                     # Content → Hreflang
+│   │   └── routes.xml                   # frontName: hreflang
 │   ├── config.xml                       # defaults: enabled=1, x_default=1
 │   ├── module.xml
 │   └── system.xml                       # admin config
 └── view/
+    ├── adminhtml/
+    │   ├── layout/
+    │   │   └── hreflang_settings_index.xml
+    │   └── templates/
+    │       └── settings/
+    │           └── info.phtml           # Settings info template
     └── frontend/
         ├── layout/
         │   └── default.xml              # injects block into head.additional
@@ -46,7 +60,11 @@ None.
 
 ## 6. Admin
 
+- **Menu**: Content → Hreflang → Settings Info
+- **Route**: `/admin/hreflang/settings` (frontName: `hreflang`)
+- **Settings Info Page**: Module information, active stores, configuration link
 - **Stores > Configuration > General > Hreflang**: enable toggle + x-default toggle (per store view)
+- **ACL Resources**: `AlpineCommerce_Hreflang::config`, `AlpineCommerce_Hreflang::settings`
 
 ## 7. Frontend
 
@@ -72,7 +90,7 @@ No dedicated command.
 
 | # | Problem | Status |
 |---|---|---|
-| — | Complete finalization (fine configuration, SEO tests) | 📋 v1.1 — `ROADMAP.md` |
+| — | Admin UI | ✅ Done — settings info page |
 
 ## 11. Magento concepts taught
 
@@ -84,7 +102,7 @@ No dedicated command.
 
 ## 12. Validation & status
 
-- **Status**: 🔄 In finalization — global validation OK (Sprint 6)
+- **Status**: ✅ Stable — admin UI completed (v1.7.0)
 
 ---
 
