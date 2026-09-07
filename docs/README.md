@@ -201,7 +201,7 @@ examples throughout.
 - [🖥️ Admin Panel](magento2/magento-admin.md)
 
 ### AlpineCommerce Modules
-- [🔄 Complete Order Lifecycle](modules/alpinecommerce-order-lifecycle.md)
+- [🔄 Complete Order Lifecycle](alpinecommerce-order-lifecycle.md)
 - [🛒 AutoInvoice](modules/AUTO_INVOICE.md)
 - [💬 CustomerCare](modules/CUSTOMER_CARE.md)
 - [🎁 LoyaltyProgram](modules/LOYALTY_PROGRAM.md)

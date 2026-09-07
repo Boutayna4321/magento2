@@ -130,7 +130,7 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
 
 | Document | What you'll learn |
 |---|---|
-| [`alpinecommerce-order-lifecycle.md`](modules/alpinecommerce-order-lifecycle.md) | 🔄 Complete AlpineCommerce order lifecycle: AutoInvoice, PartialInvoice, CreditMemo, CustomerCare, LoyaltyProgram, Rma, StorePickup |
+| [`alpinecommerce-order-lifecycle.md`](docs/modules/alpinecommerce-order-lifecycle.md) | 🔄 Complete AlpineCommerce order lifecycle: AutoInvoice, PartialInvoice, CreditMemo, CustomerCare, LoyaltyProgram, Rma, StorePickup |
 
 ---
 
@@ -202,7 +202,7 @@ examples throughout.
 - [🖥️ Admin Panel](magento2/magento-admin.md)
 
 ### AlpineCommerce Modules
-- [🔄 Complete Order Lifecycle](modules/alpinecommerce-order-lifecycle.md)
+- [🔄 Complete Order Lifecycle](docs/modules/alpinecommerce-order-lifecycle.md)
 - [🛒 AutoInvoice](modules/AUTO_INVOICE.md)
 - [💬 CustomerCare](modules/CUSTOMER_CARE.md)
 - [🎁 LoyaltyProgram](modules/LOYALTY_PROGRAM.md)
