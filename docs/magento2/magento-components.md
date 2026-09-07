@@ -7,6 +7,22 @@
 
 ---
 
+## Table of Contents
+
+1. [Layer overview](#1-layer-overview)
+2. [The complete flow of a Magento page](#2-the-complete-flow-of-a-magento-page)
+3. [Magento components and their relationships](#3-magento-components-and-their-relationships)
+4. [Detailed flow by page type](#4-detailed-flow-by-page-type)
+5. [The 3 types of Magento requests](#5-the-3-types-of-magento-requests)
+6. [The Layout system (page structure)](#6-the-layout-system-page-structure)
+7. [UI Components (admin)](#7-ui-components-admin)
+8. [Magento Design Patterns](#8-magento-design-patterns)
+9. [The request lifecycle (visual summary)](#9-the-request-lifecycle-visual-summary)
+10. [Summary](#10-summary)
+11. [AlpineCommerce Reference](#11-alpinecommerce-reference)
+
+---
+
 ## 1. Layer overview
 
 ```
@@ -14,36 +30,36 @@
 │                     BROWSER (client)                        │
 │                   http://localhost:8080/blog                 │
 └───────────────────────────┬─────────────────────────────────┘
-                             │ HTTP Request
-                             ▼
+                              │ HTTP Request
+                              ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  NGINX (web server)                                          │
 │  - serves static files (CSS, JS, images)                     │
 │  - forwards dynamic requests to PHP-FPM                      │
 └───────────────────────────┬─────────────────────────────────┘
-                             │ fastcgi
-                             ▼
+                              │ fastcgi
+                              ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  PHP-FPM 8.2                                                │
 │  - executes index.php (single entry point)                   │
 └───────────────────────────┬─────────────────────────────────┘
-                             │ bootstrap
-                             ▼
+                              │ bootstrap
+                              ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  MAGENTO FRONT CONTROLLER                                   │
 │  - identifies the area (frontend / adminhtml / webapi_rest)  │
 │  - instantiates the Router                                   │
 └───────────────────────────┬─────────────────────────────────┘
-                             │ match URL
-                             ▼
+                              │ match URL
+                              ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  ROUTER                                                      │
 │  - compares the URL to routes declared in routes.xml          │
 │  - finds: module=Blog, controller=index, action=index        │
-│  → class: AlpineCommerce\Blog\Controller\Index\Index         │
+│  → class: Vendor\Module\Controller\Index\Index               │
 └───────────────────────────┬─────────────────────────────────┘
-                             │ dispatch
-                             ▼
+                              │ dispatch
+                              ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  CONTROLLER                                                   │
 │  - orchestrates the request                                   │
@@ -51,8 +67,8 @@
 │  - calls the Repository (Service Contract)                    │
 │  - returns a Result (page, JSON, redirect)                    │
 └───────────────────────────┬─────────────────────────────────┘
-                             │ result
-                             ▼
+                              │ result
+                              ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  RESPONSE                                                     │
 │  - HTML (full page) / JSON (REST) / Redirect                   │
@@ -71,10 +87,10 @@ flowchart TD
     B --> C["index.php<br/>(Magento bootstrap)"]
     C --> D["Front Controller<br/>(area = frontend)"]
     D --> E["Router<br/>(routes.xml)"]
-    E --> F["Controller<br/>Blog\\Index\\Index"]
+    E --> F["Controller<br/>Vendor\\Module\\Controller\\Index\\Index"]
     F --> G["Repository<br/>PostRepository"]
     G --> H["ResourceModel<br/>Post"]
-    H --> I["MySQL<br/>SELECT * FROM blog_post"]
+    H --> I["MySQL<br/>SELECT * FROM vendor_module_post"]
     I --> H
     H --> G
     G --> F
@@ -86,18 +102,18 @@ flowchart TD
 
 **Step by step:**
 
-| # | Component | Role | AlpineCommerce example |
-|---|-----------|------|------------------------|
-| 1 | **Nginx** | Receives the HTTP request, serves static files | `localhost:8080` |
-| 2 | **index.php** | Single entry point, bootstraps Magento | `src/index.php` |
-| 3 | **Front Controller** | Identifies the area (`frontend`, `adminhtml`, `webapi_rest`) | `Framework/App/FrontControllerInterface` |
-| 4 | **Router** | Matches the URL to a Controller class via `routes.xml` | `Blog/etc/frontend/routes.xml` |
-| 5 | **Controller** | Orchestrates, calls services, returns a Result | `Blog/Controller/Index/Index.php` |
-| 6 | **Repository** | Business logic (save, getById, getList) | `Blog/Model/PostRepository.php` |
-| 7 | **ResourceModel** | Executes SQL queries | `Blog/Model/ResourceModel/Post.php` |
-| 8 | **Block** | Prepares data for the template | `Blog/Block/PostList.php` |
-| 9 | **Template** | Displays HTML (`.phtml`) | `view/frontend/templates/post/list.phtml` |
-| 10 | **Response** | Returns the complete HTML to the browser | `Page/Result.php` |
+| # | Component | Role |
+|---|-----------|------|
+| 1 | **Nginx** | Receives the HTTP request, serves static files |
+| 2 | **index.php** | Single entry point, bootstraps Magento |
+| 3 | **Front Controller** | Identifies the area (`frontend`, `adminhtml`, `webapi_rest`) |
+| 4 | **Router** | Matches the URL to a Controller class via `routes.xml` |
+| 5 | **Controller** | Orchestrates, calls services, returns a Result |
+| 6 | **Repository** | Business logic (save, getById, getList) |
+| 7 | **ResourceModel** | Executes SQL queries |
+| 8 | **Block** | Prepares data for the template |
+| 9 | **Template** | Displays HTML (`.phtml`) |
+| 10 | **Response** | Returns the complete HTML to the browser |
 
 ### 2.2 Admin page: edit form
 
@@ -107,12 +123,12 @@ flowchart TD
     B --> C["index.php"]
     C --> D["Front Controller<br/>(area = adminhtml)"]
     D --> E["Router<br/>(adminhtml/routes.xml)"]
-    E --> F["Controller<br/>Blog\\Adminhtml\\Post\\Edit"]
+    E --> F["Controller<br/>Vendor\\Module\\Adminhtml\\Post\\Edit"]
     F --> G["Repository<br/>PostRepository::getById(1)"]
     G --> H["MySQL"]
     H --> G
     G --> F
-    F --> I["UI Component<br/>blog_post_form"]
+    F --> I["UI Component<br/>vendor_module_post_form"]
     I --> J["DataProvider<br/>PostFormDataProvider"]
     J --> K["Repository<br/>PostRepository"]
     K --> L["MySQL"]
@@ -130,6 +146,8 @@ flowchart TD
 - Admin forms use **UI Components** (`<form>` in XML) instead of classic Blocks + Templates
 - A **DataProvider** feeds the form with data (calls the Repository)
 
+**Source**: `src/vendor/magento/module-catalog/Controller/Adminhtml/Product/Edit.php` — Magento core admin product edit controller follows the same pattern.
+
 ---
 
 ## 3. Magento components and their relationships
@@ -141,75 +159,75 @@ flowchart TD
 │                      BROWSER                                   │
 │            (displays HTML, CSS, JS, images)                   │
 └────────────────────────────┬─────────────────────────────────┘
-                              │
-               ┌──────────────┼──────────────┐
-               ▼              ▼              ▼
-         ┌──────────┐  ┌──────────┐  ┌──────────┐
-         │  Nginx   │  │  Nginx   │  │  Nginx   │
-         │ (:8080)  │  │ (:8080)  │  │ (:8080)  │
-         └────┬─────┘  └────┬─────┘  └────┬─────┘
-              │             │             │
-              ▼             ▼             ▼
-         ┌──────────────────────────────────────┐
-         │          PHP-FPM (index.php)          │
-         └──────────────────┬───────────────────┘
-                            │
-                            ▼
-         ┌──────────────────────────────────────┐
-         │      MAGENTO FRAMEWORK                │
-         │  ┌────────────────────────────────┐  │
-         │  │  Object Manager (DI Container) │  │
-         │  │  - builds all objects          │  │
-         │  │  - injects dependencies        │  │
-         │  └──────────┬─────────────────────┘  │
-         │             │                         │
-         │  ┌──────────┴─────────────────────┐  │
-         │  │                                 │  │
-         │  ▼                                 ▼  │
-         │ ┌─────────────┐          ┌──────────────┐
-         │ │   Router     │          │  WebAPI      │
-         │ │ (frontend,   │          │  (REST,      │
-         │ │  adminhtml)  │          │   GraphQL)   │
-         │ └──────┬──────┘          └──────────────┘
-         │        │
-         │        ▼
-         │ ┌─────────────┐
-         │ │  Controller  │
-         │ │  (orchestrates) │
-         │ └──────┬──────┘
-         │        │
-         │        ▼
-         │ ┌─────────────┐      ┌──────────────┐
-         │ │  Repository  │◄────►│   Block /    │
-         │ │  (business)  │      │   UI DataProv│
-         │ └──────┬──────┘      └──────┬───────┘
-         │        │                    │
-         │        ▼                    ▼
-         │ ┌─────────────┐      ┌──────────────┐
-         │ │ ResourceModel│      │  Template    │
-         │ │  (SQL)       │      │  (.phtml)    │
-         │ └──────┬──────┘      └──────┬───────┘
-         │        │                    │
-         │        ▼                    │
-         │ ┌─────────────┐             │
-         │ │    MySQL     │             │
-         │ │  (data)      │             │
-         │ └─────────────┘             │
-         │                              │
-         │        ┌─────────────────────┘
-         │        ▼
-         │ ┌─────────────┐
-         │ │   Layout     │
-         │ │  (structure) │
-         │ └──────┬──────┘
-         │        │
-         │        ▼
-         │ ┌─────────────┐
-         │ │    HTML      │
-         │ │  (Response)  │
-         │ └─────────────┘
-         │
-         └──────────────────────────────────────┘
+                               │
+                ┌──────────────┼──────────────┐
+                ▼              ▼              ▼
+          ┌──────────┐  ┌──────────┐  ┌──────────┐
+          │  Nginx   │  │  Nginx   │  │  Nginx   │
+          │ (:8080)  │  │ (:8080)  │  │ (:8080)  │
+          └────┬─────┘  └────┬─────┘  └────┬─────┘
+               │             │             │
+               ▼             ▼             ▼
+          ┌──────────────────────────────────────┐
+          │          PHP-FPM (index.php)          │
+          └──────────────────┬───────────────────┘
+                             │
+                             ▼
+          ┌──────────────────────────────────────┐
+          │      MAGENTO FRAMEWORK                │
+          │  ┌────────────────────────────────┐  │
+          │  │  Object Manager (DI Container) │  │
+          │  │  - builds all objects          │  │
+          │  │  - injects dependencies        │  │
+          │  └──────────┬─────────────────────┘  │
+          │             │                         │
+          │  ┌──────────┴─────────────────────┐  │
+          │  │                                 │  │
+          │  ▼                                 ▼  │
+          │ ┌─────────────┐          ┌──────────────┐
+          │ │   Router     │          │  WebAPI      │
+          │ │ (frontend,   │          │  (REST,      │
+          │ │  adminhtml)  │          │   GraphQL)   │
+          │ └──────┬──────┘          └──────────────┘
+          │        │
+          │        ▼
+          │ ┌─────────────┐
+          │ │  Controller  │
+          │ │  (orchestrates) │
+          │ └──────┬──────┘
+          │        │
+          │        ▼
+          │ ┌─────────────┐      ┌──────────────┐
+          │ │  Repository  │◄────►│   Block /    │
+          │ │  (business)  │      │   UI DataProv│
+          │ └──────┬──────┘      └──────┬───────┘
+          │        │                    │
+          │        ▼                    ▼
+          │ ┌─────────────┐      ┌──────────────┐
+          │ │ ResourceModel│      │  Template    │
+          │ │  (SQL)       │      │  (.phtml)    │
+          │ └──────┬──────┘      └──────┬───────┘
+          │        │                    │
+          │        ▼                    │
+          │ ┌─────────────┐             │
+          │ │    MySQL     │             │
+          │ │  (data)      │             │
+          │ └─────────────┘             │
+          │                              │
+          │        ┌─────────────────────┘
+          │        ▼
+          │ ┌─────────────┐
+          │ │   Layout     │
+          │ │  (structure) │
+          │ └──────┬──────┘
+          │        │
+          │        ▼
+          │ ┌─────────────┐
+          │ │    HTML      │
+          │ │  (Response)  │
+          │ └─────────────┘
+          │
+          └──────────────────────────────────────┘
 ```
 
 ### 3.2 Who calls who? (reference table)
@@ -229,6 +247,8 @@ flowchart TD
 | **Helper** | Other services | Block, Template | Cross-cutting tools (config, logs) |
 | **ResultFactory** | N/A | Controller | Creates the response (page, JSON, redirect) |
 | **Object Manager** | All classes | Automatic | Creates objects, injects dependencies |
+
+**Source**: `src/vendor/magento/framework/App/FrontController.php` — dispatches requests through the component chain.
 
 ---
 
@@ -252,6 +272,8 @@ Browser
     → Browser
 ```
 
+**Source**: `src/vendor/magento/module-cms/Controller/Page/View.php` — Magento core CMS page controller.
+
 ### 4.2 REST API (e.g. `GET /rest/V1/blog/posts`)
 
 ```
@@ -261,7 +283,7 @@ REST Client
       → WebAPI Router (reads webapi.xml)
         → Service Contract (PostRepositoryInterface)
           → Implementation (PostRepository)
-            → ResourceModel (SELECT FROM blog_post)
+            → ResourceModel (SELECT FROM vendor_module_post)
               → MySQL
         → JSON Response
     → REST Client
@@ -270,6 +292,8 @@ REST Client
 **Key difference**: no Controller, no Block, no Template.
 The WebAPI Router calls the **Service Contract** directly.
 
+**Source**: `src/vendor/magento/module-webapi/Controller/Rest.php` — handles REST API requests.
+
 ### 4.3 Admin form with UI Component
 
 ```
@@ -277,10 +301,10 @@ Admin GET /admin/blog/post/edit/id/1
   → Nginx
     → index.php (area = adminhtml)
       → Router
-        → Controller (Blog/Adminhtml/Post/Edit)
+        → Controller (Vendor/Module/Adminhtml/Post/Edit)
           → ResultPage
             → Layout (_edit.xml)
-              → UI Component (blog_post_form)
+              → UI Component (vendor_module_post_form)
                 → DataProvider (PostFormDataProvider)
                   → Repository (PostRepository::getById)
                     → MySQL
@@ -292,13 +316,15 @@ Admin POST /admin/blog/post/save
   → Nginx
     → index.php (area = adminhtml)
       → Router
-        → Controller (Blog/Adminhtml/Post/Save)
+        → Controller (Vendor/Module/Adminhtml/Post/Save)
           → Repository (PostRepository::save)
             → ResourceModel (INSERT/UPDATE)
               → MySQL
           → ResultRedirect (to the list)
           → Response (redirect)
 ```
+
+**Source**: `src/vendor/magento/module-catalog/Controller/Adminhtml/Product/Save.php` — Magento core product save controller.
 
 ---
 
@@ -326,9 +352,9 @@ appear and where.
 <page xmlns:xsi="..." layout="1column">
     <body>
         <referenceContainer name="content">
-            <block class="AlpineCommerce\Blog\Block\PostList"
+            <block class="Vendor\Module\Block\PostList"
                    name="blog.post.list"
-                   template="AlpineCommerce_Blog::post/list.phtml"
+                   template="Vendor_Module::post/list.phtml"
                    before="-"/>
         </referenceContainer>
     </body>
@@ -341,6 +367,8 @@ appear and where.
 3. The layout XML adds a block `blog.post.list` in the `content` container
 4. The `PostList` block calls the Repository to retrieve the posts
 5. The template `list.phtml` is rendered with the block's data
+
+**Source**: `src/vendor/magento/module-theme/view/frontend/layout/default.xml` — Magento core defines the default page containers.
 
 ### 6.2 Containers
 
@@ -380,22 +408,22 @@ HTML (generated by the browser)
 AJAX (calls to the DataProvider for data)
 ```
 
-### 7.2 Example: Blog admin grid
+### 7.2 Example: Admin grid
 
 ```xml
-<!-- view/adminhtml/ui_component/alphacommerce_blog_post_listing.xml -->
+<!-- view/adminhtml/ui_component/vendor_module_post_listing.xml -->
 <listing xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
     <dataSource name="post_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">
-                AlpineCommerce\Blog\Ui\DataProvider\PostListingDataProvider
+                Vendor\Module\Ui\DataProvider\PostListingDataProvider
             </argument>
             <argument name="name" xsi:type="string">post_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
             <argument name="requestFieldName" xsi:type="string">id</argument>
         </argument>
     </dataSource>
-
+    
     <columns name="post_columns">
         <column name="title">
             <settings>
@@ -413,7 +441,7 @@ AJAX (calls to the DataProvider for data)
         <actions>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="urlPath" xsi:type="string">blog/post/edit</item>
+                    <item name="urlPath" xsi:type="string">module/post/edit</item>
                     <item name="paramName" xsi:type="string">id</item>
                 </item>
             </argument>
@@ -426,7 +454,7 @@ AJAX (calls to the DataProvider for data)
 
 ```mermaid
 flowchart TD
-    A["Admin opens<br/>/admin/blog/post"] --> B["Controller<br/>Blog\\Adminhtml\\Post\\Index"]
+    A["Admin opens<br/>/admin/blog/post"] --> B["Controller<br/>Vendor\\Module\\Adminhtml\\Post\\Index"]
     B --> C["ResultPage"]
     C --> D["Layout XML<br/>(_index.xml)"]
     D --> E["UI Component XML<br/>(listing)"]
@@ -445,6 +473,10 @@ flowchart TD
     N --> G
     G --> O["Grid displayed<br/>(with pagination, filters, sorting)"]
 ```
+
+**Source**: `src/vendor/magento/module-catalog/view/adminhtml/ui_component/product_listing.xml` — Magento core product listing uses the same UI Component structure.
+
+**Official documentation**: [UI Components Overview](https://developer.adobe.com/commerce/php/tutorials/ui-components/)
 
 ---
 
@@ -471,6 +503,8 @@ Controller / REST / GraphQL
 **Advantage**: you can change the implementation without touching the Controller,
 the REST API, or GraphQL.
 
+**Source**: `src/vendor/magento/module-catalog/Api/ProductRepositoryInterface.php` — Magento core uses Service Contracts for all major entities.
+
 ### 8.2 Factory Pattern
 
 ```php
@@ -483,17 +517,21 @@ $post->save();
 **Factories** create objects dynamically. Magento generates
 them automatically via `di.xml` or `codeGeneration`.
 
+**Source**: `src/vendor/magento/framework/Factory/Factory.php` — base factory implementation.
+
 ### 8.3 Proxy Pattern
 
 **Proxies** defer loading a dependency until it is actually used. Declared in `di.xml`:
 
 ```xml
-<type name="AlpineCommerce\Blog\Model\PostRepository">
+<type name="Vendor\Module\Model\PostRepository">
     <arguments>
-        <argument name="logger" xsi:type="object">AlpineCommerce\Blog\Model\Logger\Proxy</argument>
+        <argument name="logger" xsi:type="object">Vendor\Module\Model\Logger\Proxy</argument>
     </arguments>
 </type>
 ```
+
+**Source**: `src/vendor/magento/framework/Proxy/Battery/Complex.php` — example proxy in Magento core.
 
 ### 8.4 Repository Pattern
 
@@ -511,6 +549,8 @@ interface PostRepositoryInterface
 
 Never use `$connection->fetchRow()` in a Controller or Block.
 
+**Source**: `src/vendor/magento/module-catalog/Model/ProductRepository.php` — Magento core product repository.
+
 ### 8.5 Data Patch Pattern
 
 ```php
@@ -525,6 +565,8 @@ class CreateDefaultCategory implements DataPatchInterface
 Data Patches are versioned PHP classes that modify data
 (or schema) during `bin/magento setup:upgrade`.
 
+**Source**: `src/vendor/magento/module-catalog/Setup/Patch/Data/` — Magento core data patches.
+
 ---
 
 ## 9. The request lifecycle (visual summary)
@@ -534,61 +576,41 @@ Data Patches are versioned PHP classes that modify data
 │ Browser  │────▶│  Nginx   │────▶│ index.php│────▶│   Area   │
 │ (URL)    │     │          │     │          │     │Detection │
 └──────────┘     └──────────┘     └──────────┘     └────┬─────┘
-                                                        │
-                     ┌──────────────────────────────────┼──────────┐
-                     ▼                                  ▼          ▼
-              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-              │   frontend   │                  │ adminhtml   │ │webapi_rest│
-              └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
-                     ▼                               ▼             ▼
-              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-              │   Router     │                  │   Router     │ │WebAPI    │
-              └──────┬──────┘                  └──────┬──────┘ │Router    │
-                     ▼                               ▼         └────┬─────┘
-              ┌─────────────┐                  ┌─────────────┐        │
-              │  Controller  │                  │  Controller  │       ▼
-              └──────┬──────┘                  └──────┬──────┘ ┌──────────┐
-                     ▼                               ▼         │ Service  │
-              ┌─────────────┐                  ┌─────────────┐ │Contract  │
-              │ Block/Template│                 │ UI Component │ └────┬─────┘
-              └──────┬──────┘                  └──────┬──────┘      │
-                     ▼                               ▼            ▼
-              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-              │ Repository   │                  │ DataProvider │ │Repository│
-              └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
-                     ▼                               ▼            ▼
-              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-              │ ResourceModel │                 │ Repository   │ │ResourceModel│
-              └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
-                     ▼                               ▼            ▼
-              ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
-              │    MySQL      │                  │    MySQL     │ │   MySQL  │
-              └──────────────┘                  └──────────────┘ └──────────┘
+                                                         │
+                      ┌──────────────────────────────────┼──────────┐
+                      ▼                                  ▼          ▼
+               ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+               │   frontend   │                  │ adminhtml   │ │webapi_rest│
+               └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
+                      ▼                               ▼             ▼
+               ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+               │   Router     │                  │   Router     │ │WebAPI    │
+               └──────┬──────┘                  └──────┬──────┘ │Router    │
+                      ▼                               ▼         └────┬─────┘
+               ┌─────────────┐                  ┌─────────────┐        │
+               │  Controller  │                  │  Controller  │       ▼
+               └──────┬──────┘                  └──────┬──────┘ ┌──────────┐
+                      ▼                               ▼         │ Service  │
+               ┌─────────────┐                  ┌─────────────┐ │Contract  │
+               │ Block/Template│                 │ UI Component │ └────┬─────┘
+               └──────┬──────┘                  └──────┬──────┘      │
+                      ▼                               ▼            ▼
+               ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+               │ Repository   │                  │ DataProvider │ │Repository│
+               └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
+                      ▼                               ▼            ▼
+               ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+               │ ResourceModel │                 │ Repository   │ │ResourceModel│
+               └──────┬──────┘                  └──────┬──────┘ └────┬─────┘
+                      ▼                               ▼            ▼
+               ┌─────────────┐                  ┌─────────────┐ ┌──────────┐
+               │    MySQL      │                  │    MySQL     │ │   MySQL  │
+               └──────────────┘                  └──────────────┘ └──────────┘
 ```
 
 ---
 
-## 10. AlpineCommerce mapping table
-
-| Layer | Example file | Role in the project |
-|-------|--------------|---------------------|
-| **Router** | `Blog/etc/frontend/routes.xml` | Maps `/blog` to Controller `Blog\Index\Index` |
-| **Controller** | `Blog/Controller/Index/Index.php` | Retrieves posts, returns a page |
-| **Repository** | `Blog/Model/PostRepository.php` | `getList()`, `save()`, `getById()` |
-| **ResourceModel** | `Blog/Model/ResourceModel/Post.php` | SQL queries |
-| **Block** | `Blog/Block/PostList.php` | `getPosts()` for the template |
-| **Template** | `Blog/view/frontend/templates/post/list.phtml` | Displays posts in HTML |
-| **Layout** | `Blog/view/frontend/layout/blog_index_index.xml` | Places the block in `content` |
-| **UI DataProvider** | `Blog/Ui/DataProvider/PostFormDataProvider.php` | Feeds the admin form |
-| **UI Component** | `Blog/view/adminhtml/ui_component/blog_post_form.xml` | Defines the admin form |
-| **Plugin** | `StorePickup/Plugin/Shipping/FilterFlatRate.php` | Caches Flat Rate if subtotal ≥ 50 |
-| **Observer** | `AutoInvoice/Observer/AutoInvoice.php` | Creates invoice on checkout success |
-| **Service** | `StoreSetup/Service/Config.php` | Config access + store manager |
-| **Service Contract** | `Blog/Api/PostRepositoryInterface.php` | Public Repository interface |
-
----
-
-## 11. Mental summary for beginners
+## 10. Summary
 
 | Question | Answer |
 |----------|--------|
@@ -603,24 +625,95 @@ Data Patches are versioned PHP classes that modify data
 | **How to exchange data with the outside?** | **REST API** or **GraphQL** (call Service Contracts directly) |
 | **Who builds all the objects?** | The **Object Manager** (DI Container) automatically |
 
----
+### Design patterns summary
 
-## 12. Restaurant analogy
-
-To remember the interactions:
-
-| Role | Magento Component | Analogy |
-|------|-------------------|---------|
-| Customer who orders | **Browser** | The customer entering the restaurant |
-| Maître d'hôtel | **Router** | Welcomes, checks the reservation, directs to the right table |
-| Server | **Controller** | Takes the order, sends it to the kitchen |
-| Cook | **Repository** | Prepares the dish (business logic) |
-| Pantry | **ResourceModel** | Looks for ingredients (data) |
-| Cash register / fridge | **MySQL** | Stores ingredients |
-| Served dish | **Response** | The dish arrives at the table |
-| Decorator | **Layout / UI Component** | Arranges cutlery, plate, decor |
-| Dish written on paper | **Template (.phtml)** | The visible content of the dish |
+| Pattern | Role | Magento example |
+|---------|------|----------------|
+| Service Contract | Business interface | `ProductRepositoryInterface` |
+| Factory | Create objects dynamically | `ProductFactory` |
+| Proxy | Defer loading until needed | `Logger\Proxy` |
+| Repository | Data access entry point | `ProductRepository` |
+| Data Patch | Versioned data modification | `CreateDefaultCategory` |
 
 ---
 
-*Last updated: 2026-08-11.*
+## 11. AlpineCommerce Reference
+
+### 11.1 Layer mapping
+
+| Layer | Example file | Role in the project |
+|-------|--------------|---------------------|
+| **Router** | `Blog/etc/frontend/routes.xml` | Maps `/blog` to Controller `Blog\Index\Index` |
+| **Controller** | `Blog/Controller/Index/Index.php` | Retrieves posts, returns a page |
+| **Repository** | `Blog/Ui/DataProvider/PostListingDataProvider.php` | Fetches posts for admin grid |
+| **ResourceModel** | `StorePickup/Model/ResourceModel/StoreInfo.php` | SQL queries for store info |
+| **Block** | `Blog/Ui/Component/Listing/Column/PostActions.php` | Actions column in admin grid |
+| **Template** | `StorePickup/view/frontend/web/template/store-pickup.html` | KO template for checkout |
+| **Layout** | `StorePickup/view/frontend/layout/checkout_index_index.xml` | Places block in checkout |
+| **UI DataProvider** | `StorePickup/Ui/DataProvider/StoreInfoListingDataProvider.php` | Feeds admin grid |
+| **UI Component** | `StorePickup/view/adminhtml/ui_component/alphacommerce_pickup_store_info_listing.xml` | Admin grid definition |
+| **Plugin** | `StorePickup/Plugin/Shipping/FilterFlatRate.php` | Modifies shipping carrier behavior |
+| **Observer** | `AutoInvoice/Observer/AutoInvoice.php` | Creates invoice on checkout success |
+| **Service Contract** | `StorePickup/Api/StoreInfoRepositoryInterface.php` | Public Repository interface |
+| **JS Module** | `StorePickup/view/frontend/web/js/view/store-pickup.js` | KO component for checkout |
+
+### 11.2 AlpineCommerce module responsibilities
+
+| Module | Core pattern used | Key files |
+|--------|------------------|-----------|
+| Blog | UI Components, Layout | `Ui/DataProvider/`, `view/adminhtml/ui_component/` |
+| Faq | UI Components | `Ui/DataProvider/`, `view/adminhtml/ui_component/` |
+| StorePickup | Plugin, KO Component, REST | `Plugin/Shipping/`, `view/frontend/web/js/` |
+| CustomerCare | Cron, Plugin, Repository | `Cron/`, `Plugin/Order/` |
+| LoyaltyProgram | Plugin, KO Component | `Plugin/Invoice/`, `view/frontend/web/js/` |
+| Gdpr | UI Components | `Ui/DataProvider/` |
+| StoreLocator | Layout, Vanilla JS | `view/frontend/web/js/` |
+| AutoInvoice | Observer | `Observer/AutoInvoice.php` |
+| CreditMemo | Plugin | `Plugin/OrderCancelPlugin.php` |
+
+### 11.3 AlpineCommerce request flows
+
+**StorePickup checkout flow**:
+1. Customer reaches checkout
+2. `checkout_index_index.xml` loads `store-pickup.phtml`
+3. KO component `store-pickup.js` initializes
+4. Customer selects a store → `saveStore()` calls REST
+5. REST controller updates checkout session
+6. Shipping carrier plugin reads session value
+
+**CustomerCare VIP flow**:
+1. Order is placed
+2. `CustomerCare/Plugin/Order/AfterPlace.php` intercepts `Order::place()`
+3. Plugin recalculates VIP status
+4. Nightly cron `UpdateVipLevels.php` recalculates all customers
+
+**Sources**:
+- `src/app/code/AlpineCommerce/Blog/`
+- `src/app/code/AlpineCommerce/StorePickup/`
+- `src/app/code/AlpineCommerce/CustomerCare/`
+- `src/app/code/AlpineCommerce/LoyaltyProgram/`
+- `src/app/code/AlpineCommerce/AutoInvoice/`
+- `src/app/code/AlpineCommerce/CreditMemo/`
+
+---
+
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| Architecture Overview | [developer.adobe.com/commerce/php/architecture/](https://developer.adobe.com/commerce/php/architecture/) |
+| Layouts | [developer.adobe.com/commerce/php/architecture/layouts/](https://developer.adobe.com/commerce/php/architecture/layouts/) |
+| UI Components | [developer.adobe.com/commerce/php/tutorials/ui-components/](https://developer.adobe.com/commerce/php/tutorials/ui-components/) |
+| Service Contracts | [developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/service-contracts/](https://developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/service-contracts/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
+
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
+
+*Last updated: 2026-09-07*

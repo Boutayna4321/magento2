@@ -8,12 +8,28 @@
 >
 > - **Magento Core Standards** (Sections 2–6, 8): mandatory conventions
 >   for all Magento 2 / Adobe Commerce development.
-> - **AlpineCommerce Project Standards** (Sections 7, 9): team preferences
+> - **AlpineCommerce Project Standards** (Section 9): team preferences
 >   and workflows specific to this project.
 >
 > AlpineCommerce examples are used throughout for illustration, but the
 > underlying standards are Magento requirements unless explicitly marked
 > as "Team Convention" or "Project-Specific."
+
+---
+
+## Table of Contents
+
+1. [Why standards?](#1-why-standards)
+2. [PHP — PSR-12 + Magento](#2-php--psr-12--magento)
+3. [XML — Magento conventions](#3-xml--magento-conventions)
+4. [JavaScript — Magento conventions](#4-javascript--magento-conventions)
+5. [PHTML — Conventions](#5-phtml--conventions)
+6. [Module — Canonical structure](#6-module--canonical-structure)
+7. [AlpineCommerce — Git Commit Conventions](#7-alpinecommerce--git-commit-conventions)
+8. [Validation tools](#8-validation-tools)
+9. [Pre-commit checklist](#9-pre-commit-checklist)
+10. [Summary](#10-summary)
+11. [Official Documentation & Sources](#11-official-documentation--sources)
 
 ---
 
@@ -36,7 +52,7 @@ Magento 2 follows **PSR-12** (PHP-FIG standard). Essential rules:
 
 **Indentation**: 4 spaces (no tabs)
 ```php
-// ✅ Correct
+// Correct
 class Post
 {
     public function getTitle(): string
@@ -45,7 +61,7 @@ class Post
     }
 }
 
-// ❌ Wrong
+// Wrong
 class Post {
 public function getTitle(): string {
 return $this->title;
@@ -54,12 +70,12 @@ return $this->title;
 
 **Braces**: K&R style (opening brace on the same line)
 ```php
-// ✅ Correct
+// Correct
 if ($condition) {
     // ...
 }
 
-// ❌ Wrong
+// Wrong
 if ($condition)
 {
     // ...
@@ -68,11 +84,11 @@ if ($condition)
 
 **Spaces**:
 ```php
-// ✅ Correct
+// Correct
 $sum = $a + $b;
 $array = ['key' => 'value'];
 
-// ❌ Wrong
+// Wrong
 $sum=$a+$b;
 $array=['key'=>'value'];
 ```
@@ -85,7 +101,7 @@ Every Magento PHP file must start with:
 <?php
 declare(strict_types=1);
 
-namespace AlpineCommerce\Blog\Model;
+namespace Vendor\Module\Model;
 
 use Magento\Framework\Model\AbstractModel;
 
@@ -100,13 +116,15 @@ class Post extends AbstractModel
 - `int $id` refuses a string `'123'` → `TypeError`
 - Makes the code more reliable
 
+**Source**: All Magento 2 core PHP files begin with `declare(strict_types=1)`.
+
 ### 2.3 Namespaces and PSR-4
 
 The namespace corresponds to the folder structure:
 
 ```
-File: src/app/code/AlpineCommerce/Blog/Model/Post.php
-Namespace: AlpineCommerce\Blog\Model
+File: app/code/Vendor/Module/Model/Post.php
+Namespace: Vendor\Module\Model
 ```
 
 ### 2.4 Classes: naming conventions
@@ -126,10 +144,12 @@ Namespace: AlpineCommerce\Blog\Model
 | **Service** | `Service/{Name}.php` | `Service/Config.php` |
 | **Data Patch** | `Setup/Patch/Data/{Name}.php` | `Setup/Patch/Data/CreateDefaultCategory.php` |
 
+**Source**: `src/vendor/magento/module-catalog/Model/Product.php` — follows the `Model/{Entity}.php` convention.
+
 ### 2.5 Property visibility
 
 ```php
-// ✅ Correct: private properties + public getters/setters
+// Correct: private properties + public getters/setters
 class Post
 {
     private int $id;
@@ -146,7 +166,7 @@ class Post
     }
 }
 
-// ❌ Wrong: public properties
+// Wrong: public properties
 class Post
 {
     public $id;
@@ -157,7 +177,7 @@ class Post
 ### 2.6 Dependency injection (constructor)
 
 ```php
-// ✅ Correct: all dependencies as constructor parameters
+// Correct: all dependencies as constructor parameters
 class PostRepository
 {
     private PostRepositoryInterface $repository;
@@ -172,7 +192,7 @@ class PostRepository
     }
 }
 
-// ❌ Wrong: explicit new (anti-pattern)
+// Wrong: explicit new (anti-pattern)
 class PostRepository
 {
     public function __construct()
@@ -210,17 +230,17 @@ public function save(PostInterface $post): PostInterface
 ### 3.1 Indentation
 
 ```xml
-<!-- ✅ Correct: 4 spaces -->
+<!-- Correct: 4 spaces -->
 <?xml version="1.0"?>
 <config xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <module name="AlpineCommerce_Blog" setup_version="1.0.0">
+    <module name="Vendor_Module" setup_version="1.0.0">
         <sequence>
             <module name="Magento_Catalog"/>
         </sequence>
     </module>
 </config>
 
-<!-- ❌ Wrong: tabs or 2 spaces -->
+<!-- Wrong: tabs or 2 spaces -->
 <config>
     <module>
 ```
@@ -228,27 +248,29 @@ public function save(PostInterface $post): PostInterface
 ### 3.2 XML attributes
 
 ```xml
-<!-- ✅ Correct: attribute order, double quotes -->
-<block class="AlpineCommerce\Blog\Block\PostList"
+<!-- Correct: attribute order, double quotes -->
+<block class="Vendor\Module\Block\PostList"
        name="blog.post.list"
-       template="AlpineCommerce_Blog::post/list.phtml"
+       template="Vendor_Module::post/list.phtml"
        before="-"/>
 
-<!-- ❌ Wrong: single quotes, random order -->
-<block template="AlpineCommerce_Blog::post/list.phtml" 
+<!-- Wrong: single quotes, random order -->
+<block template="Vendor_Module::post/list.phtml" 
        name="blog.post.list" 
-       class="AlpineCommerce\Blog\Block\PostList"/>
+       class="Vendor\Module\Block\PostList"/>
 ```
 
 ### 3.3 Strings and translations
 
 ```xml
-<!-- ✅ Correct: translate="true" for displayed labels -->
+<!-- Correct: translate="true" for displayed labels -->
 <item name="label" xsi:type="string" translate="true">Title</item>
 
-<!-- ❌ Wrong: no translate for a displayed label -->
+<!-- Wrong: no translate for a displayed label -->
 <item name="label" xsi:type="string">Title</item>
 ```
+
+**Source**: `src/vendor/magento/module-backend/etc/menu.xml` — Magento core uses `translate="true"` for all displayed labels.
 
 ---
 
@@ -257,7 +279,7 @@ public function save(PostInterface $post): PostInterface
 ### 4.1 File structure
 
 ```js
-// ✅ Correct
+// Correct
 define([
     'jquery',
     'mage/translate'
@@ -275,14 +297,14 @@ define([
 ### 4.2 'use strict' mandatory
 
 ```js
-// ✅ Correct
+// Correct
 define(['jquery'], function ($) {
     'use strict';
     
     // code
 });
 
-// ❌ Wrong
+// Wrong
 define(['jquery'], function ($) {
     // code without 'use strict'
 });
@@ -291,15 +313,17 @@ define(['jquery'], function ($) {
 ### 4.3 Variable naming
 
 ```js
-// ✅ Correct: camelCase
+// Correct: camelCase
 var selectedStore = ko.observable('');
 var isSaving = ko.observable(false);
 var syncMessage = ko.observable('');
 
-// ❌ Wrong: snake_case or PascalCase
+// Wrong: snake_case or PascalCase
 var selected_store = ko.observable('');
 var SelectedStore = ko.observable('');
 ```
+
+**Source**: `src/vendor/magento/module-theme/view/frontend/web/js/theme.js` — Magento core JS follows these conventions.
 
 ---
 
@@ -308,8 +332,8 @@ var SelectedStore = ko.observable('');
 ### 5.1 Minimal structure
 
 ```php
-<?php /** @var $block AlpineCommerce\Blog\Block\PostList */ ?>
-<?php /** @var $posts AlpineCommerce\Blog\Model\Post[] */ ?>
+<?php /** @var $block Vendor\Module\Block\PostList */ ?>
+<?php /** @var $posts Vendor\Module\Model\Post[] */ ?>
 
 <div class="blog-post-list">
     <?php foreach ($posts as $post): ?>
@@ -321,12 +345,12 @@ var SelectedStore = ko.observable('');
 ### 5.2 Security: always escape
 
 ```php
-<!-- ✅ Correct -->
+<!-- Correct -->
 <?= $block->escapeHtml($title) ?>
 <?= $block->escapeUrl($url) ?>
 <?= $block->escapeJs($js) ?>
 
-<!-- ❌ DANGEROUS: XSS possible -->
+<!-- DANGEROUS: XSS possible -->
 <?= $title ?>
 <?= $url ?>
 ```
@@ -334,16 +358,16 @@ var SelectedStore = ko.observable('');
 ### 5.3 No complex logic in PHTML
 
 ```php
-<!-- ✅ Correct: logic in the Block, simple template -->
+<!-- Correct: logic in the Block, simple template -->
 <?= $block->getPosts() ?>
 <?php foreach ($block->getPosts() as $post): ?>
     <h2><?= $block->escapeHtml($post->getTitle()) ?></h2>
 <?php endforeach; ?>
 
-<!-- ❌ Wrong: business logic in the template -->
+<!-- Wrong: business logic in the template -->
 <?php
 $posts = [];
-$collection = $objectManager->create(\AlpineCommerce\Blog\Model\ResourceModel\Post\Collection::class);
+$collection = $objectManager->create(\Vendor\Module\Model\ResourceModel\Post\Collection::class);
 foreach ($collection as $post) {
     if ($post->getIsActive()) {
         $posts[] = $post;
@@ -358,11 +382,11 @@ foreach ($collection as $post) {
 
 ### 6.1 Mandatory tree
 
-> **Note**: The tree below uses `AlpineCommerce/Blog` as an example.
-> The same pattern applies to any `Vendor/Module` in Magento.
+> **Note**: The tree below uses `Vendor/Module` as a generic example.
+> The same pattern applies to any module in Magento.
 
 ```
-AlpineCommerce/Blog/
+Vendor/Module/
 ├── registration.php          ← MANDATORY
 ├── etc/
 │   ├── module.xml            ← MANDATORY (name, version, sequence)
@@ -421,11 +445,13 @@ AlpineCommerce/Blog/
 |------|-----------|---------|
 | Classes | PascalCase + `.php` | `PostRepository.php` |
 | Layouts | `{frontName}_{controller}_{action}.xml` | `blog_index_index.xml` |
-| UI Components | `{module}_{entity}_{type}.xml` | `alphacommerce_blog_post_listing.xml` |
+| UI Components | `{module}_{entity}_{type}.xml` | `vendor_module_post_listing.xml` |
 | Templates | `{entity}/{action}.phtml` | `post/list.phtml` |
 | JS | `{type}/{name}.js` | `view/store-pickup.js` |
 | CSS/Less | `_module.less` | `_module.less` |
 | i18n | `{locale}.csv` | `fr_FR.csv` |
+
+**Source**: `src/vendor/magento/module-catalog/` — Magento core modules follow the same canonical structure.
 
 ---
 
@@ -473,20 +499,20 @@ ci: add markdown lint to GitHub Actions
 
 ```bash
 # Check a file's syntax
-php -l src/app/code/AlpineCommerce/Blog/Model/PostRepository.php
+php -l app/code/Vendor/Module/Model/PostRepository.php
 
 # Check all PHP files in a module
-find src/app/code/AlpineCommerce/Blog -name '*.php' -print0 | xargs -0 -n1 php -l
+find app/code/Vendor/Module -name '*.php' -print0 | xargs -0 -n1 php -l
 ```
 
 ### 8.2 XML Lint
 
 ```bash
 # Validate an XML file
-xmllint --noout src/app/code/AlpineCommerce/Blog/etc/module.xml
+xmllint --noout app/code/Vendor/Module/etc/module.xml
 
 # Validate all XML in a module
-find src/app/code/AlpineCommerce/Blog -name '*.xml' -print0 | xargs -0 -n1 xmllint --noout
+find app/code/Vendor/Module -name '*.xml' -print0 | xargs -0 -n1 xmllint --noout
 ```
 
 ### 8.3 PHPStan (static analysis)
@@ -496,7 +522,7 @@ find src/app/code/AlpineCommerce/Blog -name '*.xml' -print0 | xargs -0 -n1 xmlli
 composer require --dev phpstan/phpstan
 
 # Run analysis
-vendor/bin/phpstan analyse src/app/code/AlpineCommerce/Blog --level=5
+vendor/bin/phpstan analyse app/code/Vendor/Module --level=5
 ```
 
 ### 8.4 PHP_CodeSniffer (PSR-12)
@@ -506,11 +532,13 @@ vendor/bin/phpstan analyse src/app/code/AlpineCommerce/Blog --level=5
 composer require --dev magento/magento-coding-standard
 
 # Check code
-vendor/bin/phpcs --standard=PSR12 src/app/code/AlpineCommerce/Blog/
+vendor/bin/phpcs --standard=PSR12 app/code/Vendor/Module/
 
 # Auto-fix
-vendor/bin/phpcbf --standard=PSR12 src/app/code/AlpineCommerce/Blog/
+vendor/bin/phpcbf --standard=PSR12 app/code/Vendor/Module/
 ```
+
+**Source**: `src/vendor/magento/magento-coding-standard/` — Magento's own coding standard ruleset.
 
 ---
 
@@ -518,9 +546,9 @@ vendor/bin/phpcbf --standard=PSR12 src/app/code/AlpineCommerce/Blog/
 
 | Check | Command |
 |--------------|----------|
-| PHP syntax | `find src/app/code/AlpineCommerce -name '*.php' -print0 \| xargs -0 -n1 php -l` |
-| Valid XML | `find src/app/code/AlpineCommerce -name '*.xml' -print0 \| xargs -0 -n1 xmllint --noout` |
-| PSR-12 | `vendor/bin/phpcs --standard=PSR12 src/app/code/AlpineCommerce/Module/` |
+| PHP syntax | `find app/code/Vendor/Module -name '*.php' -print0 \| xargs -0 -n1 php -l` |
+| Valid XML | `find app/code/Vendor/Module -name '*.xml' -print0 \| xargs -0 -n1 xmllint --noout` |
+| PSR-12 | `vendor/bin/phpcs --standard=PSR12 app/code/Vendor/Module/` |
 | Module enabled | `php bin/magento module:status` |
 | DB up to date | `php bin/magento setup:upgrade` (if db_schema.xml modified) |
 | Cache flushed | `php bin/magento cache:flush` |
@@ -528,7 +556,7 @@ vendor/bin/phpcbf --standard=PSR12 src/app/code/AlpineCommerce/Blog/
 
 ---
 
-## 10. Summary
+## 11. Summary
 
 | Rule | Why |
 |-------|----------|
@@ -543,4 +571,90 @@ vendor/bin/phpcbf --standard=PSR12 src/app/code/AlpineCommerce/Blog/
 
 ---
 
-*Last updated: 2026-08-11.*
+## 11. AlpineCommerce Reference
+
+### 11.1 AlpineCommerce Git Commit Conventions
+
+The AlpineCommerce project follows these commit conventions:
+
+```
+feat(blog): add category management
+fix(storepickup): correct carrier plugin TypeError
+docs: add StoreSetup module documentation
+refactor(loyalty): move discount logic to total collector
+test(faq): add integration test for REST API
+ci: add markdown lint to GitHub Actions
+```
+
+### 11.2 AlpineCommerce coding patterns
+
+| Pattern | AlpineCommerce approach |
+|---------|------------------------|
+| Namespace | `AlpineCommerce\` |
+| Module prefix | `AlpineCommerce_` |
+| Admin menu | Content section (Blog, Faq, StorePickup, StoreLocator) |
+| Admin menu | Marketing section (ProductReviews, ProductQuestions) |
+| Admin menu | Catalog section (ProductLabels) |
+| Frontend patterns | KO components (StorePickup, LoyaltyProgram) |
+| Frontend patterns | jQuery AJAX (ProductReviews, ProductQuestions) |
+| Log prefix | Module name prefix (e.g., `StoreSetup/AfterSave`) |
+
+### 11.3 AlpineCommerce module structure example
+
+```
+AlpineCommerce/Blog/
+├── registration.php
+├── etc/
+│   ├── module.xml
+│   ├── adminhtml/
+│   │   ├── routes.xml
+│   │   ├── menu.xml
+│   │   └── acl.xml
+│   └── db_schema.xml
+├── Controller/
+│   └── Adminhtml/
+│       └── Post/
+│           ├── Index.php
+│           ├── Edit.php
+│           └── Save.php
+├── Ui/
+│   ├── DataProvider/
+│   │   └── PostListingDataProvider.php
+│   └── Component/
+│       └── Listing/
+│           └── Column/
+│               └── PostActions.php
+├── view/
+│   └── adminhtml/
+│       ├── layout/
+│       │   └── blog_post_index.xml
+│       └── ui_component/
+│           └── blog_post_listing.xml
+└── Setup/
+    └── Patch/
+        └── Data/
+```
+
+**Sources**:
+- `src/app/code/AlpineCommerce/Blog/`
+- `src/app/code/AlpineCommerce/StorePickup/`
+- `src/app/code/AlpineCommerce/CustomerCare/`
+
+---
+
+## 12. Official Documentation & Sources
+
+| Topic | Link |
+|-------|------|
+| Magento Coding Standards | [developer.adobe.com/commerce/php/architecture/coding-standards/](https://developer.adobe.com/commerce/php/architecture/coding-standards/) |
+| PSR-12 | [www.php-fig.org/psr/psr-12/](https://www.php-fig.org/psr/psr-12/) |
+| PHP_CodeSniffer | [github.com/squizlabs/PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) |
+| PHPStan | [phpstan.org](https://phpstan.org/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+**Sources**:
+- `src/vendor/magento/magento-coding-standard/` — Magento's coding standard ruleset
+- `src/vendor/magento/module-*/` — Magento core module implementations
+- `src/app/code/AlpineCommerce/` — AlpineCommerce custom modules
+
+*Last updated: 2026-09-07*

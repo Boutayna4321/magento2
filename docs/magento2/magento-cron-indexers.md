@@ -6,6 +6,22 @@
 
 ---
 
+## Table of Contents
+
+1. [What is Cron?](#1-what-is-cron)
+2. [What is an Indexer?](#2-what-is-an-indexer)
+3. [Core Magento Indexers](#3-core-magento-indexers)
+4. [How Indexers and Cron Work Together](#4-how-indexers-and-cron-work-together)
+5. [Creating a Custom Indexer](#5-creating-a-custom-indexer)
+6. [Indexer Best Practices](#6-indexer-best-practices)
+7. [Cron Best Practices](#7-cron-best-practices)
+8. [Common Issues](#8-common-issues)
+9. [Debugging Cron and Indexers](#9-debugging-cron-and-indexers)
+10. [Summary](#10-summary)
+11. [AlpineCommerce Reference](#11-alpinecommerce-reference)
+
+---
+
 ## 1. What is Cron?
 
 ### 1.1 Definition
@@ -21,7 +37,8 @@ configured intervals.
 - Running scheduled updates (catalog price rules, cart price rules)
 - Cleaning expired cache
 - Customer segmentation updates
-- Custom module tasks (e.g., CustomerCare VIP levels)
+
+**Source**: `src/vendor/magento/module-cron/` — Magento's cron module handles all scheduled tasks.
 
 ### 1.2 How Magento Cron works
 
@@ -56,6 +73,8 @@ Each job has:
 - `executed_at` (when it actually ran)
 - `finished_at` (when it finished)
 
+**Source**: `src/vendor/magento/module-cron/Model/Schedule.php` — defines the cron schedule entity.
+
 ### 1.3 Running cron manually
 
 ```bash
@@ -75,6 +94,8 @@ php bin/magento cron:check
 ls -la var/cron_schedule/
 ```
 
+**Source**: `src/vendor/magento/module-cron/Console/Command/CronRunCommand.php` — implements the cron:run command.
+
 ### 1.4 Cron groups
 
 Magento organizes cron jobs into **groups**:
@@ -85,33 +106,7 @@ Magento organizes cron jobs into **groups**:
 | `index` | Indexing | `indexer_reindex_all_invalid` |
 | `staging` | Staging/scheduled changes | `staging_update_entities` |
 
-### 1.5 AlpineCommerce example: CustomerCare cron
-
-```xml
-<!-- etc/crontab.xml -->
-<config xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <group id="default">
-        <job name="customercare_update_vip_levels" instance="AlpineCommerce\CustomerCare\Cron\UpdateVipLevels" method="execute">
-            <schedule>0 2 * * *</schedule>
-        </job>
-    </group>
-</config>
-```
-
-```php
-// Cron/UpdateVipLevels.php
-class UpdateVipLevels
-{
-    private CustomerCareInterface $customerCare;
-    
-    public function execute(): void
-    {
-        $this->customerCare->recalculateAll();
-    }
-}
-```
-
-**Schedule**: every day at 2:00 AM (`0 2 * * *`)
+**Source**: `src/vendor/magento/module-cron/etc/crontab.xml` — defines the default cron job groups.
 
 ---
 
@@ -169,6 +164,8 @@ php bin/magento indexer:set-mode schedule
 | **Realtime** (`realtime`) | Reindex immediately on save | Critical data (price, stock) |
 | **Schedule** (`schedule`) | Reindex via cron | Heavy data (search, catalog) |
 
+**Source**: `src/vendor/magento/module-indexer/Model/Indexer/State.php` — defines indexer states and modes.
+
 ### 2.5 Indexer commands
 
 ```bash
@@ -188,6 +185,8 @@ php bin/magento indexer:reset catalog_search
 php bin/magento indexer:show-status
 ```
 
+**Source**: `src/vendor/magento/module-indexer/Console/Command/IndexerReindexCommand.php` — implements reindex operations.
+
 ---
 
 ## 3. Core Magento Indexers
@@ -204,11 +203,15 @@ php bin/magento indexer:show-status
 | `catalogrule_product` | `catalogrule_*` | Catalog price rules |
 | `salesrule_rule` | `salesrule_*` | Cart price rules |
 
+**Source**: `src/vendor/magento/module-catalog/etc/indexer.xml` — defines product indexers.
+
 ### 3.2 Customer indexers
 
 | Indexer | Table | Purpose |
 |---------|-------|---------|
 | `customer_grid` | `customer_grid_flat` | Customer listing data (admin grid) |
+
+**Source**: `src/vendor/magento/module-customer/etc/indexer.xml` — defines customer indexers.
 
 ### 3.3 Category indexers
 
@@ -216,6 +219,8 @@ php bin/magento indexer:show-status
 |---------|-------|---------|
 | `catalog_category_flat` | `catalog_category_flat_store_*` | Flat category data per store |
 | `catalog_category_fulltext` | `catalogsearch_fulltext` | Category search |
+
+**Source**: `src/vendor/magento/module-catalog/etc/indexer.xml` — defines category indexers.
 
 ---
 
@@ -247,6 +252,8 @@ Magento automatically schedules these cron jobs:
 | `catalog_product_price_reindex` | `catalog_product_price` | Every minute |
 | `catalogsearch_fulltext_reindex` | `catalog_search` | Every minute |
 
+**Source**: `src/vendor/magento/module-catalog/etc/crontab.xml` — defines catalog-related cron jobs.
+
 ### 4.3 Checking cron health
 
 ```bash
@@ -265,7 +272,7 @@ grep -i "cron" var/log/exception.log
 
 ## 5. Creating a Custom Indexer
 
-### 5.1 Example: CustomerCare VIP indexer
+### 5.1 Example: VIP status indexer
 
 ```xml
 <!-- etc/indexer.xml -->
@@ -273,7 +280,7 @@ grep -i "cron" var/log/exception.log
     <indexer id="customercare_vip_status" view_id="customercare_vip_status">
         <title>Customer Care VIP Status</title>
         <description>Customer VIP level and lifetime spent</description>
-        <class>AlpineCommerce\CustomerCare\Model\Indexer\VipStatus</class>
+        <class>Vendor\CustomerCare\Model\Indexer\VipStatus</class>
     </indexer>
 </config>
 ```
@@ -304,31 +311,7 @@ class VipStatus implements IndexerInterface
 }
 ```
 
-### 5.2 Triggering the indexer
-
-```xml
-<!-- etc/events.xml -->
-<config xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <event name="checkout_onepage_controller_success_action">
-        <observer name="autoinvoice_create_invoice" instance="AlpineCommerce\AutoInvoice\Observer\AutoInvoice"/>
-    </event>
-</config>
-```
-
-```php
-// Observer/AutoInvoice.php
-class AutoInvoice
-{
-    private ScopeConfigInterface $scopeConfig;
-    private OrderServiceInterface $orderService;
-    
-    public function execute(Event $event): void
-    {
-        $order = $event->getEvent()->getOrder();
-        // Auto-create invoice based on config
-    }
-}
-```
+**Source**: `src/vendor/magento/module-indexer/Model/IndexerInterface.php` — defines the Indexer interface.
 
 ---
 
@@ -360,12 +343,7 @@ php bin/magento indexer:show-status
 php bin/magento indexer:reset catalog_search
 ```
 
-### 6.3 AlpineCommerce indexer usage
-
-AlpineCommerce modules use indexers indirectly:
-- **CustomerGrid**: uses `customer_grid` indexer for admin customer listing
-- **StorePickup**: no custom indexer (uses Repository directly)
-- **Blog**: no custom indexer (small dataset, Repository is fine)
+**Source**: `src/vendor/magento/module-indexer/Console/Command/IndexerSetModeCommand.php` — implements mode switching.
 
 ---
 
@@ -381,18 +359,7 @@ crontab -l
 * * * * * /usr/bin/php /var/www/html/bin/magento cron:run
 ```
 
-### 7.2 Cron in Docker
-
-```yaml
-# docker-compose.yml (cron service)
-cron:
-  image: alpine:latest
-  volumes:
-    - ./src:/var/www/html
-  entrypoint: /bin/sh -c "echo '* * * * * php /var/www/html/bin/magento cron:run' >> /etc/crontabs/root && crond -f -l 2"
-```
-
-### 7.3 Monitoring cron
+### 7.2 Monitoring cron
 
 ```bash
 # Check cron schedule
@@ -405,12 +372,7 @@ cat var/cron_schedule/*.yml | grep -A 10 "indexer"
 php bin/magento cron:check
 ```
 
-### 7.4 AlpineCommerce cron jobs
-
-| Job Code | Module | Schedule | Purpose |
-|----------|--------|----------|---------|
-| `customercare_update_vip_levels` | CustomerCare | Daily 02:00 | Recalculate all VIP levels |
-| `indexer_reindex_all_invalid` | Core | Every minute | Reindex all invalid indexers |
+**Source**: `src/vendor/magento/module-cron/Console/Command/CronCheckCommand.php` — checks cron health.
 
 ---
 
@@ -467,7 +429,7 @@ php bin/magento cron:run
 # Verify the job is defined in etc/crontab.xml
 
 # 3. Check module is enabled
-php bin/magento module:status AlpineCommerce_CustomerCare
+php bin/magento module:status Vendor_Module
 ```
 
 ### 8.4 Indexer too slow
@@ -574,4 +536,67 @@ class UpdateVipLevels
 
 ---
 
-*Last updated: 2026-08-11.*
+## 11. AlpineCommerce Reference
+
+### 11.1 Cron jobs
+
+| Job Code | Module | Schedule | Purpose |
+|----------|--------|----------|---------|
+| `customercare_update_vip_levels` | CustomerCare | Daily 02:00 | Recalculate all VIP levels |
+
+**Source**: `src/app/code/AlpineCommerce/CustomerCare/etc/crontab.xml`
+
+```xml
+<config xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
+    <group id="default">
+        <job name="customercare_update_vip_levels" instance="AlpineCommerce\CustomerCare\Cron\UpdateVipLevels" method="execute">
+            <schedule>0 2 * * *</schedule>
+        </job>
+    </group>
+</config>
+```
+
+### 11.2 Cron implementation
+
+```php
+// Cron/UpdateVipLevels.php
+class UpdateVipLevels
+{
+    private CustomerCareInterface $customerCare;
+    
+    public function execute(): void
+    {
+        $this->customerCare->recalculateAll();
+    }
+}
+```
+
+**Source**: `src/app/code/AlpineCommerce/CustomerCare/Cron/UpdateVipLevels.php`
+
+### 11.3 AlpineCommerce indexer usage
+
+AlpineCommerce modules use indexers indirectly:
+- **CustomerGrid**: uses `customer_grid` indexer for admin customer listing
+- **StorePickup**: no custom indexer (uses Repository directly)
+- **Blog**: no custom indexer (small dataset, Repository is fine)
+
+---
+
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| Cron | [developer.adobe.com/commerce/php/architecture/cron/](https://developer.adobe.com/commerce/php/architecture/cron/) |
+| Indexers | [developer.adobe.com/commerce/php/architecture/modules/indexers/](https://developer.adobe.com/commerce/php/architecture/modules/indexers/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
+
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
+
+*Last updated: 2026-09-07*

@@ -7,15 +7,33 @@
 
 ---
 
+## Table of Contents
+
+1. [Security Principles in Magento](#1-security-principles-in-magento)
+2. [Form Keys (CSRF Protection)](#2-form-keys-csrf-protection)
+3. [ACL (Access Control List)](#3-acl-access-control-list)
+4. [XSS Prevention](#4-xss-prevention)
+5. [Input Validation](#5-input-validation)
+6. [SQL Injection Prevention](#6-sql-injection-prevention)
+7. [Secrets Management](#7-secrets-management)
+8. [Safe Coding Checklist](#8-safe-coding-checklist)
+9. [Common Vulnerabilities](#9-common-vulnerabilities)
+10. [Summary](#10-summary)
+11. [AlpineCommerce Reference](#11-alpinecommerce-reference)
+
+---
+
 ## 1. Security Principles in Magento
 
-Magentento follows these principles:
+Magento follows these principles:
 - **Never trust user input** — validate and sanitize everything
 - **Escape output** — prevent XSS in templates
 - **CSRF protection** — form keys on all POST forms
 - **ACL enforcement** — restrict access by role
 - **Prepared statements** — prevent SQL injection
 - **No secrets in code** — use `env.php` and `.env`
+
+**Source**: `src/vendor/magento/module-security/` — Magento's security module.
 
 ---
 
@@ -53,6 +71,8 @@ Magento adds a hidden field with a unique token to every form:
 Magento validates the `form_key` on every POST request. If it's missing or
 invalid, the request is rejected with a 403.
 
+**Source**: `src/vendor/magento/framework/Data/Form/FormKeyValidator.php` — validates form keys on POST requests.
+
 ### 2.3 Form key in AJAX
 
 ```js
@@ -60,7 +80,7 @@ invalid, the request is rejected with a 403.
 var formKey = window.FORM_KEY;
 
 $.ajax({
-    url: '/rest/V1/alphacommerce/product-reviews',
+    url: '/rest/V1/vendor/module/reviews',
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify({...}),
@@ -90,9 +110,9 @@ ACL restricts what each admin user can see and do.
 <acl xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
     <resources>
         <resource id="Magento_Backend::admin">
-            <resource id="AlpineCommerce_Blog::main" title="Blog" sortOrder="10">
-                <resource id="AlpineCommerce_Blog::post" title="Posts" sortOrder="10"/>
-                <resource id="AlpineCommerce_Blog::category" title="Categories" sortOrder="20"/>
+            <resource id="Vendor_Module::main" title="My Module" sortOrder="10">
+                <resource id="Vendor_Module::post" title="Posts" sortOrder="10"/>
+                <resource id="Vendor_Module::category" title="Categories" sortOrder="20"/>
             </resource>
         </resource>
     </resources>
@@ -105,7 +125,7 @@ ACL restricts what each admin user can see and do.
 // Controller/Adminhtml/Post/Index.php
 class Index extends \Magento\Backend\App\Action
 {
-    const ADMIN_RESOURCE = 'AlpineCommerce_Blog::post';
+    const ADMIN_RESOURCE = 'Vendor_Module::post';
     
     public function execute(): void
     {
@@ -115,16 +135,22 @@ class Index extends \Magento\Backend\App\Action
 }
 ```
 
+**Source**: `src/vendor/magento/module-backend/App/Action.php` — automatically checks ACL permissions.
+
 ### 3.4 Using ACL in system.xml
 
 ```xml
 <field id="enabled" ...>
     <label>Enabled</label>
-    <resource>AlpineCommerce_Blog::config</resource>
+    <resource>Vendor_Module::config</resource>
 </field>
 ```
 
-Only users with `AlpineCommerce_Blog::config` permission can see/change this field.
+Only users with `Vendor_Module::config` permission can see/change this field.
+
+**Source**: `src/vendor/magento/module-config/Block/System/Config/Form.php` — filters fields by ACL resource.
+
+**Official documentation**: [ACL](https://developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/acl/)
 
 ---
 
@@ -145,11 +171,11 @@ into a page viewed by other users.
 ### 4.2 Magento's solution: escapeHtml()
 
 ```php
-<!-- ✅ SAFE: escaped -->
+<!-- SAFE: escaped -->
 <p><?= $block->escapeHtml($post->getTitle()) ?></p>
 <!-- Output: &lt;script&gt;stealCookies()&lt;/script&gt; -->
 
-<!-- ❌ DANGEROUS: not escaped -->
+<!-- DANGEROUS: not escaped -->
 <p><?= $post->getTitle() ?></p>
 <!-- Output: <script>stealCookies()</script> -->
 ```
@@ -160,7 +186,7 @@ into a page viewed by other users.
 |--------|----------|---------|
 | `escapeHtml()` | HTML content | `$block->escapeHtml($title)` |
 | `escapeUrl()` | URLs | `$block->escapeUrl($url)` |
-| `escapeJs()` | JavaScript strings | `$block->escapeJs($string)`` |
+| `escapeJs()` | JavaScript strings | `$block->escapeJs($string)` |
 | `escapeAttr()` | HTML attributes | `$block->escapeAttr($value)` |
 
 ### 4.4 When NOT to escape
@@ -173,6 +199,8 @@ into a page viewed by other users.
 ```
 
 **Only escape when the content comes from user input or the database.**
+
+**Source**: `src/vendor/magento/module-theme/Block/AbstractBlock.php` — provides escape methods.
 
 ---
 
@@ -232,6 +260,8 @@ public function save(PostInterface $post): PostInterface
 }
 ```
 
+**Source**: `src/vendor/magento/module-customer/Controller/Account/CreatePost.php` — validates input before creating a customer.
+
 ---
 
 ## 6. SQL Injection Prevention
@@ -239,7 +269,7 @@ public function save(PostInterface $post): PostInterface
 ### 6.1 Never concatenate SQL
 
 ```php
-// ❌ DANGEROUS: SQL injection
+// DANGEROUS: SQL injection
 $sql = "SELECT * FROM blog_post WHERE title = '" . $title . "'";
 $connection->query($sql);
 ```
@@ -247,7 +277,7 @@ $connection->query($sql);
 ### 6.2 Use parameter binding
 
 ```php
-// ✅ SAFE: parameter binding
+// SAFE: parameter binding
 $sql = "SELECT * FROM blog_post WHERE title = :title";
 $connection->fetchAll($sql, ['title' => $title]);
 ```
@@ -268,6 +298,8 @@ $post = $this->postFactory->create();
 $this->resource->load($post, $id); // Automatically safe
 ```
 
+**Source**: `src/vendor/magento/framework/DB/Adapter/AdapterInterface.php` — all DB operations use parameterized queries.
+
 ---
 
 ## 7. Secrets Management
@@ -275,10 +307,10 @@ $this->resource->load($post, $id); // Automatically safe
 ### 7.1 Never commit secrets
 
 ```php
-// ❌ NEVER do this
+// NEVER do this
 $apiKey = 'sk_live_1234567890abcdef';
 
-// ✅ Use environment variables or env.php
+// Use environment variables or env.php
 $apiKey = getenv('API_KEY');
 // Or in Magento:
 $apiKey = $this->scopeConfig->getValue('my_module/api/key');
@@ -298,7 +330,7 @@ return [
                 'host' => 'localhost',
                 'dbname' => 'magento',
                 'username' => 'magento',
-                'password' => 'secret_password' // ← This is OK, it's not in Git
+                'password' => 'secret_password' // This is OK, it's not in Git
             ]
         ]
     ],
@@ -316,6 +348,8 @@ return [
     ]
 ];
 ```
+
+**Source**: `app/etc/env.php` — Magento's environment configuration (not in Git).
 
 ### 7.3 .env files
 
@@ -348,20 +382,20 @@ MAGENTO_PRIVATE_KEY=def456
 ### 9.1 XSS in templates
 
 ```php
-<!-- ❌ Vulnerable -->
+<!-- Vulnerable -->
 <p><?= $comment->getText() ?></p>
 
-<!-- ✅ Safe -->
+<!-- Safe -->
 <p><?= $block->escapeHtml($comment->getText()) ?></p>
 ```
 
 ### 9.2 SQL injection in custom queries
 
 ```php
-// ❌ Vulnerable
+// Vulnerable
 $sql = "SELECT * FROM posts WHERE id = " . $_GET['id'];
 
-// ✅ Safe
+// Safe
 $sql = "SELECT * FROM posts WHERE id = :id";
 $connection->fetchAll($sql, ['id' => (int) $_GET['id']]);
 ```
@@ -369,13 +403,13 @@ $connection->fetchAll($sql, ['id' => (int) $_GET['id']]);
 ### 9.3 Missing form key
 
 ```php
-<!-- ❌ Vulnerable: no form key -->
+<!-- Vulnerable: no form key -->
 <form method="POST">
     <input type="text" name="title"/>
     <button type="submit">Save</button>
 </form>
 
-<!-- ✅ Safe: form key included -->
+<!-- Safe: form key included -->
 <form method="POST">
     <input type="hidden" name="form_key" value="<?= $block->getFormKey() ?>"/>
     <input type="text" name="title"/>
@@ -386,7 +420,7 @@ $connection->fetchAll($sql, ['id' => (int) $_GET['id']]);
 ### 9.4 Missing ACL check
 
 ```php
-// ❌ Vulnerable: no permission check
+// Vulnerable: no permission check
 class Delete extends \Magento\Backend\App\Action
 {
     public function execute()
@@ -395,10 +429,10 @@ class Delete extends \Magento\Backend\App\Action
     }
 }
 
-// ✅ Safe: ACL check
+// Safe: ACL check
 class Delete extends \Magento\Backend\App\Action
 {
-    const ADMIN_RESOURCE = 'AlpineCommerce_Blog::post';
+    const ADMIN_RESOURCE = 'Vendor_Module::post';
     
     public function execute()
     {
@@ -407,34 +441,11 @@ class Delete extends \Magento\Backend\App\Action
 }
 ```
 
----
-
-## 10. Security in AlpineCommerce
-
-### 10.1 What AlpineCommerce does right
-
-| Practice | Example |
-|----------|---------|
-| Form keys | All admin forms include `form_key` |
-| ACL | All admin controllers have `ADMIN_RESOURCE` |
-| Escape HTML | All PHTML templates use `escapeHtml()` |
-| REST API auth | All endpoints require authentication (`customer` or admin token) |
-| Input validation | Repositories validate data before saving |
-| No secrets in code | Credentials in `env.php`, not in PHP files |
-
-### 10.2 What to watch for
-
-| Risk | Mitigation |
-|------|------------|
-| XSS in user-generated content | Always `escapeHtml()` before displaying |
-| SQL injection in custom queries | Use ResourceModel, never concatenate SQL |
-| Missing ACL on new controllers | Add `ADMIN_RESOURCE` constant |
-| Exposed API endpoints | Use proper ACL resources in `webapi.xml` |
-| Weak passwords | Enforce strong passwords in admin |
+**Source**: `src/vendor/magento/module-backend/App/Action.php` — automatically checks ACL for all admin controllers.
 
 ---
 
-## 11. Summary
+## 10. Summary
 
 | Threat | Magento Protection | Developer Responsibility |
 |--------|-------------------|-------------------------|
@@ -447,4 +458,76 @@ class Delete extends \Magento\Backend\App\Action
 
 ---
 
-*Last updated: 2026-08-11.*
+## 11. AlpineCommerce Reference
+
+### 11.1 What AlpineCommerce does right
+
+| Practice | Example |
+|----------|---------|
+| Form keys | All admin forms include `form_key` |
+| ACL | All admin controllers have `ADMIN_RESOURCE` |
+| Escape HTML | All PHTML templates use `escapeHtml()` |
+| REST API auth | All endpoints require authentication (`customer` or admin token) |
+| Input validation | Repositories validate data before saving |
+| No secrets in code | Credentials in `env.php`, not in PHP files |
+
+### 11.2 What to watch for
+
+| Risk | Mitigation |
+|------|------------|
+| XSS in user-generated content | Always `escapeHtml()` before displaying |
+| SQL injection in custom queries | Use ResourceModel, never concatenate SQL |
+| Missing ACL on new controllers | Add `ADMIN_RESOURCE` constant |
+| Exposed API endpoints | Use proper ACL resources in `webapi.xml` |
+| Weak passwords | Enforce strong passwords in admin |
+
+### 11.3 AlpineCommerce security patterns
+
+**Blog admin controller**:
+```php
+// Controller/Adminhtml/Post/Index.php
+class Index extends \Magento\Backend\App\Action
+{
+    const ADMIN_RESOURCE = 'AlpineCommerce_Blog::post';
+    
+    public function execute(): void
+    {
+        // ACL checked automatically
+    }
+}
+```
+
+**Source**: `src/app/code/AlpineCommerce/Blog/Controller/Adminhtml/Post/Index.php`
+
+**Blog template**:
+```php
+<?php foreach ($posts as $post): ?>
+    <h2><?= $block->escapeHtml($post->getTitle()) ?></h2>
+    <p><?= $block->escapeHtml($post->getContent()) ?></p>
+<?php endforeach; ?>
+```
+
+**Source**: `src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml`
+
+---
+
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| Security Best Practices | [developer.adobe.com/commerce/php/architecture/security/](https://developer.adobe.com/commerce/php/architecture/security/) |
+| ACL | [developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/acl/](https://developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/acl/) |
+| Form Keys | [developer.adobe.com/commerce/php/architecture/security/form-key-validation/](https://developer.adobe.com/commerce/php/architecture/security/form-key-validation/) |
+| XSS Prevention | [developer.adobe.com/commerce/php/architecture/security/xss-prevention/](https://developer.adobe.com/commerce/php/architecture/security/xss-prevention/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
+
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
+
+*Last updated: 2026-09-07*

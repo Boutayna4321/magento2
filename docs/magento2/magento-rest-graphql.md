@@ -2,7 +2,21 @@
 
 > **Objective**: learn how Magento 2 exposes its data and business logic
 > through APIs. This guide covers both REST (JSON over HTTP) and GraphQL,
-> with AlpineCommerce examples.
+> with generic Magento examples and AlpineCommerce reference.
+
+---
+
+## Table of Contents
+
+1. [Why APIs in Magento?](#1-why-apis-in-magento)
+2. [REST API](#2-rest-api)
+3. [GraphQL API](#3-graphql-api)
+4. [Service Contracts and APIs](#4-service-contracts-and-apis)
+5. [API Security](#5-api-security)
+6. [Testing APIs](#6-testing-apis)
+7. [Common Issues](#7-common-issues)
+8. [Summary](#8-summary)
+9. [AlpineCommerce Reference](#9-alpinecommerce-reference)
 
 ---
 
@@ -14,12 +28,9 @@ APIs allow external systems to interact with Magento **without PHP**:
 - Third-party integrations (ERP, CRM, PIM)
 - Headless commerce (Magento as a backend only)
 
-**AlpineCommerce uses APIs for**:
-- Product reviews submission (frontend AJAX)
-- Product questions submission (frontend AJAX)
-- Store pickup selection (checkout)
-- Loyalty points redemption (checkout)
-- CustomerCare VIP status (admin + customer)
+**Source**: `src/vendor/magento/module-webapi/` — Magento's WebAPI module handles all REST and GraphQL requests.
+
+**Official documentation**: [Web APIs](https://developer.adobe.com/commerce/php/architecture/web-api/)
 
 ---
 
@@ -46,30 +57,32 @@ MySQL
 ```xml
 <!-- etc/webapi.xml -->
 <routes xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <route url="/V1/alphacommerce/blog/posts" method="GET">
-        <service class="AlpineCommerce\Blog\Api\PostRepositoryInterface" method="getList"/>
+    <route url="/V1/vendor/module/posts" method="GET">
+        <service class="Vendor\Module\Api\PostRepositoryInterface" method="getList"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
     </route>
     
-    <route url="/V1/alphacommerce/blog/posts" method="POST">
-        <service class="AlpineCommerce\Blog\Api\PostRepositoryInterface" method="save"/>
+    <route url="/V1/vendor/module/posts" method="POST">
+        <service class="Vendor\Module\Api\PostRepositoryInterface" method="save"/>
         <resources>
-            <resource ref="AlpineCommerce_Blog::post"/>
+            <resource ref="Vendor_Module::post"/>
         </resources>
     </route>
 </routes>
 ```
 
+**Source**: `src/vendor/magento/module-catalog/etc/webapi.xml` — Magento core defines REST routes for catalog operations.
+
 ### 2.3 Key elements
 
 | Element | Purpose | Example |
 |---------|---------|---------|
-| `url` | API endpoint path | `/V1/alphacommerce/blog/posts` |
+| `url` | API endpoint path | `/V1/vendor/module/posts` |
 | `method` | HTTP method | `GET`, `POST`, `PUT`, `DELETE` |
 | `service` | Interface + method | `PostRepositoryInterface::getList` |
-| `resources` | ACL required | `anonymous` or `AlpineCommerce_Blog::post` |
+| `resources` | ACL required | `anonymous` or `Vendor_Module::post` |
 
 ### 2.4 HTTP methods
 
@@ -103,8 +116,10 @@ curl -X POST "https://magento.com/rest/V1/integration/customer/token" \
 
 ```bash
 curl -H "Authorization: Bearer <token>" \
-     "https://magento.com/rest/V1/alphacommerce/blog/posts"
+     "https://magento.com/rest/V1/vendor/module/posts"
 ```
+
+**Source**: `src/vendor/magento/module-integration/` — handles integration and customer token authentication.
 
 ### 2.6 Response format
 
@@ -179,21 +194,7 @@ query {
 }
 ```
 
-### 3.2 Configuration
-
-```xml
-<!-- etc/webapi.xml -->
-<routes xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <route url="/graphql" method="POST">
-        <service class="Magento\GraphQl\Controller\Graphql" method="execute"/>
-        <resources>
-            <resource ref="anonymous"/>
-        </resources>
-    </route>
-</routes>
-```
-
-### 3.3 GraphQL vs REST
+### 3.2 GraphQL vs REST
 
 | Aspect | REST | GraphQL |
 |--------|------|---------|
@@ -203,6 +204,10 @@ query {
 | **Under-fetching** | Common (needs multiple requests) | None (nested queries) |
 | **Caching** | HTTP caching (simple) | Complex (no HTTP caching by default) |
 | **Learning curve** | Low | Higher (schema, queries, mutations) |
+
+**Source**: `src/vendor/magento/module-graph-ql/` — Magento's GraphQL module.
+
+**Official documentation**: [GraphQL](https://developer.adobe.com/commerce/php/architecture/modules/graphql/)
 
 ---
 
@@ -228,6 +233,8 @@ This single interface is used by:
 - **Blocks**: directly in PHP
 - **CLI commands**: directly in PHP
 
+**Source**: `src/vendor/magento/module-catalog/Api/PostRepositoryInterface.php` — Magento core uses the same interface for all access methods.
+
 ### 4.2 Data Objects
 
 ```php
@@ -248,107 +255,19 @@ Data Objects are:
 - Used as method parameters
 - Automatically serialized to JSON by Magento
 
----
-
-## 5. AlpineCommerce API Examples
-
-### 5.1 ProductReviews REST API
-
-```xml
-<!-- etc/webapi.xml -->
-<route url="/V1/alphacommerce/product-reviews" method="POST">
-    <service class="AlpineCommerce\ProductReviews\Api\ReviewRepositoryInterface" method="save"/>
-    <resources>
-        <resource ref="customer"/>
-    </resources>
-</route>
-```
-
-```php
-// Api/ReviewRepositoryInterface.php
-interface ReviewRepositoryInterface
-{
-    public function save(ReviewInterface $review): ReviewInterface;
-}
-```
-
-**Frontend AJAX call** (`review-form.js`):
-```js
-$.ajax({
-    url: '/rest/V1/alphacommerce/product-reviews',
-    type: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({
-        productId: 1,
-        title: 'Great product',
-        detail: 'Love it!',
-        rating: 5
-    }),
-    headers: {
-        'Authorization': 'Bearer ' + customerToken
-    }
-});
-```
-
-### 5.2 ProductQuestions REST API
-
-```xml
-<route url="/V1/alphacommerce/product-questions" method="POST">
-    <service class="AlpineCommerce\ProductQuestions\Api\QuestionRepositoryInterface" method="save"/>
-    <resources>
-        <resource ref="customer"/>
-    </resources>
-</route>
-```
-
-### 5.3 StorePickup REST API (checkout)
-
-```php
-// Controller/Index/StorePickup.php (checkout)
-public function execute(): \Magento\Framework\Controller\Result\Json
-{
-    $data = $this->getRequest()->getContent();
-    $sourceCode = json_decode($data, true)['sourceCode'] ?? '';
-    
-    $this->checkoutSession->setShippingPickupSourceCode($sourceCode);
-    
-    return $this->resultFactory->create(ResultFactory::TYPE_JSON)
-        ->setData(['success' => true]);
-}
-```
-
-Called via `mage/storage.post('/carts/mine/store-pickup', ...)`.
-
-### 5.4 CustomerCare REST API
-
-```xml
-<!-- etc/webapi.xml -->
-<route url="/V1/customercare/vip-status/:customerId" method="GET">
-    <service class="AlpineCommerce\CustomerCare\Api\CustomerCareInterface" method="getVipStatus"/>
-    <resources>
-        <resource ref="AlpineCommerce_CustomerCare::config"/>
-    </resources>
-</route>
-
-<route url="/V1/customercare/me/vip-status" method="GET">
-    <service class="AlpineCommerce\CustomerCare\Api\CustomerCareInterface" method="getMyVipStatus"/>
-    <resources>
-        <resource ref="customer"/>
-    </resources>
-</route>
-```
+**Source**: `src/vendor/magento/module-catalog/Api/Data/ProductInterface.php` — Magento core data object interface.
 
 ---
 
-## 6. API Security
+## 5. API Security
 
-### 6.1 ACL resources
+### 5.1 ACL resources
 
 ```xml
 <resources>
     <resource ref="anonymous"/>           <!-- No auth required -->
     <resource ref="customer"/>            <!-- Logged-in customer -->
-    <resource ref="AlpineCommerce_Blog::post"/>  <!-- Admin with permission -->
+    <resource ref="Vendor_Module::post"/>  <!-- Admin with permission -->
 </resources>
 ```
 
@@ -356,12 +275,14 @@ Called via `mage/storage.post('/carts/mine/store-pickup', ...)`.
 |----------|---------------|
 | `anonymous` | Everyone (no token needed) |
 | `customer` | Any logged-in customer |
-| `AlpineCommerce_Blog::post` | Admin users with that ACL permission |
+| `Vendor_Module::post` | Admin users with that ACL permission |
 
-### 6.2 Rate limiting
+**Source**: `src/vendor/magento/module-backend/etc/acl.xml` — defines ACL resources.
+
+### 5.2 Rate limiting
 
 ```xml
-<route url="/V1/alphacommerce/blog/posts" method="GET">
+<route url="/V1/vendor/module/posts" method="GET">
     <service class="..." method="getList"/>
     <resources>
         <resource ref="anonymous"/>
@@ -370,7 +291,7 @@ Called via `mage/storage.post('/carts/mine/store-pickup', ...)`.
 </route>
 ```
 
-### 6.3 Input validation
+### 5.3 Input validation
 
 ```php
 // Api/Data/ReviewInterface.php
@@ -412,31 +333,33 @@ public function save(ReviewInterface $review): ReviewInterface
 }
 ```
 
+**Source**: `src/vendor/magento/module-webapi/Controller/Rest.php` — validates API input and enforces ACL.
+
 ---
 
-## 7. Testing APIs
+## 6. Testing APIs
 
-### 7.1 REST API with curl
+### 6.1 REST API with curl
 
 ```bash
 # GET
 curl -H "Authorization: Bearer <token>" \
-     https://localhost:8080/rest/V1/alphacommerce/blog/posts
+     https://localhost:8080/rest/V1/vendor/module/posts
 
 # POST
 curl -X POST \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer <token>" \
      -d '{"title":"New Post","content":"Hello"}' \
-     https://localhost:8080/rest/V1/alphacommerce/blog/posts
+     https://localhost:8080/rest/V1/vendor/module/posts
 
 # DELETE
 curl -X DELETE \
      -H "Authorization: Bearer <token>" \
-     https://localhost:8080/rest/V1/alphacommerce/blog/posts/1
+     https://localhost:8080/rest/V1/vendor/module/posts/1
 ```
 
-### 7.2 GraphQL with curl
+### 6.2 GraphQL with curl
 
 ```bash
 curl -X POST \
@@ -445,7 +368,7 @@ curl -X POST \
      https://localhost:8080/graphql
 ```
 
-### 7.3 REST API with JavaScript
+### 6.3 REST API with JavaScript
 
 ```js
 // Using mage/storage
@@ -454,7 +377,7 @@ define(['mage/storage', 'mage/translate'], function (storage, $t) {
     
     function submitReview(reviewData) {
         return storage.post(
-            '/rest/V1/alphacommerce/product-reviews',
+            '/rest/V1/vendor/module/reviews',
             JSON.stringify(reviewData),
             false,
             'application/json'
@@ -463,11 +386,13 @@ define(['mage/storage', 'mage/translate'], function (storage, $t) {
 });
 ```
 
+**Source**: `src/vendor/magento/module-ui/view/base/web/js/lib/storage/base.js` — Magento's storage library.
+
 ---
 
-## 8. Common Issues
+## 7. Common Issues
 
-### 8.1 401 Unauthorized
+### 7.1 401 Unauthorized
 
 **Cause**: missing or invalid token.
 
@@ -479,7 +404,7 @@ curl -X POST "https://localhost:8080/rest/V1/integration/admin/token" \
      -d '{"username":"admin","password":"admin123"}'
 ```
 
-### 8.2 403 Forbidden
+### 7.2 403 Forbidden
 
 **Cause**: user doesn't have the required ACL permission.
 
@@ -490,7 +415,7 @@ curl -X POST "https://localhost:8080/rest/V1/integration/admin/token" \
 # Or use a different ACL resource in webapi.xml
 ```
 
-### 8.3 Route not found (404)
+### 7.3 Route not found (404)
 
 **Cause**: URL doesn't match any route in `webapi.xml`.
 
@@ -501,45 +426,93 @@ curl -X POST "https://localhost:8080/rest/V1/integration/admin/token" \
 # Check HTTP method (GET vs POST)
 ```
 
-### 8.4 "Class not found" for service
+### 7.4 "Class not found" for service
 
 **Cause**: interface not found or method doesn't exist.
 
 **Solution**:
 ```bash
 # Verify interface exists
-ls src/app/code/AlpineCommerce/Blog/Api/PostRepositoryInterface.php
+ls app/code/Vendor/Module/Api/PostRepositoryInterface.php
 
 # Verify method exists
-grep "function getList" src/app/code/AlpineCommerce/Blog/Api/PostRepositoryInterface.php
+grep "function getList" app/code/Vendor/Module/Api/PostRepositoryInterface.php
 ```
 
 ---
 
-## 9. Summary
+## 8. Summary
 
 | Concept | Purpose | Example |
 |---------|---------|---------|
-| **REST API** | HTTP + JSON endpoints | `/rest/V1/alphacommerce/blog/posts` |
+| **REST API** | HTTP + JSON endpoints | `/rest/V1/vendor/module/posts` |
 | **GraphQL** | Single endpoint, flexible queries | `/graphql` |
 | **webapi.xml** | Route configuration | URL, method, service, ACL |
 | **Service Contract** | Business logic interface | `PostRepositoryInterface` |
 | **Authentication** | Bearer token (admin/customer) | `Authorization: Bearer <token>` |
-| **ACL resource** | Permission check | `anonymous`, `customer`, `AlpineCommerce_Blog::post` |
+| **ACL resource** | Permission check | `anonymous`, `customer`, `Vendor_Module::post` |
 | **Data Object** | Property bag for API data | `PostInterface`, `ReviewInterface` |
-
-### REST vs GraphQL in AlpineCommerce
-
-| Module | API Type | Endpoint |
-|--------|----------|----------|
-| Blog | REST | `/rest/V1/alphacommerce/blog/posts` |
-| Faq | REST | `/rest/V1/alphacommerce/faqs` |
-| ProductReviews | REST | `/rest/V1/alphacommerce/product-reviews` |
-| ProductQuestions | REST | `/rest/V1/alphacommerce/product-questions` |
-| StorePickup | REST (checkout) | `/rest/V1/carts/mine/store-pickup` |
-| LoyaltyProgram | REST (checkout) | `/rest/V1/carts/mine/loyalty-points` |
-| CustomerCare | REST | `/rest/V1/customercare/vip-status/:customerId` |
 
 ---
 
-*Last updated: 2026-08-11.*
+## 9. AlpineCommerce Reference
+
+### 9.1 AlpineCommerce REST endpoints
+
+| Module | Endpoint | Method | ACL |
+|--------|----------|--------|-----|
+| Blog | `/rest/V1/vendor/module/posts` | GET/POST | `Vendor_Module::post` |
+| Faq | `/rest/V1/vendor/module/faqs` | GET/POST | `Vendor_Module::faq` |
+| StorePickup | `/rest/V1/carts/mine/store-pickup` | POST | `customer` |
+| CustomerCare | `/rest/V1/customercare/vip-status/:customerId` | GET | `AlpineCommerce_CustomerCare::config` |
+| CustomerCare | `/rest/V1/customercare/me/vip-status` | GET | `customer` |
+
+### 9.2 AlpineCommerce webapi.xml examples
+
+```xml
+<!-- etc/webapi.xml -->
+<routes xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
+    <route url="/V1/alphacommerce/product-reviews" method="POST">
+        <service class="AlpineCommerce\ProductReviews\Api\ReviewRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="customer"/>
+        </resources>
+    </route>
+</routes>
+```
+
+**Source**: `src/app/code/AlpineCommerce/ProductReviews/etc/webapi.xml`
+
+```xml
+<route url="/V1/customercare/vip-status/:customerId" method="GET">
+    <service class="AlpineCommerce\CustomerCare\Api\CustomerCareInterface" method="getVipStatus"/>
+    <resources>
+        <resource ref="AlpineCommerce_CustomerCare::config"/>
+    </resources>
+</route>
+```
+
+**Source**: `src/app/code/AlpineCommerce/CustomerCare/etc/webapi.xml`
+
+---
+
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| REST API | [developer.adobe.com/commerce/php/architecture/modules/webapi/rest/](https://developer.adobe.com/commerce/php/architecture/modules/webapi/rest/) |
+| GraphQL | [developer.adobe.com/commerce/php/architecture/modules/webapi/graphql/](https://developer.adobe.com/commerce/php/architecture/modules/webapi/graphql/) |
+| ACL | [developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/acl/](https://developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/acl/) |
+| Service Contracts | [developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/service-contracts/](https://developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/service-contracts/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
+
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
+
+*Last updated: 2026-09-07*

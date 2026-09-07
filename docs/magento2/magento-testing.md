@@ -2,7 +2,25 @@
 
 > **Objective**: learn how to test Magento 2 code. This guide covers unit
 > tests, integration tests, and API functional tests, with practical
-> AlpineCommerce examples.
+> examples.
+
+---
+
+## Table of Contents
+
+1. [Why Test?](#1-why-test)
+2. [Types of Tests in Magento](#2-types-of-tests-in-magento)
+3. [Unit Tests](#3-unit-tests)
+4. [Integration Tests](#4-integration-tests)
+5. [API Functional Tests](#5-api-functional-tests)
+6. [Test Configuration](#6-test-configuration)
+7. [Mocking Dependencies](#7-mocking-dependencies)
+8. [Running Tests](#8-running-tests)
+9. [Test-Driven Development (TDD)](#9-test-driven-development-tdd)
+10. [CI and Tests](#10-ci-and-tests)
+11. [Common Testing Issues](#11-common-testing-issues)
+12. [Summary](#12-summary)
+13. [AlpineCommerce Reference](#13-alpinecommerce-reference)
 
 ---
 
@@ -19,6 +37,8 @@ Testing ensures that:
 - Changes can have unintended side effects across modules
 - Production bugs are costly
 
+**Source**: `src/dev/tests/` — Magento's test directory with unit, integration, and API functional tests.
+
 ---
 
 ## 2. Types of Tests in Magento
@@ -27,15 +47,15 @@ Testing ensures that:
 
 | Type | Scope | Speed | Database | Example |
 |------|-------|-------|----------|---------|
-| **Unit** | Single class | Fast (< 1s) | No | Test `PostRepository::getTitle()` |
+| **Unit** | Single class | Fast (< 1s) | No | Test `VipLevelCalculator::calculate()` |
 | **Integration** | Multiple classes | Medium (1-10s) | Yes (test DB) | Test repository with real DB |
-| **API Functional** | REST/GraphQL API | Slow (10-60s) | Yes | Test `/rest/V1/blog/posts` |
+| **API Functional** | REST/GraphQL API | Slow (10-60s) | Yes | Test `/rest/V1/vendor/module/posts` |
 | **Static** | Code analysis | Fast | No | PHPStan, PHP_CodeSniffer |
 
 ### 2.2 Magento's test directory structure
 
 ```
-src/dev/tests/
+dev/tests/
 ├── unit/                    ← Unit tests
 │   └── framework/tests/unit/
 ├── integration/             ← Integration tests
@@ -47,6 +67,8 @@ src/dev/tests/
 └── static/                  ← Static tests (PHPStan, etc.)
     └── tests/
 ```
+
+**Source**: `src/dev/tests/` — Magento's test directory structure.
 
 ---
 
@@ -140,6 +162,8 @@ vendor/bin/phpunit --coverage-html coverage/
 | Test exceptions | `$this->expectException(InvalidArgumentException::class)` |
 | Use `setUp()` for common initialization | Create object once per test |
 
+**Source**: `src/dev/tests/unit/tests/lib/` — Magento core unit tests.
+
 ---
 
 ## 4. Integration Tests
@@ -210,6 +234,8 @@ vendor/bin/phpunit \
 | Test real interactions | Verify classes work together |
 | Roll back transactions | Keep DB clean between tests |
 
+**Source**: `src/dev/tests/integration/tests/` — Magento core integration tests.
+
 ---
 
 ## 5. API Functional Tests
@@ -232,7 +258,7 @@ class PostRepositoryTest extends \Magento\TestFramework\TestCase\WebapiAbstract
         ];
         
         $response = $this->webapiCall(
-            '/rest/V1/alphacommerce/blog/posts',
+            '/rest/V1/vendor/module/posts',
             'POST',
             [],
             $postData
@@ -243,7 +269,7 @@ class PostRepositoryTest extends \Magento\TestFramework\TestCase\WebapiAbstract
         
         // Cleanup
         $this->webapiCall(
-            '/rest/V1/alphacommerce/blog/posts/' . $response['id'],
+            '/rest/V1/vendor/module/posts/' . $response['id'],
             'DELETE'
         );
     }
@@ -262,6 +288,8 @@ vendor/bin/phpunit dev/tests/api-functional/test-graphql/
 # Specific test
 vendor/bin/phpunit dev/tests/api-functional/tests/rest/PostRepositoryTest.php
 ```
+
+**Source**: `src/dev/tests/api-functional/tests/` — Magento core API functional tests.
 
 ---
 
@@ -289,7 +317,7 @@ vendor/bin/phpunit dev/tests/api-functional/tests/rest/PostRepositoryTest.php
 ### 6.2 Test directory in a module
 
 ```
-AlpineCommerce/Blog/
+Vendor/Module/
 ├── Test/
 │   ├── Unit/
 │   │   ├── Model/
@@ -318,7 +346,7 @@ API calls, etc.). Mocks are fake objects that simulate real behavior.
 ### 7.2 Example with PHPUnit mocks
 
 ```php
-// Testing StorePickup plugin with mocked carrier
+// Testing a plugin with mocked carrier
 class FilterFlatRateTest extends \PHPUnit\Framework\TestCase
 {
     public function testBeforeCollectRatesFiltersFreeShipping(): void
@@ -342,38 +370,13 @@ class FilterFlatRateTest extends \PHPUnit\Framework\TestCase
 }
 ```
 
----
-
-## 8. Testing in AlpineCommerce
-
-### 8.1 Current state
-
-| Module | Unit Tests | Integration Tests | API Tests |
-|--------|-----------|-------------------|-----------|
-| Blog | ❌ | ❌ | ❌ |
-| Faq | ❌ | ❌ | ❌ |
-| StorePickup | ❌ | ❌ | ❌ |
-| LoyaltyProgram | ❌ | ❌ | ❌ |
-| CustomerCare | ❌ | ❌ | ❌ |
-
-**AlpineCommerce has no tests yet** (BACKLOG B-07).
-
-### 8.2 Recommended test coverage
-
-| Component | Unit | Integration | API |
-|-----------|------|-------------|-----|
-| VipLevelCalculator | ✅ | — | — |
-| PostRepository | — | ✅ | ✅ |
-| REST endpoints | — | — | ✅ |
-| Plugins | ✅ | — | — |
-| Observers | ✅ | — | — |
-| Data Patches | — | ✅ | — |
+**Source**: `src/dev/tests/unit/tests/lib/` — Magento core unit tests use PHPUnit mocks extensively.
 
 ---
 
-## 9. Running Tests in AlpineCommerce
+## 8. Running Tests
 
-### 9.1 Prerequisites
+### 8.1 Prerequisites
 
 ```bash
 # Install dev dependencies
@@ -393,7 +396,7 @@ php bin/magento setup:install \
     --admin-password=admin123
 ```
 
-### 9.2 Run all tests
+### 8.2 Run all tests
 
 ```bash
 # Unit tests
@@ -406,7 +409,7 @@ vendor/bin/phpunit dev/tests/integration/tests/
 vendor/bin/phpunit dev/tests/api-functional/
 ```
 
-### 9.3 Run tests with coverage
+### 8.3 Run tests with coverage
 
 ```bash
 vendor/bin/phpunit --coverage-html coverage/
@@ -415,9 +418,9 @@ vendor/bin/phpunit --coverage-html coverage/
 
 ---
 
-## 10. Test-Driven Development (TDD)
+## 9. Test-Driven Development (TDD)
 
-### 10.1 The TDD cycle
+### 9.1 The TDD cycle
 
 ```
 1. Write a failing test
@@ -426,7 +429,7 @@ vendor/bin/phpunit --coverage-html coverage/
 4. Repeat
 ```
 
-### 10.2 Example: TDD for VipLevelCalculator
+### 9.2 Example: TDD for VipLevelCalculator
 
 ```php
 // Step 1: Write failing test
@@ -453,9 +456,9 @@ class VipLevelCalculator
 
 ---
 
-## 11. CI and Tests
+## 10. CI and Tests
 
-### 11.1 Adding tests to GitHub Actions
+### 10.1 Adding tests to GitHub Actions
 
 ```yaml
 # .github/workflows/ci.yml
@@ -472,7 +475,7 @@ jobs:
       - run: vendor/bin/phpunit tests/Unit/
 ```
 
-### 11.2 Test coverage as CI gate
+### 10.2 Test coverage as CI gate
 
 ```yaml
       - name: Run unit tests with coverage
@@ -485,9 +488,9 @@ jobs:
 
 ---
 
-## 12. Common Testing Issues
+## 11. Common Testing Issues
 
-### 12.1 "Class not found" in tests
+### 11.1 "Class not found" in tests
 
 **Cause**: autoloader not updated.
 
@@ -496,7 +499,7 @@ jobs:
 composer dump-autoload
 ```
 
-### 12.2 Tests fail with "Area code is not set"
+### 11.2 Tests fail with "Area code is not set"
 
 **Cause**: integration tests need area code.
 
@@ -510,7 +513,9 @@ protected function setUp(): void
 }
 ```
 
-### 12.3 Database connection errors
+**Source**: `src/vendor/magento/module-store/Test/Integration/` — Magento integration tests set area code.
+
+### 11.3 Database connection errors
 
 **Cause**: test database not configured.
 
@@ -526,7 +531,7 @@ vendor/bin/phpunit --bootstrap dev/tests/integration/bootstrap.php \
 
 ---
 
-## 13. Summary
+## 12. Summary
 
 | Test Type | Scope | Speed | Database | When to use |
 |-----------|-------|-------|----------|-------------|
@@ -541,18 +546,75 @@ vendor/bin/phpunit --bootstrap dev/tests/integration/bootstrap.php \
 3. **API tests** verify the entire API stack
 4. **Mock dependencies** in unit tests to keep them fast
 5. **Run tests in CI** to catch bugs before merge
-6. **AlpineCommerce needs tests** (BACKLOG B-07) — start with `VipLevelCalculator`
 
-### Recommended AlpineCommerce test plan
+### Recommended test plan
 
 | Priority | Component | Type | Effort |
 |----------|-----------|------|--------|
 | High | `VipLevelCalculator` | Unit | Low |
 | High | `PostRepository` | Integration | Medium |
 | High | REST endpoints | API Functional | Medium |
-| Medium | Plugins (StorePickup, Loyalty, CustomerCare, StoreSetup) | Unit | Low |
+| Medium | Plugins | Unit | Low |
 | Low | Full checkout flow | API Functional | High |
 
 ---
 
-*Last updated: 2026-08-11.*
+## 13. AlpineCommerce Reference
+
+### 13.1 Current state
+
+| Module | Unit Tests | Integration Tests | API Tests |
+|--------|-----------|-------------------|-----------|
+| Blog | ❌ | ❌ | ❌ |
+| Faq | ❌ | ❌ | ❌ |
+| StorePickup | ❌ | ❌ | ❌ |
+| LoyaltyProgram | ❌ | ❌ | ❌ |
+| CustomerCare | ❌ | ❌ | ❌ |
+
+**AlpineCommerce has no tests yet** (BACKLOG B-07).
+
+### 13.2 Recommended test coverage
+
+| Component | Unit | Integration | API |
+|-----------|------|-------------|-----|
+| VipLevelCalculator | ✅ | — | — |
+| PostRepository | — | ✅ | ✅ |
+| REST endpoints | — | — | ✅ |
+| Plugins (StorePickup, Loyalty, CustomerCare, StoreSetup) | ✅ | — | — |
+| Observers (AutoInvoice) | ✅ | — | — |
+| Data Patches (StoreSetup) | — | ✅ | — |
+
+### 13.3 AlpineCommerce test priorities
+
+1. **High priority**: `VipLevelCalculator` (unit) — simple, no dependencies
+2. **High priority**: `PostRepository` (integration) — core CRUD operations
+3. **High priority**: REST endpoints (API functional) — verify API contracts
+4. **Medium priority**: Plugins (unit) — test before/after/around logic
+5. **Medium priority**: Observers (unit) — test event reactions
+6. **Low priority**: Full checkout flow (API functional) — complex, high effort
+
+**Source**: `src/app/code/AlpineCommerce/` — AlpineCommerce modules need test coverage added.
+
+---
+
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| Testing Guide | [developer.adobe.com/commerce/php/architecture/testing/](https://developer.adobe.com/commerce/php/architecture/testing/) |
+| Unit Tests | [developer.adobe.com/commerce/php/architecture/testing/unit/](https://developer.adobe.com/commerce/php/architecture/testing/unit/) |
+| Integration Tests | [developer.adobe.com/commerce/php/architecture/testing/integration/](https://developer.adobe.com/commerce/php/architecture/testing/integration/) |
+| API Functional Tests | [developer.adobe.com/commerce/php/architecture/testing/api-functional/](https://developer.adobe.com/commerce/php/architecture/testing/api-functional/) |
+| PHPUnit | [phpunit.de](https://phpunit.de/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
+
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
+
+*Last updated: 2026-09-07*

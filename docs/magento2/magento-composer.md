@@ -6,6 +6,23 @@
 
 ---
 
+## Table of Contents
+
+1. [What is Composer?](#1-what-is-composer)
+2. [Composer Basics](#2-composer-basics)
+3. [Magento's composer.json](#3-magentos-composerjson)
+4. [Common Composer Workflows in Magento](#4-common-composer-workflows-in-magento)
+5. [composer.lock](#5-composerlock)
+6. [Version Constraints](#6-version-constraints)
+7. [Composer Scripts](#7-composer-scripts)
+8. [Autoloading in Magento](#8-autoloading-in-magento)
+9. [Common Issues](#9-common-issues)
+10. [Best Practices](#10-best-practices)
+11. [Summary](#11-summary)
+12. [AlpineCommerce Reference](#12-alpinecommerce-reference)
+
+---
+
 ## 1. What is Composer?
 
 **Composer** is the **dependency manager** for PHP. It downloads libraries
@@ -14,7 +31,6 @@
 **In Magento 2**:
 - Composer installs Magento core (`magento/product-community-edition`)
 - Composer installs all third-party libraries (`monolog/monolog`, `twig/twig`, etc.)
-- Composer manages AlpineCommerce modules if they are separate packages
 - Composer generates the autoloader (`vendor/autoload.php`)
 
 ### 1.1 Key concepts
@@ -26,6 +42,8 @@
 | **Dependency** | A package that another package needs | `magento/framework` needs `monolog/monolog` |
 | **Lock file** | Exact versions installed | `composer.lock` |
 | **Autoloader** | Auto-loads classes without `require` | `vendor/autoload.php` |
+
+**Source**: `composer.json` at the Magento root — defines all project dependencies.
 
 ---
 
@@ -113,6 +131,8 @@ composer validate
 }
 ```
 
+**Source**: `composer.json` at the Magento project root.
+
 ### 3.2 Autoloading (PSR-4)
 
 Composer maps namespaces to directories:
@@ -120,40 +140,36 @@ Composer maps namespaces to directories:
 ```json
 "autoload": {
     "psr-4": {
-        "AlpineCommerce\\Blog\\": "src/app/code/AlpineCommerce/Blog/"
+        "Vendor\\Module\\": "app/code/Vendor/Module/"
     }
 }
 ```
 
 This means:
-- Class `AlpineCommerce\Blog\Model\Post`
-- File: `src/app/code/AlpineCommerce/Blog/Model/Post.php`
+- Class `Vendor\Module\Model\Post`
+- File: `app/code/Vendor/Module/Model/Post.php`
 
 **After modifying `composer.json`**:
 ```bash
 composer dump-autoload
 ```
 
-### 3.3 AlpineCommerce modules and Composer
+### 3.3 Module autoloading via registration
 
-> **Project-Specific Note**: Unlike third-party packages, AlpineCommerce
-> modules are **not** separate Composer packages. They are installed in
-> `src/app/code/AlpineCommerce/` directly.
->
-> However, they can still use Composer autoloading:
+Each Magento module registers itself with `ComponentRegistrar`:
 
-```json
-// src/app/code/AlpineCommerce/Blog/composer.json (optional)
-{
-    "name": "alpinecommerce/module-blog",
-    "description": "Blog module",
-    "autoload": {
-        "psr-4": {
-            "AlpineCommerce\\Blog\\": ""
-        }
-    }
-}
+```php
+// registration.php
+use Magento\Framework\Component\ComponentRegistrar;
+
+ComponentRegistrar::register(
+    ComponentRegistrar::MODULE,
+    'Vendor_Module',
+    __DIR__
+);
 ```
+
+**Source**: `src/vendor/magento/module-backend/registration.php` — Magento core modules register the same way.
 
 ---
 
@@ -162,7 +178,7 @@ composer dump-autoload
 ### 4.1 First installation
 
 ```bash
-cd /home/cartware/Desktop/magento/src
+cd /path/to/magento
 
 # Install all dependencies
 composer install --no-dev
@@ -266,6 +282,8 @@ composer install  # Uses composer.lock for exact versions
 }
 ```
 
+**Source**: `composer.json` — Magento core uses exact versions for its own packages and `^` for third-party libraries.
+
 ---
 
 ## 7. Composer Scripts
@@ -285,22 +303,7 @@ Magento defines useful scripts in `composer.json`:
 }
 ```
 
-You can add your own:
-
-```json
-{
-    "scripts": {
-        "test": "php vendor/bin/phpunit",
-        "lint": "find src/app/code/AlpineCommerce -name '*.php' -print0 | xargs -0 -n1 php -l"
-    }
-}
-```
-
-Usage:
-```bash
-composer run test
-composer run lint
-```
+**Source**: `src/vendor/magento/framework/Composer/ComposerPlugin.php` — Magento's Composer plugin for post-install hooks.
 
 ---
 
@@ -319,7 +322,7 @@ PHP includes vendor/autoload.php
     ↓
 When new Post() is called:
     - Autoloader checks namespace mapping
-    - Loads src/app/code/AlpineCommerce/Blog/Model/Post.php
+    - Loads app/code/Vendor/Module/Model/Post.php
     - No require/include needed
 ```
 
@@ -334,12 +337,14 @@ Magento uses **multiple autoloaders**:
 // registration.php
 ComponentRegistrar::register(
     ComponentRegistrar::MODULE,
-    'AlpineCommerce_Blog',
+    'Vendor_Module',
     __DIR__
 );
 ```
 
-This tells Magento: "The module `AlpineCommerce_Blog` is in this directory."
+This tells Magento: "The module `Vendor_Module` is in this directory."
+
+**Source**: `src/vendor/magento/framework/Component/ComponentRegistrar.php` — registers modules with Magento.
 
 ---
 
@@ -421,7 +426,7 @@ composer depends magento/framework
 
 ### Key takeaways
 
-1. **Composer manages PHP dependencies** — Magento core, third-party libs, AlpineCommerce modules
+1. **Composer manages PHP dependencies** — Magento core, third-party libs, custom modules
 2. **`composer.lock` ensures reproducibility** — always commit it
 3. **`composer install` uses the lock file** — `composer update` changes it
 4. **Autoloading is automatic** — no more `require` statements
@@ -429,4 +434,53 @@ composer depends magento/framework
 
 ---
 
-*Last updated: 2026-08-11.*
+## 12. AlpineCommerce Reference
+
+### 12.1 Module autoloading
+
+AlpineCommerce modules are **not** separate Composer packages. They are
+installed in `app/code/AlpineCommerce/` directly and registered via
+`ComponentRegistrar`:
+
+```php
+// src/app/code/AlpineCommerce/Blog/registration.php
+use Magento\Framework\Component\ComponentRegistrar;
+
+ComponentRegistrar::register(ComponentRegistrar::MODULE, 'AlpineCommerce_Blog', __DIR__);
+```
+
+### 12.2 Module-to-namespace mapping
+
+| Module | Namespace | Path |
+|--------|-----------|------|
+| Blog | `AlpineCommerce\Blog` | `src/app/code/AlpineCommerce/Blog/` |
+| Faq | `AlpineCommerce\Faq` | `src/app/code/AlpineCommerce/Faq/` |
+| StorePickup | `AlpineCommerce\StorePickup` | `src/app/code/AlpineCommerce/StorePickup/` |
+| CustomerCare | `AlpineCommerce\CustomerCare` | `src/app/code/AlpineCommerce/CustomerCare/` |
+| LoyaltyProgram | `AlpineCommerce\LoyaltyProgram` | `src/app/code/AlpineCommerce/LoyaltyProgram/` |
+| Gdpr | `AlpineCommerce\Gdpr` | `src/app/code/AlpineCommerce/Gdpr/` |
+
+**Sources**:
+- `src/app/code/AlpineCommerce/*/registration.php`
+- `composer.json` (project root)
+
+---
+
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| Composer Setup | [developer.adobe.com/commerce/php/architecture/modules/composer/](https://developer.adobe.com/commerce/php/architecture/modules/composer/) |
+| Module Structure | [developer.adobe.com/commerce/php/architecture/modules/](https://developer.adobe.com/commerce/php/architecture/modules/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
+
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
+
+*Last updated: 2026-09-07*

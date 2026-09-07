@@ -6,12 +6,28 @@
 
 ---
 
+## Table of Contents
+
+1. [Magento logs](#1-magento-logs)
+2. [Developer mode](#2-developer-mode)
+3. [Xdebug — Step-by-step debugging](#3-xdebug--step-by-step-debugging)
+4. [Common errors and solutions](#4-common-errors-and-solutions)
+5. [Debug tools](#5-debug-tools)
+6. [Debug JavaScript](#6-debug-javascript)
+7. [Debug PHP](#7-debug-php)
+8. [Recommended debug workflow](#8-recommended-debug-workflow)
+9. [Debug checklist](#9-debug-checklist)
+10. [Summary](#10-summary)
+11. [AlpineCommerce Reference](#11-alpinecommerce-reference)
+
+---
+
 ## 1. Magento logs
 
 ### 1.1 Where logs are located
 
 ```
-src/var/
+var/
 ├── log/                          ← System logs
 │   ├── system.log                ← General logs
 │   ├── exception.log             ← PHP exceptions
@@ -23,6 +39,8 @@ src/var/
 ├── page_cache/                   ← Page cache
 └── session/                      ← User sessions
 ```
+
+**Source**: `src/vendor/magento/module-backend/Controller/Adminhtml/Index/Index.php` — Magento core writes to these log locations.
 
 ### 1.2 Enable logs
 
@@ -37,21 +55,23 @@ php bin/magento config:set dev/log/active 1
 php bin/magento config:set dev/log/active 0
 ```
 
+**Source**: `src/vendor/magento/module-config/Model/Config.php` — reads the `dev/log/active` configuration.
+
 ### 1.3 Read logs
 
 ```bash
 # View the latest lines of system.log
-tail -f src/var/log/system.log
+tail -f var/log/system.log
 
 # View the latest lines of exception.log
-tail -f src/var/log/exception.log
+tail -f var/log/exception.log
 
 # Search for a keyword
-grep -i "customer" src/var/log/system.log
+grep -i "customer" var/log/system.log
 
 # View all errors of the day
-ls -la src/var/report/
-cat src/var/report/20260811120000_error_id
+ls -la var/report/
+cat var/report/20260811120000_error_id
 ```
 
 ### 1.4 Write to logs from code
@@ -86,6 +106,8 @@ class MyClass
 }
 ```
 
+**Source**: `src/vendor/magento/framework/Logger/Handler/System.php` — Magento's system log handler.
+
 ---
 
 ## 2. Developer mode
@@ -102,6 +124,8 @@ php bin/magento deploy:mode:set developer
 # Switch to production mode
 php bin/magento deploy:mode:set production
 ```
+
+**Source**: `src/vendor/magento/module-deploy/Model/DeployConfig.php` — manages deployment mode.
 
 ### 2.2 Differences between modes
 
@@ -172,15 +196,15 @@ Xdebug is a PHP extension that allows you to:
 **Solution**:
 ```bash
 # 1. Check logs
-tail -f src/var/log/exception.log
-tail -f src/var/log/system.log
+tail -f var/log/exception.log
+tail -f var/log/system.log
 
 # 2. Enable error display
 php bin/magento config:set dev/debug/error_hints 1
 php bin/magento cache:flush
 
 # 3. Check PHP syntax
-php -l src/app/code/AlpineCommerce/Blog/Model/PostRepository.php
+php -l app/code/Vendor/Module/Model/PostRepository.php
 ```
 
 ### 4.2 "Class not found"
@@ -190,10 +214,10 @@ php -l src/app/code/AlpineCommerce/Blog/Model/PostRepository.php
 **Solution**:
 ```bash
 # 1. Check namespace in the file
-#    namespace AlpineCommerce\Blog\Model;
+#    namespace Vendor\Module\Model;
 
 # 2. Check path
-#    src/app/code/AlpineCommerce/Blog/Model/PostRepository.php
+#    app/code/Vendor/Module/Model/PostRepository.php
 
 # 3. Compile
 php bin/magento setup:di:compile
@@ -209,7 +233,7 @@ php bin/magento cache:flush
 **Solution**:
 ```php
 // Check directly in DB
-mysql -u root -p magento2 -e "SELECT * FROM alphacommerce_blog_post WHERE entity_id = 1;"
+mysql -u root -p magento2 -e "SELECT * FROM vendor_module_post WHERE entity_id = 1;"
 
 // Or in code, check before using
 try {
@@ -227,15 +251,15 @@ try {
 **Solution**:
 ```bash
 # 1. Check the filename
-#    URL: /blog → file: blog_index_index.xml ✓
+#    URL: /blog → file: blog_index_index.xml
 
-# 2. Enable template hints (see section 6)
+# 2. Enable template hints (see section 5)
 
 # 3. Flush cache
 php bin/magento cache:flush
 
 # 4. Check logs for XML errors
-grep -i "xml" src/var/log/system.log
+grep -i "xml" var/log/system.log
 ```
 
 ### 4.5 "Access denied" (admin)
@@ -276,6 +300,8 @@ php bin/magento cache:flush
 Then in the admin: **Stores > Configuration > Advanced > Developer > Debug >
 Enabled Template Paths for Storefront = Yes**
 
+**Source**: `src/vendor/magento/module-deploy/Model/Template/Resolver.php` — resolves template paths.
+
 ### 5.2 Block Hints (admin)
 
 Displays block names in the admin:
@@ -293,6 +319,8 @@ php bin/magento config:set dev/profiler/enabled 1
 
 # Each block's load time appears at the bottom of the page
 ```
+
+**Source**: `src/vendor/magento/module-deploy/Model/Profiler.php` — Magento's profiler implementation.
 
 ### 5.4 Developer Mode in .htaccess
 
@@ -319,15 +347,9 @@ require.s.contexts._.defined
 
 **Test a module**:
 ```js
-require(['AlpineCommerce_StorePickup/js/view/store-pickup'], function (Module) {
+require(['Vendor_Module/js/view/my-component'], function (Module) {
     console.log(Module);
 });
-```
-
-**Inspect a KO observable**:
-```js
-// If you have access to the component in the console:
-$t('Pickup store saved.');
 ```
 
 ### 6.2 Common JS errors
@@ -338,6 +360,8 @@ $t('Pickup store saved.');
 | `$ is not a function` | jQuery badly injected | Check parameter order |
 | `ko is not defined` | Knockout not declared | Add `'ko'` in `define([...])` |
 | `define is not defined` | File not loaded via RequireJS | Use `define()`, no inline `<script>` |
+
+**Source**: `src/vendor/magento/module-require-js/` — Magento's RequireJS configuration.
 
 ---
 
@@ -350,7 +374,7 @@ $t('Pickup store saved.');
 php bin/magento module:status
 
 # View a module's config
-php bin/magento config:show AlpineCommerce_Blog
+php bin/magento config:show Vendor_Module
 
 # View a module's routes
 php bin/magento route:list | grep blog
@@ -361,14 +385,14 @@ php bin/magento route:list | grep blog
 ```bash
 # GET
 curl -H "Authorization: Bearer <token>" \
-     https://localhost:8080/rest/V1/alphacommerce/blog/posts
+     https://localhost:8080/rest/V1/vendor/module/endpoint
 
 # POST
 curl -X POST \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer <token>" \
      -d '{"title":"Test","content":"Hello"}' \
-     https://localhost:8080/rest/V1/alphacommerce/blog/posts
+     https://localhost:8080/rest/V1/vendor/module/endpoint
 ```
 
 ### 7.3 Check the database
@@ -378,13 +402,13 @@ curl -X POST \
 docker compose exec mysql mysql -u root -pYOUR_MYSQL_ROOT_PASSWORD magento2
 
 # View a module's tables
-SHOW TABLES LIKE 'alphacommerce_%';
+SHOW TABLES LIKE 'vendor_module_%';
 
 # View data
-SELECT * FROM alphacommerce_blog_post LIMIT 10;
+SELECT * FROM vendor_module_post LIMIT 10;
 
 # View configuration
-SELECT * FROM core_config_data WHERE path LIKE 'blog/%';
+SELECT * FROM core_config_data WHERE path LIKE 'module/%';
 ```
 
 ### 7.4 Test a Data Patch
@@ -397,6 +421,8 @@ php bin/magento setup:db-data:status
 php bin/magento setup:upgrade --keep-generated
 ```
 
+**Source**: `src/vendor/magento/module-setup/Console/Command/UpgradeCommand.php` — handles data patch application.
+
 ---
 
 ## 8. Recommended debug workflow
@@ -405,7 +431,7 @@ php bin/magento setup:upgrade --keep-generated
 
 ```
 1. Read the displayed error (if developer mode)
-   or check src/var/log/exception.log
+   or check var/log/exception.log
 
 2. Identify the faulty file and line
 
@@ -467,9 +493,9 @@ php bin/magento setup:upgrade --keep-generated
 
 | Tool | Usage |
 |-------|-------|
-| `src/var/log/system.log` | General logs |
-| `src/var/log/exception.log` | PHP exceptions |
-| `src/var/report/` | Detailed error reports |
+| `var/log/system.log` | General logs |
+| `var/log/exception.log` | PHP exceptions |
+| `var/report/` | Detailed error reports |
 | `php bin/magento deploy:mode:set developer` | Enable debug mode |
 | Template Hints | See which template/block is used |
 | Xdebug | Step-by-step PHP debugging |
@@ -480,7 +506,7 @@ php bin/magento setup:upgrade --keep-generated
 
 ---
 
-## 11. Debugging in AlpineCommerce
+## 11. AlpineCommerce Reference
 
 ### 11.1 Project-specific logging patterns
 
@@ -497,14 +523,11 @@ $this->logger->info("Training DataPatch: Created store '$code' (ID: {$store->get
 > the module name (e.g., `StoreSetup/AfterSave`) for easier filtering
 > in `var/log/system.log`.
 
----
+**Sources**:
+- `src/app/code/AlpineCommerce/StoreSetup/Plugin/`
+- `src/app/code/AlpineCommerce/CustomerCare/Plugin/`
 
-## 12. Xdebug Setup in AlpineCommerce (Docker)
-
-### 12.1 Docker configuration
-
-> **Project-Specific**: The following Docker configuration is specific
-> to the AlpineCommerce project setup.
+### 11.2 Xdebug Setup (Docker)
 
 ```yaml
 # docker-compose.yml (excerpt)
@@ -522,4 +545,22 @@ services:
 
 ---
 
-*Last updated: 2026-08-11.*
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| Debugging | [developer.adobe.com/commerce/php/architecture/debugging/](https://developer.adobe.com/commerce/php/architecture/debugging/) |
+| Xdebug | [developer.adobe.com/commerce/php/architecture/debugging/xdebug/](https://developer.adobe.com/commerce/php/architecture/debugging/xdebug/) |
+| Developer Mode | [developer.adobe.com/commerce/php/architecture/developer-mode/](https://developer.adobe.com/commerce/php/architecture/developer-mode/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
+
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
+
+*Last updated: 2026-09-07*

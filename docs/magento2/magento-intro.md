@@ -6,6 +6,30 @@
 
 ---
 
+## Table of Contents
+
+1. [What is Magento?](#1-what-is-magento)
+2. [Magento architecture — the big picture](#2-magento-architecture--the-big-picture)
+3. [Modules — the heart of Magento](#3-modules--the-heart-of-magento)
+4. [Key directories](#4-key-directories)
+5. [Configuration scopes](#5-configuration-scopes)
+6. [EAV vs Flat tables](#6-eav-vs-flat-tables)
+7. [Multi-store architecture](#7-multi-store-architecture)
+8. [Themes](#8-themes)
+9. [Layout XML](#9-layout-xml)
+10. [UI Components (Admin)](#10-ui-components-admin)
+11. [Service Contracts (interfaces)](#11-service-contracts-interfaces)
+12. [Plugins (Interceptors)](#12-plugins-interceptors)
+13. [Observers](#13-observers)
+14. [Install/Upgrade scripts](#14-installupgrade-scripts)
+15. [ACL and Admin Menu](#15-acl-and-admin-menu)
+16. [CLI commands](#16-cli-commands)
+17. [Summary](#17-summary)
+18. [AlpineCommerce Reference](#18-alpinecommerce-reference)
+19. [Next steps](#19-next-steps)
+
+---
+
 ## 1. What is Magento?
 
 **Magento** (now **Adobe Commerce**) is an open-source e-commerce platform
@@ -20,6 +44,8 @@ written in PHP. It is designed for medium-to-large online stores that need:
 - **Adobe Commerce** (paid) — adds B2B, Page Builder, Adobe Cloud support
 
 **AlpineCommerce target**: Magento **2.4.8** (PHP 8.2).
+
+**Official documentation**: [Adobe Commerce](https://developer.adobe.com/commerce/)
 
 ---
 
@@ -49,6 +75,8 @@ Database (MySQL)
 Response (HTML, JSON)
 ```
 
+**Source**: `src/vendor/magento/framework/App/FrontControllerInterface.php` — the front controller dispatches requests to the appropriate router based on the area.
+
 ### 2.2 Areas
 
 Magento has multiple **areas** (application contexts):
@@ -64,6 +92,10 @@ Magento has multiple **areas** (application contexts):
 
 The same module can behave differently depending on the area.
 
+**Source**: `src/vendor/magento/framework/App/State.php` — defines the available areas and their initialization.
+
+**Official documentation**: [Architecture Overview](https://developer.adobe.com/commerce/php/architecture/)
+
 ---
 
 ## 3. Modules — the heart of Magento
@@ -74,7 +106,7 @@ code, configuration, and templates for a specific feature.
 ### 3.1 Module structure
 
 ```
-AlpineCommerce/Blog/
+Vendor/Module/
 ├── registration.php          # declares the module to Magento
 ├── etc/
 │   ├── module.xml            # module name, version, dependencies
@@ -133,7 +165,7 @@ use Magento\Framework\Component\ComponentRegistrar;
 
 ComponentRegistrar::register(
     ComponentRegistrar::MODULE,
-    'AlpineCommerce_Blog',
+    'Vendor_Module',
     __DIR__
 );
 ```
@@ -142,7 +174,7 @@ ComponentRegistrar::register(
 ```xml
 <?xml version="1.0"?>
 <config xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <module name="AlpineCommerce_Blog" setup_version="1.0.0">
+    <module name="Vendor_Module" setup_version="1.0.0">
         <sequence>
             <module name="Magento_Catalog"/>
             <module name="Magento_Customer"/>
@@ -155,19 +187,23 @@ ComponentRegistrar::register(
 - **`setup_version`**: current schema version
 - **`sequence`**: load order (this module loads AFTER the listed modules)
 
+**Source**: `src/vendor/magento/module-backend/etc/module.xml` — Magento core modules follow the same registration pattern.
+
+**Official documentation**: [Module File Structure](https://developer.adobe.com/commerce/php/architecture/modules/)
+
 ---
 
 ## 4. Key directories
 
 | Directory | Role |
 |-----------|------|
-| `src/app/code/AlpineCommerce/` | Custom modules (AlpineCommerce code) |
-| `src/app/design/` | Custom themes |
-| `src/vendor/` | Third-party libraries (Composer) |
-| `src/pub/` | Web root (static files, media) |
-| `src/var/` | Cache, logs, sessions, reports |
-| `src/generated/` | Generated code (interceptors, proxies) |
-| `src/app/etc/` | Global config (`config.php`, `env.php`) |
+| `app/code/` | Custom modules (AlpineCommerce code) |
+| `app/design/` | Custom themes |
+| `vendor/` | Third-party libraries (Composer) |
+| `pub/` | Web root (static files, media) |
+| `var/` | Cache, logs, sessions, reports |
+| `generated/` | Generated code (interceptors, proxies) |
+| `app/etc/` | Global config (`config.php`, `env.php`) |
 
 ---
 
@@ -183,6 +219,8 @@ Magento configuration values can be set at different levels:
 
 In `config.xml`, you set defaults. In the admin (`Stores > Configuration`),
 admins override per scope.
+
+**Source**: `src/vendor/magento/module-config/etc/system.xml` — Magento core defines all configuration sections here.
 
 ---
 
@@ -218,9 +256,7 @@ catalog_product_entity_varchar
 For performance, Magento can flatten EAV into flat tables
 (`catalog_product_flat_*`).
 
-> **Team Convention**: The AlpineCommerce project uses standard SQL
-> tables (no EAV) for simplicity. This is a project architecture
-> decision, not a Magento core requirement.
+**Source**: `src/vendor/magento/module-catalog/Model/ResourceModel/Product/Flat/Indexer.php` — handles the EAV-to-flat transformation.
 
 ---
 
@@ -242,10 +278,9 @@ Website (base)
 - **Store**: groups store views, shares cart/customers
 - **Store View**: language/currency
 
-> **AlpineCommerce Example**: AlpineCommerce uses 4 store views
-> (English, French, German, Spanish) configured in
-> `StoreSetup/etc/config.xml`. This is project-specific configuration,
-> not a Magento core feature.
+**Source**: `src/vendor/magento/module-store/Model/Website.php` — defines the Website model with stores and groups.
+
+**Official documentation**: [Multi-Store](https://developer.adobe.com/commerce/php/architecture/modules/multi-stores/)
 
 ---
 
@@ -254,12 +289,12 @@ Website (base)
 A **theme** defines the look and feel (layout, templates, CSS, JS).
 
 - **Parent theme**: `Magento/luma` (or `Magento/blank`)
-- **Child theme**: `AlpineCommerce/theme` (inherits from parent)
+- **Child theme**: `Vendor/theme` (inherits from parent)
 
 ```
-src/app/design/
+app/design/
 ├── frontend/
-│   ├── AlpineCommerce/
+│   ├── Vendor/
 │   │   └── theme/
 │   │       ├── theme.xml          # parent theme declaration
 │   │       ├── registration.php
@@ -272,6 +307,8 @@ src/app/design/
 **Fallback system**: if a template is not found in the child theme,
 Magento looks in the parent, then in module `view/frontend/templates/`.
 
+**Source**: `src/vendor/magento/theme-frontend-luma/theme.xml` — Luma theme declaration.
+
 ---
 
 ## 9. Layout XML
@@ -283,9 +320,9 @@ Layout XML defines the **page structure** (which blocks appear where).
 <page xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
     <body>
         <referenceContainer name="content">
-            <block class="AlpineCommerce\Blog\Block\PostList"
+            <block class="Vendor\Module\Block\PostList"
                    name="blog.post.list"
-                   template="AlpineCommerce_Blog::post/list.phtml"/>
+                   template="Vendor_Module::post/list.phtml"/>
         </referenceContainer>
     </body>
 </page>
@@ -293,6 +330,10 @@ Layout XML defines the **page structure** (which blocks appear where).
 
 - `<referenceContainer>`: target an existing container
 - `<block>`: add a new block (PHP class + template)
+
+**Source**: `src/vendor/magento/module-theme/view/frontend/layout/default.xml` — Magento core defines the default page containers here.
+
+**Official documentation**: [Layout Instructions](https://developer.adobe.com/commerce/php/architecture/layouts/layout-instructions/)
 
 ---
 
@@ -302,7 +343,7 @@ The admin panel uses **UI Components** (XML → JS → HTML) instead of plain
 layout XML. This powers grids, forms, filters.
 
 ```xml
-<!-- view/adminhtml/ui_component/alphacommerce_blog_post_listing.xml -->
+<!-- view/adminhtml/ui_component/vendor_module_post_listing.xml -->
 <listing xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
     <columns name="post_columns">
         <column name="title">
@@ -314,7 +355,7 @@ layout XML. This powers grids, forms, filters.
     </columns>
     <dataSource name="post_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">AlpineCommerce\Blog\Ui\DataProvider\PostListingDataProvider</argument>
+            <argument name="class" xsi:type="string">Vendor\Module\Ui\DataProvider\PostListingDataProvider</argument>
         </argument>
     </dataSource>
 </listing>
@@ -324,6 +365,10 @@ Key concepts:
 - `<listing>`: the grid
 - `<columns>`: columns definition
 - `<dataSource>`: links to a PHP `DataProvider` (fetches data)
+
+**Source**: `src/vendor/magento/module-catalog/view/adminhtml/ui_component/product_listing.xml` — Magento core product listing uses the same UI Component structure.
+
+**Official documentation**: [UI Components Overview](https://developer.adobe.com/commerce/php/tutorials/ui-components/)
 
 ---
 
@@ -355,6 +400,10 @@ interface PostRepositoryInterface
 - You can swap implementations (e.g., add caching) without touching callers
 - It is the **Magento standard** for all business logic
 
+**Source**: `src/vendor/magento/module-catalog/Api/Data/ProductInterface.php` — Magento core defines Service Contracts for all major entities.
+
+**Official documentation**: [Service Contracts](https://developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/service-contracts/)
+
 ---
 
 ## 12. Plugins (Interceptors)
@@ -373,8 +422,8 @@ class Slugify
 }
 
 // etc/di.xml
-<type name="AlpineCommerce\Blog\Model\Post">
-    <plugin name="slugify" type="AlpineCommerce\Blog\Plugin\Post\Slugify"/>
+<type name="Vendor\Module\Model\Post">
+    <plugin name="slugify" type="Vendor\Module\Plugin\Post\Slugify"/>
 </type>
 ```
 
@@ -382,6 +431,10 @@ Plugin types:
 - `before`: runs before the original method
 - `after`: runs after the original method
 - `around`: replaces the original method entirely
+
+**Source**: `src/vendor/magento/framework/Interception/Interceptor.php` — the generated interceptor class that wraps original methods.
+
+**Official documentation**: [Plugins (Interceptors)](https://developer.adobe.com/commerce/php/architecture/modules/extension-attributes/plugins/)
 
 ---
 
@@ -404,9 +457,13 @@ class SavePostAfter
 ```xml
 <!-- etc/events.xml -->
 <event name="model_save_after">
-    <observer name="blog_post_save_after" instance="AlpineCommerce\Blog\Observer\SavePostAfter"/>
+    <observer name="vendor_module_save_post_after" instance="Vendor\Module\Observer\SavePostAfter"/>
 </event>
 ```
+
+**Source**: `src/vendor/magento/module-backend/etc/events.xml` — Magento core uses observers extensively.
+
+**Official documentation**: [Events and Observers](https://developer.adobe.com/commerce/php/architecture/event-driven-architecture/)
 
 ---
 
@@ -419,7 +476,7 @@ Since Magento 2.3, schema is declared in XML:
 ```xml
 <!-- etc/db_schema.xml -->
 <schema xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <table name="alphacommerce_blog_post" resource="default" engine="innodb">
+    <table name="vendor_module_post" resource="default" engine="innodb">
         <column xsi:type="int" name="entity_id" nullable="false" identity="true" unsigned="true"/>
         <column xsi:type="varchar" name="title" nullable="false" length="255"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
@@ -428,6 +485,8 @@ Since Magento 2.3, schema is declared in XML:
     </table>
 </schema>
 ```
+
+**Source**: `src/vendor/magento/module-catalog/etc/db_schema.xml` — Magento core defines all table schemas declaratively.
 
 ### 14.2 Data patches
 
@@ -444,6 +503,8 @@ class CreateDefaultCategory implements DataPatchInterface
 }
 ```
 
+**Source**: `src/vendor/magento/module-catalog/Setup/Patch/Data/` — Magento core data patches for catalog initialization.
+
 ---
 
 ## 15. ACL and Admin Menu
@@ -456,9 +517,9 @@ features.
 <acl>
     <resources>
         <resource id="Magento_Backend::admin">
-            <resource id="AlpineCommerce_Blog::main" title="Blog" sortOrder="10">
-                <resource id="AlpineCommerce_Blog::post" title="Posts" sortOrder="10"/>
-                <resource id="AlpineCommerce_Blog::category" title="Categories" sortOrder="20"/>
+            <resource id="Vendor_Module::main" title="My Module" sortOrder="10">
+                <resource id="Vendor_Module::post" title="Posts" sortOrder="10"/>
+                <resource id="Vendor_Module::category" title="Categories" sortOrder="20"/>
             </resource>
         </resource>
     </resources>
@@ -468,13 +529,17 @@ features.
 ```xml
 <!-- etc/adminhtml/menu.xml -->
 <menu>
-    <add id="AlpineCommerce_Blog::main"
-         title="Blog"
-         module="AlpineCommerce_Blog"
+    <add id="Vendor_Module::main"
+         title="My Module"
+         module="Vendor_Module"
          sortOrder="100"
          parent="Magento_Backend::content"/>
 </menu>
 ```
+
+**Source**: `src/vendor/magento/module-backend/etc/acl.xml` and `menu.xml` — Magento core defines its own ACL and menu structure.
+
+**Official documentation**: [ACL](https://developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/acl/)
 
 ---
 
@@ -484,8 +549,8 @@ Magento CLI (`bin/magento`) is the Swiss Army knife for developers:
 
 ```bash
 # Enable/disable modules
-bin/magento module:enable AlpineCommerce_Blog
-bin/magento module:disable AlpineCommerce_Blog
+bin/magento module:enable Vendor_Module
+bin/magento module:disable Vendor_Module
 
 # Run database upgrades
 bin/magento setup:upgrade
@@ -509,36 +574,142 @@ bin/magento maintenance:enable
 bin/magento list
 ```
 
+**Source**: `src/vendor/magento/framework/Console/CommandListInterface.php` — all Magento CLI commands are registered through the command list.
+
 ---
 
 ## 17. Summary
 
-The following table maps **Magento Core concepts** introduced in this
-guide to their **AlpineCommerce usage** in the project.
-
-| Magento Core Concept | AlpineCommerce Usage |
-|----------------------|----------------------|
-| Module structure | All modules |
-| Service Contracts | Blog, Faq, Gdpr, StorePickup… |
-| Repository pattern | All modules with database |
-| UI Components (admin) | Gdpr, StorePickup, StoreLocator… |
-| Plugins | StorePickup (shipping filter), LoyaltyProgram (minicart, invoice), CustomerCare (VIP), StoreSetup (product save) |
-| Observers | AutoInvoice (checkout success) |
-| Data Patches | StoreSetup (CreateStores), all modules |
-| ACL + Menu | Gdpr, StorePickup, StoreLocator… |
-| REST API | Blog, Faq, Gdpr, StorePickup… |
-| Multi-store | StoreSetup config, Blog categories |
-| Themes | Custom Luma-based theme |
+| Magento Core Concept | Explanation |
+|----------------------|-------------|
+| Module | Folder that groups code, config, templates for a feature |
+| Area | Application context (frontend, adminhtml, webapi_rest, graphql) |
+| Service Contract | Public interface for business logic (Repository pattern) |
+| Plugin | Intercepts public methods to modify behavior |
+| Observer | Reacts to events dispatched by Magento |
+| Layout XML | Page structure: which blocks appear where |
+| UI Component | Admin grids/forms (XML → JS → HTML) |
+| db_schema.xml | Declarative database schema |
+| Data Patch | Versioned PHP that modifies data during setup:upgrade |
+| ACL | Access control for admin users |
+| CLI | bin/magento commands for all operations |
 
 ---
 
-## 18. Next steps
+## 18. AlpineCommerce Reference
+
+The following sections show how AlpineCommerce applies Magento's core
+concepts in its custom modules. These are **project-specific implementations**
+built on top of Magento 2.4.8 Core.
+
+### 18.1 Module structure
+
+AlpineCommerce modules follow the standard Magento structure but with
+project-specific conventions:
+
+| Module | Registration | Key features |
+|--------|-------------|-------------|
+| Blog | `AlpineCommerce_Blog` | Admin CRUD for posts/categories, UI Components |
+| Faq | `AlpineCommerce_Faq` | Admin CRUD for FAQ items |
+| StorePickup | `AlpineCommerce_StorePickup` | Carrier plugin, checkout integration, KO component |
+| CustomerCare | `AlpineCommerce_CustomerCare` | VIP levels, cron job, plugin on Order |
+| LoyaltyProgram | `AlpineCommerce_LoyaltyProgram` | Total collector, minicart KO component, invoice plugin |
+| Gdpr | `AlpineCommerce_Gdpr` | Consent logging, export functionality |
+| StoreLocator | `AlpineCommerce_StoreLocator` | Store finder, map integration |
+| AutoInvoice | `AlpineCommerce_AutoInvoice` | Observer on checkout success |
+| CreditMemo | `AlpineCommerce_CreditMemo` | Plugin on Order cancellation |
+
+**Sources**:
+- `src/app/code/AlpineCommerce/Blog/etc/module.xml`
+- `src/app/code/AlpineCommerce/StorePickup/etc/module.xml`
+- `src/app/code/AlpineCommerce/CustomerCare/etc/module.xml`
+
+### 18.2 AlpineCommerce module conventions
+
+| Convention | AlpineCommerce approach |
+|-----------|------------------------|
+| Namespace | `AlpineCommerce\` |
+| Module prefix | `AlpineCommerce_` |
+| Admin menu | Content section (Blog, Faq, StorePickup, StoreLocator) |
+| Admin menu | Marketing section (ProductReviews, ProductQuestions) |
+| Admin menu | Catalog section (ProductLabels) |
+| Admin menu | GDPR section (Gdpr) |
+| Admin menu | Customers section (CustomerCare) |
+| Frontend patterns | KO components (StorePickup, LoyaltyProgram) |
+| Frontend patterns | jQuery AJAX (ProductReviews, ProductQuestions) |
+| Frontend patterns | Vanilla JS (StoreLocator) |
+
+### 18.3 AlpineCommerce-specific patterns
+
+**StorePickup** — Shipping carrier plugin that modifies Flat Rate behavior:
+- `Plugin/Shipping/FilterFlatRate.php` — filters flat rate when free shipping threshold met
+- `Plugin/Shipping/FilterFreeShipping.php` — filters free shipping
+- `view/frontend/web/js/view/store-pickup.js` — Knockout component for checkout
+- `Model/Carrier/StorePickup.php` — custom carrier implementation
+
+**CustomerCare** — VIP customer management:
+- `Cron/UpdateVipLevels.php` — nightly cron to recalculate VIP tiers
+- `Plugin/Order/AfterPlace.php` — recalculates VIP after order placement
+- `Api/CustomerCareInterface.php` — public API for VIP status
+
+**LoyaltyProgram** — Loyalty points system:
+- `Plugin/Invoice/AfterSave.php` — awards points after invoice
+- `Plugin/Order/AfterSave.php` — deducts points after order save
+- `Plugin/Minicart/Incentive.php` — adds points display to minicart
+- `view/frontend/web/js/view/loyalty-points.js` — checkout KO component
+
+**AutoInvoice** — Automatic invoicing:
+- `Observer/AutoInvoice.php` — listens to `checkout_onepage_controller_success_action`
+
+**CreditMemo** — Automatic credit memo:
+- `Plugin/OrderCancelPlugin.php` — creates credit memo on order cancellation
+
+**Sources**:
+- `src/app/code/AlpineCommerce/StorePickup/`
+- `src/app/code/AlpineCommerce/CustomerCare/`
+- `src/app/code/AlpineCommerce/LoyaltyProgram/`
+- `src/app/code/AlpineCommerce/AutoInvoice/`
+- `src/app/code/AlpineCommerce/CreditMemo/`
+
+---
+
+## 19. Next steps
 
 Now that you understand Magento basics:
-1. Start with the **canonical module**: `docs/modules/FAQ.md`
-2. Read `docs/ENGINEERING_GUIDE.md` for project standards
-3. Explore `src/app/code/AlpineCommerce/Blog/` (the simplest module)
+1. Read `docs/magento2/magento-components.md` for the request lifecycle
+2. Read `docs/magento2/magento-events-observers-plugins.md` for extension mechanisms
+3. Read `docs/ENGINEERING_GUIDE.md` for project standards
+4. Explore `src/app/code/AlpineCommerce/Blog/` (the simplest module)
+5. Read module-specific docs in `docs/modules/`
 
 ---
 
-*Last updated: 2026-08-11.*
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| Architecture Overview | [developer.adobe.com/commerce/php/architecture/](https://developer.adobe.com/commerce/php/architecture/) |
+| Module File Structure | [developer.adobe.com/commerce/php/architecture/modules/](https://developer.adobe.com/commerce/php/architecture/modules/) |
+| Service Contracts | [developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/service-contracts/](https://developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/service-contracts/) |
+| Multi-Stores | [developer.adobe.com/commerce/php/architecture/modules/multi-stores/](https://developer.adobe.com/commerce/php/architecture/modules/multi-stores/) |
+| Layouts | [developer.adobe.com/commerce/php/architecture/layouts/](https://developer.adobe.com/commerce/php/architecture/layouts/) |
+| UI Components | [developer.adobe.com/commerce/php/tutorials/ui-components/](https://developer.adobe.com/commerce/php/tutorials/ui-components/) |
+| Events and Observers | [developer.adobe.com/commerce/php/architecture/event-driven-architecture/](https://developer.adobe.com/commerce/php/architecture/event-driven-architecture/) |
+| Plugins (Interceptors) | [developer.adobe.com/commerce/php/architecture/modules/extension-attributes/plugins/](https://developer.adobe.com/commerce/php/architecture/modules/extension-attributes/plugins/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under:
+
+- `src/vendor/magento/framework/` — Magento framework
+- `src/vendor/magento/module-*/` — Magento core modules
+
+AlpineCommerce-specific implementations are referenced from:
+
+- `src/app/code/AlpineCommerce/` — AlpineCommerce custom modules
+
+*Last updated: 2026-09-07*

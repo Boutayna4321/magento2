@@ -5,6 +5,20 @@
 
 ---
 
+## Table of Contents
+
+1. [The Layout concept](#1-the-layout-concept)
+2. [Anatomy of a Layout XML file](#2-anatomy-of-a-layout-xml-file)
+3. [Layout files in Magento](#3-layout-files-in-magento)
+4. [Essential XML instructions](#4-essential-xml-instructions)
+5. [Block arguments](#5-block-arguments)
+6. [PHTML files (templates)](#6-phtml-files-templates)
+7. [Template fallback system](#7-template-fallback-system)
+8. [Summary](#8-summary)
+9. [AlpineCommerce Reference](#9-alpinecommerce-reference)
+
+---
+
 ## 1. The Layout concept
 
 ### 1.1 What is Layout?
@@ -25,7 +39,7 @@ HTML Page
     ├── page.top         ← header, logo, menu
     │   └── header        ← Magento block
     ├── content           ← main content (varies by page)
-    │   └── blog.post.list ← custom block (AlpineCommerce Blog)
+    │   └── blog.post.list ← custom block (Vendor Module Blog)
     ├── sidebar.main      ← left column (filters, categories)
     ├── sidebar.additional ← right column (widgets)
     └── page.bottom       ← footer
@@ -41,6 +55,8 @@ defined by Magento. Modules add **blocks** into these containers.
 | **Container** | Empty location (like an empty panel) | `content`, `page.top` |
 | **Block** | Concrete element (PHP class + template) | `blog.post.list`, `store.info` |
 
+**Source**: `src/vendor/magento/module-theme/view/frontend/layout/default.xml` — defines the default page containers.
+
 ---
 
 ## 2. Anatomy of a Layout XML file
@@ -52,9 +68,9 @@ defined by Magento. Modules add **blocks** into these containers.
 <page xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
     <body>
         <referenceContainer name="content">
-            <block class="AlpineCommerce\Blog\Block\PostList"
+            <block class="Vendor\Module\Block\PostList"
                    name="blog.post.list"
-                   template="AlpineCommerce_Blog::post/list.phtml"
+                   template="Vendor_Module::post/list.phtml"
                    before="-"/>
         </referenceContainer>
     </body>
@@ -68,10 +84,10 @@ defined by Magento. Modules add **blocks** into these containers.
     <body>                                       ← Page body
         <referenceContainer name="content">      ← Target: the "content" container
             <block                                ← Adds a new block
-                class="AlpineCommerce\Blog\Block\PostList"   ← PHP class
+                class="Vendor\Module\Block\PostList"   ← PHP class
                 name="blog.post.list"                             ← Unique identifier
-                template="AlpineCommerce_Blog::post/list.phtml"   ← .phtml template
-                before="-"/>                                      ← Position: before everything
+                template="Vendor_Module::post/list.phtml"          ← .phtml template
+                before="-"/>                                     ← Position: before everything
         </referenceContainer>
     </body>
 </page>
@@ -81,9 +97,9 @@ defined by Magento. Modules add **blocks** into these containers.
 
 | Attribute | Mandatory | Role | Example |
 |-----------|-----------|------|---------|
-| `class` | Yes | PHP class that provides data | `AlpineCommerce\Blog\Block\PostList` |
+| `class` | Yes | PHP class that provides data | `Vendor\Module\Block\PostList` |
 | `name` | Yes | Unique identifier in the page | `blog.post.list` |
-| `template` | No | Path to the `.phtml` file | `AlpineCommerce_Blog::post/list.phtml` |
+| `template` | No | Path to the `.phtml` file | `Vendor_Module::post/list.phtml` |
 | `before` | No | Position BEFORE another block | `before="-"` (first) |
 | `after` | No | Position AFTER another block | `after="page.bottom"` |
 | `ifConfig` | No | Display if a config is enabled | `ifConfig="blog/general/enabled"` |
@@ -107,7 +123,7 @@ Module/
 │   └── adminhtml/
 │       └── layout/                    ← Admin layouts
 │           ├── adminhtml_dashboard_index.xml ← Admin dashboard
-│           └── alphacommerce_blog_post_index.xml ← Admin Blog listing
+│           └── vendor_module_post_index.xml ← Admin Blog listing
 ```
 
 ### 3.2 How Magento finds the right layout file
@@ -123,6 +139,8 @@ Magento builds the filename from the URL:
 
 **Rule**: `{frontName}_{controller}_{action}.xml`
 
+**Source**: `src/vendor/magento/framework/View/Layout/Builder.php` — builds the page layout from XML files.
+
 ### 3.3 Layout fallback (cascade)
 
 Magento applies multiple layout files in a specific order:
@@ -137,6 +155,8 @@ Magento applies multiple layout files in a specific order:
 Files are **merged**: what is declared in `blog_index_index.xml`
 is added to what is in `default.xml`.
 
+**Source**: `src/vendor/magento/framework/View/Layout/Generator/Structure.php` — merges layout files in order.
+
 ---
 
 ## 4. Essential XML instructions
@@ -148,16 +168,16 @@ To add content into an existing container or block:
 ```xml
 <!-- Add a block in the "content" container -->
 <referenceContainer name="content">
-    <block class="AlpineCommerce\Blog\Block\PostList"
+    <block class="Vendor\Module\Block\PostList"
            name="blog.post.list"
-           template="AlpineCommerce_Blog::post/list.phtml"/>
+           template="Vendor_Module::post/list.phtml"/>
 </referenceContainer>
 
 <!-- Add a block AFTER the "page.main.title" block -->
 <referenceBlock name="page.main.title">
-    <block class="AlpineCommerce\Blog\Block\Breadcrumbs"
+    <block class="Vendor\Module\Block\Breadcrumbs"
            name="blog.breadcrumbs"
-           template="AlpineCommerce_Blog::breadcrumbs.phtml"
+           template="Vendor_Module::breadcrumbs.phtml"
            after="-"/>
 </referenceBlock>
 ```
@@ -175,7 +195,7 @@ To create a block without reference (fully custom page):
     <body>
         <block class="Magento\Framework\View\Element\Template"
                name="my.custom.page"
-               template="AlpineCommerce_Blog::custom/page.phtml"/>
+               template="Vendor_Module::custom/page.phtml"/>
     </body>
 </page>
 ```
@@ -187,9 +207,9 @@ To create a new container (rare, reserved for advanced cases):
 ```xml
 <referenceContainer name="content">
     <container name="blog.container" label="Blog Container" htmlTag="div" htmlClass="blog-container">
-        <block class="AlpineCommerce\Blog\Block\PostList"
+        <block class="Vendor\Module\Block\PostList"
                name="blog.post.list"
-               template="AlpineCommerce_Blog::post/list.phtml"/>
+               template="Vendor_Module::post/list.phtml"/>
     </container>
 </referenceContainer>
 ```
@@ -219,7 +239,7 @@ To remove a block:
 ### 5.1 Simple arguments
 
 ```xml
-<block class="AlpineCommerce\Blog\Block\PostList"
+<block class="Vendor\Module\Block\PostList"
        name="blog.post.list">
     <arguments>
         <argument name="page_size" xsi:type="number">10</argument>
@@ -242,11 +262,11 @@ public function getPageSize(): int
 ```xml
 <arguments>
     <argument name="js_config" xsi:type="array">
-        <item name="component" xsi:type="string">alphacommerceStorePickup</item>
+        <item name="component" xsi:type="string">vendorModule</item>
     </argument>
     <argument name="data" xsi:type="array">
         <item name="availableStores" xsi:type="object">
-            AlpineCommerce\StorePickup\Block\Adminhtml\Store\Source\StoreInfo
+            Vendor\Module\Block\Adminhtml\Store\Source\StoreInfo
         </item>
     </argument>
 </arguments>
@@ -290,26 +310,26 @@ the final HTML. It contains:
 ### 6.2 Template path
 
 ```xml
-template="AlpineCommerce_Blog::post/list.phtml"
+template="Vendor_Module::post/list.phtml"
 ```
 
 Decomposes into:
 ```
-AlpineCommerce_Blog  ← Module (Vendor_Module)
+Vendor_Module  ← Module (Vendor_Module)
 ::                   ← Separator
 post/list.phtml      ← Path in view/frontend/templates/
 ```
 
 **Full path on disk**:
 ```
-src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml
+app/code/Vendor/Module/view/frontend/templates/post/list.phtml
 ```
 
 ### 6.3 PHTML example
 
 ```php
-<?php /** @var $block AlpineCommerce\Blog\Block\PostList */ ?>
-<?php /** @var $posts AlpineCommerce\Blog\Model\Post[] */ ?>
+<?php /** @var $block Vendor\Module\Block\PostList */ ?>
+<?php /** @var $posts Vendor\Module\Model\Post[] */ ?>
 
 <div class="blog-post-list">
     <?php if ($posts = $block->getPosts()): ?>
@@ -359,15 +379,17 @@ src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml
 ### 6.6 Security: always escape
 
 ```php
-<!-- ❌ DANGEROUS: XSS possible -->
+<!-- DANGEROUS: XSS possible -->
 <p><?= $post->getTitle() ?></p>
 
-<!-- ✅ SAFE: escaped -->
+<!-- SAFE: escaped -->
 <p><?= $block->escapeHtml($post->getTitle()) ?></p>
 ```
 
 **Golden rule**: everything coming from the database or the user
 must be escaped before being displayed.
+
+**Source**: `src/vendor/magento/module-theme/view/frontend/templates/html/header.phtml` — Magento core templates always escape output.
 
 ---
 
@@ -375,17 +397,14 @@ must be escaped before being displayed.
 
 ### 7.1 Search order
 
-When Magento looks for a template `AlpineCommerce_Blog::post/list.phtml`:
+When Magento looks for a template `Vendor_Module::post/list.phtml`:
 
 ```
-1. Active theme:
-    src/app/design/frontend/AlpineCommerce/theme/AlpineCommerce/Blog/templates/post/list.phtml
+1. Current theme:
+    app/design/frontend/Vendor/theme/Vendor/Module/templates/post/list.phtml
 
-2. Parent module:
-    src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml
-
-3. Magento module (fallback):
-    src/app/code/Magento/Theme/view/frontend/templates/html/header.phtml
+2. Module fallback:
+    app/code/Vendor/Module/view/frontend/templates/post/list.phtml
 ```
 
 ### 7.2 Override a template in the theme
@@ -394,189 +413,19 @@ To modify a template **without touching the module**, copy it to the theme:
 
 ```bash
 # Original (module)
-cp src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml \
-   src/app/design/frontend/AlpineCommerce/theme/AlpineCommerce/Blog/templates/post/list.phtml
+cp app/code/Vendor/Module/view/frontend/templates/post/list.phtml \
+   app/design/frontend/Vendor/theme/Vendor/Module/templates/post/list.phtml
 
 # Then modify the copy in the theme
 ```
 
 Magento will automatically use the theme version.
 
----
-
-## 8. AlpineCommerce concrete examples
-
-### 8.1 Blog Layout + Template
-
-**Layout** (`view/frontend/layout/blog_index_index.xml`):
-```xml
-<page xmlns:xsi="..." layout="1column">
-    <body>
-        <referenceContainer name="content">
-            <block class="AlpineCommerce\Blog\Block\PostList"
-                   name="blog.post.list"
-                   template="AlpineCommerce_Blog::post/list.phtml"/>
-        </referenceContainer>
-    </body>
-</page>
-```
-
-**PHP Block** (`Block/PostList.php`):
-```php
-class PostList extends Template
-{
-    private PostRepositoryInterface $postRepository;
-    
-    public function getPosts(): array
-    {
-        return $this->postRepository->getList($searchCriteria)->getItems();
-    }
-}
-```
-
-**Template** (`templates/post/list.phtml`):
-```php
-<?php /** @var $block AlpineCommerce\Blog\Block\PostList */ ?>
-<?php $posts = $block->getPosts(); ?>
-
-<div class="blog-posts">
-    <?php foreach ($posts as $post): ?>
-        <h2><?= $block->escapeHtml($post->getTitle()) ?></h2>
-        <p><?= $block->escapeHtml($post->getContent()) ?></p>
-    <?php endforeach; ?>
-</div>
-```
-
-### 8.2 Admin Layout + Template
-
-**Layout** (`view/adminhtml/layout/alphacommerce_blog_post_index.xml`):
-```xml
-<page xmlns:xsi="...">
-    <body>
-        <referenceContainer name="content">
-            <uiComponent name="alphacommerce_blog_post_listing"/>
-        </referenceContainer>
-    </body>
-</page>
-```
-
-Here, no classic `.phtml`: it is a **UI Component** (admin grid)
-defined in XML (`ui_component/alphacommerce_blog_post_listing.xml`).
-
-### 8.3 Layout with arguments
-
-**Layout** (`view/frontend/layout/checkout_index_index.xml`):
-```xml
-<referenceContainer name="checkout.cart.totals">
-    <block class="Magento\Checkout\Block\Cart\Totals"
-           name="store.pickup"
-           template="AlpineCommerce_StorePickup::store-pickup.phtml">
-        <arguments>
-            <argument name="js_config" xsi:type="array">
-                <item name="component" xsi:type="string">alphacommerceStorePickup</item>
-            </argument>
-        </arguments>
-    </block>
-</referenceContainer>
-```
+**Source**: `src/vendor/magento/theme-frontend-luma/` — Luma theme demonstrates template fallback.
 
 ---
 
-## 9. Advanced XML instructions
-
-### 9.1 `<update>` — include another layout
-
-```xml
-<!-- In catalog_product_view.xml, include the entire default.xml layout -->
-<update handle="default"/>
-```
-
-### 9.2 `<reference name="head">` — add CSS/JS
-
-```xml
-<page>
-    <head>
-        <css src="AlpineCommerce_Blog::css/blog.css"/>
-        <js src="AlpineCommerce_Blog::js/blog.js"/>
-        <link src="https://fonts.googleapis.com/css?family=Roboto" src_type="url"/>
-    </head>
-</page>
-```
-
-### 9.3 `<block>` with `t:type`
-
-To use a VirtualType (defined in `di.xml`):
-
-```xml
-<block class="Magento\Framework\View\Element\Template"
-       name="my.block"
-       template="...::template.phtml">
-    <arguments>
-        <argument name="data" xsi:type="object">myVirtualType</argument>
-    </arguments>
-</block>
-```
-
----
-
-## 10. Correspondence table
-
-| Layout element | PHP element | HTML element |
-|----------------|-------------|--------------|
-| `<page>` | — | `<html>`, `<head>`, `<body>` |
-| `<referenceContainer name="content">` | `content` container | `<div class="columns">` |
-| `<block class="...">` | PHP Block class | `<div>` generated by the template |
-| `template="Vendor::path/template.phtml"` | PHP Block | HTML content of the block |
-| `<arguments>` | `$block->getData()` | Variables in the template |
-
----
-
-## 11. Common errors
-
-### 11.1 "Template file not found"
-
-**Cause**: incorrect template path.
-
-**Check**:
-```xml
-template="AlpineCommerce_Blog::post/list.phtml"
-```
-
-Must correspond to:
-```
-src/app/code/AlpineCommerce/Blog/view/frontend/templates/post/list.phtml
-```
-
-### 11.2 Block not displaying
-
-**Possible causes**:
-- The block `name` is duplicated (conflict)
-- The layout XML is not loaded (wrong filename)
-- `before`/`after` places the block outside the visible area
-- The block is removed by another layout (`remove="true"`)
-
-### 11.3 Empty variable in template
-
-**Cause**: the argument is not passed correctly.
-
-**Check**:
-```xml
-<!-- Layout -->
-<argument name="my_var" xsi:type="string">value</argument>
-
-<!-- PHP Block -->
-public function getMyVar(): string
-{
-    return $this->getData('my_var'); // 'value'
-}
-
-<!-- Template -->
-<?= $block->escapeHtml($block->getMyVar()) ?>
-```
-
----
-
-## 12. Summary
+## 8. Summary
 
 | Question | Answer |
 |----------|---------|
@@ -593,4 +442,91 @@ public function getMyVar(): string
 
 ---
 
-*Last updated: 2026-08-11.*
+## 9. AlpineCommerce Reference
+
+### 9.1 AlpineCommerce layout files
+
+| Module | Layout file | Purpose |
+|--------|-------------|---------|
+| Blog | `view/frontend/layout/blog_index_index.xml` | Blog listing page |
+| Blog | `view/adminhtml/layout/blog_post_index.xml` | Admin post listing |
+| Blog | `view/adminhtml/layout/blog_post_edit.xml` | Admin post edit form |
+| StorePickup | `view/frontend/layout/checkout_index_index.xml` | Checkout integration |
+| StorePickup | `view/adminhtml/layout/alphacommerce_pickup_store_index.xml` | Admin store listing |
+
+### 9.2 AlpineCommerce templates
+
+| Module | Template | Purpose |
+|--------|----------|---------|
+| StorePickup | `view/frontend/web/template/store-pickup.html` | KO template for checkout |
+| Blog | `view/frontend/templates/post/list.phtml` | Blog listing (if exists) |
+| LoyaltyProgram | `view/frontend/templates/points.phtml` | Minicart points display |
+
+### 9.3 AlpineCommerce layout patterns
+
+```xml
+<!-- StorePickup: checkout integration -->
+<!-- view/frontend/layout/checkout_index_index.xml -->
+<referenceContainer name="checkout.cart.totals">
+    <block class="Magento\Checkout\Block\Cart\Totals"
+           name="store.pickup"
+           template="AlpineCommerce_StorePickup::store-pickup.phtml">
+        <arguments>
+            <argument name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">alphacommerceStorePickup</item>
+            </argument>
+        </arguments>
+    </block>
+</referenceContainer>
+```
+
+**Source**: `src/app/code/AlpineCommerce/StorePickup/view/frontend/layout/checkout_index_index.xml`
+
+### 9.4 AlpineCommerce UI Components
+
+```xml
+<!-- StorePickup: admin listing -->
+<!-- view/adminhtml/ui_component/alphacommerce_pickup_store_info_listing.xml -->
+<listing xmlns:xsi="..."
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <dataSource name="store_info_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">
+                AlpineCommerce\StorePickup\Ui\DataProvider\StoreInfoListingDataProvider
+            </argument>
+        </argument>
+    </dataSource>
+    <columns name="store_info_columns">
+        <column name="name">
+            <settings>
+                <label translate="true">Store Name</label>
+                <sortOrder>10</sortOrder>
+            </settings>
+        </column>
+    </columns>
+</listing>
+```
+
+**Source**: `src/app/code/AlpineCommerce/StorePickup/view/adminhtml/ui_component/alphacommerce_pickup_store_info_listing.xml`
+
+---
+
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| Layouts Overview | [developer.adobe.com/commerce/php/architecture/layouts/](https://developer.adobe.com/commerce/php/architecture/layouts/) |
+| Layout Instructions | [developer.adobe.com/commerce/php/architecture/layouts/layout-instructions/](https://developer.adobe.com/commerce/php/architecture/layouts/layout-instructions/) |
+| Templates | [developer.adobe.com/commerce/php/architecture/layouts/templates/](https://developer.adobe.com/commerce/php/architecture/layouts/templates/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
+
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
+
+*Last updated: 2026-09-07*

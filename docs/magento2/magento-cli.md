@@ -6,6 +6,21 @@
 
 ---
 
+## Table of Contents
+
+1. [What is `bin/magento`?](#1-what-is-binmagento)
+2. [How to execute commands](#2-how-to-execute-commands)
+3. [Essential commands](#3-essential-commands)
+4. [Useful development commands](#4-useful-development-commands)
+5. [Typical development workflow](#5-typical-development-workflow)
+6. [Commands by scenario](#6-commands-by-scenario)
+7. [Common errors](#7-common-errors)
+8. [Quick reference table](#8-quick-reference-table)
+9. [Summary](#9-summary)
+10. [AlpineCommerce Reference](#10-alpinecommerce-reference)
+
+---
+
 ## 1. What is `bin/magento`?
 
 `bin/magento` is the Magento **CLI (Command Line Interface)**. It is a
@@ -19,42 +34,32 @@ operations.
 - Flush caches: `cache:flush`
 - Create an admin: `admin:user:create`
 
+**Source**: `src/vendor/magento/framework/Console/CommandList.php` — the command list registry that all CLI commands are registered to.
+
 ---
 
 ## 2. How to execute commands
 
-The standard way to run Magento CLI commands is directly from the
-Magento root directory using `php bin/magento`. The AlpineCommerce
-project provides Docker and helper script conveniences on top of this
-standard.
-
 ### 2.1 Direct execution (Magento standard)
 
 ```bash
-cd /home/cartware/Desktop/magento/src
+cd /path/to/magento
 
 php bin/magento module:status
 php bin/magento cache:flush
 ```
 
-### 2.2 Inside the Docker container (AlpineCommerce)
+### 2.2 Command structure
 
-```bash
-# Recommended method: enter the PHP container
-docker compose exec php bash
-
-# Then execute Magento commands
-php bin/magento module:status
-php bin/magento cache:flush
+```
+php bin/magento <command> [arguments] [options]
 ```
 
-### 2.3 Via a helper script (AlpineCommerce)
-
-The project contains a helper script:
-
+**Examples**:
 ```bash
-./scripts/magento-cli.sh module:status
-./scripts/magento-cli.sh cache:flush
+php bin/magento module:enable Vendor_Module
+php bin/magento setup:upgrade --keep-generated
+php bin/magento cache:flush --group=config
 ```
 
 ---
@@ -68,20 +73,22 @@ The project contains a helper script:
 php bin/magento module:status
 
 # Enable a module
-php bin/magento module:enable AlpineCommerce_Blog
+php bin/magento module:enable Vendor_Module
 
 # Disable a module
-php bin/magento module:disable AlpineCommerce_Blog
+php bin/magento module:disable Vendor_Module
 
 # Enable multiple modules
-php bin/magento module:enable AlpineCommerce_Blog AlpineCommerce_Faq
+php bin/magento module:enable Vendor_Module1 Vendor_Module2
 
 # Check dependencies (who depends on what)
-php bin/magento module:dependency:show AlpineCommerce_Blog
+php bin/magento module:dependency:show Vendor_Module
 
 # View a module's configuration
-php bin/magento module:config:show AlpineCommerce_Blog
+php bin/magento module:config:show Vendor_Module
 ```
+
+**Source**: `src/vendor/magento/module-developer/Console/Command/ModuleStatusCommand.php` — implements the `module:status` command.
 
 ### 3.2 Database update
 
@@ -101,6 +108,8 @@ php bin/magento setup:db:status
 - After creating/modifying a Data Patch
 - After enabling a new module
 
+**Source**: `src/vendor/magento/module-setup/Console/Command/UpgradeCommand.php` — implements the `setup:upgrade` command.
+
 ### 3.3 DI compilation (Dependency Injection)
 
 ```bash
@@ -117,6 +126,8 @@ php bin/magento setup:di:compile --dry-run
 - In development: only if you modify `di.xml` or have
   "Class not found" errors
 - After adding plugins, preferences, virtual types
+
+**Source**: `src/vendor/magento/framework/Console/Command/DiCompileCommand.php` — generates factories, interceptors, and proxies.
 
 ### 3.4 Cache
 
@@ -144,6 +155,8 @@ php bin/magento app:config:dump
 - `cache:clean`: empties the cache but keeps the configuration
 - `cache:flush`: empties EVERYTHING (more drastic, OK in dev)
 
+**Source**: `src/vendor/magento/module-backend/Console/Command/CacheFlushCommand.php` — implements cache flush operations.
+
 ### 3.5 Static content
 
 ```bash
@@ -154,11 +167,13 @@ php bin/magento setup:static-content:deploy -f
 php bin/magento setup:static-content:deploy -f fr_FR de_DE
 
 # For a specific theme
-php bin/magento setup:static-content:deploy -f --theme="AlpineCommerce/theme"
+php bin/magento setup:static-content:deploy -f --theme="Vendor/theme"
 
 # In development mode: no need for this command
 # Files are generated on the fly
 ```
+
+**Source**: `src/vendor/magento/module-deploy/Console/Command/DeployStaticContentCommand.php` — handles static content deployment.
 
 ### 3.6 Indexing
 
@@ -179,6 +194,8 @@ php bin/magento indexer:set-mode schedule
 php bin/magento indexer:set-mode realtime
 ```
 
+**Source**: `src/vendor/magento/module-indexer/Console/Command/IndexerReindexCommand.php` — implements reindex operations.
+
 ### 3.7 Deployment management
 
 ```bash
@@ -194,6 +211,8 @@ php bin/magento maintenance:status
 # Allow an IP to access during maintenance
 php bin/magento maintenance:enable --ip=192.168.1.100
 ```
+
+**Source**: `src/vendor/magento/module-deploy/Console/Command/MaintenanceEnableCommand.php` — implements maintenance mode commands.
 
 ### 3.8 Admin
 
@@ -243,6 +262,8 @@ php bin/magento deploy:mode:set default
 | **production** | Live server | Compiled code, hidden errors, aggressive cache |
 | **default** | In between | Optional compilation, errors displayed |
 
+**Source**: `src/vendor/magento/module-deploy/Console/Command/DeployModeSetCommand.php` — implements mode switching.
+
 ### 4.2 System information
 
 ```bash
@@ -263,18 +284,22 @@ php bin/magento info:backup:info
 php bin/magento theme:list
 
 # Install a theme
-php bin/magento theme:install AlpineCommerce_theme
+php bin/magento theme:install Vendor_theme
 ```
+
+**Source**: `src/vendor/magento/module-theme/Console/Command/ThemeListCommand.php` — lists installed themes.
 
 ### 4.4 Translation management
 
 ```bash
 # Generate translation files
-php bin/magento i18n:collect-phrases -f -o src/app/code/AlpineCommerce/Blog/i18n/fr_FR.csv src/app/code/AlpineCommerce/Blog
+php bin/magento i18n:collect-phrases -f -o app/code/Vendor/Module/i18n/fr_FR.csv app/code/Vendor/Module
 
 # Check missing translations
-php bin/magento i18n:check src/app/code/AlpineCommerce/Blog/i18n/fr_FR.csv
+php bin/magento i18n:check app/code/Vendor/Module/i18n/fr_FR.csv
 ```
+
+**Source**: `src/vendor/magento/module-translation/Console/Command/CollectPhrasesCommand.php` — collects translatable phrases.
 
 ---
 
@@ -284,7 +309,7 @@ php bin/magento i18n:check src/app/code/AlpineCommerce/Blog/i18n/fr_FR.csv
 
 ```bash
 # 1. Enable the module (if new)
-php bin/magento module:enable AlpineCommerce_Blog
+php bin/magento module:enable Vendor_Module
 
 # 2. Update the DB (if db_schema.xml or data patch modified)
 php bin/magento setup:upgrade
@@ -326,7 +351,7 @@ php bin/magento setup:di:compile
 composer install --no-dev
 
 # 2. Enable modules (if new)
-php bin/magento module:enable AlpineCommerce_Blog AlpineCommerce_Faq
+php bin/magento module:enable Vendor_Module1 Vendor_Module2
 
 # 3. Update the DB
 php bin/magento setup:upgrade
@@ -356,7 +381,7 @@ php bin/magento deploy:mode:set developer
 ```bash
 # 1. Create files (registration.php, module.xml, etc.)
 # 2. Enable the module
-php bin/magento module:enable AlpineCommerce_MyModule
+php bin/magento module:enable Vendor_Module
 
 # 3. Update the DB (if db_schema.xml)
 php bin/magento setup:upgrade
@@ -464,11 +489,8 @@ php bin/magento cache:flush
 **Solution**:
 ```bash
 # Linux
-sudo chown -R 1000:1000 src/var/ src/pub/ src/generated/
-sudo chmod -R 755 src/var/ src/pub/ src/generated/
-
-# Or in the container
-docker compose exec php bash -c "chown -R www-data:www-data /var/www/html/var /var/www/html/pub /var/www/html/generated"
+sudo chown -R 1000:1000 var/ pub/ generated/
+sudo chmod -R 755 var/ pub/ generated/
 ```
 
 ### 7.4 "The command did not stop after 10 seconds"
@@ -487,7 +509,7 @@ php -d max_execution_time=600 bin/magento setup:upgrade
 
 **Solution**:
 ```bash
-sudo chmod -R 777 src/var/cache/ src/var/page_cache/
+sudo chmod -R 777 var/cache/ var/page_cache/
 ```
 
 ---
@@ -496,7 +518,7 @@ sudo chmod -R 777 src/var/cache/ src/var/page_cache/
 
 | Task | Command |
 |------|---------|
-| Enable a module | `module:enable AlpineCommerce_Blog` |
+| Enable a module | `module:enable Vendor_Module` |
 | Update the DB | `setup:upgrade` |
 | Compile code | `setup:di:compile` |
 | Flush caches | `cache:flush` |
@@ -549,4 +571,61 @@ php bin/magento cache:flush
 
 ---
 
-*Last updated: 2026-08-11.*
+## 10. AlpineCommerce Reference
+
+### 10.1 Project-specific commands
+
+The AlpineCommerce project provides convenience wrappers for common
+Magento CLI operations:
+
+```bash
+# Helper script
+./scripts/magento-cli.sh module:status
+./scripts/magento-cli.sh cache:flush
+
+# Docker convenience
+docker compose exec php bash
+php bin/magento cache:flush
+```
+
+### 10.2 AlpineCommerce modules
+
+| Module | Common commands |
+|--------|----------------|
+| Blog | `module:enable AlpineCommerce_Blog`, `setup:upgrade` |
+| Faq | `module:enable AlpineCommerce_Faq`, `setup:upgrade` |
+| StorePickup | `module:enable AlpineCommerce_StorePickup`, `cache:flush` |
+| CustomerCare | `module:enable AlpineCommerce_CustomerCare`, `cron:run` |
+| LoyaltyProgram | `module:enable AlpineCommerce_LoyaltyProgram`, `setup:upgrade` |
+| Gdpr | `module:enable AlpineCommerce_Gdpr`, `setup:upgrade` |
+
+### 10.3 Translation generation
+
+```bash
+# Generate translation files for AlpineCommerce modules
+php bin/magento i18n:collect-phrases -f -o src/app/code/AlpineCommerce/Blog/i18n/fr_FR.csv src/app/code/AlpineCommerce/Blog
+```
+
+**Source**: `src/app/code/AlpineCommerce/Blog/i18n/` — AlpineCommerce translation files.
+
+---
+
+## Official Magento 2 Documentation
+
+| Topic | Link |
+|-------|------|
+| CLI Commands | [developer.adobe.com/commerce/php/architecture/cli/](https://developer.adobe.com/commerce/php/architecture/cli/) |
+| Module Management | [developer.adobe.com/commerce/php/architecture/modules/](https://developer.adobe.com/commerce/php/architecture/modules/) |
+| Setup Upgrade | [developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/](https://developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
+
+---
+
+## Sources
+
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
+
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
+
+*Last updated: 2026-09-07*

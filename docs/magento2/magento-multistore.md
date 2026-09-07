@@ -6,6 +6,21 @@
 
 ---
 
+## Table of Contents
+
+1. [Magento's Multi-Store Architecture](#1-magentos-multi-store-architecture)
+2. [Configuration Scopes](#2-configuration-scopes)
+3. [Store URLs and Switching](#3-store-urls-and-switching)
+4. [Root Categories](#4-root-categories)
+5. [Shared vs Separate Data](#5-shared-vs-separate-data)
+6. [Fallback System](#6-fallback-system)
+7. [EAV per Store View](#7-eav-per-store-view)
+8. [Currency per Website](#8-currency-per-website)
+9. [Summary](#9-summary)
+10. [AlpineCommerce Reference](#10-alpinecommerce-reference)
+
+---
+
 ## 1. Magento's Multi-Store Architecture
 
 ### 1.1 The hierarchy
@@ -27,6 +42,10 @@ Website (base)
 | **Website** | Top-level entity | Orders, customers, catalogs | Configuration, payment methods, shipping |
 | **Store (group)** | Groups store views | Cart, checkout, customer session | Root category, design |
 | **Store View** | Language/currency view | Products, categories | Language, currency, theme |
+
+**Source**: `src/vendor/magento/module-store/Model/Website.php` — defines the Website model with stores and groups.
+
+**Official documentation**: [Multi-Stores](https://developer.adobe.com/commerce/php/architecture/modules/multi-stores/)
 
 ---
 
@@ -67,6 +86,8 @@ $value = $this->scopeConfig->getValue(
     $storeId
 );
 ```
+
+**Source**: `src/vendor/magento/module-config/Model/Config.php` — reads configuration from the appropriate scope.
 
 ---
 
@@ -119,6 +140,8 @@ class StoreSwitcher extends Template
 <?php endforeach; ?>
 ```
 
+**Source**: `src/vendor/magento/module-store/Block/Switcher.php` — Magento's store switcher block.
+
 ---
 
 ## 4. Root Categories
@@ -168,6 +191,8 @@ $rootCategoryId = $store->getRootCategoryId();
 $category = $this->categoryRepository->get($rootCategoryId, $store->getId());
 ```
 
+**Source**: `src/vendor/magento/module-store/Model/Store.php` — defines the root category relationship.
+
 ---
 
 ## 5. Shared vs Separate Data
@@ -193,6 +218,8 @@ $category = $this->categoryRepository->get($rootCategoryId, $store->getId());
 | CMS pages (per store view) | `cms_page` (with `store_id`) |
 | Configuration | `core_config_data` (with `scope` and `scope_id`) |
 
+**Source**: `src/vendor/magento/module-catalog/Model/ResourceModel/Product.php` — handles EAV storage per store.
+
 ---
 
 ## 6. Fallback System
@@ -216,11 +243,9 @@ When Magento looks for a configuration value:
 When Magento looks for a template:
 
 ```
-1. Current theme: app/design/frontend/AlpineCommerce/theme/...
+1. Current theme: app/design/frontend/Vendor/theme/...
    ↓ not found?
-2. Parent theme: app/design/frontend/Magento/luma/...
-   ↓ not found?
-3. Module fallback: app/code/AlpineCommerce/Blog/view/frontend/...
+2. Module fallback: app/code/Vendor/Module/view/frontend/...
 ```
 
 ### 6.3 Translation fallback
@@ -258,6 +283,8 @@ $product->save();
 ```
 
 Magento saves to `catalog_product_entity_varchar` with `store_id = 2`.
+
+**Source**: `src/vendor/magento/module-catalog/Model/ResourceModel/AbstractAttribute.php` — handles EAV attribute storage per store.
 
 ### 7.2 Reading store-specific values
 
@@ -308,51 +335,40 @@ $price = 100; // USD
 $converted = $price * $this->currencyFactory->create()->getRate('USD', 'EUR');
 ```
 
+**Source**: `src/vendor/magento/module-directory/Model/Currency.php` — handles currency conversion.
+
 ---
 
-## 9. AlpineCommerce Multi-Store Setup
+## 9. Summary
 
-### 9.1 Configuration in StoreSetup
+| Concept | Purpose | Example |
+|---------|---------|---------|
+| **Website** | Separate business units | Base (US), European (EU) |
+| **Store** | Group store views | Default store group |
+| **Store View** | Language/currency | English, French, German |
+| **Config scope** | Per-website or per-store-view settings | Currency, payment methods |
+| **Root category** | Product visibility per store | English catalog, French catalog |
+| **Fallback** | Use default when specific value missing | English name → French name |
+| **EAV store scope** | Store-specific attribute values | Product name per language |
 
-```xml
-<!-- etc/config.xml -->
-<default>
-    <stores>
-        <website>
-            <code>base</code>
-            <name>Base Website</name>
-        </website>
-    </stores>
-    <store>
-        <default>
-            <code>default</code>
-            <name>English</name>
-            <locale>en_US</locale>
-            <currency>USD</currency>
-        </default>
-        <french>
-            <code>french</code>
-            <name>French</name>
-            <locale>fr_FR</locale>
-            <currency>EUR</currency>
-        </french>
-        <german>
-            <code>german</code>
-            <name>German</name>
-            <locale>de_DE</locale>
-            <currency>EUR</currency>
-        </german>
-        <spanish>
-            <code>spanish</code>
-            <name>Spanish</name>
-            <locale>es_ES</locale>
-            <currency>EUR</currency>
-        </spanish>
-    </store>
-</default>
-```
+---
 
-### 9.2 Data Patch for stores
+## 10. AlpineCommerce Reference
+
+### 10.1 Store configuration
+
+AlpineCommerce uses 4 store views configured in `StoreSetup/etc/config.xml`:
+
+| Store View | Locale | Currency | Code |
+|------------|--------|----------|------|
+| English | en_US | USD | default |
+| French | fr_FR | EUR | french |
+| German | de_DE | EUR | german |
+| Spanish | es_ES | EUR | spanish |
+
+**Source**: `src/app/code/AlpineCommerce/StoreSetup/etc/config.xml`
+
+### 10.2 Store creation (Data Patch)
 
 ```php
 // Setup/Patch/Data/CreateStores.php
@@ -371,104 +387,39 @@ class CreateStores implements DataPatchInterface
 }
 ```
 
----
+**Source**: `src/app/code/AlpineCommerce/StoreSetup/Setup/Patch/Data/CreateStores.php`
 
-## 10. Working with Stores in Code
+### 10.3 AlpineCommerce multi-store features
 
-### 10.1 Get current store
+| Feature | Module | Implementation |
+|---------|--------|---------------|
+| Store views | StoreSetup | `etc/config.xml`, `Setup/Patch/Data/CreateStores.php` |
+| Hreflang tags | Hreflang | Adds `<link rel="alternate">` for SEO |
+| Store-specific content | Blog, Faq | EAV attributes per store view |
+| Currency | StoreSetup | Configures base currency per website |
 
-```php
-$store = $this->storeManager->getStore();
-$storeId = $store->getId();
-$storeCode = $store->getCode();
-$websiteId = $store->getWebsiteId();
-```
-
-### 10.2 Get all stores
-
-```php
-/** @var StoreInterface[] $stores */
-$stores = $this->storeManager->getStores(true);
-
-foreach ($stores as $store) {
-    echo $store->getCode() . ' - ' . $store->getName();
-}
-```
-
-### 10.3 Load product for specific store view
-
-```php
-// Repository with store ID
-$product = $this->productRepository->getById(1, false, $storeId);
-$name = $product->getName(); // Store-specific name
-```
-
-### 10.4 Filter collection by store
-
-```php
-$collection = $this->productCollectionFactory->create();
-$collection->addStoreFilter($storeId);
-$collection->addAttributeToSelect('*');
-```
+**Sources**:
+- `src/app/code/AlpineCommerce/StoreSetup/etc/config.xml`
+- `src/app/code/AlpineCommerce/StoreSetup/Setup/Patch/Data/CreateStores.php`
+- `src/app/code/AlpineCommerce/Hreflang/`
 
 ---
 
-## 11. Common Issues
+## Official Magento 2 Documentation
 
-### 11.1 Wrong product name in store view
-
-**Cause**: product name not translated for that store view.
-
-**Solution**:
-```php
-// Set store ID before saving
-$product->setStoreId($frenchStoreId);
-$product->setName('Nom français');
-$product->save();
-```
-
-### 11.2 Config not applied
-
-**Cause**: config set at wrong scope.
-
-**Solution**: Check scope selector in admin, or check `core_config_data`:
-
-```sql
-SELECT * FROM core_config_data
-WHERE path = 'path/to/config'
-AND scope = 'stores'
-AND scope_id = 2;
-```
-
-### 11.3 Categories not visible
-
-**Cause**: category not assigned to store's root category.
-
-**Solution**: Assign category to correct root category in admin.
+| Topic | Link |
+|-------|------|
+| Multi-Store | [developer.adobe.com/commerce/php/architecture/modules/multi-stores/](https://developer.adobe.com/commerce/php/architecture/modules/multi-stores/) |
+| Store Configuration | [developer.adobe.com/commerce/php/architecture/modules/multi-stores/store-configuration/](https://developer.adobe.com/commerce/php/architecture/modules/multi-stores/store-configuration/) |
+| Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
 
 ---
 
-## 12. Summary
+## Sources
 
-| Concept | Purpose | Example |
-|---------|---------|---------|
-| **Website** | Separate business units | Base (US), European (EU) |
-| **Store** | Group store views | Default store group |
-| **Store View** | Language/currency | English, French, German |
-| **Config scope** | Per-website or per-store-view settings | Currency, payment methods |
-| **Root category** | Product visibility per store | English catalog, French catalog |
-| **Fallback** | Use default when specific value missing | English name → French name |
-| **EAV store scope** | Store-specific attribute values | Product name per language |
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
 
-### AlpineCommerce Multi-Store
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
 
-| Store View | Locale | Currency | Code |
-|------------|--------|----------|------|
-| English | en_US | USD | default |
-| French | fr_FR | EUR | french |
-| German | de_DE | EUR | german |
-| Spanish | es_ES | EUR | spanish |
-
----
-
-*Last updated: 2026-08-11.*
+*Last updated: 2026-09-07*
