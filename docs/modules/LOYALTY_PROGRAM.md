@@ -11,51 +11,104 @@ and incentive messaging.
 
 | Feature | Description |
 |---|---|
-| **Point earning** | Plugin: point allocation on invoice |
-| **Point spending** | Plugin: deduction on order |
-| **Cart discount** | Total collector |
-| **Minicart** | Plugin: incentive message |
-| **REST API** | `/V1/carts/mine/loyalty-points` |
-| **Admin** | Admin interface in finalization |
+| **Point earning** | Plugin on `InvoiceRepositoryInterface::afterSave()` |
+| **Point spending** | Plugin on `OrderRepositoryInterface::afterSave()` |
+| **Cart discount** | Total collector registered in `etc/sales.xml` |
+| **Minicart** | Plugin on `Magento\Checkout\Block\Cart\Sidebar` |
+| **Customer balance page** | Frontend route `/loyalty/customer/balance` |
+| **REST API** | `POST /V1/carts/mine/loyalty-points` (`setPointsUsed`) |
+| **Admin** | System config only; no admin interface in v1.0 |
 
 ## 3. Architecture
 
 ```
 AlpineCommerce/LoyaltyProgram/
-├── Api/                        # Service Contracts (points, balance)
+├── Api/
+│   ├── LoyaltyBalanceRepositoryInterface.php
+│   ├── LoyaltyCartManagementInterface.php
+│   └── Data/
+│       └── LoyaltyBalanceInterface.php
+├── Block/
+│   └── Customer/
+│       └── Balance.php                  # customer balance page
+├── Controller/
+│   └── Customer/
+│       └── Balance.php                  # /loyalty/customer/balance
 ├── Model/
-│   ├── Total/                  # Total collector (cart discount)
-│   └── (Repository in base — InMemory removed)
+│   ├── Checkout/
+│   │   ├── LoyaltyCartManagement.php    # setPointsUsed()
+│   │   └── LoyaltyConfigProvider.php    # checkout config provider
+│   ├── LoyaltyBalance.php
+│   ├── LoyaltyBalanceRepository.php
+│   ├── LoyaltyOrderPoints.php
+│   ├── ResourceModel/
+│   │   ├── LoyaltyBalance.php
+│   │   ├── LoyaltyBalance/Collection.php
+│   │   ├── LoyaltyOrderPoints.php
+│   │   └── LoyaltyOrderPoints/Collection.php
+│   └── Total/
+│       └── Quote/
+│           └── LoyaltyDiscount.php      # total collector
 ├── Plugin/
-│   ├── Invoice/AfterSave.php   # earning plugin
-│   ├── Order/AfterSave.php     # deduction plugin
-│   └── LoyaltyIncentive.php    # minicart message
-├── Service/PointsCalculator.php # pure calculation service (replaced Helper)
-└── etc/db_schema.xml           # referenceId prefix ALPINECOMMERCE_*
+│   ├── Invoice/
+│   │   └── AfterSave.php                # earning plugin
+│   ├── Order/
+│   │   └── AfterSave.php                # deduction plugin
+│   └── LoyaltyIncentive.php             # minicart message
+├── Service/
+│   └── PointsCalculator.php             # pure calculation service
+├── Logger/
+│   ├── Logger.php
+│   └── Handler/
+│       └── Loyalty.php
+├── etc/
+│   ├── acl.xml                          # main > config
+│   ├── adminhtml/
+│   │   └── system.xml                   # enable + discount_sort_order
+│   ├── config.xml                       # defaults
+│   ├── db_schema.xml                    # ALPINECOMMERCE_LOYALTY_*
+│   ├── di.xml                           # preferences + plugins
+│   ├── events.xml                       # empty
+│   ├── frontend/
+│   │   ├── di.xml                       # minicart plugin + config provider
+│   │   └── routes.xml                   # frontName: loyalty
+│   ├── module.xml
+│   ├── sales.xml                        # total collector registration
+│   └── webapi.xml                       # POST /V1/carts/mine/loyalty-points
+└── view/
+    └── frontend/
+        ├── layout/
+        │   ├── checkout_index_index.xml
+        │   ├── customer_account.xml
+        │   └── loyalty_customer_balance.xml
+        └── templates/
+            └── customer/balance.phtml
 ```
 
 ## 4. Database
 
 | Table | Role |
 |---|---|
-| `alpinecommerce_loyalty_balance` | Point balance per customer |
-| `alpinecommerce_loyalty_order_points` | Points issued/deducted per order |
+| `alpinecommerce_loyalty_balance` | Point balance per customer (customer_id UNIQUE FK to customer_entity) |
+| `alpinecommerce_loyalty_order_points` | Points ledger per order (order_id + type UNIQUE) |
+| `quote` | Added column: `alpinecommerce_loyalty_points_used` (points used at checkout) |
 
 ## 5. REST API
 
-| Route | Role |
-|---|---|
-| `/V1/carts/mine/loyalty-points` | View/use points (cart mine) |
+| Method | Path | Role |
+|---|---|---|
+| POST | `/V1/carts/mine/loyalty-points` | Set points used for cart (`setPointsUsed`) |
 
 ## 6. Admin
 
-- Admin interface **in finalization** (v1.1 planned — see `ROADMAP.md`)
-- Global admin integration validated (Sprint 6)
+- **Stores > Configuration > Sales > Loyalty Program**: enable flag + discount sort order (per website/store view)
+- No admin grid or interface in v1.0
 
 ## 7. Frontend
 
-- Minicart: incentive message (plugin)
-- Checkout: discount applied by total collector
+- Minicart: incentive message via plugin on `Magento\Checkout\Block\Cart\Sidebar`
+- Checkout: discount applied by total collector (`LoyaltyDiscount`)
+- Customer account: balance page at `/loyalty/customer/balance`
 
 ## 8. CLI
 
@@ -66,10 +119,11 @@ No dedicated command.
 | Decision | Justification |
 |---|---|
 | Plugins (invoice/order) | Earning and deduction delegated to Magento plugins |
-| Total collector | Native cart discount (extension of the total process) |
-| Service class replaces Helper | PointsCalculator is pure calculation, no Magento dependencies |
-| Removal of `InMemory/LoyaltyBalanceRepository.php` | Unnecessary — base repository |
+| Total collector via `sales.xml` | Native cart discount (extension of the total process) |
+| Service class replaces Helper | `PointsCalculator` is pure calculation, no Magento dependencies |
+| Removal of `InMemory/LoyaltyBalanceRepository.php` | Unnecessary — base repository sufficient |
 | Removal of `InstallSchema.php` / `InstallData.php` | Replaced by `db_schema.xml` / data patches |
+| Frontend route for balance | Customer can view points balance without admin |
 
 ## 10. Known bugs / limitations
 
@@ -83,11 +137,12 @@ No dedicated command.
 
 ## 11. Magento concepts taught
 
-- **Total collector** (`collect` on the total process)
-- **Plugins** (invoice, order)
-- **Plugin** on minicart
+- **Total collector** (`collect` on the total process, registered via `sales.xml`)
+- **Plugins** (invoice, order, minicart)
+- **Frontend routes** (`frontend/routes.xml`)
+- **Config providers** (`CompositeConfigProvider` for checkout JS)
 - **Service classes** (no Helper anti-pattern)
-- Data patches + `db_schema.xml` (referenceId)
+- **Database schema** (`db_schema.xml` with referenceId prefix)
 
 ## 12. Validation & status
 

@@ -11,19 +11,29 @@ tags for each store's pages.
 
 | Feature | Description |
 |---|---|
-| **Automatic generation** | Hreflang tags injected on pages |
-| **Multi-store** | Store view support |
-| **Admin configuration** | Activation and setup |
+| **Automatic generation** | Hreflang tags injected in `<head>` via layout XML |
+| **Multi-store** | One tag per active store view |
+| **x-default** | Optional x-default link to default store view |
+| **Admin configuration** | Enable/disable + x-default toggle (per store view) |
 | **i18n** | French translation |
 
 ## 3. Architecture
 
 ```
 AlpineCommerce/Hreflang/
-├── Model/                      # tag generator + hreflang logic
-├── (Plugin/Block)              # injection into page head
-└── etc/
-    └── system.xml              # admin configuration
+├── Block/
+│   └── Hreflang.php                    # generates alternate links array
+├── etc/
+│   ├── acl.xml                          # config ACL
+│   ├── config.xml                       # defaults: enabled=1, x_default=1
+│   ├── module.xml
+│   └── system.xml                       # admin config
+└── view/
+    └── frontend/
+        ├── layout/
+        │   └── default.xml              # injects block into head.additional
+        └── templates/
+            └── hreflang.phtml           # renders <link> tags
 ```
 
 ## 4. Database
@@ -36,12 +46,14 @@ None.
 
 ## 6. Admin
 
-- System configuration (activation, domains per store view)
+- **Stores > Configuration > General > Hreflang**: enable toggle + x-default toggle (per store view)
 
 ## 7. Frontend
 
 - `<link rel="alternate" hreflang="xx-XX">` tags generated automatically in the
-  `<head>` of pages (one per store view), according to configuration
+  `<head>` of pages (one per active store view), according to configuration
+- Injection via `default.xml` layout XML → `head.additional` container
+- Block `Hreflang::getAlternateLinks()` returns array of `hreflang` + `href`
 
 ## 8. CLI
 
@@ -51,8 +63,10 @@ No dedicated command.
 
 | Decision | Justification |
 |---|---|
-| Automatic generation (plugin/observer on head) | No core template change |
-| Configuration per store view | URL → language mapping specific to each store |
+| Layout XML injection (`default.xml`) | No plugin needed — block added to `head.additional` on every page |
+| Block-based generation | `Hreflang` block encapsulates all logic (store iteration, URL building, locale conversion) |
+| Config per store view | Each store view can enable/disable independently |
+| x-default support | Optional link to default store view for undefined locales |
 
 ## 10. Known bugs / limitations
 
@@ -64,7 +78,9 @@ No dedicated command.
 
 - Multi-store SEO (hreflang)
 - System configuration per store view
-- Markup injection into `<head>` (plugin/block)
+- Layout XML injection into `<head>`
+- Block template rendering
+- StoreManager + ScopeConfig usage
 
 ## 12. Validation & status
 
