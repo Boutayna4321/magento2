@@ -5,12 +5,13 @@ namespace AlpineCommerce\StorePickup\Ui\DataProvider;
 
 use AlpineCommerce\StorePickup\Api\Data\StoreInfoInterfaceFactory;
 use AlpineCommerce\StorePickup\Api\StoreInfoRepositoryInterface;
+use AlpineCommerce\StorePickup\Model\ResourceModel\StoreInfo\CollectionFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Ui\DataProvider\ModifierPoolDataProvider;
 
 class StoreInfoFormDataProvider extends ModifierPoolDataProvider
 {
-    protected $collection;
+    private array $loadedData = [];
 
     public function __construct(
         $name,
@@ -18,28 +19,36 @@ class StoreInfoFormDataProvider extends ModifierPoolDataProvider
         $requestFieldName,
         StoreInfoRepositoryInterface $storeInfoRepository,
         StoreInfoInterfaceFactory $storeInfoFactory,
+        CollectionFactory $collectionFactory,
         RequestInterface $request,
         array $meta = [],
         array $data = []
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
-        $this->collection = $storeInfoFactory->create();
-
-        $entityId = (int) $request->getParam($requestFieldName);
-        if ($entityId) {
-            $this->collection = $storeInfoRepository->getById($entityId);
-        }
+        $this->collection = $collectionFactory->create();
+        $this->storeInfoRepository = $storeInfoRepository;
+        $this->storeInfoFactory = $storeInfoFactory;
+        $this->request = $request;
     }
 
-    private $loadedData = [];
+    private StoreInfoRepositoryInterface $storeInfoRepository;
+    private StoreInfoInterfaceFactory $storeInfoFactory;
+    private RequestInterface $request;
 
-    public function getData()
+    public function getData(): array
     {
-        if ($this->loadedData) {
+        if (!empty($this->loadedData)) {
             return $this->loadedData;
         }
 
-        $this->loadedData[$this->collection->getEntityId()] = $this->collection->getData();
+        $entityId = (int) $this->request->getParam($this->primaryFieldName);
+
+        if ($entityId) {
+            $storeInfo = $this->storeInfoRepository->getById($entityId);
+            $this->loadedData = [$entityId => $storeInfo->getData()];
+        } else {
+            $this->loadedData = [0 => []];
+        }
 
         return $this->loadedData;
     }
