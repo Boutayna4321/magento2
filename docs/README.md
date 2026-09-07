@@ -100,36 +100,36 @@ responsibility, scope, architecture, API, decisions, and known bugs.
 
 | Module | Document | Status |
 |---|---|---|
-| Blog | [`BLOG.md`](BLOG.md) | ✅ Stable |
-| Faq | [`FAQ.md`](FAQ.md) | ✅ Stable |
-| LegalPages | [`LEGAL_PAGES.md`](LEGAL_PAGES.md) | ✅ Stable |
-| ProductReviews | [`PRODUCT_REVIEWS.md`](PRODUCT_REVIEWS.md) | ✅ Stable |
-| ProductQuestions | [`PRODUCT_QUESTIONS.md`](PRODUCT_QUESTIONS.md) | ✅ Stable |
-| ProductLabels | [`PRODUCT_LABELS.md`](PRODUCT_LABELS.md) | ✅ Stable |
-| CustomerGrid | [`CUSTOMER_GRID.md`](CUSTOMER_GRID.md) | ✅ Stable |
-| CustomerCare | [`CUSTOMER_CARE.md`](CUSTOMER_CARE.md) | ✅ Stable |
-| StoreSetup | [`STORE_SETUP.md`](STORE_SETUP.md) | ✅ Stable |
+| Blog | [`BLOG.md`](modules/BLOG.md) | ✅ Stable |
+| Faq | [`FAQ.md`](modules/FAQ.md) | ✅ Stable |
+| LegalPages | [`LEGAL_PAGES.md`](modules/LEGAL_PAGES.md) | ✅ Stable |
+| ProductReviews | [`PRODUCT_REVIEWS.md`](modules/PRODUCT_REVIEWS.md) | ✅ Stable |
+| ProductQuestions | [`PRODUCT_QUESTIONS.md`](modules/PRODUCT_QUESTIONS.md) | ✅ Stable |
+| ProductLabels | [`PRODUCT_LABELS.md`](modules/PRODUCT_LABELS.md) | ✅ Stable |
+| CustomerGrid | [`CUSTOMER_GRID.md`](modules/CUSTOMER_GRID.md) | ✅ Stable |
+| CustomerCare | [`CUSTOMER_CARE.md`](modules/CUSTOMER_CARE.md) | ✅ Stable |
+| StoreSetup | [`STORE_SETUP.md`](modules/STORE_SETUP.md) | ✅ Stable |
 
 ### Modules in Finalization
 
 | Module | Document | Status |
 |---|---|---|
-| AutoInvoice | [`AUTO_INVOICE.md`](AUTO_INVOICE.md) | ✅ Done |
-| CreditMemo | [`CREDIT_MEMO.md`](CREDIT_MEMO.md) | ✅ Done |
-| PartialInvoice | [`PARTIAL_INVOICE.md`](PARTIAL_INVOICE.md) | ✅ Done |
-| Rma | [`RMA.md`](RMA.md) | ✅ Done |
-| Gdpr | [`GDPR.md`](GDPR.md) | 🔄 Finalization |
-| StorePickup | [`STORE_PICKUP.md`](STORE_PICKUP.md) | 🔄 Finalization |
-| StoreLocator | [`STORE_LOCATOR.md`](STORE_LOCATOR.md) | 🔄 Finalization |
-| LoyaltyProgram | [`LOYALTY_PROGRAM.md`](LOYALTY_PROGRAM.md) | ⏳ To be finalized |
-| EuVat | [`EU_VAT.md`](EU_VAT.md) | ⏳ To be finalized |
-| Hreflang | [`HREFLANG.md`](HREFLANG.md) | ⏳ To be finalized |
+| AutoInvoice | [`AUTO_INVOICE.md`](modules/AUTO_INVOICE.md) | ✅ Done |
+| CreditMemo | CREDIT_MEMO.md | 📝 Planned |
+| PartialInvoice | PARTIAL_INVOICE.md | 📝 Planned |
+| Rma | RMA.md | 📝 Planned |
+| Gdpr | [`GDPR.md`](modules/GDPR.md) | 🔄 Finalization |
+| StorePickup | [`STORE_PICKUP.md`](modules/STORE_PICKUP.md) | 🔄 Finalization |
+| StoreLocator | [`STORE_LOCATOR.md`](modules/STORE_LOCATOR.md) | 🔄 Finalization |
+| LoyaltyProgram | [`LOYALTY_PROGRAM.md`](modules/LOYALTY_PROGRAM.md) | ⏳ To be finalized |
+| EuVat | [`EU_VAT.md`](modules/EU_VAT.md) | ⏳ To be finalized |
+| Hreflang | [`HREFLANG.md`](modules/HREFLANG.md) | ⏳ To be finalized |
 
 ### Cross-Cutting Documentation
 
 | Document | What you'll learn |
 |---|---|
-| [`alpinecommerce-order-lifecycle.md`](alpinecommerce-order-lifecycle.md) | 🔄 Complete AlpineCommerce order lifecycle: AutoInvoice, PartialInvoice, CreditMemo, CustomerCare, LoyaltyProgram, Rma, StorePickup |
+| [`alpinecommerce-order-lifecycle.md`](modules/alpinecommerce-order-lifecycle.md) | 🔄 Complete AlpineCommerce order lifecycle: AutoInvoice, PartialInvoice, CreditMemo, CustomerCare, LoyaltyProgram, Rma, StorePickup |
 
 ---
 
@@ -142,41 +142,24 @@ If you are new to Magento, start with these guides **in order**:
 | [`docker.md`](prerequisites/docker.md) | Docker installation, containers, volumes, docker-compose | Everyone |
 | [`php-oop.md`](prerequisites/php-oop.md) | Classes, objects, inheritance, interfaces, DI, namespaces | Developers new to OOP |
 | [`git-github.md`](prerequisites/git-github.md) | Git commands, branching, pull requests, GitHub workflow | Anyone contributing code |
-| [`magento-intro.md`](prerequisites/magento-intro.md) | Magento architecture, modules, EAV, multi-store, themes | Everyone new to Magento |
-| [`magento-js.md`](prerequisites/magento-js.md) | RequireJS, KnockoutJS, jQuery, mage/* libraries | Everyone writing frontend JS |
-| [`magento-layout-templates.md`](prerequisites/magento-layout-templates.md) | Layout XML, containers, blocks, PHTML templates | Everyone modifying frontend |
-| [`magento-cli.md`](prerequisites/magento-cli.md) | `bin/magento` commands: module, upgrade, compile, cache, deploy | Everyone developing on Magento |
-| [`magento-cron-indexers.md`](prerequisites/magento-cron-indexers.md) | Cron jobs, indexers (realtime/schedule), flat tables | Everyone understanding automation |
-| [`magento-events-observers-plugins.md`](prerequisites/magento-events-observers-plugins.md) | Events, observers, plugins (interceptors) | Everyone extending Magento |
-| [`magento-rest-graphql.md`](prerequisites/magento-rest-graphql.md) | REST API, GraphQL, authentication, service contracts | Everyone integrating APIs |
-| [`magento-composer.md`](prerequisites/magento-composer.md) | Composer, packages, autoload, updating dependencies | Everyone installing dependencies |
-| [`magento-debug.md`](prerequisites/magento-debug.md) | Logs, developer mode, Xdebug, common errors | Everyone (debugging is daily work) |
-| [`magento-admin.md`](prerequisites/magento-admin.md) | Admin navigation, ACL, menus, system.xml, UI Components | Everyone using/extending admin |
-| [`magento-security.md`](prerequisites/magento-security.md) | Form keys, ACL, validation, XSS, CSRF, sanitization | Everyone writing secure code |
-| [`magento-multistore.md`](prerequisites/magento-multistore.md) | Websites/stores/store views, scope hierarchy, config fallback | Everyone working with multiple stores |
-| [`magento-testing.md`](prerequisites/magento-testing.md) | Unit tests, integration tests, API functional tests | Everyone writing/running tests |
-| [`magento-coding-standards.md`](prerequisites/magento-coding-standards.md) | PSR-12, naming conventions, module structure | Everyone writing code |
 | [`ci-cd.md`](prerequisites/ci-cd.md) | CI/CD concepts, GitHub Actions, automated pipelines | Everyone understanding deployment |
 
 These guides are written for absolute beginners and use AlpineCommerce
 examples throughout.
+
+More guides coming soon: Magento intro, JavaScript, Layout/Templates, CLI,
+Cron & Indexers, Events/Observers/Plugins, REST/GraphQL API, Composer, Debug,
+Admin, Security, Multi-Store, Testing, Coding Standards.
 
 ---
 
 ## 🚀 Entry points by profile
 
 - **Beginner developer**: start with [`prerequisites/docker.md`](prerequisites/docker.md) and
-  [`prerequisites/php-oop.md`](prerequisites/php-oop.md), then [`prerequisites/git-github.md`](prerequisites/git-github.md), then
-  [`prerequisites/magento-intro.md`](prerequisites/magento-intro.md), then [`prerequisites/magento-js.md`](prerequisites/magento-js.md),
-  then [`prerequisites/magento-layout-templates.md`](prerequisites/magento-layout-templates.md), then [`prerequisites/magento-cli.md`](prerequisites/magento-cli.md),
-  then [`prerequisites/magento-cron-indexers.md`](prerequisites/magento-cron-indexers.md),
-  then [`prerequisites/magento-events-observers-plugins.md`](prerequisites/magento-events-observers-plugins.md),
-  then [`prerequisites/magento-rest-graphql.md`](prerequisites/magento-rest-graphql.md), then [`prerequisites/magento-composer.md`](prerequisites/magento-composer.md),
-  then [`prerequisites/magento-debug.md`](prerequisites/magento-debug.md), then [`prerequisites/magento-admin.md`](prerequisites/magento-admin.md),
-  then [`prerequisites/magento-security.md`](prerequisites/magento-security.md), then [`prerequisites/magento-multistore.md`](prerequisites/magento-multistore.md),
-  then [`prerequisites/magento-testing.md`](prerequisites/magento-testing.md), then [`PROJECT_CHARTER.md`](PROJECT_CHARTER.md) (the "why"),
+  [`prerequisites/php-oop.md`](prerequisites/php-oop.md), then [`prerequisites/git-github.md`](prerequisites/git-github.md),
+  then [`prerequisites/ci-cd.md`](prerequisites/ci-cd.md), then [`PROJECT_CHARTER.md`](PROJECT_CHARTER.md) (the "why"),
   then [`ARCHITECTURE.md`](ARCHITECTURE.md) (the "how"), then the canonical module document
-  [`FAQ.md`](FAQ.md).
+  [`FAQ.md`](modules/FAQ.md).
 - **Intermediate developer**: [`ENGINEERING_GUIDE.md`](ENGINEERING_GUIDE.md) is your reference;
   compare each module to the canonical skeleton.
 - **Contributor / maintainer**: [`ENGINEERING_GUIDE.md`](ENGINEERING_GUIDE.md) (validation checklist),
@@ -201,16 +184,16 @@ examples throughout.
 - [🖥️ Admin Panel](magento2/magento-admin.md)
 
 ### AlpineCommerce Modules
-- [🔄 Complete Order Lifecycle](alpinecommerce-order-lifecycle.md)
+- [🔄 Complete Order Lifecycle](modules/alpinecommerce-order-lifecycle.md)
 - [🛒 AutoInvoice](modules/AUTO_INVOICE.md)
 - [💬 CustomerCare](modules/CUSTOMER_CARE.md)
 - [🎁 LoyaltyProgram](modules/LOYALTY_PROGRAM.md)
 - [🚚 StorePickup](modules/STORE_PICKUP.md)
 
 ### Code
-- [📦 Modules](src/app/code/AlpineCommerce/)
-- [🎨 Theme](src/app/design/)
-- [⚙️ Module config](src/app/etc/config.php)
+- [📦 Modules](../../src/app/code/AlpineCommerce/)
+- [🎨 Theme](../../src/app/design/)
+- [⚙️ Module config](../../src/app/etc/config.php)
 
 ---
 
