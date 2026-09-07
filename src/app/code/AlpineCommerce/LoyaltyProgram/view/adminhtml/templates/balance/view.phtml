@@ -1,0 +1,20 @@
+<?php /** @var \AlpineCommerce\LoyaltyProgram\Block\Adminhtml\Balance\View $block */ ?>
+<?php $customer = $block->getCustomer(); ?>
+<?php if (!$customer): ?>
+    <div class="message message-error">
+        <p><?= $block->escapeHtml(__('Customer not found.')) ?></p>
+    </div>
+    <?php return; ?>
+<?php endif; ?>
+
+<div class="admin__data-grid-wrap">
+    <div class="loyalty-balance-view">
+        <div class="loyalty-balance-header">
+            <h2><?= $block->escapeHtml(__('Customer Balance Details')) ?></h2>
+            <p><strong><?= $block->escapeHtml(__('Customer:')) ?></strong> <?= $block->escapeHtml($customer->getFirstname() . ' ' . $customer->getLastname()) ?></p>
+            <p><strong><?= $block->escapeHtml(__('Email:')) ?></strong> <?= $block->escapeHtml($customer->getEmail()) ?></p>
+            <p><strong><?= $block->escapeHtml(__('Customer ID:')) ?></strong> <?= (int) $customer->getId() ?></p>
+            <p><strong><?= $block->escapeHtml(__('Current Balance:')) ?></strong> <?= (int) $block->getBalance() ?> <?= $block->escapeHtml(__('points')) ?></p>
+        </div>
+    </div>
+</div>

@@ -385,6 +385,7 @@ return [
         'AlpineCommerce_EuVat' => 1,
         'AlpineCommerce_Faq' => 1,
         'AlpineCommerce_Gdpr' => 1,
+        'AlpineCommerce_HealthCheck' => 1,
         'AlpineCommerce_Hreflang' => 1,
         'AlpineCommerce_LegalPages' => 1,
         'AlpineCommerce_LoyaltyProgram' => 1,

@@ -6,6 +6,11 @@
             <resource id="Magento_Backend::admin">
                 <resource id="AlpineCommerce_LoyaltyProgram::main" title="Loyalty Program" sortOrder="100">
                     <resource id="AlpineCommerce_LoyaltyProgram::config" title="Configuration" sortOrder="10"/>
+                    <resource id="AlpineCommerce_LoyaltyProgram::balance" title="Loyalty Balances" sortOrder="20">
+                        <resource id="AlpineCommerce_LoyaltyProgram::balance_view" title="View Balance" sortOrder="10"/>
+                        <resource id="AlpineCommerce_LoyaltyProgram::balance_history" title="Points History" sortOrder="20"/>
+                    </resource>
+                    <resource id="AlpineCommerce_LoyaltyProgram::adjust" title="Adjust Balance" sortOrder="30"/>
                 </resource>
             </resource>
         </resources>

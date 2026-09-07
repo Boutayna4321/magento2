@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">loyalty_balance_listing.loyalty_balance_listing_data_source</item>
+            <item name="deps" xsi:type="string">loyalty_balance_listing.loyalty_balance_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <spinner>loyalty_balance_columns</spinner>
+        <deps>
+            <dep>loyalty_balance_listing.loyalty_balance_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="loyalty_balance_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">AlpineCommerce\LoyaltyProgram\Ui\DataProvider\Balance\Listing</argument>
+            <argument name="name" xsi:type="string">loyalty_balance_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
+            <argument name="requestFieldName" xsi:type="string">id</argument>
+            <argument name="collectionFactory" xsi:type="object">AlpineCommerce\LoyaltyProgram\Model\ResourceModel\LoyaltyBalance\GridCollectionFactory</argument>
+        </argument>
+        <settings>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>AlpineCommerce_LoyaltyProgram::balance</aclResource>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>0</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+            <action name="select_all">
+                <settings>
+                    <type>select_all</type>
+                    <label translate="true">Select All</label>
+                </settings>
+            </action>
+            <action name="select_visible">
+                <settings>
+                    <type>select_visible</type>
+                    <label translate="true">Select Visible</label>
+                </settings>
+            </action>
+            <action name="deselect_all">
+                <settings>
+                    <type>deselect_all</type>
+                    <label translate="true">Deselect All</label>
+                </settings>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="loyalty_balance_columns">
+        <column name="entity_id">
+            <settings>
+                <filter>text</filter>
+                <sorting>asc</sorting>
+                <label translate="true">ID</label>
+            </settings>
+        </column>
+        <column name="customer_id">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Customer ID</label>
+            </settings>
+        </column>
+        <column name="customer_firstname">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">First Name</label>
+            </settings>
+        </column>
+        <column name="customer_lastname">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Last Name</label>
+            </settings>
+        </column>
+        <column name="customer_email">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Email</label>
+            </settings>
+        </column>
+        <column name="points">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Points Balance</label>
+            </settings>
+        </column>
+        <column name="updated_at">
+            <settings>
+                <filter>date</filter>
+                <label translate="true">Updated At</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="AlpineCommerce\LoyaltyProgram\Ui\Component\Listing\Column\ViewAction">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+    <paging name="listing_paging"/>
+</listing>

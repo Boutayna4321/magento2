@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Admin/etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_LoyaltyProgram::balance"
+             title="Loyalty Balances"
+             module="AlpineCommerce_LoyaltyProgram"
+             sortOrder="100"
+             parent="Magento_Customer::customer_manage"
+             action="loyalty/balance/index"
+             resource="AlpineCommerce_LoyaltyProgram::balance"
+        />
+    </menu>
+</config>
