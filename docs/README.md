@@ -8,14 +8,53 @@ reference for learning Magento 2.
 
 ```
 docs/
-├── README.md                 ← this file (documentation hub)
-├── PROJECT_CHARTER.md        ← vision, mission, specifications v1.0, functional analysis
-├── ARCHITECTURE.md           ← Magento + AlpineCommerce architecture + ADR registry
-├── ENGINEERING_GUIDE.md      ← The Engineering Bible: standards, patterns, workflow, glossary
-├── ROADMAP.md                ← v1.0 development plan and beyond
-├── CHANGELOG.md              ← version history and fixes
-├── BACKLOG.md                ← tracked technical debt (Phase C)
-├── prerequisites/            ← foundational guides (Docker, PHP OOP, Git, Magento intro, Magento JS, Layout/Templates, CLI, Cron & Indexers, Events/Observers/Plugins, REST/GraphQL API, Composer, Debug, Admin, Security, Multi-Store, Testing, Coding Standards, CI/CD)
+├── README.md                      ← this file (documentation hub)
+├── PROJECT_CHARTER.md             ← vision, mission, specifications v1.0, functional analysis
+├── ARCHITECTURE.md                ← Magento + AlpineCommerce architecture + ADR registry
+├── ENGINEERING_GUIDE.md           ← The Engineering Bible: standards, patterns, workflow, glossary
+├── ROADMAP.md                     ← v1.0 development plan and beyond
+├── CHANGELOG.md                   ← version history and fixes
+├── BACKLOG.md                     ← tracked technical debt (Phase C)
+├── magento2/                      ← Magento 2 Core reference documentation
+│   ├── magento-order-lifecycle.md
+│   ├── magento-payment-providers.md
+│   ├── magento-admin.md
+│   ├── magento-cli.md
+│   ├── magento-coding-standards.md
+│   ├── magento-components.md
+│   ├── magento-composer.md
+│   ├── magento-cron-indexers.md
+│   ├── magento-debug.md
+│   ├── magento-events-observers-plugins.md
+│   ├── magento-intro.md
+│   ├── magento-js.md
+│   ├── magento-layout-templates.md
+│   ├── magento-multistore.md
+│   ├── magento-rest-graphql.md
+│   ├── magento-security.md
+│   └── magento-testing.md
+├── modules/                       ← each module's chapter (Phase D)
+│   ├── AUTO_INVOICE.md
+│   ├── BLOG.md
+│   ├── CREDIT_MEMO.md
+│   ├── CUSTOMER_CARE.md
+│   ├── CUSTOMER_GRID.md
+│   ├── EU_VAT.md
+│   ├── FAQ.md
+│   ├── GDPR.md
+│   ├── HREFLANG.md
+│   ├── LEGAL_PAGES.md
+│   ├── LOYALTY_PROGRAM.md
+│   ├── PARTIAL_INVOICE.md
+│   ├── PRODUCT_LABELS.md
+│   ├── PRODUCT_QUESTIONS.md
+│   ├── PRODUCT_REVIEWS.md
+│   ├── RMA.md
+│   ├── STORE_LOCATOR.md
+│   ├── STORE_PICKUP.md
+│   ├── STORE_SETUP.md
+│   └── alpinecommerce-order-lifecycle.md
+├── prerequisites/                 ← foundational guides
 │   ├── docker.md
 │   ├── php-oop.md
 │   ├── git-github.md
@@ -34,11 +73,7 @@ docs/
 │   ├── magento-testing.md
 │   ├── magento-coding-standards.md
 │   └── ci-cd.md
-├── modules/                  ← each module's chapter (Phase D)
-│   ├── BLOG.md
-│   ├── FAQ.md
-│   ├── ...
-└── archive/sprints/          ← historical sprint reports (outside official docs)
+└── archive/sprints/               ← historical sprint reports
 ```
 
 ## Main Documents
@@ -46,11 +81,14 @@ docs/
 | Document | Role | Essential content |
 |---|---|---|
 | `PROJECT_CHARTER.md` | 🎯 The charter | Dual vision (platform + learning reference), philosophy, specifications and functional analysis v1.0, major architecture decisions |
-| `ARCHITECTURE.md` | 🏗️ Architecture | Overview, Magento Core, 15 modules, DB tables, REST API, multi-store, security, performance, deployment, ADR registry (ADR-001 → 014) |
+| `ARCHITECTURE.md` | 🏗️ Architecture | Overview, Magento Core, 19 modules, DB tables, REST API, multi-store, security, performance, deployment, ADR registry (ADR-001 → 014) |
 | `ENGINEERING_GUIDE.md` | 📐 The Engineering Bible | Canonical module skeleton, principles (SOLID/DRY/KISS/YAGNI), PSR-12, Adobe Commerce patterns, ACL/UI Components, sprint workflow, anti-patterns, checklist, glossary |
 | `ROADMAP.md` | 🗺️ Roadmap | 6 stable modules, 7 in finalization, planned/future modules, Magento extensions, prioritization, version history |
 | `CHANGELOG.md` | 📜 History | Versions 0.1.0 → 1.5.2, Phase 1 fixes (14 critical bugs), Sprint 6 integration, admin form resolution |
 | `BACKLOG.md` | 🛠️ Technical debt | B-01 → B-09: XSD listings, missing Service Contracts, absence of tests, residual Phase 2 |
+| `magento2/*.md` | 📚 Magento 2 Core reference docs | Order lifecycle, payment providers, admin, CLI, events, REST/GraphQL, security, testing, etc. |
+| `modules/*.md` | 📚 Module chapters | Self-contained docs for each AlpineCommerce module |
+| `alpinecommerce-order-lifecycle.md` | 🔄 AlpineCommerce order lifecycle | Cross-module view: AutoInvoice, PartialInvoice, CreditMemo, CustomerCare, LoyaltyProgram, Rma, StorePickup |
 
 ## Module Documents
 
@@ -76,6 +114,10 @@ Each AlpineCommerce module has its own document in `docs/modules/` — it is
 
 | Module | Document | Status |
 |---|---|---|
+| AutoInvoice | `modules/AUTO_INVOICE.md` | ✅ Done |
+| CreditMemo | `modules/CREDIT_MEMO.md` | ✅ Done |
+| PartialInvoice | `modules/PARTIAL_INVOICE.md` | ✅ Done |
+| Rma | `modules/RMA.md` | ✅ Done |
 | Gdpr | `modules/GDPR.md` | 🔄 Finalization (Sprint 1) |
 | StorePickup | `modules/STORE_PICKUP.md` | 🔄 Finalization (Sprint 2) |
 | StoreLocator | `modules/STORE_LOCATOR.md` | 🔄 Finalization (Sprint 3) |
