@@ -31,7 +31,7 @@ Magento core code lives in `vendor/magento/` (Composer) or `src/vendor/magento/`
 
 **Solution**: use Events/Observers or Plugins.
 
-**Official documentation**: [Extend Magento](https://developer.adobe.com/commerce/php/architecture/modules/extension-attributes/)
+**Official documentation**: [Extend Magento](https://developer.adobe.com/commerce/php/development/components/extension-attributes/)
 
 ---
 
@@ -54,7 +54,7 @@ Execution continues...
 
 **Source**: `vendor/magento/module-backend/Block/Widget/Button.php` (Magento core dispatches events throughout its lifecycle)
 
-**Official documentation**: [Events and Observers](https://developer.adobe.com/commerce/php/architecture/event-driven-architecture/)
+**Official documentation**: [Events and Observers](https://developer.adobe.com/commerce/php/development/components/events-and-observers/)
 
 ### 2.2 Dispatching an event
 
@@ -91,7 +91,7 @@ class MyObserver implements ObserverInterface
 {
     public function execute(Observer $observer): void
     {
-        $order = $observer->getEvent()->getOrder();
+        $order = $observer->getEvent->getOrder;
         // React to the event
     }
 }
@@ -128,7 +128,7 @@ All observers execute **in order** (sorted by `sortOrder` if specified).
 | `instance` | Yes | Observer class |
 | `sortOrder` | No | Execution order (lower = first) |
 
-**Official documentation**: [Create an observer](https://developer.adobe.com/commerce/php/architecture/modules/extension-attributes/events-and-observers/#create-an-observer)
+**Official documentation**: [Create an observer](https://developer.adobe.com/commerce/php/development/components/extension-attributes/events-and-observers/#create-an-observer)
 
 ---
 
@@ -244,7 +244,7 @@ class MyPlugin
         $result = $proceed($data);
         
         // After
-        error_log('Product saved with ID: ' . $result->getId());
+        error_log('Product saved with ID: ' . $result->getId);
         
         return $result;
     }
@@ -284,12 +284,12 @@ The interceptor wraps the original class and delegates to plugins:
 ```php
 class Interceptor extends Product implements ProductInterface
 {
-    public function save()
+    public function save
     {
         // Plugin chain execution
         $pluginInfo = $this->pluginList->getNext($this->subjectType, 'save');
         if (!$pluginInfo) {
-            return $this->subject->save();
+            return $this->subject->save;
         }
         // ... plugin execution
     }
@@ -361,7 +361,7 @@ Need to extend Magento behavior?
     └─ You may need to modify core (last resort)
 ```
 
-**Official documentation**: [Extension points](https://developer.adobe.com/commerce/php/architecture/modules/extension-attributes/)
+**Official documentation**: [Extension points](https://developer.adobe.com/commerce/php/development/components/extension-attributes/)
 
 ---
 
@@ -384,7 +384,7 @@ Use them sparingly. Prefer plugins for modifications.
 
 **Source**: `vendor/magento/module-offline-shipping/etc/di.xml` — Magento core uses preferences for carrier implementations.
 
-**Official documentation**: [Dependency injection preferences](https://developer.adobe.com/commerce/php/architecture/modules/di/)
+**Official documentation**: [Dependency injection preferences](https://developer.adobe.com/commerce/php/development/components/dependency-injection/)
 
 ---
 
@@ -397,14 +397,14 @@ public function aroundGetPrice(
     $data
 ): float {
     // Before
-    $originalPrice = $proceed(); // Calls the original getPrice()
+    $originalPrice = $proceed; // Calls the original getPrice
     
     // After
     return $originalPrice * 1.1;
 }
 ```
 
-**Rule**: in an `around` plugin, you **must** call `$proceed()` at some point,
+**Rule**: in an `around` plugin, you **must** call `$proceed` at some point,
 unless you intentionally want to skip the original method.
 
 **Source**: `vendor/magento/module-catalog/Plugin/Model/Product/Attribute/Backend/Price.php` — Magento core uses around plugins for price validation.
@@ -417,10 +417,10 @@ unless you intentionally want to skip the original method.
 
 ```php
 // ❌ Won't work: method is protected
-protected function calculatePrice() { ... }
+protected function calculatePrice { ... }
 
 // ✅ Must be public
-public function calculatePrice() { ... }
+public function calculatePrice { ... }
 ```
 
 **Source**: `vendor/magento/framework/Interception/Interceptor.php` — plugins only work on public methods.
@@ -609,11 +609,11 @@ built on top of Magento 2 Core extension mechanisms.
 ### AlpineCommerce patterns
 
 - **AutoInvoice**: uses observer for checkout success event
-- **CustomerCare**: uses plugin on `Order::place()` to recalculate VIP after order placement
-- **StoreSetup**: uses plugin on `ProductRepositoryInterface::save()` to log product save
+- **CustomerCare**: uses plugin on `Order::place` to recalculate VIP after order placement
+- **StoreSetup**: uses plugin on `ProductRepositoryInterface::save` to log product save
 - **StorePickup**: uses plugin to modify Flat Rate carrier behavior
 - **LoyaltyProgram**: uses plugins for minicart incentive and invoice point awarding
-- **CreditMemo**: uses plugin on `Order::afterCancel()` to auto-create credit memo
+- **CreditMemo**: uses plugin on `Order::afterCancel` to auto-create credit memo
 - **Rma**: uses observer on `sales_order_place_after` to set return window
 
 ---
@@ -622,11 +622,11 @@ built on top of Magento 2 Core extension mechanisms.
 
 | Topic | Link |
 |-------|------|
-| Extend Magento | [developer.adobe.com/commerce/php/architecture/modules/extension-attributes/](https://developer.adobe.com/commerce/php/architecture/modules/extension-attributes/) |
-| Events and Observers | [developer.adobe.com/commerce/php/architecture/event-driven-architecture/](https://developer.adobe.com/commerce/php/architecture/event-driven-architecture/) |
+| Extend Magento | [developer.adobe.com/commerce/php/architecture/modules/extension-attributes/](https://developer.adobe.com/commerce/php/development/components/extension-attributes/) |
+| Events and Observers | [developer.adobe.com/commerce/php/architecture/event-driven-architecture/](https://developer.adobe.com/commerce/php/development/components/events-and-observers/) |
 | Plugins (Interceptors) | [developer.adobe.com/commerce/php/architecture/modules/extension-attributes/plugins/](https://developer.adobe.com/commerce/php/development/components/plugins) |
-| Dependency Injection | [developer.adobe.com/commerce/php/architecture/modules/di/](https://developer.adobe.com/commerce/php/architecture/modules/di/) |
-| Module Configuration | [developer.adobe.com/commerce/php/architecture/modules/module-configuration/](https://developer.adobe.com/commerce/php/architecture/modules/module-configuration/) |
+| Dependency Injection | [developer.adobe.com/commerce/php/architecture/modules/di/](https://developer.adobe.com/commerce/php/development/components/dependency-injection/) |
+| Module Configuration | developer.adobe.com/commerce/php/architecture/modules/module-configuration/ |
 | Magento 2.4.8 PHP Docs | [developer.adobe.com/commerce/php/](https://developer.adobe.com/commerce/php/) |
 
 ---

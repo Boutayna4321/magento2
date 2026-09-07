@@ -1,8 +1,23 @@
 # Magento 2 — Admin Basics
 
 > **Objective**: understand the Magento administration panel:
-> navigation, ACL, system configuration, menus, and how AlpineCommerce
-> extends the admin with its own modules.
+> navigation, ACL, system configuration, menus, UI Components, and how to
+> extend the admin without touching core code.
+> This guide covers **Magento 2.4.8 Core** first, then shows AlpineCommerce
+> project-specific implementations.
+
+---
+
+## Table of Contents
+
+1. [Access the admin](#1-access-the-admin)
+2. [Key admin concepts](#2-key-admin-concepts)
+3. [Stores > Configuration](#3-stores--configuration)
+4. [Admin listings (UI Components)](#4-admin-listings-ui-components)
+5. [Admin forms (UI Components)](#5-admin-forms-ui-components)
+6. [Create a new admin entry](#6-create-a-new-admin-entry)
+7. [AlpineCommerce reference](#7-alpinecommerce-reference)
+8. [Summary](#8-summary)
 
 ---
 
@@ -21,6 +36,8 @@ The `/admin` path is defined in `app/etc/env.php`:
     'frontName' => 'admin'
 ]
 ```
+
+**Source**: `app/etc/env.php` — Magento core admin front name configuration.
 
 ### 1.2 Admin panel structure
 
@@ -60,6 +77,8 @@ Admin
     └── Permissions > User Roles
 ```
 
+**Official documentation**: [Admin Panel](https://developer.adobe.com/commerce/admin/)
+
 ---
 
 ## 2. Key admin concepts
@@ -72,12 +91,13 @@ Admin
 
 ```xml
 <!-- etc/acl.xml -->
-<acl xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
+<acl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
     <resources>
         <resource id="Magento_Backend::admin">
-            <resource id="AlpineCommerce_Blog::main" title="Blog" sortOrder="10">
-                <resource id="AlpineCommerce_Blog::post" title="Posts" sortOrder="10"/>
-                <resource id="AlpineCommerce_Blog::category" title="Categories" sortOrder="20"/>
+            <resource id="Vendor_Module::main" title="My Module" sortOrder="10">
+                <resource id="Vendor_Module::post" title="Posts" sortOrder="10"/>
+                <resource id="Vendor_Module::category" title="Categories" sortOrder="20"/>
             </resource>
         </resource>
     </resources>
@@ -85,22 +105,26 @@ Admin
 ```
 
 **Explanation**:
-- `AlpineCommerce_Blog::main`: parent resource (appears in the menu)
-- `AlpineCommerce_Blog::post`: child resource (permission for posts)
-- The user must have the `AlpineCommerce_Blog::post` permission to
-  access posts
+- `Vendor_Module::main`: parent resource (appears in the menu)
+- `Vendor_Module::post`: child resource (permission for posts)
+- The user must have the `Vendor_Module::post` permission to access posts
+
+**Source**: `vendor/magento/module-backend/etc/acl.xml` — Magento core defines its own ACL structure.
+
+**Official documentation**: [ACL]
 
 ### 2.2 Admin menu
 
 ```xml
 <!-- etc/adminhtml/menu.xml -->
-<menu xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <add id="AlpineCommerce_Blog::main"
-         title="Blog"
-         module="AlpineCommerce_Blog"
+<menu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:Menu/etc/menu.xsd">
+    <add id="Vendor_Module::main"
+         title="My Module"
+         module="Vendor_Module"
          sortOrder="100"
          parent="Magento_Backend::content"
-         resource="AlpineCommerce_Blog::main"/>
+         resource="Vendor_Module::main"/>
 </menu>
 ```
 
@@ -111,23 +135,33 @@ Admin
 - `resource`: required ACL resource
 - `sortOrder`: position (smaller = higher)
 
+**Source**: `vendor/magento/module-backend/etc/menu.xml` — Magento core menu definition.
+
+**Official documentation**: [Admin Menu]
+
 ### 2.3 Route protection
 
 Each admin Controller must check the ACL:
 
 ```php
 // Controller/Adminhtml/Post/Index.php
-class Index extends \Magento\Backend\App\Action
+namespace Vendor\Module\Controller\Adminhtml\Post;
+
+use Magento\Backend\App\Action;
+
+class Index extends Action
 {
-    const ADMIN_RESOURCE = 'AlpineCommerce_Blog::post';
+    const ADMIN_RESOURCE = 'Vendor_Module::post';
     
-    public function execute(): void
+    public function execute: void
     {
         // If the user does not have permission, Magento automatically displays 403
         // ...
     }
 }
 ```
+
+**Source**: `vendor/magento/module-backend/Controller/Adminhtml/Index.php` — Magento core admin controllers use the same pattern.
 
 ---
 
@@ -167,16 +201,19 @@ Stores > Configuration
     └── System
 ```
 
+**Source**: `vendor/magento/module-config/etc/system.xml` — Magento core defines all its configuration sections here.
+
 ### 3.3 system.xml — Define your own config
 
 ```xml
 <!-- etc/adminhtml/system.xml -->
-<config xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="alphacommerce_blog" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Blog</label>
+        <section id="vendor_module" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>My Module</label>
             <tab>general</tab>
-            <resource>AlpineCommerce_Blog::config</resource>
+            <resource>Vendor_Module::config</resource>
             
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Configuration</label>
@@ -199,21 +236,30 @@ Stores > Configuration
 ```
 
 **Structure**:
-- `<section>`: a section in the config (`AlpineCommerce_Blog`)
-- `<group>`: a group in the section (`General Configuration`)
+- `<section>`: a section in the config
+- `<group>`: a group in the section
 - `<field>`: a configuration field
+
+**Source**: `vendor/magento/module-config/etc/system.xml` — Magento core configuration definition.
+
+**Official documentation**: [System Configuration]
 
 ### 3.4 Read configuration in code
 
 ```php
 // In a Block, Helper, Model...
-$isEnabled = $this->scopeConfig->isSetFlag('alphacommerce_blog/general/enabled');
-$postsPerPage = $this->scopeConfig->getValue('alphacommerce_blog/general/posts_per_page');
+$isEnabled = $this->scopeConfig->isSetFlag('vendor_module/general/enabled');
+$postsPerPage = $this->scopeConfig->getValue('vendor_module/general/posts_per_page');
 
-// With the helper (recommended)
-$helper = \Magento\Framework\App\Config\ScopeConfigInterface::class;
-$isEnabled = $helper->isSetFlag('alphacommerce_blog/general/enabled');
+// With constructor injection (recommended)
+public function __construct(
+    private readonly ScopeConfigInterface $scopeConfig
+) {}
+
+$isEnabled = $this->scopeConfig->isSetFlag('vendor_module/general/enabled');
 ```
+
+**Source**: `vendor/magento/module-config/Model/Config.php` — Magento core reads configuration using `ScopeConfigInterface`.
 
 ### 3.5 Configuration scopes
 
@@ -235,7 +281,7 @@ In `system.xml`:
 ### 4.1 Admin listing structure
 
 ```
-AlpineCommerce/Blog/
+Vendor/Module/
 ├── Controller/Adminhtml/Post/
 │   ├── Index.php          ← Controller: displays the grid
 │   ├── Edit.php           ← Controller: displays the form
@@ -247,24 +293,27 @@ AlpineCommerce/Blog/
 │   │   └── PostFormDataProvider.php     ← Form data
 │   └── Component/Listing/Column/
 │       └── Actions.php     ← Actions column (Edit/Delete)
-├── view/adminhtml/
-│   ├── layout/
-│   │   ├── alphacommerce_blog_post_index.xml  ← Listing layout
-│   │   └── alphacommerce_blog_post_edit.xml   ← Form layout
-│   └── ui_component/
-│       ├── alphacommerce_blog_post_listing.xml ← Grid UI Component
-│       └── alphacommerce_blog_post_form.xml     ← Form UI Component
+└── view/adminhtml/
+    ├── layout/
+    │   ├── vendor_module_post_index.xml  ← Listing layout
+    │   └── vendor_module_post_edit.xml   ← Form layout
+    └── ui_component/
+        ├── vendor_module_post_listing.xml ← Grid UI Component
+        └── vendor_module_post_form.xml     ← Form UI Component
 ```
+
+**Source**: `vendor/magento/module-catalog/view/adminhtml/ui_component/product_listing.xml` — Magento core uses the same pattern for product listings.
 
 ### 4.2 Listing UI Component example
 
 ```xml
-<!-- view/adminhtml/ui_component/alphacommerce_blog_post_listing.xml -->
-<listing xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
+<!-- view/adminhtml/ui_component/vendor_module_post_listing.xml -->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <dataSource name="post_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">
-                AlpineCommerce\Blog\Ui\DataProvider\PostListingDataProvider
+                Vendor\Module\Ui\DataProvider\PostListingDataProvider
             </argument>
             <argument name="name" xsi:type="string">post_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
@@ -289,7 +338,7 @@ AlpineCommerce/Blog/
         <actions>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="urlPath" xsi:type="string">blog/post/edit</item>
+                    <item name="urlPath" xsi:type="string">module/post/edit</item>
                     <item name="paramName" xsi:type="string">id</item>
                 </item>
             </argument>
@@ -298,36 +347,44 @@ AlpineCommerce/Blog/
 </listing>
 ```
 
+**Source**: `vendor/magento/module-catalog/view/adminhtml/ui_component/product_listing.xml` — Magento core product listing uses the same UI Component structure.
+
+**Official documentation**: [UI Components Listing](ui-component-listing/)
+
 ### 4.3 The DataProvider
 
 ```php
 // Ui/DataProvider/PostListingDataProvider.php
+namespace Vendor\Module\Ui\DataProvider;
+
+use Magento\Ui\DataProvider\AbstractDataProvider;
+use Vendor\Module\Model\ResourceModel\Post\CollectionFactory;
+
 class PostListingDataProvider extends AbstractDataProvider
 {
     public function __construct(
         $name,
         $primaryFieldName,
         $requestFieldName,
-        PostRepositoryInterface $postRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        array $meta = [],
-        array $data = []
+        private readonly CollectionFactory $collectionFactory,
+        array $meta = ,
+        array $data = 
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
-        $this->postRepository = $postRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->collection = $postRepository->getList($searchCriteriaBuilder->create())->getItems();
+        $this->collection = $this->collectionFactory->create;
     }
     
-    public function getData(): array
+    public function getData: array
     {
         return [
-            'items' => $this->collection,
-            'totalRecords' => count($this->collection)
+            'items' => $this->collection->getItems,
+            'totalRecords' => $this->collection->getSize
         ];
     }
 }
 ```
+
+**Source**: `vendor/magento/module-catalog/Ui/DataProvider/Product/Listing/DataProvider.php` — Magento core uses the same DataProvider pattern.
 
 ---
 
@@ -336,12 +393,13 @@ class PostListingDataProvider extends AbstractDataProvider
 ### 5.1 Form structure
 
 ```xml
-<!-- view/adminhtml/ui_component/alphacommerce_blog_post_form.xml -->
-<form xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
+<!-- view/adminhtml/ui_component/vendor_module_post_form.xml -->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <dataSource name="post_form_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">
-                AlpineCommerce\Blog\Ui\DataProvider\PostFormDataProvider
+                Vendor\Module\Ui\DataProvider\PostFormDataProvider
             </argument>
             <argument name="name" xsi:type="string">post_form_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
@@ -374,13 +432,17 @@ class PostListingDataProvider extends AbstractDataProvider
 </form>
 ```
 
+**Source**: `vendor/magento/module-catalog/view/adminhtml/ui_component/product_form.xml` — Magento core product form uses the same UI Component structure.
+
+**Official documentation**: [UI Components Form](ui-component-form/)
+
 ### 5.2 Form buttons
 
 In the `_edit.xml` layout:
 
 ```xml
 <referenceContainer name="content">
-    <block class="AlpineCommerce\Blog\Block\Adminhtml\Post\Edit\GenericButton" name="edit_form"/>
+    <block class="Vendor\Module\Block\Adminhtml\Post\Edit\GenericButton" name="edit_form"/>
 </referenceContainer>
 ```
 
@@ -388,9 +450,13 @@ Buttons are defined via `ButtonProviderInterface`:
 
 ```php
 // Block/Adminhtml/Post/Edit/GenericButton.php
+namespace Vendor\Module\Block\Adminhtml\Post\Edit;
+
+use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
+
 class GenericButton implements ButtonProviderInterface
 {
-    public function getButtonData(): array
+    public function getButtonData: array
     {
         return [
             'back' => [
@@ -407,7 +473,7 @@ class GenericButton implements ButtonProviderInterface
             ],
             'save' => [
                 'label' => __('Save'),
-                'on_click' => 'saveAndContinueEdit()',
+                'on_click' => 'saveAndContinueEdit',
                 'class' => 'save primary',
                 'sort_order' => 90
             ]
@@ -416,11 +482,101 @@ class GenericButton implements ButtonProviderInterface
 }
 ```
 
+**Source**: `vendor/magento/module-backend/Block/Widget/Button.php` — Magento core button widget implements the same interface.
+
 ---
 
-## 6. AlpineCommerce modules in the admin
+## 6. Create a new admin entry
 
-### 6.1 Modules with admin interface
+### 6.1 Steps
+
+1. **Create the ACL** (`etc/acl.xml`)
+2. **Create the menu** (`etc/adminhtml/menu.xml`)
+3. **Create the routes** (`etc/adminhtml/routes.xml`)
+4. **Create the Controllers** (`Controller/Adminhtml/...`)
+5. **Create the layouts** (`view/adminhtml/layout/...`)
+6. **Create the UI Components** (`view/adminhtml/ui_component/...`)
+7. **Create the DataProviders** (`Ui/DataProvider/...`)
+
+### 6.2 Example: routes.xml
+
+```xml
+<!-- etc/adminhtml/routes.xml -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="admin">
+        <route id="vendor_module" frontName="vendor_module">
+            <module name="Vendor_Module" before="Magento_Backend"/>
+        </route>
+    </router>
+</config>
+```
+
+The admin URL will be: `/admin/vendor_module/post/index`
+
+**Source**: `vendor/magento/module-catalog/etc/adminhtml/routes.xml` — Magento core admin routes follow the same pattern.
+
+### 6.3 Example: Controller
+
+```php
+// Controller/Adminhtml/Post/Index.php
+namespace Vendor\Module\Controller\Adminhtml\Post;
+
+use Magento\Backend\App\Action;
+
+class Index extends Action
+{
+    const ADMIN_RESOURCE = 'Vendor_Module::post';
+    
+    public function execute: \Magento\Backend\Model\View\Result\Page
+    {
+        $resultPage = $this->resultPageFactory->create;
+        $resultPage->setActiveMenu('Vendor_Module::post');
+        $resultPage->getConfig->getTitle->prepend(__('Blog Posts'));
+        return $resultPage;
+    }
+}
+```
+
+**Source**: `vendor/magento/module-catalog/Controller/Adminhtml/Product/Index.php` — Magento core product controller follows the same pattern.
+
+### 6.4 Admin blocks with collection reuse
+
+Magento core reuses collections in admin blocks. For example, the product grid
+reuses the product collection without custom filtering:
+
+```php
+// Block/Adminhtml/Product/Grid.php
+$collection = $this->collectionFactory->create;
+// Add filters, sorting, pagination
+```
+
+**Source**: `vendor/magento/module-catalog/Block/Adminhtml/Product/Grid.php`
+
+---
+
+## 7. Summary
+
+| Concept | Role |
+|---------|------|
+| ACL | Controls permissions |
+| Menu | Entry in the admin sidebar |
+| Routes | Admin URLs |
+| Controller | Admin logic |
+| Admin layout | Admin page structure |
+| UI Component | Admin grid |
+| DataProvider | Grid/form data |
+| system.xml | Configuration in Stores > Configuration |
+
+---
+
+## 8. AlpineCommerce reference
+
+The following sections show how AlpineCommerce implements admin features
+in its custom modules. These are **project-specific implementations**
+built on top of Magento 2 Core admin mechanisms.
+
+### 8.1 Modules with admin interface
 
 | Module | Menu | ACL | Listing | Form |
 |--------|------|-----|---------|------|
@@ -436,7 +592,7 @@ class GenericButton implements ButtonProviderInterface
 | CustomerCare | Customers > Customer Care | `AlpineCommerce_CustomerCare::manage` | ✅ | ✅ |
 | CustomerGrid | (none — native override) | (none — uses native ACL) | ✅ | ❌ |
 
-### 6.2 Modules without admin interface
+### 8.2 Modules without admin interface
 
 | Module | Role | Admin |
 |--------|------|-------|
@@ -444,69 +600,54 @@ class GenericButton implements ButtonProviderInterface
 | LoyaltyProgram | Total collector + minicart | System.xml only |
 | EuVat | Validation + CLI | System.xml only |
 | Hreflang | SEO tags | System.xml only |
+| AutoInvoice | Auto-invoicing | System.xml only |
+| CreditMemo | Auto credit memo | System.xml only |
+| PartialInvoice | Auto partial invoice | System.xml only |
+| Rma | Return management | System.xml only |
+
+### 8.3 AlpineCommerce admin patterns
+
+- **Blog, Faq, LegalPages**: CRUD with UI Component listing + form
+- **ProductReviews, ProductQuestions**: Marketing-section listings
+- **StorePickup, StoreLocator**: Content-section store management
+- **Gdpr**: Custom DataProvider (`AbstractDataProvider`) for consent log
+- **CustomerGrid**: Native customer grid override (no custom ACL)
+- **Rma**: Full admin workflow (approve, reject, refund, close)
+
+**Sources**:
+- `src/app/code/AlpineCommerce/Blog/`
+- `src/app/code/AlpineCommerce/Faq/`
+- `src/app/code/AlpineCommerce/LegalPages/`
+- `src/app/code/AlpineCommerce/ProductReviews/`
+- `src/app/code/AlpineCommerce/ProductQuestions/`
+- `src/app/code/AlpineCommerce/ProductLabels/`
+- `src/app/code/AlpineCommerce/Gdpr/`
+- `src/app/code/AlpineCommerce/StorePickup/`
+- `src/app/code/AlpineCommerce/StoreLocator/`
+- `src/app/code/AlpineCommerce/CustomerCare/`
+- `src/app/code/AlpineCommerce/CustomerGrid/`
+- `src/app/code/AlpineCommerce/Rma/`
 
 ---
 
-## 7. Create a new admin entry
+## Official Magento 2 Documentation
 
-### 7.1 Steps
-
-1. **Create the ACL** (`etc/acl.xml`)
-2. **Create the menu** (`etc/adminhtml/menu.xml`)
-3. **Create the routes** (`etc/adminhtml/routes.xml`)
-4. **Create the Controllers** (`Controller/Adminhtml/...`)
-5. **Create the layouts** (`view/adminhtml/layout/...`)
-6. **Create the UI Components** (`view/adminhtml/ui_component/...`)
-7. **Create the DataProviders** (`Ui/DataProvider/...`)
-
-### 7.2 Example: routes.xml
-
-```xml
-<!-- etc/adminhtml/routes.xml -->
-<config xmlns:xsi="..." xsi:noNamespaceSchemaLocation="...">
-    <router id="admin">
-        <route id="alphacommerce_blog" frontName="alphacommerce_blog">
-            <module name="AlpineCommerce_Blog" before="Magento_Backend"/>
-        </route>
-    </router>
-</config>
-```
-
-The admin URL will be: `/admin/alphacommerce_blog/post/index`
-
-### 7.3 Example: Controller
-
-```php
-// Controller/Adminhtml/Post/Index.php
-class Index extends \Magento\Backend\App\Action
-{
-    const ADMIN_RESOURCE = 'AlpineCommerce_Blog::post';
-    
-    public function execute(): \Magento\Backend\Model\View\Result\Page
-    {
-        $resultPage = $this->resultPageFactory->create();
-        $resultPage->setActiveMenu('AlpineCommerce_Blog::post');
-        $resultPage->getConfig()->getTitle()->prepend(__('Blog Posts'));
-        return $resultPage;
-    }
-}
-```
+| Topic | Link |
+|-------|------|
+| Admin Panel | [developer.adobe.com/commerce/admin/](https://developer.adobe.com/commerce/admin/) |
+| ACL | developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/acl/ |
+| Admin Menu | developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/menu/ |
+| System Configuration | developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/system-configuration/ |
+| UI Components | developer.adobe.com/commerce/php/tutorials/ui-components/ |
+| Admin Routes | [developer.adobe.com/commerce/php/architecture/modules/declarative-configuration/routes/](https://developer.adobe.com/commerce/php/development/components/routing/) |
 
 ---
 
-## 8. Summary
+## Sources
 
-| Concept | Role | AlpineCommerce example |
-|---------|------|------------------------|
-| ACL | Controls permissions | `etc/acl.xml` |
-| Menu | Entry in the admin sidebar | `etc/adminhtml/menu.xml` |
-| Routes | Admin URLs | `etc/adminhtml/routes.xml` |
-| Controller | Admin logic | `Controller/Adminhtml/Post/Index.php` |
-| Admin layout | Admin page structure | `view/adminhtml/layout/` |
-| UI Component | Admin grid | `view/adminhtml/ui_component/listing.xml` |
-| DataProvider | Grid/form data | `Ui/DataProvider/` |
-| system.xml | Configuration in Stores > Configuration | `etc/adminhtml/system.xml` |
+All Magento 2 Core references in this document come from the actual
+Magento 2.4.8 source code in this repository under `src/vendor/magento/`.
 
----
+AlpineCommerce-specific implementations are referenced from `src/app/code/AlpineCommerce/`.
 
-*Last updated: 2026-08-11.*
+*Last updated: 2026-09-07*
