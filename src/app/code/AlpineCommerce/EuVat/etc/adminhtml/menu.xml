@@ -7,7 +7,7 @@
              module="AlpineCommerce_EuVat"
              sortOrder="80"
              resource="AlpineCommerce_EuVat::validation"
-             parent="Magento_Backend::sales"/>
+             parent="Magento_Backend::content"/>
         <add id="AlpineCommerce_EuVat::validation_history"
              title="Validation History"
              module="AlpineCommerce_EuVat"
