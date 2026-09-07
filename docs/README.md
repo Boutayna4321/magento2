@@ -143,23 +143,11 @@ If you are new to Magento, start with these guides **in order**:
 | [`php-oop.md`](prerequisites/php-oop.md) | Classes, objects, inheritance, interfaces, DI, namespaces | Developers new to OOP |
 | [`git-github.md`](prerequisites/git-github.md) | Git commands, branching, pull requests, GitHub workflow | Anyone contributing code |
 | [`ci-cd.md`](prerequisites/ci-cd.md) | CI/CD concepts, GitHub Actions, automated pipelines | Everyone understanding deployment |
-| [`magento-intro.md`](prerequisites/magento-intro.md) | Magento architecture, modules, EAV, multi-store, themes | Everyone new to Magento |
-| [`magento-js.md`](prerequisites/magento-js.md) | RequireJS, KnockoutJS, jQuery, mage/* libraries | Everyone writing frontend JS |
-| [`magento-layout-templates.md`](prerequisites/magento-layout-templates.md) | Layout XML, containers, blocks, PHTML templates | Everyone modifying frontend |
-| [`magento-cli.md`](prerequisites/magento-cli.md) | `bin/magento` commands: module, upgrade, compile, cache, deploy | Everyone developing on Magento |
-| [`magento-cron-indexers.md`](prerequisites/magento-cron-indexers.md) | Cron jobs, indexers (realtime/schedule), flat tables | Everyone understanding automation |
-| [`magento-events-observers-plugins.md`](prerequisites/magento-events-observers-plugins.md) | Events, observers, plugins (interceptors) | Everyone extending Magento |
-| [`magento-rest-graphql.md`](prerequisites/magento-rest-graphql.md) | REST API, GraphQL, authentication, service contracts | Everyone integrating APIs |
-| [`magento-composer.md`](prerequisites/magento-composer.md) | Composer, packages, autoload, updating dependencies | Everyone installing dependencies |
-| [`magento-debug.md`](prerequisites/magento-debug.md) | Logs, developer mode, Xdebug, common errors | Everyone (debugging is daily work) |
-| [`magento-admin.md`](prerequisites/magento-admin.md) | Admin navigation, ACL, menus, system.xml, UI Components | Everyone using/extending admin |
-| [`magento-security.md`](prerequisites/magento-security.md) | Form keys, ACL, validation, XSS, CSRF, sanitization | Everyone writing secure code |
-| [`magento-multistore.md`](prerequisites/magento-multistore.md) | Websites/stores/store views, scope hierarchy, config fallback | Everyone working with multiple stores |
-| [`magento-testing.md`](prerequisites/magento-testing.md) | Unit tests, integration tests, API functional tests | Everyone writing/running tests |
-| [`magento-coding-standards.md`](prerequisites/magento-coding-standards.md) | PSR-12, naming conventions, module structure | Everyone writing code |
 
 These guides are written for absolute beginners and use AlpineCommerce
 examples throughout.
+
+For Magento-specific prerequisites, see the full reference docs in [`magento2/`](magento2/).
 
 ---
 
