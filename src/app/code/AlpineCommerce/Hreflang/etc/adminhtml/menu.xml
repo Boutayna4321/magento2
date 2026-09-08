@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AlpineCommerce_Hreflang::settings"
+             title="Hreflang"
+             module="AlpineCommerce_Hreflang"
+             sortOrder="90"
+             resource="AlpineCommerce_Hreflang::settings"
+             parent="Magento_Backend::content"/>
+        <add id="AlpineCommerce_Hreflang::settings_index"
+             title="Settings Info"
+             module="AlpineCommerce_Hreflang"
+             sortOrder="10"
+             action="hreflang/settings/index"
+             resource="AlpineCommerce_Hreflang::settings"
+             parent="AlpineCommerce_Hreflang::settings"/>
+    </menu>
+</config>
