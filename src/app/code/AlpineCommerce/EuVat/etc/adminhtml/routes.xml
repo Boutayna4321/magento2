@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <router id="admin">
         <route id="euvat" frontName="euvat">
-            <module name="AlpineCommerce_EuVat" before="Magento_Backend"/>
+            <module name="AlpineCommerce_EuVat"/>
         </route>
     </router>
 </config>
