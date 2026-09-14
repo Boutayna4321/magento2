@@ -29,6 +29,7 @@ docs/
 │   ├── magento-intro.md
 │   ├── magento-js.md
 │   ├── magento-layout-templates.md
+│   ├── magento-styles.md
 │   ├── magento-multistore.md
 │   ├── magento-rest-graphql.md
 │   ├── magento-security.md
@@ -61,6 +62,7 @@ docs/
 │   ├── magento-intro.md
 │   ├── magento-js.md
 │   ├── magento-layout-templates.md
+│   ├── magento-styles.md
 │   ├── magento-cli.md
 │   ├── magento-cron-indexers.md
 │   ├── magento-events-observers-plugins.md
@@ -180,6 +182,7 @@ For Magento-specific prerequisites, see the full reference docs in [`magento2/`]
 - [🎯 Events, Observers, Plugins](magento2/magento-events-observers-plugins.md)
 - [🔌 REST API & GraphQL](magento2/magento-rest-graphql.md)
 - [🖥️ Admin Panel](magento2/magento-admin.md)
+- [🎨 Styles & CSS](magento2/magento-styles.md)
 
 ### AlpineCommerce Modules
 - [🔄 Complete Order Lifecycle](modules/alpinecommerce-order-lifecycle.md)
