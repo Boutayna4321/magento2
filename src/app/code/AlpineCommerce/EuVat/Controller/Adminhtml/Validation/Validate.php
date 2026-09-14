@@ -10,7 +10,6 @@ use Magento\Backend\Model\View\Result\Page;
 use Magento\Backend\Model\View\Result\PageFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Message\ManagerInterface;
 
 class Validate extends Action
 {
@@ -20,8 +19,7 @@ class Validate extends Action
         Context $context,
         private readonly PageFactory $pageFactory,
         private readonly VatValidationServiceInterface $vatValidationService,
-        private readonly DataPersistorInterface $dataPersistor,
-        private readonly ManagerInterface $messageManager
+        private readonly DataPersistorInterface $dataPersistor
     ) {
         parent::__construct($context);
     }

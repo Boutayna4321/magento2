@@ -4,7 +4,7 @@
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">euvat_validation_listing.euvat_validation_listing_data_source</item>
-            <item name="蒙蒙" xsi:type="string">euvat_validation_listing</item>
+            <item name="deps" xsi:type="string">euvat_validation_listing.euvat_validation_listing_data_source</item>
         </item>
         <item name="spinner" xsi:type="string">spinner</item>
         <item name="buttons" xsi:type="array">
@@ -37,7 +37,7 @@
             </argument>
         </argument>
     </dataSource>
-    <container name="landing_data">
+    <columns name="landing_data">
         <argument name="data" xsi:type="array">
             <item name="spinner" xsi:type="string">spinner</item>
         </argument>
@@ -117,5 +117,5 @@
                 </item>
             </argument>
         </column>
-    </container>
+    </columns>
 </listing>

@@ -18,6 +18,7 @@
     },
     "version": "2.4.8",
     "require": {
+        "hyva-themes/magento2-default-theme": "^1.5",
         "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "^2.0.4",
         "magento/framework": "103.0.8",
@@ -88,6 +89,61 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "repositories": [
+        {
+            "name": "hyva-themes/magento2-compat-module-fallback",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-compat-module-fallback.git"
+        },
+        {
+            "name": "hyva-themes/magento2-graphql-view-model",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-graphql-view-model.git"
+        },
+        {
+            "name": "hyva-themes/magento2-base-layout-reset",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-base-layout-reset.git"
+        },
+        {
+            "name": "hyva-themes/magento2-email-module",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-email-module.git"
+        },
+        {
+            "name": "hyva-themes/magento2-order-cancellation-webapi",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-order-cancellation-webapi.git"
+        },
+        {
+            "name": "hyva-themes/magento2-theme-fallback",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-theme-fallback.git"
+        },
+        {
+            "name": "hyva-themes/magento2-luma-checkout",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-luma-checkout.git"
+        },
+        {
+            "name": "hyva-themes/magento2-mollie-theme-bundle",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-mollie-theme-bundle.git"
+        },
+        {
+            "name": "hyva-themes/magento2-default-theme-csp",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-default-theme-csp.git"
+        },
+        {
+            "name": "hyva-themes/magento2-default-theme",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-default-theme.git"
+        },
+        {
+            "name": "hyva-themes/magento2-theme-module",
+            "type": "git",
+            "url": "https://github.com/hyva-themes/magento2-theme-module.git"
+        },
         {
             "type": "composer",
             "url": "https://repo.magento.com/"

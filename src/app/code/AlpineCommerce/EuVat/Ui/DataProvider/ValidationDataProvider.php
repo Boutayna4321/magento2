@@ -5,7 +5,6 @@ namespace AlpineCommerce\EuVat\Ui\DataProvider;
 
 use AlpineCommerce\EuVat\Model\ResourceModel\VatValidation\Collection;
 use AlpineCommerce\EuVat\Model\ResourceModel\VatValidation\CollectionFactory;
-use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 
 class ValidationDataProvider extends AbstractDataProvider
@@ -17,7 +16,6 @@ class ValidationDataProvider extends AbstractDataProvider
         string $primaryFieldName,
         string $requestFieldName,
         private readonly CollectionFactory $collectionFactory,
-        private readonly DataPersistorInterface $dataPersistor,
         ?array $meta = null,
         ?array $data = null
     ) {
@@ -30,12 +28,6 @@ class ValidationDataProvider extends AbstractDataProvider
         $items = $this->collection->getItems();
         foreach ($items as $validation) {
             $this->loadedData[$validation->getEntityId()] = $validation->getData();
-        }
-
-        $data = $this->dataPersistor->get('euvat_validation');
-        if ($data) {
-            $this->loadedData['validation_result'] = $data;
-            $this->dataPersistor->clear('euvat_validation');
         }
 
         return $this->loadedData;
