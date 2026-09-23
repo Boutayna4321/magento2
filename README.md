@@ -212,7 +212,7 @@ For Magento-specific prerequisites, see the full reference docs in [`docs/magent
 This repository contains the source code for the Magento 2.4.8 project along with a full Docker development environment.
 
 ### Tracked (committed to git)
-- `src/app/code/` — Custom docs/modules (AlpineCommerce/*, Cartware/*)
+- `src/app/code/` — Custom modules (AlpineCommerce/*)
 - `src/app/design/` — Custom themes
 - `src/app/etc/config.php` — Module status/config (safe to commit)
 - `src/composer.json` — Project dependencies manifest
