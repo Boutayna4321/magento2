@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/alpinecommerce/rmas" method="GET">
+        <service class="AlpineCommerce\Rma\Api\RmaRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/rmas/:rmaId" method="GET">
+        <service class="AlpineCommerce\Rma\Api\RmaRepositoryInterface" method="getById"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/rmas" method="POST">
+        <service class="AlpineCommerce\Rma\Api\RmaServiceInterface" method="createRma"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/rmas/order/:orderId" method="GET">
+        <service class="AlpineCommerce\Rma\Api\RmaServiceInterface" method="getByOrder"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/rmas/customer/me" method="GET">
+        <service class="AlpineCommerce\Rma\Api\RmaServiceInterface" method="getByOrder"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="orderId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+    <route url="/V1/alpinecommerce/rmas/:rmaId/approve" method="PUT">
+        <service class="AlpineCommerce\Rma\Api\RmaServiceInterface" method="approve"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/rmas/:rmaId/reject" method="PUT">
+        <service class="AlpineCommerce\Rma\Api\RmaServiceInterface" method="reject"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/rmas/:rmaId/receive" method="POST">
+        <service class="AlpineCommerce\Rma\Api\RmaServiceInterface" method="receive"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/rmas/:rmaId/refund" method="POST">
+        <service class="AlpineCommerce\Rma\Api\RmaServiceInterface" method="refund"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/rmas/:rmaId/close" method="PUT">
+        <service class="AlpineCommerce\Rma\Api\RmaServiceInterface" method="close"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+</routes>
