@@ -349,7 +349,7 @@ Vendor/Module/
 
 **Source**: `vendor/magento/module-catalog/view/adminhtml/ui_component/product_listing.xml` — Magento core product listing uses the same UI Component structure.
 
-**Official documentation**: [UI Components Listing](ui-component-listing/)
+**Official documentation**: [UI Components Listing](https://developer.adobe.com/commerce/frontend-core/ui-components/components/listing-grid)
 
 ### 4.3 The DataProvider
 
@@ -434,7 +434,7 @@ class PostListingDataProvider extends AbstractDataProvider
 
 **Source**: `vendor/magento/module-catalog/view/adminhtml/ui_component/product_form.xml` — Magento core product form uses the same UI Component structure.
 
-**Official documentation**: [UI Components Form](ui-component-form/)
+**Official documentation**: [UI Components Form](https://developer.adobe.com/commerce/frontend-core/ui-components/components/form)
 
 ### 5.2 Form buttons
 
