@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * REST API routes for CreditMemo.
+ * View credit memos via Magento core: GET /V1/creditmemos?searchCriteria
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/alpinecommerce/creditmemo/process/:orderId" method="POST">
+        <service class="AlpineCommerce\CreditMemo\Api\CreditMemoAutomationInterface" method="processCancellation"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/creditmemo/config/:storeId" method="GET">
+        <service class="AlpineCommerce\CreditMemo\Api\CreditMemoAutomationInterface" method="getConfig"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+</routes>
