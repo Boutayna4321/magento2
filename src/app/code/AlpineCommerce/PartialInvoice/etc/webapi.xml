@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * REST API routes for PartialInvoice.
+ * View invoice status via Magento core: GET /V1/invoices/:id and GET /V1/invoices?searchCriteria
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/alpinecommerce/partialinvoice/process/:orderId" method="POST">
+        <service class="AlpineCommerce\PartialInvoice\Api\PartialInvoiceInterface" method="processOrder"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/partialinvoice/config/:storeId" method="GET">
+        <service class="AlpineCommerce\PartialInvoice\Api\PartialInvoiceInterface" method="getConfig"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+    <route url="/V1/alpinecommerce/partialinvoice/can-invoice/:orderId" method="GET">
+        <service class="AlpineCommerce\PartialInvoice\Api\PartialInvoiceInterface" method="canInvoice"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+</routes>
