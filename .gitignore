@@ -40,11 +40,6 @@ src/auth.json
 # Environment files
 .env
 
-# Cartware modules (local only, not on GitHub)
-src/app/code/Cartware/
-src/composer.lock.corrupted
-src/pub/probe_which_tree.txt
-
 # Local-only deployment/infra files (not for publication)
 /app/
 test_autoload.php
@@ -67,3 +62,7 @@ src/app/code/AlpineCommerce/HealthCheck/
 .eval-screens/
 .qa-screens/
 docs/magento2-html/
+
+# Stray runtime artifacts (never commit)
+src/Magento/
+src/pub/probe_which_tree.txt

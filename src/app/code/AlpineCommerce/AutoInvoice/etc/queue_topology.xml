@@ -8,7 +8,8 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
     <exchange name="magento">
         <binding id="autoinvoice_process_binding"
-                 topic="alpinecommerce.autoinvoice.process"
-                 destination="alpinecommerce.autoinvoice.process"/>
+         topic="alpinecommerce.autoinvoice.process"
+                  destination="alpinecommerce.autoinvoice.process"
+                  destinationType="queue"/>
     </exchange>
 </config>

@@ -2,13 +2,13 @@
 /** @var \AlpineCommerce\Blog\Block\Detail $block */
 $post = $block->getPost();
 ?>
-<article class="cartware-blog-detail">
-    <h1 class="cartware-blog-title"><?= $block->escapeHtml($post->getTitle()) ?></h1>
+<article class="alphacommerce-blog-detail">
+    <h1 class="alphacommerce-blog-title"><?= $block->escapeHtml($post->getTitle()) ?></h1>
     <?php if ($post->getAuthor()): ?>
-        <p class="cartware-blog-author">
+        <p class="alphacommerce-blog-author">
             <?= $block->escapeHtml(__('By %1', $post->getAuthor())) ?>
         </p>
     <?php endif; ?>
-    <div class="cartware-blog-content"><?= $block->escapeHtml($post->getContent()) ?></div>
+    <div class="alphacommerce-blog-content"><?= $block->escapeHtml($post->getContent()) ?></div>
     <p><a href="<?= $block->escapeUrl($block->getUrl('blog')) ?>"><?= $block->escapeHtml(__('Back to blog')) ?></a></p>
 </article>

@@ -3,15 +3,15 @@
 $pages = $block->getPages();
 ?>
 <?php if ($pages): ?>
-    <div class="cartware-legal-list">
+    <div class="alphacommerce-legal-list">
         <?php foreach ($pages as $page): ?>
-            <div class="cartware-legal-item">
-                <h2 class="cartware-legal-title">
+            <div class="alphacommerce-legal-item">
+                <h2 class="alphacommerce-legal-title">
                     <a href="<?= $block->escapeUrl($block->getPageUrl($page)) ?>">
                         <?= $block->escapeHtml($page->getTitle()) ?>
                     </a>
                 </h2>
-                <div class="cartware-legal-type">
+                <div class="alphacommerce-legal-type">
                     <?= $block->escapeHtml($page->getType()) ?>
                 </div>
             </div>
