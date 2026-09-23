@@ -3,15 +3,15 @@
 $faqs = $block->getFaqs();
 ?>
 <?php if ($faqs): ?>
-    <div class="cartware-faq-list">
+    <div class="alphacommerce-faq-list">
         <?php foreach ($faqs as $faq): ?>
-            <div class="cartware-faq-item">
-                <h2 class="cartware-faq-title">
+            <div class="alphacommerce-faq-item">
+                <h2 class="alphacommerce-faq-title">
                     <a href="<?= $block->escapeUrl($block->getFaqUrl($faq)) ?>">
                         <?= $block->escapeHtml($faq->getTitle()) ?>
                     </a>
                 </h2>
-                <div class="cartware-faq-content">
+                <div class="alphacommerce-faq-content">
                     <?= $block->escapeHtml($faq->getContent()) ?>
                 </div>
             </div>
