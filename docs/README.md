@@ -77,6 +77,7 @@ Index of all project documentation. For installation and a project overview, see
 | StoreLocator | [STORE_LOCATOR.md](modules/STORE_LOCATOR.md) |
 | StorePickup | [STORE_PICKUP.md](modules/STORE_PICKUP.md) |
 | StoreSetup | [STORE_SETUP.md](modules/STORE_SETUP.md) |
+| Turnstile | [TURNSTILE.md](modules/TURNSTILE.md) |
 | *Cross-cutting* | [alpinecommerce-order-lifecycle.md](modules/alpinecommerce-order-lifecycle.md) — how AutoInvoice, PartialInvoice, CreditMemo, CustomerCare, LoyaltyProgram, Rma and StorePickup change the order lifecycle |
 
 `HealthCheck` has no document yet.

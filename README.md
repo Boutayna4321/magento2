@@ -148,6 +148,7 @@ All modules live in [`src/app/code/AlpineCommerce/`](src/app/code/AlpineCommerce
 | Store | StoreLocator | [STORE_LOCATOR.md](docs/modules/STORE_LOCATOR.md) | Complete |
 | Store | EuVat | [EU_VAT.md](docs/modules/EU_VAT.md) | Complete |
 | SEO | Hreflang | [HREFLANG.md](docs/modules/HREFLANG.md) | Complete |
+| Security | Turnstile | [TURNSTILE.md](docs/modules/TURNSTILE.md) | Stable |
 | Operations | HealthCheck | — (`GET /V1/alpinecommerce/health`, `GET /V1/alpinecommerce/metrics`) | Enabled, not documented yet |
 
 **Stable**: released and in use. **Complete**: feature-complete, recently finalized.
