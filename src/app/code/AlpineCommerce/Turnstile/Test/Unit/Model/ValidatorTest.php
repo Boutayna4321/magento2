@@ -154,6 +154,16 @@ class ValidatorTest extends TestCase
         $this->assertSame('critical', $this->logger->records[0]['level']);
     }
 
+    public function testInvalidSecretIsRejectedEvenInOpenMode(): void
+    {
+        $this->failureMode('open');
+        $this->client->method('verify')->willReturn(['success' => false, 'error-codes' => ['invalid-input-secret']]);
+
+        $result = $this->validator->validate(self::TOKEN, null, 'contact', 6);
+        $this->assertFalse($result->isValid());
+        $this->assertSame(ValidationResult::ERROR_CONFIG, $result->getErrorType());
+    }
+
     public function testInternalErrorClosedIsUnavailable(): void
     {
         $this->failureMode('closed');

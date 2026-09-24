@@ -68,6 +68,18 @@ class SiteVerifyClientTest extends TestCase
         }
     }
 
+    public function testHttp400WithSiteverifyJsonReturnsBody(): void
+    {
+        // Real Siteverify answer for an invalid secret: HTTP 400 with a regular JSON body.
+        $this->curl->method('getStatus')->willReturn(400);
+        $this->curl->method('getBody')->willReturn('{"error-codes":["invalid-input-secret"],"success":false,"messages":[]}');
+
+        $this->assertSame(
+            ['error-codes' => ['invalid-input-secret'], 'success' => false, 'messages' => []],
+            $this->client->verify('bad-secret', 'tok', null, 5)
+        );
+    }
+
     public function testNon200Throws(): void
     {
         $this->curl->method('getStatus')->willReturn(503);
@@ -78,6 +90,19 @@ class SiteVerifyClientTest extends TestCase
             $this->fail('Exception expected');
         } catch (SiteVerifyUnavailableException $e) {
             $this->assertSame(503, $e->getHttpStatus());
+        }
+    }
+
+    public function testServerErrorWithoutSiteverifyJsonThrows(): void
+    {
+        $this->curl->method('getStatus')->willReturn(502);
+        $this->curl->method('getBody')->willReturn('{"error":"bad gateway"}');
+
+        try {
+            $this->client->verify('s3cr3t', 'tok', null, 5);
+            $this->fail('Exception expected');
+        } catch (SiteVerifyUnavailableException $e) {
+            $this->assertSame(502, $e->getHttpStatus());
         }
     }
 
