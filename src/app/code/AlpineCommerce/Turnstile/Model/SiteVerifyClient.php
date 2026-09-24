@@ -41,21 +41,22 @@ class SiteVerifyClient
             throw new SiteVerifyUnavailableException('Siteverify transport error: ' . $e->getMessage(), null, $e);
         }
 
+        // Siteverify answers some validation errors (e.g. invalid-input-secret) with HTTP 400 and a
+        // regular JSON body: any status carrying a Siteverify answer is returned to the caller.
         $status = (int) $client->getStatus();
-        if ($status !== 200) {
-            throw new SiteVerifyUnavailableException('Siteverify returned HTTP ' . $status, $status);
-        }
-
         try {
             $data = $this->json->unserialize((string) $client->getBody());
         } catch (\InvalidArgumentException $e) {
-            throw new SiteVerifyUnavailableException('Siteverify returned invalid JSON', $status, $e);
+            $data = null;
         }
 
-        if (!is_array($data) || !array_key_exists('success', $data)) {
-            throw new SiteVerifyUnavailableException('Siteverify response has no "success" field', $status);
+        if (is_array($data) && array_key_exists('success', $data)) {
+            return $data;
         }
 
-        return $data;
+        throw new SiteVerifyUnavailableException(
+            'Siteverify returned HTTP ' . $status . ' without a Siteverify answer',
+            $status
+        );
     }
 }
