@@ -104,6 +104,40 @@ class ValidatorTest extends TestCase
         $this->assertFalse($this->validator->validate(self::TOKEN, null, 'contact', 6)->isValid());
     }
 
+    public function testTestingKeyResponseWithoutActionIsAccepted(): void
+    {
+        // Real answer of Siteverify for the official test secret: no "action" field.
+        $this->client->method('verify')->willReturn([
+            'success' => true,
+            'error-codes' => [],
+            'hostname' => 'example.com',
+            'metadata' => ['result_with_testing_key' => true],
+        ]);
+
+        $this->assertTrue($this->validator->validate(self::TOKEN, null, 'contact', 6)->isValid());
+    }
+
+    public function testTestingKeyResponseWithOtherActionIsRejected(): void
+    {
+        $this->client->method('verify')->willReturn([
+            'success' => true,
+            'action' => 'newsletter',
+            'metadata' => ['result_with_testing_key' => true],
+        ]);
+
+        $this->assertSame(['action-mismatch'], $this->validator->validate(self::TOKEN, null, 'contact', 6)->getErrorCodes());
+    }
+
+    public function testNonBooleanTestingKeyFlagIsIgnored(): void
+    {
+        $this->client->method('verify')->willReturn([
+            'success' => true,
+            'metadata' => ['result_with_testing_key' => 'true'],
+        ]);
+
+        $this->assertFalse($this->validator->validate(self::TOKEN, null, 'contact', 6)->isValid());
+    }
+
     public function testNonBooleanSuccessIsRejected(): void
     {
         $this->client->method('verify')->willReturn(['success' => 'true', 'action' => 'contact']);
