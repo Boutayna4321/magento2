@@ -48,7 +48,7 @@ class Validator implements ValidatorInterface
         $errorCodes = array_values(array_filter((array) ($response['error-codes'] ?? []), 'is_string'));
 
         if (($response['success'] ?? null) === true) {
-            if (($response['action'] ?? null) !== $formId) {
+            if (!$this->isExpectedAction($response, $formId)) {
                 $this->logger->warning('Turnstile action mismatch.', [
                     'form_id' => $formId,
                     'store_id' => $storeId,
@@ -73,6 +73,21 @@ class Validator implements ValidatorInterface
         }
 
         return ValidationResult::failure(ValidationResult::ERROR_USER, $errorCodes);
+    }
+
+    /**
+     * Cloudflare's official test secrets answer without "action" and flag the answer with
+     * metadata.result_with_testing_key; only that answer may omit the action.
+     *
+     * @param array<string, mixed> $response
+     */
+    private function isExpectedAction(array $response, string $formId): bool
+    {
+        if (!array_key_exists('action', $response)) {
+            return ($response['metadata']['result_with_testing_key'] ?? null) === true;
+        }
+
+        return $response['action'] === $formId;
     }
 
     /**
