@@ -8,6 +8,7 @@ use AlpineCommerce\Turnstile\Model\Config;
 use AlpineCommerce\Turnstile\Model\SiteVerifyClient;
 use AlpineCommerce\Turnstile\Model\ValidationResult;
 use AlpineCommerce\Turnstile\Model\Validator;
+use Magento\Framework\App\State;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
@@ -19,6 +20,7 @@ class ValidatorTest extends TestCase
 
     private SiteVerifyClient&MockObject $client;
     private Config&MockObject $config;
+    private State&MockObject $appState;
     private AbstractLogger $logger;
     private Validator $validator;
 
@@ -36,7 +38,8 @@ class ValidatorTest extends TestCase
                 $this->records[] = ['level' => $level, 'message' => (string) $message, 'context' => $context];
             }
         };
-        $this->validator = new Validator($this->client, $this->config, $this->logger);
+        $this->appState = $this->createMock(State::class);
+        $this->validator = new Validator($this->client, $this->config, $this->logger, $this->appState);
     }
 
     private function failureMode(string $mode): void
@@ -115,6 +118,34 @@ class ValidatorTest extends TestCase
         ]);
 
         $this->assertTrue($this->validator->validate(self::TOKEN, null, 'contact', 6)->isValid());
+    }
+
+    public function testTestingKeyResponseIsLoggedAsWarningOutsideProduction(): void
+    {
+        $this->appState->method('getMode')->willReturn(State::MODE_DEVELOPER);
+        $this->client->method('verify')->willReturn([
+            'success' => true,
+            'metadata' => ['result_with_testing_key' => true],
+        ]);
+
+        $this->assertTrue($this->validator->validate(self::TOKEN, null, 'contact', 6)->isValid());
+        $this->assertSame('warning', $this->logger->records[0]['level']);
+        $this->assertSame(['form_id' => 'contact', 'store_id' => 6], $this->logger->records[0]['context']);
+    }
+
+    public function testTestingKeyResponseIsRejectedInProduction(): void
+    {
+        $this->appState->method('getMode')->willReturn(State::MODE_PRODUCTION);
+        $this->client->method('verify')->willReturn([
+            'success' => true,
+            'metadata' => ['result_with_testing_key' => true],
+        ]);
+
+        $result = $this->validator->validate(self::TOKEN, null, 'contact', 6);
+        $this->assertFalse($result->isValid());
+        $this->assertSame(ValidationResult::ERROR_CONFIG, $result->getErrorType());
+        $this->assertSame(['testing-key-in-production'], $result->getErrorCodes());
+        $this->assertSame('critical', $this->logger->records[0]['level']);
     }
 
     public function testTestingKeyResponseWithOtherActionIsRejected(): void

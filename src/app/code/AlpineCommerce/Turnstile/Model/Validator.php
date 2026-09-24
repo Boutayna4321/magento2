@@ -6,6 +6,7 @@ namespace AlpineCommerce\Turnstile\Model;
 use AlpineCommerce\Turnstile\Api\ValidatorInterface;
 use AlpineCommerce\Turnstile\Exception\SiteVerifyUnavailableException;
 use AlpineCommerce\Turnstile\Model\Config\Source\FailureMode;
+use Magento\Framework\App\State;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -21,7 +22,8 @@ class Validator implements ValidatorInterface
     public function __construct(
         private readonly SiteVerifyClient $client,
         private readonly Config $config,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly State $appState
     ) {
     }
 
@@ -48,6 +50,20 @@ class Validator implements ValidatorInterface
         $errorCodes = array_values(array_filter((array) ($response['error-codes'] ?? []), 'is_string'));
 
         if (($response['success'] ?? null) === true) {
+            $isTestingKey = ($response['metadata']['result_with_testing_key'] ?? null) === true;
+            if ($isTestingKey && $this->appState->getMode() === State::MODE_PRODUCTION) {
+                $this->logger->critical('Turnstile test key used in production mode: request rejected.', [
+                    'form_id' => $formId,
+                    'store_id' => $storeId,
+                ]);
+                return ValidationResult::failure(ValidationResult::ERROR_CONFIG, ['testing-key-in-production']);
+            }
+            if ($isTestingKey) {
+                $this->logger->warning('Turnstile test key answer accepted (not in production mode).', [
+                    'form_id' => $formId,
+                    'store_id' => $storeId,
+                ]);
+            }
             if (!$this->isExpectedAction($response, $formId)) {
                 $this->logger->warning('Turnstile action mismatch.', [
                     'form_id' => $formId,
