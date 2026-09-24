@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <alpinecommerce_turnstile>
+            <general>
+                <enabled>0</enabled>
+                <theme>auto</theme>
+                <timeout>5</timeout>
+                <failure_mode>closed</failure_mode>
+            </general>
+            <forms>
+                <contact>1</contact>
+            </forms>
+        </alpinecommerce_turnstile>
+    </default>
+</config>
