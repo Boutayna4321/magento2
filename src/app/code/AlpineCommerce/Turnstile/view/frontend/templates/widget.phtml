@@ -1,0 +1,62 @@
+<?php
+declare(strict_types=1);
+
+use AlpineCommerce\Turnstile\Model\FormGuard;
+use AlpineCommerce\Turnstile\ViewModel\Widget;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp|null $hyvaCsp */
+
+/** @var Widget|null $widget */
+$widget = $block->getData('view_model');
+$formId = (string) $block->getData('form_id');
+
+if (!$widget instanceof Widget || $formId === '' || !$widget->isEnabled($formId)) {
+    return;
+}
+
+$elementId = 'turnstile-' . $formId;
+?>
+<div class="field turnstile mt-4">
+    <div id="<?= $escaper->escapeHtmlAttr($elementId) ?>"
+         class="cf-turnstile"
+         data-sitekey="<?= $escaper->escapeHtmlAttr($widget->getSiteKey()) ?>"
+         data-action="<?= $escaper->escapeHtmlAttr($formId) ?>"
+         data-language="<?= $escaper->escapeHtmlAttr($widget->getLanguage()) ?>"
+         data-theme="<?= $escaper->escapeHtmlAttr($widget->getTheme()) ?>"></div>
+    <p id="<?= $escaper->escapeHtmlAttr($elementId) ?>-error" class="message error mt-2" role="alert" hidden>
+        <?= $escaper->escapeHtml(__('Please complete the security check.')) ?>
+    </p>
+</div>
+<script src="<?= $escaper->escapeUrl($widget->getScriptUrl()) ?>" async defer></script>
+<script>
+    (() => {
+        const widget = document.getElementById('<?= $escaper->escapeJs($elementId) ?>');
+        const form = widget ? widget.closest('form') : null;
+        if (!form) {
+            return;
+        }
+        const error = document.getElementById('<?= $escaper->escapeJs($elementId) ?>-error');
+        // UX only: the server always validates the token.
+        form.addEventListener('click', (event) => {
+            if (!event.target.closest('button[type="submit"], input[type="submit"]')) {
+                return;
+            }
+            const field = form.querySelector('input[name="<?= $escaper->escapeJs(FormGuard::TOKEN_FIELD) ?>"]');
+            if (field && field.value) {
+                error.hidden = true;
+                return;
+            }
+            event.preventDefault();
+            event.stopPropagation();
+            error.hidden = false;
+        }, true);
+    })();
+</script>
+<?php if (isset($hyvaCsp)): ?>
+    <?php $hyvaCsp->registerInlineScript() ?>
+<?php endif; ?>
