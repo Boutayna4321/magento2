@@ -29,6 +29,8 @@ The architecture is reusable: another form needs one layout file, one observer a
 AlpineCommerce/Turnstile/
 ├── Api/
 │   └── ValidatorInterface.php          # public contract (@api)
+├── Block/Adminhtml/System/Config/
+│   └── NoAutofillField.php             # autocomplete="off"/"new-password" on the key fields
 ├── Exception/
 │   └── SiteVerifyUnavailableException.php
 ├── Model/
@@ -52,7 +54,7 @@ AlpineCommerce/Turnstile/
 │   ├── frontend/events.xml
 │   └── module.xml                      # sequence: Magento_Store, Magento_Config, Magento_Contact, Hyva_Theme
 ├── i18n/                               # fr_FR, de_DE, es_ES, it_IT
-├── Test/Unit/                          # 54 tests
+├── Test/Unit/                          # 60 tests
 └── view/frontend/
     ├── layout/contact_index_index.xml  # block turnstile.contact → form.additional.info
     └── templates/widget.phtml          # widget + UX-only click guard
@@ -78,6 +80,8 @@ AlpineCommerce/Turnstile/
 | `invalid-input-response`, `timeout-or-duplicate` | reject | The security check failed. Please try again. | — |
 | `success: true` but other `action` | reject | The security check failed. Please try again. | WARNING |
 | `invalid-input-secret`, `missing-input-secret`, `bad-request` | reject (**also in open mode**) | We could not verify your request. Please try again later. | CRITICAL |
+| Test-key answer (`metadata.result_with_testing_key: true`) in **production mode** | reject | We could not verify your request. Please try again later. | CRITICAL |
+| Test-key answer outside production mode | accept | — | WARNING |
 | Unreachable, timeout, `internal-error`, body without a Siteverify answer | `closed`: reject — `open`: accept | The security check is temporarily unavailable. Please try again later. | ERROR / WARNING |
 
 Siteverify answers some errors (e.g. `invalid-input-secret`) with **HTTP 400 and a JSON body**: any
@@ -110,9 +114,10 @@ None.
 - A form is active only when **enabled + form flag + site key + secret key** are all set for the store.
 - **ACL**: `AlpineCommerce_Turnstile::config`.
 - Do **not** enable Google reCAPTCHA (`Magento_ReCaptchaContact`) on the same form.
-- ⚠️ Browsers may autofill the **Site Key** (with the admin username) and the **Secret Key**
-  (with the admin password) because the secret is a password-type field. Check both fields before
-  *Save Config*, and choose the right **Scope** (the store view value wins over website/default).
+- Browsers used to autofill the **Site Key** (admin username) and the **Secret Key** (admin
+  password). `NoAutofillField` now renders `autocomplete="off"` / `autocomplete="new-password"`;
+  still check both fields before *Save Config*, and choose the right **Scope** (the store view value
+  wins over website/default).
 
 **Keys**
 
@@ -185,6 +190,10 @@ tail -f src/var/log/turnstile.log src/var/log/exception.log
 | 2 | Only the Contact Us form is protected | Deliberate (first step) |
 | 3 | Successful or ordinary rejected submissions are not logged | Deliberate (anomaly-only log) |
 | 4 | Behind a proxy/CDN the client IP sent as `remoteip` is the proxy's unless Magento is configured for forwarded headers | Optional parameter, validation still works |
+| 5 | Enabled store with a missing or undecryptable key skips validation (warning log only), e.g. after a crypt-key rotation | As specified — re-enter the keys |
+| 6 | Token read with `getParam` (query string would override the POST body) | Deferred — fails closed |
+| 7 | `form_id` not validated against the Turnstile action format `[A-Za-z0-9_-]{1,32}` | Deferred — relevant when adding forms |
+| 8 | `api.js` included once per widget; inline error stays visible until the next click | Deferred — UX only |
 
 ## 11. Magento concepts taught
 
@@ -198,13 +207,15 @@ tail -f src/var/log/turnstile.log src/var/log/exception.log
 ## 12. Validation & status
 
 - **Status**: ✅ Stable (v1.0.0)
-- **Unit tests**: 54 tests / 96 assertions (Config, SiteVerifyClient, Validator, FormGuard,
-  ContactFormObserver, Widget)
+- **Unit tests**: 60 tests / 107 assertions (Config, SiteVerifyClient, Validator, FormGuard,
+  ContactFormObserver, Widget, NoAutofillField)
 - **End-to-end (Docker, store view `french`, official test keys)**: valid submission accepted;
   missing, invalid and already-spent tokens rejected with the customer's input kept; invalid secret
   rejected in closed **and** open mode (CRITICAL log); Cloudflare unreachable rejected in closed mode
   and accepted in open mode; widget absent on other store views; widget language and messages
   checked for fr / de / es / it; no token or secret in `turnstile.log`; cart, checkout and admin unchanged.
+- **Final review**: independent whole-module review — no critical issue; test-key answers now rejected
+  in production mode, key fields protected against browser autofill.
 
 ---
 
