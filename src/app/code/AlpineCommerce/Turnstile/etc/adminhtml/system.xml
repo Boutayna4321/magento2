@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="alpinecommerce" sortOrder="300" translate="label">
+            <label>AlpineCommerce</label>
+        </tab>
+        <section id="alpinecommerce_turnstile" translate="label" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Cloudflare Turnstile</label>
+            <tab>alpinecommerce</tab>
+            <resource>AlpineCommerce_Turnstile::config</resource>
+            <group id="general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Turnstile</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Do not enable Google reCAPTCHA on the same form (Security > Google reCAPTCHA Storefront).</comment>
+                </field>
+                <field id="site_key" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Site Key</label>
+                </field>
+                <field id="secret_key" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Secret Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="theme" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Widget Theme</label>
+                    <source_model>AlpineCommerce\Turnstile\Model\Config\Source\Theme</source_model>
+                </field>
+                <field id="timeout" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Siteverify Timeout (seconds)</label>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-1-30</validate>
+                    <comment>Between 1 and 30.</comment>
+                </field>
+                <field id="failure_mode" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>If Cloudflare Is Unavailable</label>
+                    <source_model>AlpineCommerce\Turnstile\Model\Config\Source\FailureMode</source_model>
+                    <comment>Closed: reject the form. Open: accept it without verification and log a warning.</comment>
+                </field>
+            </group>
+            <group id="forms" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Protected Forms</label>
+                <field id="contact" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Contact Us</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

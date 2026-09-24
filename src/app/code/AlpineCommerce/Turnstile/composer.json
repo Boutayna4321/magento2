@@ -1,0 +1,18 @@
+{
+    "name": "alpinecommerce/module-turnstile",
+    "description": "Cloudflare Turnstile protection for storefront forms (Contact Us)",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "magento/framework": "*",
+        "magento/module-contact": "*",
+        "magento/module-store": "*",
+        "magento/module-config": "*",
+        "hyva-themes/magento2-theme-module": "*"
+    },
+    "autoload": {
+        "files": ["registration.php"],
+        "psr-4": {"AlpineCommerce\\Turnstile\\": ""}
+    }
+}
