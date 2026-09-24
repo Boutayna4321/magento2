@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="AlpineCommerce\Turnstile\Api\ValidatorInterface" type="AlpineCommerce\Turnstile\Model\Validator"/>
+
+    <virtualType name="AlpineCommerce\Turnstile\Logger\Handler" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/turnstile.log</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Logger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="name" xsi:type="string">turnstile</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="turnstile" xsi:type="object">AlpineCommerce\Turnstile\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="AlpineCommerce\Turnstile\Model\Validator">
+        <arguments>
+            <argument name="logger" xsi:type="object">AlpineCommerce\Turnstile\Logger</argument>
+        </arguments>
+    </type>
+    <type name="AlpineCommerce\Turnstile\Model\Config">
+        <arguments>
+            <argument name="logger" xsi:type="object">AlpineCommerce\Turnstile\Logger</argument>
+        </arguments>
+    </type>
+    <type name="AlpineCommerce\Turnstile\Model\SiteVerifyClient">
+        <arguments>
+            <argument name="verifyUrl" xsi:type="string">https://challenges.cloudflare.com/turnstile/v0/siteverify</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Config\Model\Config\TypePool">
+        <arguments>
+            <argument name="sensitive" xsi:type="array">
+                <item name="alpinecommerce_turnstile/general/secret_key" xsi:type="string">1</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
