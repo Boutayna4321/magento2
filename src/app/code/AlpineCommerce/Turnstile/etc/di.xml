@@ -53,6 +53,50 @@
             <argument name="key" xsi:type="string">contact_us</argument>
         </arguments>
     </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\FormDataPersister\CustomerCreate" type="AlpineCommerce\Turnstile\Model\FormDataPersister\SessionFormDataPersister">
+        <arguments>
+            <argument name="requiredModule" xsi:type="string">Magento_Customer</argument>
+            <argument name="sessionType" xsi:type="string">Magento\Customer\Model\Session</argument>
+            <argument name="setter" xsi:type="string">setCustomerFormData</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\FormDataPersister\CustomerLogin" type="AlpineCommerce\Turnstile\Model\FormDataPersister\SessionFormDataPersister">
+        <arguments>
+            <argument name="requiredModule" xsi:type="string">Magento_Customer</argument>
+            <argument name="sessionType" xsi:type="string">Magento\Customer\Model\Session</argument>
+            <argument name="setter" xsi:type="string">setUsername</argument>
+            <argument name="valueField" xsi:type="string">login/username</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\FormDataPersister\CustomerForgotPassword" type="AlpineCommerce\Turnstile\Model\FormDataPersister\SessionFormDataPersister">
+        <arguments>
+            <argument name="requiredModule" xsi:type="string">Magento_Customer</argument>
+            <argument name="sessionType" xsi:type="string">Magento\Customer\Model\Session</argument>
+            <argument name="setter" xsi:type="string">setForgottenEmail</argument>
+            <argument name="valueField" xsi:type="string">email</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\FormDataPersister\SendFriend" type="AlpineCommerce\Turnstile\Model\FormDataPersister\SessionFormDataPersister">
+        <arguments>
+            <argument name="requiredModule" xsi:type="string">Magento_SendFriend</argument>
+            <argument name="sessionType" xsi:type="string">Magento\Catalog\Model\Session</argument>
+            <argument name="setter" xsi:type="string">setSendfriendFormData</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\FormDataPersister\ProductReview" type="AlpineCommerce\Turnstile\Model\FormDataPersister\SessionFormDataPersister">
+        <arguments>
+            <argument name="requiredModule" xsi:type="string">Magento_Review</argument>
+            <argument name="sessionType" xsi:type="string">Magento\Review\Model\Session</argument>
+            <argument name="setter" xsi:type="string">setFormData</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\FormDataPersister\WishlistShare" type="AlpineCommerce\Turnstile\Model\FormDataPersister\SessionFormDataPersister">
+        <arguments>
+            <argument name="requiredModule" xsi:type="string">Magento_Wishlist</argument>
+            <argument name="sessionType" xsi:type="string">Magento\Wishlist\Model\Session</argument>
+            <argument name="setter" xsi:type="string">setSharingForm</argument>
+        </arguments>
+    </virtualType>
 
     <!-- Magento form presets. A module adds its own form with an item in FormRegistry's "forms" argument
          and a default switch alpinecommerce_turnstile/forms/<id> in its config.xml. -->
@@ -82,6 +126,7 @@
             <argument name="redirectParams" xsi:type="array">
                 <item name="_secure" xsi:type="boolean">true</item>
             </argument>
+            <argument name="persister" xsi:type="object">AlpineCommerce\Turnstile\Model\FormDataPersister\CustomerCreate</argument>
             <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/customer_create</argument>
             <argument name="sortOrder" xsi:type="number">20</argument>
         </arguments>
@@ -98,6 +143,7 @@
             <argument name="redirectParams" xsi:type="array">
                 <item name="_secure" xsi:type="boolean">true</item>
             </argument>
+            <argument name="persister" xsi:type="object">AlpineCommerce\Turnstile\Model\FormDataPersister\CustomerLogin</argument>
             <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/customer_login</argument>
             <argument name="sortOrder" xsi:type="number">30</argument>
         </arguments>
@@ -114,6 +160,7 @@
             <argument name="redirectParams" xsi:type="array">
                 <item name="_secure" xsi:type="boolean">true</item>
             </argument>
+            <argument name="persister" xsi:type="object">AlpineCommerce\Turnstile\Model\FormDataPersister\CustomerForgotPassword</argument>
             <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/customer_forgot_password</argument>
             <argument name="sortOrder" xsi:type="number">40</argument>
         </arguments>
@@ -138,6 +185,7 @@
                 <item name="review_product_post" xsi:type="string">review_product_post</item>
             </argument>
             <argument name="requiredModule" xsi:type="string">Magento_Review</argument>
+            <argument name="persister" xsi:type="object">AlpineCommerce\Turnstile\Model\FormDataPersister\ProductReview</argument>
             <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/product_review</argument>
             <argument name="sortOrder" xsi:type="number">60</argument>
         </arguments>
@@ -150,6 +198,7 @@
                 <item name="sendfriend_product_sendmail" xsi:type="string">sendfriend_product_sendmail</item>
             </argument>
             <argument name="requiredModule" xsi:type="string">Magento_SendFriend</argument>
+            <argument name="persister" xsi:type="object">AlpineCommerce\Turnstile\Model\FormDataPersister\SendFriend</argument>
             <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/sendfriend</argument>
             <argument name="sortOrder" xsi:type="number">70</argument>
         </arguments>
@@ -163,6 +212,7 @@
             </argument>
             <argument name="requiredModule" xsi:type="string">Magento_Wishlist</argument>
             <argument name="redirectPath" xsi:type="string">wishlist/index/share</argument>
+            <argument name="persister" xsi:type="object">AlpineCommerce\Turnstile\Model\FormDataPersister\WishlistShare</argument>
             <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/wishlist</argument>
             <argument name="sortOrder" xsi:type="number">80</argument>
         </arguments>
