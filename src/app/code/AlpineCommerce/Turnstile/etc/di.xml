@@ -231,4 +231,169 @@
             </argument>
         </arguments>
     </type>
+    <!-- API twins (decision D4 = B): endpoints doing what a protected form does, blockable for anonymous
+         callers by admin switch alpinecommerce_turnstile/api_twins/<id>, off by default. -->
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\CustomerCreateAccount" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">customer_create_account</argument>
+            <argument name="label" xsi:type="string">REST/SOAP: create customer account (POST /V1/customers)</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_Webapi" xsi:type="string">Magento_Webapi</item>
+                <item name="Magento_Customer" xsi:type="string">Magento_Customer</item>
+            </argument>
+            <argument name="serviceClass" xsi:type="string">Magento\Customer\Api\AccountManagementInterface</argument>
+            <argument name="serviceMethod" xsi:type="string">createAccount</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">10</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\CustomerPasswordReset" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">customer_password_reset</argument>
+            <argument name="label" xsi:type="string">REST/SOAP: password reset e-mail (PUT /V1/customers/password)</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_Webapi" xsi:type="string">Magento_Webapi</item>
+                <item name="Magento_Customer" xsi:type="string">Magento_Customer</item>
+            </argument>
+            <argument name="serviceClass" xsi:type="string">Magento\Customer\Api\AccountManagementInterface</argument>
+            <argument name="serviceMethod" xsi:type="string">initiatePasswordReset</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">20</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\CustomerToken" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">customer_token</argument>
+            <argument name="label" xsi:type="string">REST/SOAP: customer login token (POST /V1/integration/customer/token)</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_Webapi" xsi:type="string">Magento_Webapi</item>
+                <item name="Magento_Integration" xsi:type="string">Magento_Integration</item>
+            </argument>
+            <argument name="serviceClass" xsi:type="string">Magento\Integration\Api\CustomerTokenServiceInterface</argument>
+            <argument name="serviceMethod" xsi:type="string">createCustomerAccessToken</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">30</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\GqlCreateCustomer" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">gql_create_customer</argument>
+            <argument name="label" xsi:type="string">GraphQL: createCustomer</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_GraphQl" xsi:type="string">Magento_GraphQl</item>
+                <item name="Magento_CustomerGraphQl" xsi:type="string">Magento_CustomerGraphQl</item>
+            </argument>
+            <argument name="mutation" xsi:type="string">createCustomer</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">40</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\GqlCreateCustomerV2" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">gql_create_customer_v2</argument>
+            <argument name="label" xsi:type="string">GraphQL: createCustomerV2</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_GraphQl" xsi:type="string">Magento_GraphQl</item>
+                <item name="Magento_CustomerGraphQl" xsi:type="string">Magento_CustomerGraphQl</item>
+            </argument>
+            <argument name="mutation" xsi:type="string">createCustomerV2</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">50</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\GqlGenerateCustomerToken" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">gql_generate_customer_token</argument>
+            <argument name="label" xsi:type="string">GraphQL: generateCustomerToken</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_GraphQl" xsi:type="string">Magento_GraphQl</item>
+                <item name="Magento_CustomerGraphQl" xsi:type="string">Magento_CustomerGraphQl</item>
+            </argument>
+            <argument name="mutation" xsi:type="string">generateCustomerToken</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">60</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\GqlRequestPasswordResetEmail" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">gql_request_password_reset_email</argument>
+            <argument name="label" xsi:type="string">GraphQL: requestPasswordResetEmail</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_GraphQl" xsi:type="string">Magento_GraphQl</item>
+                <item name="Magento_CustomerGraphQl" xsi:type="string">Magento_CustomerGraphQl</item>
+            </argument>
+            <argument name="mutation" xsi:type="string">requestPasswordResetEmail</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">70</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\GqlSubscribeNewsletter" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">gql_subscribe_newsletter</argument>
+            <argument name="label" xsi:type="string">GraphQL: subscribeEmailToNewsletter</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_GraphQl" xsi:type="string">Magento_GraphQl</item>
+                <item name="Magento_NewsletterGraphQl" xsi:type="string">Magento_NewsletterGraphQl</item>
+            </argument>
+            <argument name="mutation" xsi:type="string">subscribeEmailToNewsletter</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">80</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\GqlContactUs" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">gql_contact_us</argument>
+            <argument name="label" xsi:type="string">GraphQL: contactUs</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_GraphQl" xsi:type="string">Magento_GraphQl</item>
+                <item name="Magento_ContactGraphQl" xsi:type="string">Magento_ContactGraphQl</item>
+            </argument>
+            <argument name="mutation" xsi:type="string">contactUs</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">90</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\GqlCreateProductReview" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">gql_create_product_review</argument>
+            <argument name="label" xsi:type="string">GraphQL: createProductReview</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_GraphQl" xsi:type="string">Magento_GraphQl</item>
+                <item name="Magento_ReviewGraphQl" xsi:type="string">Magento_ReviewGraphQl</item>
+            </argument>
+            <argument name="mutation" xsi:type="string">createProductReview</argument>
+            <argument name="comment" xsi:type="string">Hyvä: the product review form uses this mutation; enabling this switch breaks product reviews on Hyvä storefronts. Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">100</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Twin\Preset\GqlSendEmailToFriend" type="AlpineCommerce\Turnstile\Model\Twin\TwinDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">gql_send_email_to_friend</argument>
+            <argument name="label" xsi:type="string">GraphQL: sendEmailToFriend</argument>
+            <argument name="requiredModules" xsi:type="array">
+                <item name="Magento_GraphQl" xsi:type="string">Magento_GraphQl</item>
+                <item name="Magento_SendFriendGraphQl" xsi:type="string">Magento_SendFriendGraphQl</item>
+            </argument>
+            <argument name="mutation" xsi:type="string">sendEmailToFriend</argument>
+            <argument name="comment" xsi:type="string">Blocks anonymous calls only. Leave disabled if a headless storefront, PWA or mobile app calls this endpoint anonymously.</argument>
+            <argument name="sortOrder" xsi:type="number">110</argument>
+        </arguments>
+    </virtualType>
+    <type name="AlpineCommerce\Turnstile\Model\Twin\TwinRegistry">
+        <arguments>
+            <argument name="twins" xsi:type="array">
+                <item name="customer_create_account" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\CustomerCreateAccount</item>
+                <item name="customer_password_reset" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\CustomerPasswordReset</item>
+                <item name="customer_token" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\CustomerToken</item>
+                <item name="gql_create_customer" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\GqlCreateCustomer</item>
+                <item name="gql_create_customer_v2" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\GqlCreateCustomerV2</item>
+                <item name="gql_generate_customer_token" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\GqlGenerateCustomerToken</item>
+                <item name="gql_request_password_reset_email" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\GqlRequestPasswordResetEmail</item>
+                <item name="gql_subscribe_newsletter" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\GqlSubscribeNewsletter</item>
+                <item name="gql_contact_us" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\GqlContactUs</item>
+                <item name="gql_create_product_review" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\GqlCreateProductReview</item>
+                <item name="gql_send_email_to_friend" xsi:type="object">AlpineCommerce\Turnstile\Model\Twin\Preset\GqlSendEmailToFriend</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
