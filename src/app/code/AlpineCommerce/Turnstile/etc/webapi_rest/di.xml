@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- Read only in the webapi_rest area, which exists only when Magento_Webapi is installed (rule R1). -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Webapi\Controller\Rest\RequestValidator">
+        <plugin name="alpinecommerce_turnstile_api_twins" type="AlpineCommerce\Turnstile\Plugin\Webapi\RestTwinGuard"/>
+    </type>
+    <type name="AlpineCommerce\Turnstile\Plugin\Webapi\RestTwinGuard">
+        <arguments>
+            <argument name="collaborators" xsi:type="array">
+                <item name="router" xsi:type="object">Magento\Webapi\Controller\Rest\Router</item>
+                <item name="userContext" xsi:type="object">Magento\Authorization\Model\UserContextInterface</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
