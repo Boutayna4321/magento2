@@ -224,6 +224,16 @@ class ValidatorTest extends TestCase
         $this->assertSame('warning', $this->logger->records[0]['level']);
     }
 
+    public function testFailureModeIsReadForTheValidatedForm(): void
+    {
+        $this->config->expects($this->once())->method('getFailureMode')
+            ->with(6, 'customer_login')
+            ->willReturn('open');
+        $this->client->method('verify')->willThrowException(new SiteVerifyUnavailableException('timeout'));
+
+        $this->assertTrue($this->validator->validate(self::TOKEN, null, 'customer_login', 6)->isValid());
+    }
+
     public function testLogsNeverContainTokenOrSecret(): void
     {
         $this->failureMode('closed');
