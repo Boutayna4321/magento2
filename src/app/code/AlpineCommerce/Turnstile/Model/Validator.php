@@ -124,7 +124,7 @@ class Validator implements ValidatorInterface
             'reason' => $reason,
         ];
 
-        if ($this->config->getFailureMode($storeId) === FailureMode::OPEN) {
+        if ($this->config->getFailureMode($storeId, $formId) === FailureMode::OPEN) {
             $this->logger->warning('Turnstile unavailable: request accepted (failure mode open).', $context);
             return ValidationResult::success();
         }

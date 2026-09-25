@@ -22,6 +22,7 @@ class Config
     public const XML_PATH_TIMEOUT = 'alpinecommerce_turnstile/general/timeout';
     public const XML_PATH_FAILURE_MODE = 'alpinecommerce_turnstile/general/failure_mode';
     public const XML_PATH_FORM_PREFIX = 'alpinecommerce_turnstile/forms/';
+    public const FAILURE_MODE_SUFFIX = '_failure_mode';
 
     private const DEFAULT_TIMEOUT = 5;
     private const MIN_TIMEOUT = 1;
@@ -82,8 +83,18 @@ class Config
         return $timeout < self::MIN_TIMEOUT || $timeout > self::MAX_TIMEOUT ? self::DEFAULT_TIMEOUT : $timeout;
     }
 
-    public function getFailureMode(?int $storeId = null): string
+    /**
+     * The form's own failure mode when it is set to closed or open, otherwise the general one.
+     */
+    public function getFailureMode(?int $storeId = null, ?string $formId = null): string
     {
+        if ($formId !== null) {
+            $override = $this->getString(self::XML_PATH_FORM_PREFIX . $formId . self::FAILURE_MODE_SUFFIX, $storeId);
+            if (in_array($override, [FailureMode::OPEN, FailureMode::CLOSED], true)) {
+                return $override;
+            }
+        }
+
         return $this->getString(self::XML_PATH_FAILURE_MODE, $storeId) === FailureMode::OPEN
             ? FailureMode::OPEN
             : FailureMode::CLOSED;

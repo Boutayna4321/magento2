@@ -104,6 +104,52 @@ class ConfigTest extends TestCase
         $this->assertSame('open', $this->config([Config::XML_PATH_FAILURE_MODE => 'open'])->getFailureMode());
     }
 
+    public function testFormFailureModeOverridesGeneral(): void
+    {
+        $openForm = $this->config([
+            Config::XML_PATH_FAILURE_MODE => 'closed',
+            Config::XML_PATH_FORM_PREFIX . 'contact' . Config::FAILURE_MODE_SUFFIX => 'open',
+        ]);
+        $closedForm = $this->config([
+            Config::XML_PATH_FAILURE_MODE => 'open',
+            Config::XML_PATH_FORM_PREFIX . 'contact' . Config::FAILURE_MODE_SUFFIX => 'closed',
+        ]);
+
+        $this->assertSame('open', $openForm->getFailureMode(6, 'contact'));
+        $this->assertSame('closed', $closedForm->getFailureMode(6, 'contact'));
+    }
+
+    public function testInheritFallsBackToGeneral(): void
+    {
+        $config = $this->config([
+            Config::XML_PATH_FAILURE_MODE => 'open',
+            Config::XML_PATH_FORM_PREFIX . 'contact' . Config::FAILURE_MODE_SUFFIX => '',
+        ]);
+
+        $this->assertSame('open', $config->getFailureMode(6, 'contact'));
+        $this->assertSame('open', $config->getFailureMode(6, 'customer_login'));
+    }
+
+    public function testUnknownOverrideValueFallsBackToGeneral(): void
+    {
+        $config = $this->config([
+            Config::XML_PATH_FAILURE_MODE => 'closed',
+            Config::XML_PATH_FORM_PREFIX . 'contact' . Config::FAILURE_MODE_SUFFIX => 'maybe',
+        ]);
+
+        $this->assertSame('closed', $config->getFailureMode(6, 'contact'));
+    }
+
+    public function testOverrideIsIgnoredWithoutFormId(): void
+    {
+        $config = $this->config([
+            Config::XML_PATH_FAILURE_MODE => 'closed',
+            Config::XML_PATH_FORM_PREFIX . 'contact' . Config::FAILURE_MODE_SUFFIX => 'open',
+        ]);
+
+        $this->assertSame('closed', $config->getFailureMode(6));
+    }
+
     public function testThemeFallsBackToAuto(): void
     {
         $this->assertSame('auto', $this->config([Config::XML_PATH_THEME => 'neon'])->getTheme());
