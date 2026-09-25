@@ -20,6 +20,20 @@
                 <sendfriend>1</sendfriend>
                 <wishlist_share>0</wishlist_share>
             </forms>
+            <!-- Blocks anonymous calls to API twins; independent of general/enabled (decision M2). -->
+            <api_twins>
+                <customer_create_account>0</customer_create_account>
+                <customer_password_reset>0</customer_password_reset>
+                <customer_token>0</customer_token>
+                <gql_create_customer>0</gql_create_customer>
+                <gql_create_customer_v2>0</gql_create_customer_v2>
+                <gql_generate_customer_token>0</gql_generate_customer_token>
+                <gql_request_password_reset_email>0</gql_request_password_reset_email>
+                <gql_subscribe_newsletter>0</gql_subscribe_newsletter>
+                <gql_contact_us>0</gql_contact_us>
+                <gql_create_product_review>0</gql_create_product_review>
+                <gql_send_email_to_friend>0</gql_send_email_to_friend>
+            </api_twins>
         </alpinecommerce_turnstile>
     </default>
 </config>

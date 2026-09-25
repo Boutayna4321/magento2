@@ -143,6 +143,36 @@ class ConfigTest extends TestCase
         $this->assertSame('closed', $config->getFailureMode(6));
     }
 
+    public function testTwinBlockingDefaultsToOff(): void
+    {
+        $this->assertFalse($this->config([])->isTwinBlocked('customer_create_account', 6));
+    }
+
+    public function testTwinBlockingIsReadPerStoreView(): void
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->expects($this->once())->method('isSetFlag')
+            ->with(Config::XML_PATH_TWIN_PREFIX . 'customer_create_account', 'store', 6)
+            ->willReturn(true);
+        $config = new Config($scopeConfig, $this->createMock(EncryptorInterface::class), $this->logger);
+
+        $this->assertTrue($config->isTwinBlocked('customer_create_account', 6));
+    }
+
+    /**
+     * Decision M2 = 1: blocking an API twin is access control and does not call Cloudflare, so it does not
+     * depend on Turnstile being enabled; switching Turnstile off never reopens a twin.
+     */
+    public function testTwinBlockingIgnoresTheGeneralSwitch(): void
+    {
+        $config = $this->config([
+            Config::XML_PATH_ENABLED => '0',
+            Config::XML_PATH_TWIN_PREFIX . 'customer_create_account' => '1',
+        ]);
+
+        $this->assertTrue($config->isTwinBlocked('customer_create_account', 6));
+    }
+
     public function testThemeFallsBackToAuto(): void
     {
         $this->assertSame('auto', $this->config([Config::XML_PATH_THEME => 'neon'])->getTheme());

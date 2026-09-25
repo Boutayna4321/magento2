@@ -23,6 +23,7 @@ class Config
     public const XML_PATH_FAILURE_MODE = 'alpinecommerce_turnstile/general/failure_mode';
     public const XML_PATH_FORM_PREFIX = 'alpinecommerce_turnstile/forms/';
     public const FAILURE_MODE_SUFFIX = '_failure_mode';
+    public const XML_PATH_TWIN_PREFIX = 'alpinecommerce_turnstile/api_twins/';
 
     private const DEFAULT_TIMEOUT = 5;
     private const MIN_TIMEOUT = 1;
@@ -98,6 +99,15 @@ class Config
         return $this->getString(self::XML_PATH_FAILURE_MODE, $storeId) === FailureMode::OPEN
             ? FailureMode::OPEN
             : FailureMode::CLOSED;
+    }
+
+    /**
+     * Whether anonymous calls to an API twin are blocked for the store view (decision D4 = B).
+     * Independent of the general Turnstile switch (decision M2 = 1): blocking never calls Cloudflare.
+     */
+    public function isTwinBlocked(string $twinId, ?int $storeId = null): bool
+    {
+        return $this->isFlag(self::XML_PATH_TWIN_PREFIX . $twinId, $storeId);
     }
 
     private function isFlag(string $path, ?int $storeId): bool
