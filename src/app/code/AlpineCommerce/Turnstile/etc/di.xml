@@ -2,6 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="AlpineCommerce\Turnstile\Api\ValidatorInterface" type="AlpineCommerce\Turnstile\Model\Validator"/>
+    <preference for="AlpineCommerce\Turnstile\Model\FailureResponderInterface" type="AlpineCommerce\Turnstile\Model\FailureResponder"/>
 
     <virtualType name="AlpineCommerce\Turnstile\Logger\Handler" type="Magento\Framework\Logger\Handler\Base">
         <arguments>
@@ -27,6 +28,11 @@
             <argument name="logger" xsi:type="object">AlpineCommerce\Turnstile\Logger</argument>
         </arguments>
     </type>
+    <type name="AlpineCommerce\Turnstile\Model\FormDataPersister\SessionFormDataPersister">
+        <arguments>
+            <argument name="logger" xsi:type="object">AlpineCommerce\Turnstile\Logger</argument>
+        </arguments>
+    </type>
     <type name="AlpineCommerce\Turnstile\Model\SiteVerifyClient">
         <arguments>
             <argument name="verifyUrl" xsi:type="string">https://challenges.cloudflare.com/turnstile/v0/siteverify</argument>
@@ -41,6 +47,13 @@
         </arguments>
     </type>
 
+    <!-- Input kept after a rejection, where Magento reads it back (decision D7). -->
+    <virtualType name="AlpineCommerce\Turnstile\Model\FormDataPersister\Contact" type="AlpineCommerce\Turnstile\Model\FormDataPersister\DataPersistorFormDataPersister">
+        <arguments>
+            <argument name="key" xsi:type="string">contact_us</argument>
+        </arguments>
+    </virtualType>
+
     <!-- Magento form presets. A module adds its own form with an item in FormRegistry's "forms" argument
          and a default switch alpinecommerce_turnstile/forms/<id> in its config.xml. -->
     <virtualType name="AlpineCommerce\Turnstile\Model\Form\Preset\Contact" type="AlpineCommerce\Turnstile\Model\FormDefinition">
@@ -52,6 +65,7 @@
             </argument>
             <argument name="requiredModule" xsi:type="string">Magento_Contact</argument>
             <argument name="redirectPath" xsi:type="string">contact/index</argument>
+            <argument name="persister" xsi:type="object">AlpineCommerce\Turnstile\Model\FormDataPersister\Contact</argument>
             <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/contact</argument>
             <argument name="sortOrder" xsi:type="number">10</argument>
         </arguments>

@@ -16,14 +16,12 @@ use AlpineCommerce\Turnstile\Model\ValidationResult;
 use AlpineCommerce\Turnstile\Observer\FormPredispatchObserver;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\Action\HttpPostActionInterface;
-use Magento\Framework\App\ActionFlag;
 use Magento\Framework\App\ActionInterface;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Event;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
-use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
@@ -71,8 +69,6 @@ class FormPredispatchObserverTest extends TestCase
             $config,
             $storeManager,
             $this->createMock(RemoteAddress::class),
-            $this->createMock(ManagerInterface::class),
-            $this->createMock(ActionFlag::class),
             new TokenReader(),
             new MethodPolicy()
         );
