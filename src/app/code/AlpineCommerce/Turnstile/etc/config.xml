@@ -11,6 +11,14 @@
             </general>
             <forms>
                 <contact>1</contact>
+                <customer_create>1</customer_create>
+                <customer_login>1</customer_login>
+                <customer_forgot_password>1</customer_forgot_password>
+                <!-- No layout container on these forms: enabled once the widget is injected by selector. -->
+                <newsletter>0</newsletter>
+                <product_review>1</product_review>
+                <sendfriend>1</sendfriend>
+                <wishlist_share>0</wishlist_share>
             </forms>
         </alpinecommerce_turnstile>
     </default>

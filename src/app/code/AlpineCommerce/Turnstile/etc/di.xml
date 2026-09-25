@@ -40,4 +40,131 @@
             </argument>
         </arguments>
     </type>
+
+    <!-- Magento form presets. A module adds its own form with an item in FormRegistry's "forms" argument
+         and a default switch alpinecommerce_turnstile/forms/<id> in its config.xml. -->
+    <virtualType name="AlpineCommerce\Turnstile\Model\Form\Preset\Contact" type="AlpineCommerce\Turnstile\Model\FormDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">contact</argument>
+            <argument name="label" xsi:type="string">Contact Us</argument>
+            <argument name="actions" xsi:type="array">
+                <item name="contact_index_post" xsi:type="string">contact_index_post</item>
+            </argument>
+            <argument name="requiredModule" xsi:type="string">Magento_Contact</argument>
+            <argument name="redirectPath" xsi:type="string">contact/index</argument>
+            <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/contact</argument>
+            <argument name="sortOrder" xsi:type="number">10</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Form\Preset\CustomerCreate" type="AlpineCommerce\Turnstile\Model\FormDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">customer_create</argument>
+            <argument name="label" xsi:type="string">Create an Account</argument>
+            <argument name="actions" xsi:type="array">
+                <item name="customer_account_createpost" xsi:type="string">customer_account_createpost</item>
+            </argument>
+            <argument name="requiredModule" xsi:type="string">Magento_Customer</argument>
+            <argument name="redirectPath" xsi:type="string">customer/account/create</argument>
+            <argument name="redirectParams" xsi:type="array">
+                <item name="_secure" xsi:type="boolean">true</item>
+            </argument>
+            <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/customer_create</argument>
+            <argument name="sortOrder" xsi:type="number">20</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Form\Preset\CustomerLogin" type="AlpineCommerce\Turnstile\Model\FormDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">customer_login</argument>
+            <argument name="label" xsi:type="string">Customer Login</argument>
+            <argument name="actions" xsi:type="array">
+                <item name="customer_account_loginpost" xsi:type="string">customer_account_loginpost</item>
+            </argument>
+            <argument name="requiredModule" xsi:type="string">Magento_Customer</argument>
+            <argument name="redirectPath" xsi:type="string">customer/account/login</argument>
+            <argument name="redirectParams" xsi:type="array">
+                <item name="_secure" xsi:type="boolean">true</item>
+            </argument>
+            <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/customer_login</argument>
+            <argument name="sortOrder" xsi:type="number">30</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Form\Preset\CustomerForgotPassword" type="AlpineCommerce\Turnstile\Model\FormDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">customer_forgot_password</argument>
+            <argument name="label" xsi:type="string">Forgot Your Password</argument>
+            <argument name="actions" xsi:type="array">
+                <item name="customer_account_forgotpasswordpost" xsi:type="string">customer_account_forgotpasswordpost</item>
+            </argument>
+            <argument name="requiredModule" xsi:type="string">Magento_Customer</argument>
+            <argument name="redirectPath" xsi:type="string">customer/account/forgotpassword</argument>
+            <argument name="redirectParams" xsi:type="array">
+                <item name="_secure" xsi:type="boolean">true</item>
+            </argument>
+            <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/customer_forgot_password</argument>
+            <argument name="sortOrder" xsi:type="number">40</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Form\Preset\Newsletter" type="AlpineCommerce\Turnstile\Model\FormDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">newsletter</argument>
+            <argument name="label" xsi:type="string">Newsletter Subscription</argument>
+            <argument name="actions" xsi:type="array">
+                <item name="newsletter_subscriber_new" xsi:type="string">newsletter_subscriber_new</item>
+            </argument>
+            <argument name="requiredModule" xsi:type="string">Magento_Newsletter</argument>
+            <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/newsletter</argument>
+            <argument name="sortOrder" xsi:type="number">50</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Form\Preset\ProductReview" type="AlpineCommerce\Turnstile\Model\FormDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">product_review</argument>
+            <argument name="label" xsi:type="string">Product Review</argument>
+            <argument name="actions" xsi:type="array">
+                <item name="review_product_post" xsi:type="string">review_product_post</item>
+            </argument>
+            <argument name="requiredModule" xsi:type="string">Magento_Review</argument>
+            <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/product_review</argument>
+            <argument name="sortOrder" xsi:type="number">60</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Form\Preset\SendFriend" type="AlpineCommerce\Turnstile\Model\FormDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">sendfriend</argument>
+            <argument name="label" xsi:type="string">Email to a Friend</argument>
+            <argument name="actions" xsi:type="array">
+                <item name="sendfriend_product_sendmail" xsi:type="string">sendfriend_product_sendmail</item>
+            </argument>
+            <argument name="requiredModule" xsi:type="string">Magento_SendFriend</argument>
+            <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/sendfriend</argument>
+            <argument name="sortOrder" xsi:type="number">70</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlpineCommerce\Turnstile\Model\Form\Preset\WishlistShare" type="AlpineCommerce\Turnstile\Model\FormDefinition">
+        <arguments>
+            <argument name="id" xsi:type="string">wishlist_share</argument>
+            <argument name="label" xsi:type="string">Wishlist Sharing</argument>
+            <argument name="actions" xsi:type="array">
+                <item name="wishlist_index_send" xsi:type="string">wishlist_index_send</item>
+            </argument>
+            <argument name="requiredModule" xsi:type="string">Magento_Wishlist</argument>
+            <argument name="redirectPath" xsi:type="string">wishlist/index/share</argument>
+            <argument name="recaptchaConfigPath" xsi:type="string">recaptcha_frontend/type_for/wishlist</argument>
+            <argument name="sortOrder" xsi:type="number">80</argument>
+        </arguments>
+    </virtualType>
+    <type name="AlpineCommerce\Turnstile\Model\FormRegistry">
+        <arguments>
+            <argument name="forms" xsi:type="array">
+                <item name="contact" xsi:type="object">AlpineCommerce\Turnstile\Model\Form\Preset\Contact</item>
+                <item name="customer_create" xsi:type="object">AlpineCommerce\Turnstile\Model\Form\Preset\CustomerCreate</item>
+                <item name="customer_login" xsi:type="object">AlpineCommerce\Turnstile\Model\Form\Preset\CustomerLogin</item>
+                <item name="customer_forgot_password" xsi:type="object">AlpineCommerce\Turnstile\Model\Form\Preset\CustomerForgotPassword</item>
+                <item name="newsletter" xsi:type="object">AlpineCommerce\Turnstile\Model\Form\Preset\Newsletter</item>
+                <item name="product_review" xsi:type="object">AlpineCommerce\Turnstile\Model\Form\Preset\ProductReview</item>
+                <item name="sendfriend" xsi:type="object">AlpineCommerce\Turnstile\Model\Form\Preset\SendFriend</item>
+                <item name="wishlist_share" xsi:type="object">AlpineCommerce\Turnstile\Model\Form\Preset\WishlistShare</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
