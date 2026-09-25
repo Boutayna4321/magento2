@@ -28,6 +28,11 @@
             <argument name="logger" xsi:type="object">AlpineCommerce\Turnstile\Logger</argument>
         </arguments>
     </type>
+    <type name="AlpineCommerce\Turnstile\Model\Twin\TwinBlocker">
+        <arguments>
+            <argument name="logger" xsi:type="object">AlpineCommerce\Turnstile\Logger</argument>
+        </arguments>
+    </type>
     <type name="AlpineCommerce\Turnstile\Model\FormDataPersister\SessionFormDataPersister">
         <arguments>
             <argument name="logger" xsi:type="object">AlpineCommerce\Turnstile\Logger</argument>
