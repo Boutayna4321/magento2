@@ -11,7 +11,7 @@ use AlpineCommerce\Turnstile\Model\Validator;
 use Magento\Framework\App\State;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\AbstractLogger;
+use AlpineCommerce\Turnstile\Test\Unit\Stub\RecordingLogger;
 
 class ValidatorTest extends TestCase
 {
@@ -21,7 +21,7 @@ class ValidatorTest extends TestCase
     private SiteVerifyClient&MockObject $client;
     private Config&MockObject $config;
     private State&MockObject $appState;
-    private AbstractLogger $logger;
+    private RecordingLogger $logger;
     private Validator $validator;
 
     protected function setUp(): void
@@ -30,14 +30,7 @@ class ValidatorTest extends TestCase
         $this->config = $this->createMock(Config::class);
         $this->config->method('getSecretKey')->willReturn(self::SECRET);
         $this->config->method('getTimeout')->willReturn(5);
-        $this->logger = new class extends AbstractLogger {
-            public array $records = [];
-
-            public function log($level, string|\Stringable $message, array $context = []): void
-            {
-                $this->records[] = ['level' => $level, 'message' => (string) $message, 'context' => $context];
-            }
-        };
+        $this->logger = new RecordingLogger();
         $this->appState = $this->createMock(State::class);
         $this->validator = new Validator($this->client, $this->config, $this->logger, $this->appState);
     }

@@ -7,7 +7,7 @@ use AlpineCommerce\Turnstile\Model\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\AbstractLogger;
+use AlpineCommerce\Turnstile\Test\Unit\Stub\RecordingLogger;
 
 class ConfigTest extends TestCase
 {
@@ -18,18 +18,11 @@ class ConfigTest extends TestCase
         Config::XML_PATH_SECRET_KEY => 'encrypted-secret',
     ];
 
-    private AbstractLogger $logger;
+    private RecordingLogger $logger;
 
     protected function setUp(): void
     {
-        $this->logger = new class extends AbstractLogger {
-            public array $records = [];
-
-            public function log($level, string|\Stringable $message, array $context = []): void
-            {
-                $this->records[] = ['level' => $level, 'message' => (string) $message, 'context' => $context];
-            }
-        };
+        $this->logger = new RecordingLogger();
     }
 
     private function config(array $values): Config
