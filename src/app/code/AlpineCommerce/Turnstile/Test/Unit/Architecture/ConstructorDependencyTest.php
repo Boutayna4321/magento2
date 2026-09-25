@@ -58,7 +58,7 @@ class ConstructorDependencyTest extends TestCase
         $classes = ConstructorTypeChecker::moduleClasses(dirname(__DIR__, 3));
 
         $this->assertContains('AlpineCommerce\Turnstile\Model\Config', $classes);
-        $this->assertContains('AlpineCommerce\Turnstile\Observer\ContactFormObserver', $classes);
+        $this->assertContains('AlpineCommerce\Turnstile\Observer\FormPredispatchObserver', $classes);
         $this->assertSame([], array_values(array_filter(
             $classes,
             static fn (string $class): bool => str_contains($class, '\\Test\\')
