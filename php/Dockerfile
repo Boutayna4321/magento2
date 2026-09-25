@@ -31,7 +31,28 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     pkg-config \
     libfcgi-bin \
+    # ps: the Magento integration test framework measures memory usage at the end of every run.
+    procps \
     && rm -rf /var/lib/apt/lists/*
+
+# MySQL client (mysql, mysqldump) from Oracle's official APT repository, same vendor as the
+# MySQL 8 server. The integration test framework stores the test database with mysqldump.
+# Debian's default-mysql-client is the MariaDB client, which rejects MySQL's self-signed
+# server certificate. Debian 13 is covered by the 8.4 LTS series, which Magento 2.4.8 supports
+# and which can dump a MySQL 8.0 server. The signing key is checked against its fingerprint.
+ARG MYSQL_APT_SERIES=mysql-8.4-lts
+ARG MYSQL_APT_KEY_FINGERPRINT=BCA43417C3B485DD128EC6D4B7B3B788A8D3785C
+RUN apt-get update && apt-get install -y --no-install-recommends gnupg \
+    && curl -fsSL https://repo.mysql.com/RPM-GPG-KEY-mysql-2025 -o /tmp/mysql-apt-key.asc \
+    && gpg --show-keys --with-colons /tmp/mysql-apt-key.asc \
+        | grep -q "^fpr:::::::::${MYSQL_APT_KEY_FINGERPRINT}:$" \
+    && gpg --dearmor -o /usr/share/keyrings/mysql-apt.gpg /tmp/mysql-apt-key.asc \
+    && . /etc/os-release \
+    && echo "deb [signed-by=/usr/share/keyrings/mysql-apt.gpg] https://repo.mysql.com/apt/debian ${VERSION_CODENAME} ${MYSQL_APT_SERIES}" \
+        > /etc/apt/sources.list.d/mysql.list \
+    && apt-get update && apt-get install -y --no-install-recommends mysql-community-client \
+    && apt-get purge -y --auto-remove gnupg \
+    && rm -rf /var/lib/apt/lists/* /tmp/mysql-apt-key.asc
 
 # PHP extensions required by Magento 2.4.8
 RUN docker-php-ext-configure gd \
