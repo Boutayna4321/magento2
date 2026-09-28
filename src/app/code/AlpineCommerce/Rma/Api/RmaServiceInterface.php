@@ -51,7 +51,7 @@ interface RmaServiceInterface
      * Mark RMA items as received.
      *
      * @param int $rmaId
-     * @param array $itemQtys Order item ID => received quantity
+     * @param float[] $itemQtys Received quantities keyed by order item id
      * @return \AlpineCommerce\Rma\Api\Data\RmaInterface
      * @throws NoSuchEntityException
      * @throws LocalizedException

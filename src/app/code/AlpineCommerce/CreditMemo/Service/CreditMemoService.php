@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace AlpineCommerce\CreditMemo\Service;
 
 use AlpineCommerce\CreditMemo\Api\CreditMemoAutomationInterface;
+use AlpineCommerce\CreditMemo\Api\Data\CreditMemoConfigInterface;
+use AlpineCommerce\CreditMemo\Api\Data\CreditMemoConfigInterfaceFactory;
 use AlpineCommerce\CreditMemo\Api\Data\CreditMemoResultInterface;
 use AlpineCommerce\CreditMemo\Model\Data\CreditMemoResult;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -29,7 +31,8 @@ class CreditMemoService implements CreditMemoAutomationInterface
         private readonly CreditmemoFactory $creditmemoFactory,
         private readonly MagentoCreditmemoService $creditmemoService,
         private readonly ScopeConfigInterface $scopeConfig,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly CreditMemoConfigInterfaceFactory $configFactory
     ) {
     }
 
@@ -123,17 +126,21 @@ class CreditMemoService implements CreditMemoAutomationInterface
         }
     }
 
-    public function getConfig(int $storeId): array
+    public function getConfig(int $storeId): CreditMemoConfigInterface
     {
-        return [
-            'enabled' => $this->isModuleEnabled($storeId),
-            'payment_methods' => array_filter(array_map('trim', explode(',', (string) $this->scopeConfig->getValue(
-                'autocreditmemo/general/payment_methods',
-                ScopeInterface::SCOPE_STORE,
-                $storeId
-            )))),
-            'auto_refund' => $this->isAutoRefundEnabled($storeId),
-        ];
+        $paymentMethods = (string) $this->scopeConfig->getValue(
+            'autocreditmemo/general/payment_methods',
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+
+        return $this->configFactory->create()
+            ->setEnabled($this->isModuleEnabled($storeId))
+            ->setPaymentMethods(array_values(array_filter(
+                array_map('trim', explode(',', $paymentMethods)),
+                static fn (string $method): bool => $method !== ''
+            )))
+            ->setAutoRefund($this->isAutoRefundEnabled($storeId));
     }
 
     private function isModuleEnabled(int $storeId): bool

@@ -3,4 +3,6 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="AlpineCommerce\PartialInvoice\Api\PartialInvoiceInterface"
                type="AlpineCommerce\PartialInvoice\Service\PartialInvoiceService"/>
+    <preference for="AlpineCommerce\PartialInvoice\Api\Data\PartialInvoiceConfigInterface"
+               type="AlpineCommerce\PartialInvoice\Model\Data\PartialInvoiceConfig"/>
 </config>

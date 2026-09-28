@@ -3,6 +3,8 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="AlpineCommerce\AutoInvoice\Api\InvoiceAutomationInterface"
                type="AlpineCommerce\AutoInvoice\Service\InvoiceAutomationService"/>
+    <preference for="AlpineCommerce\AutoInvoice\Api\Data\AutoInvoiceConfigInterface"
+               type="AlpineCommerce\AutoInvoice\Model\Data\AutoInvoiceConfig"/>
     <virtualType name="AlpineCommerce\AutoInvoice\Api\Data\InvoiceResultInterfaceFactory"
                 type="Magento\Framework\Api\ExtensibleDataInterfaceFactory">
         <arguments>

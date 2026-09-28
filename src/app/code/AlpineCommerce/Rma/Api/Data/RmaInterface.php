@@ -21,19 +21,81 @@ interface RmaInterface extends ExtensibleDataInterface
     public const STATUS_REJECTED = 'rejected';
     public const STATUS_CLOSED = 'closed';
 
+    /**
+     * @return int|null
+     */
     public function getRmaId(): ?int;
+
+    /**
+     * @param int $rmaId
+     * @return $this
+     */
     public function setRmaId(int $rmaId): self;
+
+    /**
+     * @return int|null
+     */
     public function getOrderId(): ?int;
+
+    /**
+     * @param int $orderId
+     * @return $this
+     */
     public function setOrderId(int $orderId): self;
+
+    /**
+     * @return int|null
+     */
     public function getCustomerId(): ?int;
+
+    /**
+     * @param int $customerId
+     * @return $this
+     */
     public function setCustomerId(int $customerId): self;
+
+    /**
+     * @return string|null
+     */
     public function getStatus(): ?string;
+
+    /**
+     * @param string $status
+     * @return $this
+     */
     public function setStatus(string $status): self;
+
+    /**
+     * @return string|null
+     */
     public function getReason(): ?string;
+
+    /**
+     * @param string $reason
+     * @return $this
+     */
     public function setReason(string $reason): self;
+
+    /**
+     * @return string|null
+     */
     public function getCreatedAt(): ?string;
+
+    /**
+     * @param string $createdAt
+     * @return $this
+     */
     public function setCreatedAt(string $createdAt): self;
+
+    /**
+     * @return string|null
+     */
     public function getUpdatedAt(): ?string;
+
+    /**
+     * @param string $updatedAt
+     * @return $this
+     */
     public function setUpdatedAt(string $updatedAt): self;
     /**
      * Get extension attributes.

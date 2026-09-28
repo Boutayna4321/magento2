@@ -25,11 +25,7 @@ interface CreditMemoAutomationInterface
      * Get the credit memo configuration for a given store.
      *
      * @param int $storeId
-     * @return array{
-     *     enabled: bool,
-     *     payment_methods: array<string>,
-     *     auto_refund: bool
-     * }
+     * @return \AlpineCommerce\CreditMemo\Api\Data\CreditMemoConfigInterface
      */
-    public function getConfig(int $storeId): array;
+    public function getConfig(int $storeId): \AlpineCommerce\CreditMemo\Api\Data\CreditMemoConfigInterface;
 }

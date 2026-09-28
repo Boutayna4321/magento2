@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\AutoInvoice\Service;
 
+use AlpineCommerce\AutoInvoice\Api\Data\AutoInvoiceConfigInterface;
+use AlpineCommerce\AutoInvoice\Api\Data\AutoInvoiceConfigInterfaceFactory;
 use AlpineCommerce\AutoInvoice\Api\Data\InvoiceResultInterface;
 use AlpineCommerce\AutoInvoice\Api\InvoiceAutomationInterface;
 use AlpineCommerce\AutoInvoice\Model\Data\InvoiceResultFactory;
@@ -29,7 +31,8 @@ class InvoiceAutomationService implements InvoiceAutomationInterface
         private readonly InvoiceService $invoiceService,
         private readonly ScopeConfigInterface $scopeConfig,
         private readonly InvoiceResultFactory $resultFactory,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly AutoInvoiceConfigInterfaceFactory $configFactory
     ) {
     }
 
@@ -135,21 +138,22 @@ class InvoiceAutomationService implements InvoiceAutomationInterface
         }
     }
 
-    public function getConfig(int $storeId): array
+    public function getConfig(int $storeId): AutoInvoiceConfigInterface
     {
-        return [
-            'enabled' => $this->isModuleEnabled($storeId),
-            'payment_methods' => array_filter(array_map('trim', explode(',', (string) $this->scopeConfig->getValue(
-                'autoinvoice/general/payment_methods',
-                ScopeInterface::SCOPE_STORE,
-                $storeId
-            )))),
-            'capture_mode' => $this->scopeConfig->getValue(
-                'autoinvoice/general/payment_methods',
-                ScopeInterface::SCOPE_STORE,
-                $storeId
-            ) ? 'offline' : 'none',
-        ];
+        $paymentMethods = (string) $this->scopeConfig->getValue(
+            'autoinvoice/general/payment_methods',
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+
+        return $this->configFactory->create()
+            ->setEnabled($this->isModuleEnabled($storeId))
+            ->setPaymentMethods(array_values(array_filter(
+                array_map('trim', explode(',', $paymentMethods)),
+                static fn (string $method): bool => $method !== ''
+            )))
+            // Unchanged rule: capture_mode follows the payment methods setting (reported as a probable defect).
+            ->setCaptureMode($paymentMethods !== '' ? 'offline' : 'none');
     }
 
     public function canInvoice(int $orderId): bool

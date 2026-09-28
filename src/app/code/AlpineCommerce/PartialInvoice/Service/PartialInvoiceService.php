@@ -5,6 +5,8 @@ namespace AlpineCommerce\PartialInvoice\Service;
 
 use AlpineCommerce\AutoInvoice\Api\Data\InvoiceResultInterface;
 use AlpineCommerce\AutoInvoice\Model\Data\InvoiceResult;
+use AlpineCommerce\PartialInvoice\Api\Data\PartialInvoiceConfigInterface;
+use AlpineCommerce\PartialInvoice\Api\Data\PartialInvoiceConfigInterfaceFactory;
 use AlpineCommerce\PartialInvoice\Api\PartialInvoiceInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -27,7 +29,8 @@ class PartialInvoiceService implements PartialInvoiceInterface
         private readonly OrderRepositoryInterface $orderRepository,
         private readonly InvoiceService $invoiceService,
         private readonly ScopeConfigInterface $scopeConfig,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly PartialInvoiceConfigInterfaceFactory $configFactory
     ) {
     }
 
@@ -136,18 +139,22 @@ class PartialInvoiceService implements PartialInvoiceInterface
         }
     }
 
-    public function getConfig(int $storeId): array
+    public function getConfig(int $storeId): PartialInvoiceConfigInterface
     {
-        return [
-            'enabled' => $this->isModuleEnabled($storeId),
-            'payment_methods' => array_filter(array_map('trim', explode(',', (string) $this->scopeConfig->getValue(
-                'partialinvoice/general/payment_methods',
-                ScopeInterface::SCOPE_STORE,
-                $storeId
-            )))),
-            'allow_backorders' => $this->isBackordersAllowed($storeId),
-            'min_qty_to_invoice' => $this->getMinQtyToInvoice($storeId),
-        ];
+        $paymentMethods = (string) $this->scopeConfig->getValue(
+            'partialinvoice/general/payment_methods',
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+
+        return $this->configFactory->create()
+            ->setEnabled($this->isModuleEnabled($storeId))
+            ->setPaymentMethods(array_values(array_filter(
+                array_map('trim', explode(',', $paymentMethods)),
+                static fn (string $method): bool => $method !== ''
+            )))
+            ->setAllowBackorders($this->isBackordersAllowed($storeId))
+            ->setMinQtyToInvoice($this->getMinQtyToInvoice($storeId));
     }
 
     public function canInvoice(int $orderId): bool

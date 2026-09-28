@@ -25,14 +25,9 @@ interface PartialInvoiceInterface
      * Get the partial invoice configuration for a given store.
      *
      * @param int $storeId
-     * @return array{
-     *     enabled: bool,
-     *     payment_methods: array<string>,
-     *     allow_backorders: bool,
-     *     min_qty_to_invoice: float
-     * }
+     * @return \AlpineCommerce\PartialInvoice\Api\Data\PartialInvoiceConfigInterface
      */
-    public function getConfig(int $storeId): array;
+    public function getConfig(int $storeId): \AlpineCommerce\PartialInvoice\Api\Data\PartialInvoiceConfigInterface;
 
     /**
      * Determine whether the order is eligible for partial invoicing.
