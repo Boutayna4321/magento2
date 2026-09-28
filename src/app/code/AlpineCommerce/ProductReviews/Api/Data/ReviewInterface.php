@@ -28,7 +28,7 @@ interface ReviewInterface
 
     /**
      * @param int $productId
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      */
     public function setProductId(int $productId): ReviewInterface;
 
@@ -39,7 +39,7 @@ interface ReviewInterface
 
     /**
      * @param int|null $customerId
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      */
     public function setCustomerId(?int $customerId): ReviewInterface;
 
@@ -50,7 +50,7 @@ interface ReviewInterface
 
     /**
      * @param string $title
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      */
     public function setTitle(string $title): ReviewInterface;
 
@@ -61,7 +61,7 @@ interface ReviewInterface
 
     /**
      * @param string|null $detail
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      */
     public function setDetail(?string $detail): ReviewInterface;
 
@@ -72,7 +72,7 @@ interface ReviewInterface
 
     /**
      * @param int $rating
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      */
     public function setRating(int $rating): ReviewInterface;
 
@@ -83,7 +83,7 @@ interface ReviewInterface
 
     /**
      * @param int $status
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      */
     public function setStatus(int $status): ReviewInterface;
 
@@ -94,7 +94,7 @@ interface ReviewInterface
 
     /**
      * @param bool $isVerified
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      */
     public function setIsVerified(bool $isVerified): ReviewInterface;
 

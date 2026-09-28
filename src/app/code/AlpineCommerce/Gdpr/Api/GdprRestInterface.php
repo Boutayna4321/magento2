@@ -17,21 +17,21 @@ interface GdprRestInterface
      *
      * @param string $consentType
      * @param bool $granted
-     * @return GdprConsentResultInterface
+     * @return \AlpineCommerce\Gdpr\Api\Data\GdprConsentResultInterface
      */
     public function logConsent(string $consentType, bool $granted): GdprConsentResultInterface;
 
     /**
      * Export all personal data of the authenticated customer (GDPR Art. 15).
      *
-     * @return GdprExportResultInterface
+     * @return \AlpineCommerce\Gdpr\Api\Data\GdprExportResultInterface
      */
     public function exportData(): GdprExportResultInterface;
 
     /**
      * Anonymize the personal data of the authenticated customer (GDPR Art. 17).
      *
-     * @return GdprDeleteResultInterface
+     * @return \AlpineCommerce\Gdpr\Api\Data\GdprDeleteResultInterface
      */
     public function deleteData(): GdprDeleteResultInterface;
 }

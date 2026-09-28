@@ -14,13 +14,13 @@ interface FaqRestInterface
     /**
      * @param int $page
      * @param int $pageSize
-     * @return FaqSearchResultsInterface
+     * @return \AlpineCommerce\Faq\Api\Data\FaqSearchResultsInterface
      */
     public function getFaqs(int $page = 1, int $pageSize = 20): FaqSearchResultsInterface;
 
     /**
      * @param int $faqId
-     * @return FaqInterface
+     * @return \AlpineCommerce\Faq\Api\Data\FaqInterface
      */
     public function getFaq(int $faqId): FaqInterface;
 }

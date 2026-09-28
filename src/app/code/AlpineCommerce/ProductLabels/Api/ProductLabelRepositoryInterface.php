@@ -15,8 +15,8 @@ interface ProductLabelRepositoryInterface
     /**
      * Save product label.
      *
-     * @param ProductLabelInterface $label
-     * @return ProductLabelInterface
+     * @param \AlpineCommerce\ProductLabels\Api\Data\ProductLabelInterface $label
+     * @return \AlpineCommerce\ProductLabels\Api\Data\ProductLabelInterface
      * @throws CouldNotSaveException
      */
     public function save(ProductLabelInterface $label): ProductLabelInterface;
@@ -25,7 +25,7 @@ interface ProductLabelRepositoryInterface
      * Retrieve product label by ID.
      *
      * @param int $entityId
-     * @return ProductLabelInterface
+     * @return \AlpineCommerce\ProductLabels\Api\Data\ProductLabelInterface
      * @throws NoSuchEntityException
      */
     public function getById(int $entityId): ProductLabelInterface;
@@ -33,15 +33,15 @@ interface ProductLabelRepositoryInterface
     /**
      * Retrieve product labels matching the specified criteria.
      *
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return ProductLabelSearchResultsInterface
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @return \AlpineCommerce\ProductLabels\Api\Data\ProductLabelSearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria): ProductLabelSearchResultsInterface;
 
     /**
      * Delete product label.
      *
-     * @param ProductLabelInterface $label
+     * @param \AlpineCommerce\ProductLabels\Api\Data\ProductLabelInterface $label
      * @return bool
      * @throws CouldNotDeleteException
      */

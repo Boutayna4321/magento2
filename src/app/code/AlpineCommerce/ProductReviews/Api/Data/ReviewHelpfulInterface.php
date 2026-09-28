@@ -23,7 +23,7 @@ interface ReviewHelpfulInterface
 
     /**
      * @param int $reviewId
-     * @return ReviewHelpfulInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewHelpfulInterface
      */
     public function setReviewId(int $reviewId): ReviewHelpfulInterface;
 
@@ -34,7 +34,7 @@ interface ReviewHelpfulInterface
 
     /**
      * @param int|null $customerId
-     * @return ReviewHelpfulInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewHelpfulInterface
      */
     public function setCustomerId(?int $customerId): ReviewHelpfulInterface;
 
@@ -45,7 +45,7 @@ interface ReviewHelpfulInterface
 
     /**
      * @param int $helpful
-     * @return ReviewHelpfulInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewHelpfulInterface
      */
     public function setHelpful(int $helpful): ReviewHelpfulInterface;
 

@@ -10,32 +10,32 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 interface LegalPageRepositoryInterface
 {
     /**
-     * @param LegalPageInterface $page
-     * @return LegalPageInterface
+     * @param \AlpineCommerce\LegalPages\Api\Data\LegalPageInterface $page
+     * @return \AlpineCommerce\LegalPages\Api\Data\LegalPageInterface
      */
     public function save(LegalPageInterface $page): LegalPageInterface;
 
     /**
      * @param int $id
-     * @return LegalPageInterface
+     * @return \AlpineCommerce\LegalPages\Api\Data\LegalPageInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getById(int $id): LegalPageInterface;
 
     /**
      * @param string $type
-     * @return LegalPageInterface|null
+     * @return \AlpineCommerce\LegalPages\Api\Data\LegalPageInterface|null
      */
     public function getByType(string $type): ?LegalPageInterface;
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return LegalPageSearchResultsInterface
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @return \AlpineCommerce\LegalPages\Api\Data\LegalPageSearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria): LegalPageSearchResultsInterface;
 
     /**
-     * @param LegalPageInterface $page
+     * @param \AlpineCommerce\LegalPages\Api\Data\LegalPageInterface $page
      * @return bool
      */
     public function delete(LegalPageInterface $page): bool;

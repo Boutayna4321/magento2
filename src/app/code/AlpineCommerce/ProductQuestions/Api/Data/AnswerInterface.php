@@ -25,7 +25,7 @@ interface AnswerInterface
 
     /**
      * @param int $questionId
-     * @return AnswerInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface
      */
     public function setQuestionId(int $questionId): AnswerInterface;
 
@@ -36,7 +36,7 @@ interface AnswerInterface
 
     /**
      * @param int|null $adminUserId
-     * @return AnswerInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface
      */
     public function setAdminUserId(?int $adminUserId): AnswerInterface;
 
@@ -47,7 +47,7 @@ interface AnswerInterface
 
     /**
      * @param int|null $customerId
-     * @return AnswerInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface
      */
     public function setCustomerId(?int $customerId): AnswerInterface;
 
@@ -58,7 +58,7 @@ interface AnswerInterface
 
     /**
      * @param string $answer
-     * @return AnswerInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface
      */
     public function setAnswer(string $answer): AnswerInterface;
 
@@ -69,7 +69,7 @@ interface AnswerInterface
 
     /**
      * @param bool $isOfficial
-     * @return AnswerInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface
      */
     public function setIsOfficial(bool $isOfficial): AnswerInterface;
 

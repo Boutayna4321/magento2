@@ -12,13 +12,13 @@ interface ReviewRestInterface
      * @param int $productId
      * @param int $page
      * @param int $pageSize
-     * @return ReviewSearchResultsInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewSearchResultsInterface
      */
     public function getReviews(int $productId, int $page = 1, int $pageSize = 20): ReviewSearchResultsInterface;
 
     /**
      * @param int $reviewId
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      */
     public function getReview(int $reviewId): ReviewInterface;
 
@@ -27,7 +27,7 @@ interface ReviewRestInterface
      * @param string $title
      * @param string $detail
      * @param int $rating
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      */
     public function addReview(int $productId, string $title, string $detail, int $rating): ReviewInterface;
 

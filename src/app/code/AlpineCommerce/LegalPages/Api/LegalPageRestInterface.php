@@ -14,13 +14,13 @@ interface LegalPageRestInterface
     /**
      * @param int $page
      * @param int $pageSize
-     * @return LegalPageSearchResultsInterface
+     * @return \AlpineCommerce\LegalPages\Api\Data\LegalPageSearchResultsInterface
      */
     public function getPages(int $page = 1, int $pageSize = 20): LegalPageSearchResultsInterface;
 
     /**
      * @param string $type
-     * @return LegalPageInterface
+     * @return \AlpineCommerce\LegalPages\Api\Data\LegalPageInterface
      */
     public function getPageByType(string $type): LegalPageInterface;
 }

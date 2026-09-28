@@ -12,20 +12,20 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 interface ConsentLogRepositoryInterface
 {
     /**
-     * @param ConsentLogInterface $consentLog
-     * @return ConsentLogInterface
+     * @param \AlpineCommerce\Gdpr\Api\Data\ConsentLogInterface $consentLog
+     * @return \AlpineCommerce\Gdpr\Api\Data\ConsentLogInterface
      */
     public function save(ConsentLogInterface $consentLog): ConsentLogInterface;
 
     /**
      * @param int $id
-     * @return ConsentLogInterface
+     * @return \AlpineCommerce\Gdpr\Api\Data\ConsentLogInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getById(int $id): ConsentLogInterface;
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      * @return \Magento\Framework\Api\SearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria);

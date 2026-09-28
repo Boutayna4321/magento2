@@ -19,7 +19,7 @@ interface LoyaltyCartManagementInterface
      *
      * @param int $cartId
      * @param int $points
-     * @return TotalsInterface Recalculated cart totals.
+     * @return \Magento\Quote\Api\Data\TotalsInterface Recalculated cart totals.
      */
     public function setPointsUsed(int $cartId, int $points): TotalsInterface;
 }

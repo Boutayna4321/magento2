@@ -10,27 +10,27 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 interface ReviewRepositoryInterface
 {
     /**
-     * @param ReviewInterface $review
-     * @return ReviewInterface
+     * @param \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface $review
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
     public function save(ReviewInterface $review): ReviewInterface;
 
     /**
      * @param int $id
-     * @return ReviewInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getById(int $id): ReviewInterface;
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return ReviewSearchResultsInterface
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewSearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria): ReviewSearchResultsInterface;
 
     /**
-     * @param ReviewInterface $review
+     * @param \AlpineCommerce\ProductReviews\Api\Data\ReviewInterface $review
      * @return bool
      * @throws \Magento\Framework\Exception\CouldNotDeleteException
      */

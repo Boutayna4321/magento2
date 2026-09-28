@@ -14,15 +14,15 @@ interface LoyaltyBalanceRepositoryInterface
      * (points = 0).
      *
      * @param int $customerId
-     * @return LoyaltyBalanceInterface
+     * @return \AlpineCommerce\LoyaltyProgram\Api\Data\LoyaltyBalanceInterface
      */
     public function getByCustomerId(int $customerId): LoyaltyBalanceInterface;
 
     /**
      * Persist a loyalty balance.
      *
-     * @param LoyaltyBalanceInterface $balance
-     * @return LoyaltyBalanceInterface
+     * @param \AlpineCommerce\LoyaltyProgram\Api\Data\LoyaltyBalanceInterface $balance
+     * @return \AlpineCommerce\LoyaltyProgram\Api\Data\LoyaltyBalanceInterface
      */
     public function save(LoyaltyBalanceInterface $balance): LoyaltyBalanceInterface;
 }

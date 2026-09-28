@@ -10,26 +10,26 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 interface BlogCategoryRepositoryInterface
 {
     /**
-     * @param BlogCategoryInterface $category
-     * @return BlogCategoryInterface
+     * @param \AlpineCommerce\Blog\Api\Data\BlogCategoryInterface $category
+     * @return \AlpineCommerce\Blog\Api\Data\BlogCategoryInterface
      */
     public function save(BlogCategoryInterface $category): BlogCategoryInterface;
 
     /**
      * @param int $id
-     * @return BlogCategoryInterface
+     * @return \AlpineCommerce\Blog\Api\Data\BlogCategoryInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getById(int $id): BlogCategoryInterface;
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return BlogCategorySearchResultsInterface
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @return \AlpineCommerce\Blog\Api\Data\BlogCategorySearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria): BlogCategorySearchResultsInterface;
 
     /**
-     * @param BlogCategoryInterface $category
+     * @param \AlpineCommerce\Blog\Api\Data\BlogCategoryInterface $category
      * @return bool
      */
     public function delete(BlogCategoryInterface $category): bool;

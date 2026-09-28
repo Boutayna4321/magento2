@@ -10,26 +10,26 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 interface BlogPostRepositoryInterface
 {
     /**
-     * @param BlogPostInterface $post
-     * @return BlogPostInterface
+     * @param \AlpineCommerce\Blog\Api\Data\BlogPostInterface $post
+     * @return \AlpineCommerce\Blog\Api\Data\BlogPostInterface
      */
     public function save(BlogPostInterface $post): BlogPostInterface;
 
     /**
      * @param int $id
-     * @return BlogPostInterface
+     * @return \AlpineCommerce\Blog\Api\Data\BlogPostInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getById(int $id): BlogPostInterface;
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return BlogPostSearchResultsInterface
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @return \AlpineCommerce\Blog\Api\Data\BlogPostSearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria): BlogPostSearchResultsInterface;
 
     /**
-     * @param BlogPostInterface $post
+     * @param \AlpineCommerce\Blog\Api\Data\BlogPostInterface $post
      * @return bool
      */
     public function delete(BlogPostInterface $post): bool;
