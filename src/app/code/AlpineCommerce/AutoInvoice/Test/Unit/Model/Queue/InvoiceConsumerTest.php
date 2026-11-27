@@ -37,7 +37,7 @@ class InvoiceConsumerTest extends TestCase
 
         $result = $this->createConfiguredMock(
             \AlpineCommerce\AutoInvoice\Api\Data\InvoiceResultInterface::class,
-            ['isSuccess' => true]
+            ['getStatus' => 'invoiced']
         );
 
         $this->invoiceService->expects($this->once())
@@ -79,7 +79,7 @@ class InvoiceConsumerTest extends TestCase
 
         $result = $this->createConfiguredMock(
             \AlpineCommerce\AutoInvoice\Api\Data\InvoiceResultInterface::class,
-            ['isSuccess' => true]
+            ['getStatus' => 'invoiced']
         );
 
         $this->invoiceService->method('processOrder')->willReturn($result);

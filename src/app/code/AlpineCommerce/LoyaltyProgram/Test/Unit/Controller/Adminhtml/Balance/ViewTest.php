@@ -3,32 +3,38 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\LoyaltyProgram\Test\Unit\Controller\Adminhtml\Balance;
 
+use AlpineCommerce\LoyaltyProgram\Api\Data\LoyaltyBalanceInterface;
+use AlpineCommerce\LoyaltyProgram\Api\LoyaltyBalanceRepositoryInterface;
 use AlpineCommerce\LoyaltyProgram\Controller\Adminhtml\Balance\View;
 use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\View\Result\Page;
+use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\View\Result\Page;
-use Magento\Framework\View\Result\PageFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ViewTest extends TestCase
 {
-    private Context $context;
+    private Context&MockObject $context;
     private PageFactory&MockObject $resultPageFactory;
     private RedirectFactory&MockObject $redirectFactory;
     private ManagerInterface&MockObject $messageManager;
     private Http&MockObject $request;
+    private LoyaltyBalanceRepositoryInterface&MockObject $balanceRepository;
 
     protected function setUp(): void
     {
         $this->request = $this->createMock(Http::class);
         $this->messageManager = $this->createMock(ManagerInterface::class);
+        // The controller extends Magento\Backend\App\Action and calls setActiveMenu()/addBreadcrumb(),
+        // so it needs the Backend page, not the frontend one.
         $this->resultPageFactory = $this->createMock(PageFactory::class);
         $this->redirectFactory = $this->createMock(RedirectFactory::class);
+        $this->balanceRepository = $this->createMock(LoyaltyBalanceRepositoryInterface::class);
 
         $this->context = $this->createMock(Context::class);
         $this->context->method('getRequest')->willReturn($this->request);
@@ -41,7 +47,7 @@ class ViewTest extends TestCase
             $this->context,
             $this->resultPageFactory,
             $this->redirectFactory,
-            $this->createMock(\AlpineCommerce\LoyaltyProgram\Api\LoyaltyBalanceRepositoryInterface::class)
+            $this->balanceRepository
         );
     }
 
@@ -59,19 +65,16 @@ class ViewTest extends TestCase
         $redirect->method('setPath')->with('loyalty/balance/index')->willReturnSelf();
 
         $this->messageManager->expects($this->once())->method('addErrorMessage');
+        $this->balanceRepository->expects($this->never())->method('getByCustomerId');
 
-        $controller = $this->createController();
-        $result = $controller->execute();
-
-        $this->assertSame($redirect, $result);
+        $this->assertSame($redirect, $this->createController()->execute());
     }
 
     public function testExecuteRedirectsWhenCustomerNotFound(): void
     {
         $this->request->method('getParam')->with('customer_id')->willReturn(999);
 
-        $balanceRepository = $this->createMock(\AlpineCommerce\LoyaltyProgram\Api\LoyaltyBalanceRepositoryInterface::class);
-        $balanceRepository->method('getByCustomerId')->with(999)
+        $this->balanceRepository->method('getByCustomerId')->with(999)
             ->willThrowException(new NoSuchEntityException(__('Customer not found')));
 
         $redirect = $this->createMock(Redirect::class);
@@ -80,37 +83,28 @@ class ViewTest extends TestCase
 
         $this->messageManager->expects($this->once())->method('addErrorMessage');
 
-        $controller = new View(
-            $this->context,
-            $this->resultPageFactory,
-            $this->redirectFactory,
-            $balanceRepository
-        );
-        $result = $controller->execute();
-
-        $this->assertSame($redirect, $result);
+        $this->assertSame($redirect, $this->createController()->execute());
     }
 
     public function testExecuteReturnsPageForValidCustomer(): void
     {
         $this->request->method('getParam')->with('customer_id')->willReturn(1);
 
-        $balanceRepository = $this->createMock(\AlpineCommerce\LoyaltyProgram\Api\LoyaltyBalanceRepositoryInterface::class);
-        $balanceRepository->method('getByCustomerId')->with(1)
-            ->willReturn(new \AlpineCommerce\LoyaltyProgram\Model\LoyaltyBalance());
+        // getByCustomerId() returns an interface, so mock the interface rather than instantiating
+        // the concrete model: LoyaltyBalance extends AbstractModel and needs constructor arguments.
+        $this->balanceRepository->method('getByCustomerId')->with(1)
+            ->willReturn($this->createMock(LoyaltyBalanceInterface::class));
 
         $resultPage = $this->createMock(Page::class);
-
+        $resultPage->method('setActiveMenu')->willReturnSelf();
+        $resultPage->method('addBreadcrumb')->willReturnSelf();
+        $config = $this->createMock(\Magento\Framework\View\Page\Config::class);
+        $title = $this->createMock(\Magento\Framework\View\Page\Title::class);
+        $title->method('prepend')->willReturnSelf();
+        $config->method('getTitle')->willReturn($title);
+        $resultPage->method('getConfig')->willReturn($config);
         $this->resultPageFactory->method('create')->willReturn($resultPage);
 
-        $controller = new View(
-            $this->context,
-            $this->resultPageFactory,
-            $this->redirectFactory,
-            $balanceRepository
-        );
-        $result = $controller->execute();
-
-        $this->assertInstanceOf(Page::class, $result);
+        $this->assertInstanceOf(Page::class, $this->createController()->execute());
     }
 }

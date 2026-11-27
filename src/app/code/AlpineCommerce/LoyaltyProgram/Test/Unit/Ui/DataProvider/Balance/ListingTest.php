@@ -6,8 +6,6 @@ namespace AlpineCommerce\LoyaltyProgram\Test\Unit\Ui\DataProvider\Balance;
 use AlpineCommerce\LoyaltyProgram\Model\ResourceModel\LoyaltyBalance\GridCollection;
 use AlpineCommerce\LoyaltyProgram\Model\ResourceModel\LoyaltyBalance\GridCollectionFactory;
 use AlpineCommerce\LoyaltyProgram\Ui\DataProvider\Balance\Listing;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -15,23 +13,23 @@ class ListingTest extends TestCase
 {
     private Listing $listing;
     private GridCollectionFactory&MockObject $collectionFactory;
-    private RequestInterface&MockObject $request;
     private GridCollection&MockObject $collection;
 
     protected function setUp(): void
     {
         $this->collectionFactory = $this->createMock(GridCollectionFactory::class);
-        $this->request = $this->createMock(RequestInterface::class);
-
         $this->collection = $this->createMock(GridCollection::class);
         $this->collectionFactory->method('create')->willReturn($this->collection);
 
+        // Signature: ($name, $primaryFieldName, $requestFieldName, $collectionFactory, array $meta, array $data)
+        // The 5th and 6th arguments are arrays; passing a RequestInterface mock there is a type error.
         $this->listing = new Listing(
             'loyalty_balance_listing',
             'entity_id',
-            'id',
+            'entity_id',
             $this->collectionFactory,
-            $this->request
+            [],
+            []
         );
     }
 
@@ -49,5 +47,15 @@ class ListingTest extends TestCase
 
         $this->assertSame(2, $data['totalRecords']);
         $this->assertCount(2, $data['items']);
+    }
+
+    public function testGetPrimaryFieldNameIsTakenFromTheConstructor(): void
+    {
+        $this->assertSame('entity_id', $this->listing->getPrimaryFieldName());
+    }
+
+    public function testGetNameIsTakenFromTheConstructor(): void
+    {
+        $this->assertSame('loyalty_balance_listing', $this->listing->getName());
     }
 }

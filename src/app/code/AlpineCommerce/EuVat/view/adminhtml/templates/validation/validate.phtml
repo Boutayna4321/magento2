@@ -1,12 +1,10 @@
 <?php
-/** @var \Magento\Framework\View\Element\Template $block */
-/** @var \Magento\Framework\Data\Form\FormKey $formKey */
-$formKey = $block->getLayout()->createBlock(\Magento\Framework\Data\Form\FormKey::class);
+/** @var \Magento\Backend\Block\Template $block */
 $validationResult = $block->getData('validation_result') ?? [];
 ?>
 <div class="admin__scope-old">
     <form action="<?= $block->escapeUrl($block->getUrl('euvat/validation/validate')) ?>" method="post">
-        <input name="form_key" type="hidden" value="<?= $block->escapeHtmlAttr($formKey->getFormKey()) ?>"/>
+        <input name="form_key" type="hidden" value="<?= $block->escapeHtmlAttr($block->getFormKey()) ?>"/>
         <fieldset class="admin__fieldset">
             <legend class="admin__legend">
                 <span><?= $block->escapeHtml(__('Validate VAT Number via VIES')) ?></span>

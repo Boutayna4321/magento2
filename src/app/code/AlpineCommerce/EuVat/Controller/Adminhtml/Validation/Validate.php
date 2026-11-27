@@ -7,7 +7,7 @@ use AlpineCommerce\EuVat\Api\VatValidationInterface as VatValidationServiceInter
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\View\Result\Page;
-use Magento\Backend\Model\View\Result\PageFactory;
+use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Controller\ResultInterface;
 
