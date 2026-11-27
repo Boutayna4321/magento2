@@ -7,6 +7,7 @@ use AlpineCommerce\AutoInvoice\Api\Data\AutoInvoiceConfigInterface;
 use AlpineCommerce\AutoInvoice\Api\Data\AutoInvoiceConfigInterfaceFactory;
 use AlpineCommerce\AutoInvoice\Model\Data\AutoInvoiceConfig;
 use AlpineCommerce\AutoInvoice\Model\Data\InvoiceResultFactory;
+use AlpineCommerce\AutoInvoice\Model\InvoicePersister;
 use AlpineCommerce\AutoInvoice\Service\InvoiceAutomationService;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -40,7 +41,8 @@ class InvoiceAutomationServiceConfigTest extends TestCase
             $scopeConfig,
             $this->getMockBuilder(InvoiceResultFactory::class)->disableOriginalConstructor()->getMock(),
             $this->createMock(LoggerInterface::class),
-            $configFactory
+            $configFactory,
+            $this->createMock(InvoicePersister::class)
         );
     }
 

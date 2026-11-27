@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\AutoInvoice\Observer;
 
+use AlpineCommerce\AutoInvoice\Model\InvoicePersister;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Api\Data\OrderInterface;
@@ -17,7 +18,8 @@ class AutoInvoice implements ObserverInterface
     public function __construct(
         private readonly InvoiceService $invoiceService,
         private readonly ScopeConfigInterface $scopeConfig,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly InvoicePersister $invoicePersister
     ) {
     }
 
@@ -62,8 +64,7 @@ class AutoInvoice implements ObserverInterface
                 __("Invoice #%1 created automatically.", $invoice->getIncrementId())
             )->setIsCustomerNotified(false);
 
-            $order->save();
-            $invoice->save();
+            $this->invoicePersister->persist($order, $invoice);
         } catch (\Throwable $e) {
             $this->logger->error("AutoInvoice error: " . $e->getMessage(), [
                 "order_id" => $order->getEntityId(),

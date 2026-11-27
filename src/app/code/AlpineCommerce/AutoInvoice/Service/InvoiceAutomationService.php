@@ -8,6 +8,7 @@ use AlpineCommerce\AutoInvoice\Api\Data\AutoInvoiceConfigInterfaceFactory;
 use AlpineCommerce\AutoInvoice\Api\Data\InvoiceResultInterface;
 use AlpineCommerce\AutoInvoice\Api\InvoiceAutomationInterface;
 use AlpineCommerce\AutoInvoice\Model\Data\InvoiceResultFactory;
+use AlpineCommerce\AutoInvoice\Model\InvoicePersister;
 use Magento\Framework\Api\ExtensibleDataInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -32,7 +33,8 @@ class InvoiceAutomationService implements InvoiceAutomationInterface
         private readonly ScopeConfigInterface $scopeConfig,
         private readonly InvoiceResultFactory $resultFactory,
         private readonly LoggerInterface $logger,
-        private readonly AutoInvoiceConfigInterfaceFactory $configFactory
+        private readonly AutoInvoiceConfigInterfaceFactory $configFactory,
+        private readonly InvoicePersister $invoicePersister
     ) {
     }
 
@@ -119,8 +121,7 @@ class InvoiceAutomationService implements InvoiceAutomationInterface
                 __('Invoice #%1 created automatically.', $invoice->getIncrementId())
             )->setIsCustomerNotified(false);
 
-            $order->save();
-            $invoice->save();
+            $this->invoicePersister->persist($order, $invoice);
 
             $result->setInvoiceId((int) $invoice->getId());
             $result->setInvoiceIncrementId($invoice->getIncrementId());
