@@ -7,7 +7,7 @@ Index of all project documentation. For installation and a project overview, see
 
 | Profile | Reading path |
 |---|---|
-| Beginner | [Docker](prerequisites/docker.md) → [PHP OOP](prerequisites/php-oop.md) → [Git & GitHub](prerequisites/git-github.md) → [CI/CD](prerequisites/ci-cd.md) → [Magento intro](magento2/magento-intro.md) → [Project charter](PROJECT_CHARTER.md) → [Architecture](ARCHITECTURE.md) → [FAQ module](modules/FAQ.md) |
+| Beginner | **Quick-start learning path** ([`magento2/README.md`](magento2/README.md)) → [Docker](prerequisites/docker.md) → [PHP OOP](prerequisites/php-oop.md) → [Git & GitHub](prerequisites/git-github.md) → [CI/CD](prerequisites/ci-cd.md) → [Project charter](PROJECT_CHARTER.md) → [Architecture](ARCHITECTURE.md) → [FAQ module](modules/FAQ.md) |
 | Intermediate | [Engineering guide](ENGINEERING_GUIDE.md) — compare each module to the canonical skeleton |
 | Maintainer | [Engineering guide](ENGINEERING_GUIDE.md) (checklist) · [Backlog](BACKLOG.md) · [Changelog](CHANGELOG.md) |
 
@@ -30,13 +30,35 @@ Index of all project documentation. For installation and a project overview, see
 | [php-oop.md](prerequisites/php-oop.md) | Classes, interfaces, dependency injection, namespaces |
 | [git-github.md](prerequisites/git-github.md) | Git commands and GitHub workflow |
 | [ci-cd.md](prerequisites/ci-cd.md) | CI/CD concepts and GitHub Actions |
+| [javascript-magento.md](prerequisites/javascript-magento.md) | JavaScript inside Magento: AMD modules, DOM, AJAX/REST, Knockout checkout |
 
 ## Magento 2 reference (`magento2/`)
+
+### Quick-start learning path
+
+A 5-phase, blog-style learning path for junior developers. Each article is
+~5-10 min read and links to the full reference doc when you need details.
+
+**Start here**: [`magento2/README.md`](magento2/README.md)
+
+| Phase | Topics |
+|-------|--------|
+| 1. Core | What Magento is, module anatomy, request lifecycle, dependency injection, database models |
+| 2. Frontend | Layout XML, PHTML templates, LESS themes, Luma vs Hyvä, RequireJS, Knockout, JS integration |
+| 3. Extensions | Events & observers, plugins, preferences |
+| 4. APIs & Admin | REST & GraphQL (`webapi.xml`), admin UI components |
+| 5. Deep dives | Full reference docs (listed below) |
+
+### Full reference docs
 
 | Guide | Topic |
 |---|---|
 | [magento-intro.md](magento2/magento-intro.md) | Introduction for beginners |
 | [magento-components.md](magento2/magento-components.md) | Components and how they interact |
+| [magento-database.md](magento2/magento-database.md) | Database: EAV vs flat, table families, relations, `store_id` |
+| [magento-database-queries.md](magento2/magento-database-queries.md) | Reading and writing: SQL, Collection, Repository, schema changes |
+| [magento-database-practice.md](magento2/magento-database-practice.md) | Practice lab: 17 exercises in 7 parts, runnable (`scripts/db-practice.sh`) |
+| [magento-product-attributes.md](magento2/magento-product-attributes.md) | Creating a product attribute: input types, manual admin steps, data patch |
 | [magento-composer.md](magento2/magento-composer.md) | Composer and dependency management |
 | [magento-cli.md](magento2/magento-cli.md) | `bin/magento` CLI |
 | [magento-layout-templates.md](magento2/magento-layout-templates.md) | PHTML templates and layout XML |
