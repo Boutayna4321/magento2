@@ -4,13 +4,17 @@ declare(strict_types=1);
 namespace AlpineCommerce\CreditMemo\Block\Adminhtml;
 
 use Magento\Backend\Block\Template;
+use Magento\Backend\Block\Template\Context;
 use Magento\Sales\Model\ResourceModel\Order\Creditmemo\CollectionFactory as CreditmemoCollectionFactory;
 
 class Index extends Template
 {
     public function __construct(
-        private readonly CreditmemoCollectionFactory $creditmemoCollectionFactory
+        Context $context,
+        private readonly CreditmemoCollectionFactory $creditmemoCollectionFactory,
+        array $data = []
     ) {
+        parent::__construct($context, $data);
     }
 
     public function getCreditMemos()

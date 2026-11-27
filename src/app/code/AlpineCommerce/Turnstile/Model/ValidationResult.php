@@ -6,7 +6,7 @@ namespace AlpineCommerce\Turnstile\Model;
 /**
  * Immutable outcome of a Turnstile validation.
  */
-final class ValidationResult
+class ValidationResult
 {
     public const ERROR_NONE = 'none';
     public const ERROR_USER = 'user';

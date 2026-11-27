@@ -1,3 +1,4 @@
+<?php /** @var \Magento\Framework\Escaper $escaper */ ?>
 <?php
 /** @var \Magento\Backend\Block\Template $block */
 $validationResult = $block->getData('validation_result') ?? [];
@@ -53,7 +54,7 @@ $validationResult = $block->getData('validation_result') ?? [];
             <label class="admin__field-label"><span><?= $block->escapeHtml(__('Status')) ?></span></label>
             <div class="admin__field-control">
                 <strong style="color: <?= $validationResult['is_valid'] ? 'green' : 'red' ?>">
-                    <?= $validationResult['is_valid'] ? __('VALID') : __('INVALID') ?>
+                    <?= $escaper->escapeHtml($validationResult['is_valid'] ? __('VALID') : __('INVALID')) ?>
                 </strong>
             </div>
         </div>
