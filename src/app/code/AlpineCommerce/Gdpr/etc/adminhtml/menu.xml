@@ -8,5 +8,12 @@
              sortOrder="90"
              resource="AlpineCommerce_Gdpr::consent_log"
              parent="Magento_Backend::content"/>
+        <add id="AlpineCommerce_Gdpr::consent_log"
+             title="Consent Log"
+             module="AlpineCommerce_Gdpr"
+             sortOrder="10"
+             action="alphacommerce_gdpr/consentlog/index"
+             resource="AlpineCommerce_Gdpr::consent_log"
+             parent="AlpineCommerce_Gdpr::main"/>
     </menu>
 </config>

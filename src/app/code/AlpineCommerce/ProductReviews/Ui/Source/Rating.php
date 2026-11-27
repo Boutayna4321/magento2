@@ -3,7 +3,13 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\ProductReviews\Ui\Source;
 
-class Rating
+use Magento\Framework\Data\OptionSourceInterface;
+
+/**
+ * Star ratings for the review form. Implements OptionSourceInterface so the UI
+ * select element calls toOptionArray() instead of receiving the object itself.
+ */
+class Rating implements OptionSourceInterface
 {
     public function toOptionArray(): array
     {

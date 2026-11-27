@@ -6,6 +6,7 @@
             <item name="provider" xsi:type="string">alphacommerce_pickup_store_info_form.alphacommerce_pickup_store_info_form_data_source</item>
         </item>
         <item name="label" xsi:type="string" translate="true">Pickup Store Information</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
     </argument>
     <settings>
         <namespace>alphacommerce_pickup_store_info_form</namespace>
@@ -13,6 +14,10 @@
         <deps>
             <dep>alphacommerce_pickup_store_info_form.alphacommerce_pickup_store_info_form_data_source</dep>
         </deps>
+        <buttons>
+            <button name="save" class="AlpineCommerce\StorePickup\Block\Adminhtml\Store\Edit\SaveButton"/>
+            <button name="back" class="AlpineCommerce\StorePickup\Block\Adminhtml\Store\Edit\BackButton"/>
+        </buttons>
     </settings>
     <dataSource name="alphacommerce_pickup_store_info_form_data_source">
         <argument name="data" xsi:type="array">
@@ -115,11 +120,15 @@
                     <item name="label" xsi:type="string" translate="true">Country</item>
                     <item name="dataType" xsi:type="string">select</item>
                     <item name="dataScope" xsi:type="string">country_id</item>
-                    <item name="options" xsi:type="array">
-                        <item name="option" xsi:type="object">Magento\Directory\Model\Config\Source\Country</item>
-                    </item>
                 </item>
             </argument>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Directory\Model\Config\Source\Country"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
         <field name="phone" formElement="input">
             <argument name="data" xsi:type="array">
@@ -176,11 +185,15 @@
                     <item name="dataType" xsi:type="string">boolean</item>
                     <item name="dataScope" xsi:type="string">is_active</item>
                     <item name="default" xsi:type="number">1</item>
-                    <item name="options" xsi:type="array">
-                        <item name="option" xsi:type="object">Magento\Config\Model\Config\Source\Yesno</item>
-                    </item>
                 </item>
             </argument>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
     </fieldset>
 </form>

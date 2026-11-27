@@ -86,7 +86,7 @@
                 <label translate="true">Title</label>
             </settings>
         </column>
-        <column name="rating" component="Magento_Ui/js/grid/columns/statusbar">
+        <column name="rating">
             <settings>
                 <filter>textRange</filter>
                 <label translate="true">Rating</label>
