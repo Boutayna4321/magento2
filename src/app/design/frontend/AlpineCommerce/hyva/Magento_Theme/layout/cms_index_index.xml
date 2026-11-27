@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * AlpineCommerce Hyvä child theme: home page.
+ * Replaces the Hyvä demo hero and demo sliders (which depend on the demo content setting)
+ * with our own hero and sliders, using the existing Hyvä slider template.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="hero" remove="true"/>
+        <referenceBlock name="slider-1" remove="true"/>
+        <referenceBlock name="slider-2" remove="true"/>
+        <referenceContainer name="content">
+            <block name="alpine-hero" template="Magento_Theme::elements/alpine-hero.phtml" before="-">
+                <arguments>
+                    <argument name="category_id" xsi:type="string">3</argument>
+                    <!-- Optional image, path relative to the theme web/ directory:
+                    <argument name="image" xsi:type="string">images/hero.jpg</argument> -->
+                </arguments>
+            </block>
+            <block name="alpine-slider-watches"
+                   template="Magento_Catalog::product/slider/product-slider.phtml"
+                   after="alpine-hero">
+                <arguments>
+                    <argument name="title" xsi:type="string" translate="true">Our Watches</argument>
+                    <argument name="category_ids" xsi:type="string">6</argument>
+                    <argument name="page_size" xsi:type="string">8</argument>
+                </arguments>
+            </block>
+            <block name="alpine-slider-gear"
+                   template="Magento_Catalog::product/slider/product-slider.phtml"
+                   after="alpine-slider-watches">
+                <arguments>
+                    <argument name="title" xsi:type="string" translate="true">Gear</argument>
+                    <argument name="category_ids" xsi:type="string">3</argument>
+                    <argument name="page_size" xsi:type="string">8</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>
