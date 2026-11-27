@@ -1,3 +1,4 @@
+<?php /** @var \Magento\Framework\Escaper $escaper */ ?>
 <?php /** @var $block \AlpineCommerce\Rma\Block\Adminhtml\Index */ ?>
 <?php $rmas = $block->getRmas(); ?>
 
@@ -5,12 +6,12 @@
     <table class="data-grid">
         <thead>
             <tr>
-                <th class="data-grid-th"><?= __('RMA #') ?></th>
-                <th class="data-grid-th"><?= __('Order #') ?></th>
-                <th class="data-grid-th"><?= __('Customer') ?></th>
-                <th class="data-grid-th"><?= __('Reason') ?></th>
-                <th class="data-grid-th"><?= __('Status') ?></th>
-                <th class="data-grid-th"><?= __('Created At') ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('RMA #')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Order #')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Customer')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Reason')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Status')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Created At')) ?></th>
             </tr>
         </thead>
         <tbody>
@@ -20,25 +21,25 @@
                     $customerName = $order ? $order->getCustomerName() : __('Guest');
                 ?>
                 <tr>
-                    <td class="data-grid-td"><?= $rma->getRmaId() ?></td>
-                    <td class="data-grid-td"><?= $order ? $order->getIncrementId() : __('N/A') ?></td>
-                    <td class="data-grid-td"><?= $customerName ?></td>
+                    <td class="data-grid-td"><?= $escaper->escapeHtml($rma->getRmaId()) ?></td>
+                    <td class="data-grid-td"><?= $escaper->escapeHtml($order ? $order->getIncrementId() : __('N/A')) ?></td>
+                    <td class="data-grid-td"><?= $escaper->escapeHtml($customerName) ?></td>
                     <td class="data-grid-td"><?= $block->escapeHtml($rma->getReason()) ?></td>
                     <td class="data-grid-td">
                         <?php if ($rma->getStatus() == 'approved'): ?>
-                            <span class="grid-severity-notice"><?= __('Approved') ?></span>
+                            <span class="grid-severity-notice"><?= $escaper->escapeHtml(__('Approved')) ?></span>
                         <?php elseif ($rma->getStatus() == 'rejected'): ?>
-                            <span class="grid-severity-critical"><?= __('Rejected') ?></span>
+                            <span class="grid-severity-critical"><?= $escaper->escapeHtml(__('Rejected')) ?></span>
                         <?php else: ?>
-                            <span class="grid-severity-minor"><?= __('Pending') ?></span>
+                            <span class="grid-severity-minor"><?= $escaper->escapeHtml(__('Pending')) ?></span>
                         <?php endif; ?>
                     </td>
-                    <td class="data-grid-td"><?= $block->formatDate($rma->getCreatedAt()) ?></td>
+                    <td class="data-grid-td"><?= $escaper->escapeHtml($block->formatDate($rma->getCreatedAt())) ?></td>
                 </tr>
             <?php endforeach; ?>
             <?php if (!$rmas->getSize()): ?>
                 <tr>
-                    <td colspan="6" class="data-grid-td"><?= __('No RMA requests found.') ?></td>
+                    <td colspan="6" class="data-grid-td"><?= $escaper->escapeHtml(__('No RMA requests found.')) ?></td>
                 </tr>
             <?php endif; ?>
         </tbody>

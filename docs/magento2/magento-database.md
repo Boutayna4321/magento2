@@ -282,6 +282,10 @@ translated per store view.
 Products and categories belong to an **attribute set**, which determines which
 attributes apply. A configurable product needs `color` and `size`; a bag does not.
 
+> Creating an attribute from scratch — input types, the manual admin steps, the
+> data patch — is covered in
+> [magento-product-attributes.md](magento-product-attributes.md).
+
 ```
 eav_attribute_set          attribute_set_id, entity_type_id, attribute_set_name
         │

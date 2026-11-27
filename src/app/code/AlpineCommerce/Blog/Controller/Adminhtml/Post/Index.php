@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace AlpineCommerce\Blog\Controller\Adminhtml\Post;
 
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\View\Result\Page;
+use Magento\Backend\Model\View\Result\Page;
 
 class Index extends AbstractAction
 {

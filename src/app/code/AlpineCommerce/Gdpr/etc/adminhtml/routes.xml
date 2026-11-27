@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--
+  Admin route of the GDPR module. The route id must match the layout handle
+  alphacommerce_gdpr_consentlog_index.xml (<route id>_<controller>_<action>).
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="admin">
+        <route id="alphacommerce_gdpr" frontName="alphacommerce_gdpr">
+            <module name="AlpineCommerce_Gdpr" before="Magento_Backend"/>
+        </route>
+    </router>
+</config>

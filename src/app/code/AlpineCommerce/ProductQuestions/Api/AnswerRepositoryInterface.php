@@ -10,27 +10,27 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 interface AnswerRepositoryInterface
 {
     /**
-     * @param AnswerInterface $answer
-     * @return AnswerInterface
+     * @param \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface $answer
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
     public function save(AnswerInterface $answer): AnswerInterface;
 
     /**
      * @param int $id
-     * @return AnswerInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getById(int $id): AnswerInterface;
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return AnswerSearchResultsInterface
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\AnswerSearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria): AnswerSearchResultsInterface;
 
     /**
-     * @param AnswerInterface $answer
+     * @param \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface $answer
      * @return bool
      * @throws \Magento\Framework\Exception\CouldNotDeleteException
      */

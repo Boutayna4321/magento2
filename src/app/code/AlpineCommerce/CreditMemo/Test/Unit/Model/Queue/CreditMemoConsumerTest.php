@@ -37,7 +37,7 @@ class CreditMemoConsumerTest extends TestCase
 
         $result = $this->createConfiguredMock(
             \AlpineCommerce\CreditMemo\Api\Data\CreditMemoResultInterface::class,
-            ['isSuccess' => true]
+            ['getStatus' => 'refunded']
         );
 
         $this->creditMemoService->expects($this->once())

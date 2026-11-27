@@ -9,59 +9,65 @@
 
 ---
 
-## B-01 — Non-compliant admin grids with Magento 2.4.8 XSD (6 files)
+## B-01 — Non-compliant admin grids with Magento 2.4.8 XSD — **CLOSED: OBSOLETE**
 
-**Impact: critical.** The affected admin pages crash (or may crash) on
-load: exception `ConfigurableObject` — *"Node "argument" with name "class" is
-required for this type"*.
+> **Status re-checked on 2026-09-29: this entry no longer describes the repository.**
+> It is kept for history, with the verification that closed it.
 
-**Problem**
-The `<listing>` elements use the pre-2.4.x XML format:
-- `<primaryDataSource>` (removed)
-- `<templates><filters><select customScope="...">` (obsolete)
-- `<dataSource>` without child `<dataProvider class="..." name="...">` (mandatory in 2.4.8)
+**Original claim.** Six admin listings used the pre-2.4.x format — `<primaryDataSource>`
+(removed), `<templates><filters><select customScope="...">` (obsolete), and `<dataSource>`
+without a mandatory child `<dataProvider class="..." name="...">` — which raises
+`ConfigurableObject: Node "argument" with name "class" is required` on load. The affected files
+were `Blog/blog_post_listing.xml`, `Blog/blog_category_listing.xml`, `Faq/faq_faq_listing.xml`
+(the canonical module), `LegalPages/legal_page_listing.xml`,
+`ProductQuestions/question_question_listing.xml` and `ProductReviews/review_review_listing.xml`.
 
-**Concerned files**
+**Why it was closed.** The three claimed symptoms no longer exist:
 
-| File | Module |
+| Check | Result on 2026-09-29 |
 |---|---|
-| `Blog/view/adminhtml/ui_component/blog_post_listing.xml` | Blog |
-| `Blog/view/adminhtml/ui_component/blog_category_listing.xml` | Blog |
-| `Faq/view/adminhtml/ui_component/faq_faq_listing.xml` | **Faq (canonical module!)** |
-| `LegalPages/view/adminhtml/ui_component/legal_page_listing.xml` | LegalPages |
-| `ProductQuestions/view/adminhtml/ui_component/question_question_listing.xml` | ProductQuestions |
-| `ProductReviews/view/adminhtml/ui_component/review_review_listing.xml` | ProductReviews |
+| `grep -rl primaryDataSource` over every module XML | no match |
+| every `<dataSource>` has a child `<dataProvider class=… name=…>` | yes, 0 exceptions |
+| `customScope` | 1 occurrence, in `Blog/blog_post_listing.xml` only |
+| `Magento\Ui\Config\Reader\DefinitionMap::read()` (Magento's own reader and schema locator) | parses all AlpineCommerce listings without error |
 
-**Fix** (reference already applied)
-`ProductLabels/view/adminhtml/ui_component/productlabels_label_grid.xml` is the only one
-that is correct: removal of `primaryDataSource`, addition of the child `<dataProvider>` with
-its `<settings>`, modern columns (`selectionsColumn`, actions).
+The Faq listing, described as broken, is in fact the correct modern shape — it was evidently
+fixed without the backlog being updated.
 
-**Priority**: High — 6 modules' admin are affected, including the canonical module.
+**Residual work done.** The one real leftover was the obsolete
+`<templates><filters><select customScope="…">` block in `Blog/blog_post_listing.xml`. It has had
+no effect since 2.4 and every column already declares its own `<filter>`; it was replaced by
+`<filters name="listing_filters"/>`, matching the other five listings.
+
+**Lesson.** The audit that produced this entry was not re-verified against the code. Entries in
+this backlog should be re-checked with a command before being worked on — the same audit that
+wrote B-01 missed a much larger defect sitting in the controllers (see
+[CHANGELOG 1.7.1](CHANGELOG.md#171---2026-09-29): 21 admin controllers injected the frontend
+result page factory and fatal-errored on `setActiveMenu()`).
+
+**Priority**: closed.
 
 ---
 
-## B-02 — StoreLocator: admin in "legacy" style (Block instead of UI Component)
+## B-02 — StoreLocator: admin in "legacy" style (Block instead of UI Component) — **CLOSED: OBSOLETE**
 
-**Impact: medium.** Pedagogical and functional inconsistency with the rest of the repository.
+> **Status re-checked on 2026-09-29: this entry no longer describes the repository.**
 
-**Problem**
-- `StoreLocator/Block/Adminhtml/Store/Listing.php`: grid built in **legacy PHP
-  Block** (no UI Component).
-- `StoreLocator/Block/Adminhtml/Store/Edit.php`: form in Block.
-- No interface in `Api/` (no Service Contract).
+**Original claim.** `StoreLocator/Block/Adminhtml/Store/Listing.php` and `Edit.php` built the
+admin grid and form as legacy PHP Blocks instead of UI Components, and the module had no interface
+in `Api/` — a pedagogical inconsistency against the canonical module (Faq).
 
-**Why this is a problem for the project**
-A learner comparing StoreLocator to the canonical module (Faq) sees **two different
-ways** of doing admin — and no longer knows which is correct. The standards freeze
-(Phase A) assumes that any new module uses UI Components.
+**Why it was closed.** All three points are now false:
 
-**Fix**
-- Migrate the grid to `view/adminhtml/ui_component/store_store_listing.xml` + DataProvider.
-- Define a Service Contract in `Api/` + Repository.
-- Reuse the `Faq` pattern (canonical module).
+| Check | Result on 2026-09-29 |
+|---|---|
+| `StoreLocator/Block/Adminhtml/Store/` | does not exist |
+| UI Components present | `view/adminhtml/ui_component/alphacommerce_store_locator_store_listing.xml` and `…_form.xml` |
+| Service Contract present | `Api/StoreRepositoryInterface.php` + `Api/Data/` |
 
-**Priority**: Medium (Phase C).
+A learner comparing StoreLocator with Faq now sees one way of doing admin, not two.
+
+**Priority**: closed.
 
 ---
 
@@ -74,7 +80,7 @@ ways** of doing admin — and no longer knows which is correct. The standards fr
 | Module | `Api/` interfaces | Analysis |
 |---|---|---|
 | Hreflang | 0 | 100% config SEO module (`system.xml` + Block). No business entity → the Service Contract is **questionable**. |
-| StoreLocator | 0 | Has entities (stores) → the Service Contract is **mandatory** (see B-02). |
+| StoreLocator | 1 (`StoreRepositoryInterface`) | ✅ **Resolved on 2026-09-29** — the Service Contract now exists. Originally listed here with 0 interfaces. |
 | StoreSetup | 0 | Introductory demo module (first module, observers). Destined for simplicity → to **explicitly justify**. |
 
 **Why this is a problem for the project**
@@ -83,7 +89,7 @@ If exceptions exist, they must be **documented as assumed decisions**,
 not as oversights.
 
 **Fix**
-- StoreLocator: covered by B-02.
+- StoreLocator: **done** — `Api/StoreRepositoryInterface.php` exists (re-checked 2026-09-29).
 - Hreflang and StoreSetup: add a "Decision" note in their module doc
   (Phase D) explaining why the Service Contract is not applicable here.
 - If a module cannot be justified, create the Service Contract.

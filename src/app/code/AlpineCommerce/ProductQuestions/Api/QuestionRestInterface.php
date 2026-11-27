@@ -13,27 +13,27 @@ interface QuestionRestInterface
      * @param int $productId
      * @param int $page
      * @param int $pageSize
-     * @return QuestionSearchResultsInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionSearchResultsInterface
      */
     public function getQuestions(int $productId, int $page = 1, int $pageSize = 20): QuestionSearchResultsInterface;
 
     /**
      * @param int $questionId
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function getQuestion(int $questionId): QuestionInterface;
 
     /**
      * @param int $productId
      * @param string $question
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function addQuestion(int $productId, string $question): QuestionInterface;
 
     /**
      * @param int $questionId
      * @param string $question
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function editQuestion(int $questionId, string $question): QuestionInterface;
 
@@ -53,7 +53,7 @@ interface QuestionRestInterface
     /**
      * @param int $questionId
      * @param string $answer
-     * @return AnswerInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\AnswerInterface
      */
     public function answerQuestion(int $questionId, string $answer): AnswerInterface;
 }

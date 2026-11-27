@@ -18,9 +18,9 @@ interface RmaServiceInterface
     /**
      * Create a new RMA request.
      *
-     * @param RmaCreationDataInterface $data
+     * @param \AlpineCommerce\Rma\Api\Data\RmaCreationDataInterface $data
      * @param int $customerId
-     * @return RmaInterface
+     * @return \AlpineCommerce\Rma\Api\Data\RmaInterface
      * @throws NoSuchEntityException
      * @throws LocalizedException
      */
@@ -30,7 +30,7 @@ interface RmaServiceInterface
      * Approve an RMA.
      *
      * @param int $rmaId
-     * @return RmaInterface
+     * @return \AlpineCommerce\Rma\Api\Data\RmaInterface
      * @throws NoSuchEntityException
      * @throws LocalizedException
      */
@@ -41,7 +41,7 @@ interface RmaServiceInterface
      *
      * @param int $rmaId
      * @param string $reason
-     * @return RmaInterface
+     * @return \AlpineCommerce\Rma\Api\Data\RmaInterface
      * @throws NoSuchEntityException
      * @throws LocalizedException
      */
@@ -51,8 +51,8 @@ interface RmaServiceInterface
      * Mark RMA items as received.
      *
      * @param int $rmaId
-     * @param array $itemQtys Order item ID => received quantity
-     * @return RmaInterface
+     * @param float[] $itemQtys Received quantities keyed by order item id
+     * @return \AlpineCommerce\Rma\Api\Data\RmaInterface
      * @throws NoSuchEntityException
      * @throws LocalizedException
      */
@@ -72,7 +72,7 @@ interface RmaServiceInterface
      * Close an RMA (final state).
      *
      * @param int $rmaId
-     * @return RmaInterface
+     * @return \AlpineCommerce\Rma\Api\Data\RmaInterface
      * @throws NoSuchEntityException
      * @throws LocalizedException
      */
@@ -83,7 +83,7 @@ interface RmaServiceInterface
      *
      * @param int $rmaId
      * @param string $status
-     * @return RmaInterface
+     * @return \AlpineCommerce\Rma\Api\Data\RmaInterface
      * @throws NoSuchEntityException
      * @throws LocalizedException
      */
@@ -93,7 +93,7 @@ interface RmaServiceInterface
      * Get all RMAs for an order.
      *
      * @param int $orderId
-     * @return RmaInterface[]
+     * @return \AlpineCommerce\Rma\Api\Data\RmaInterface[]
      */
     public function getByOrder(int $orderId): array;
 

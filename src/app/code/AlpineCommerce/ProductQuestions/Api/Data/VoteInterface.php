@@ -24,7 +24,7 @@ interface VoteInterface
 
     /**
      * @param int $questionId
-     * @return VoteInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\VoteInterface
      */
     public function setQuestionId(int $questionId): VoteInterface;
 
@@ -35,7 +35,7 @@ interface VoteInterface
 
     /**
      * @param int|null $customerId
-     * @return VoteInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\VoteInterface
      */
     public function setCustomerId(?int $customerId): VoteInterface;
 
@@ -46,7 +46,7 @@ interface VoteInterface
 
     /**
      * @param string|null $ip
-     * @return VoteInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\VoteInterface
      */
     public function setIp(?string $ip): VoteInterface;
 
@@ -57,7 +57,7 @@ interface VoteInterface
 
     /**
      * @param int $value
-     * @return VoteInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\VoteInterface
      */
     public function setValue(int $value): VoteInterface;
 

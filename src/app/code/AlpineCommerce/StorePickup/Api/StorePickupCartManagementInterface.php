@@ -14,7 +14,7 @@ interface StorePickupCartManagementInterface
 
     /**
      * @param int $cartId
-     * @return array[]
+     * @return \AlpineCommerce\StorePickup\Api\Data\PickupStoreInterface[]
      */
     public function getAvailableStores(int $cartId): array;
 }

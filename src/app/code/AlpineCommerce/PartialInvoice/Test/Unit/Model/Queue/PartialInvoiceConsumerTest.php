@@ -37,7 +37,7 @@ class PartialInvoiceConsumerTest extends TestCase
 
         $result = $this->createConfiguredMock(
             \AlpineCommerce\AutoInvoice\Api\Data\InvoiceResultInterface::class,
-            ['isSuccess' => true]
+            ['getStatus' => 'invoiced']
         );
 
         $this->partialInvoiceService->expects($this->once())

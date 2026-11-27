@@ -3,11 +3,17 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\StorePickup\Ui\DataProvider;
 
-use AlpineCommerce\StorePickup\Api\Data\StoreInfoInterfaceFactory;
-use AlpineCommerce\StorePickup\Api\StoreInfoRepositoryInterface;
+use AlpineCommerce\StorePickup\Model\ResourceModel\StoreInfo\CollectionFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 
+/**
+ * Data provider of the pickup store form (new and edit).
+ *
+ * $collection must be a real collection: the form component calls addFilter() on the
+ * provider, which forwards to $collection->addFieldToFilter(). Without it the
+ * "Add New Store" page failed with an exception in AbstractDataProvider.
+ */
 class StoreInfoFormDataProvider extends AbstractDataProvider
 {
     private array $loadedData = [];
@@ -16,35 +22,28 @@ class StoreInfoFormDataProvider extends AbstractDataProvider
         $name,
         $primaryFieldName,
         $requestFieldName,
-        StoreInfoRepositoryInterface $storeInfoRepository,
-        StoreInfoInterfaceFactory $storeInfoFactory,
+        CollectionFactory $collectionFactory,
         RequestInterface $request,
         array $meta = [],
         array $data = []
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
-        $this->storeInfoRepository = $storeInfoRepository;
-        $this->storeInfoFactory = $storeInfoFactory;
-        $this->request = $request;
-    }
+        $this->collection = $collectionFactory->create();
 
-    private StoreInfoRepositoryInterface $storeInfoRepository;
-    private StoreInfoInterfaceFactory $storeInfoFactory;
-    private RequestInterface $request;
+        $entityId = (int) $request->getParam($requestFieldName);
+        if ($entityId) {
+            $this->collection->addFieldToFilter($primaryFieldName, $entityId);
+        }
+    }
 
     public function getData(): array
     {
-        if (!empty($this->loadedData)) {
+        if ($this->loadedData) {
             return $this->loadedData;
         }
 
-        $entityId = (int) $this->request->getParam($this->primaryFieldName);
-
-        if ($entityId) {
-            $storeInfo = $this->storeInfoRepository->getById($entityId);
-            $this->loadedData = [$entityId => $storeInfo->getData()];
-        } else {
-            $this->loadedData = [0 => []];
+        foreach ($this->collection->getItems() as $storeInfo) {
+            $this->loadedData[(int) $storeInfo->getId()] = $storeInfo->getData();
         }
 
         return $this->loadedData;

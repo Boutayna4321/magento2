@@ -390,6 +390,7 @@ return [
         'AlpineCommerce_LegalPages' => 1,
         'AlpineCommerce_LoyaltyProgram' => 1,
         'AlpineCommerce_PartialInvoice' => 1,
+        'AlpineCommerce_ProductAttribute' => 1,
         'AlpineCommerce_ProductLabels' => 1,
         'AlpineCommerce_ProductQuestions' => 1,
         'AlpineCommerce_ProductReviews' => 1,

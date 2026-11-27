@@ -5,7 +5,7 @@ namespace AlpineCommerce\Rma\Model\Rma;
 
 use AlpineCommerce\Rma\Api\Data\RmaInterface;
 
-final class State
+class State
 {
     /**
      * Allowed status transitions keyed by current status.

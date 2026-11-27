@@ -14,8 +14,8 @@ interface VatValidationRepositoryInterface
     /**
      * Save a VAT validation record.
      *
-     * @param VatValidationInterface $vatValidation
-     * @return VatValidationInterface
+     * @param \AlpineCommerce\EuVat\Api\Data\VatValidationInterface $vatValidation
+     * @return \AlpineCommerce\EuVat\Api\Data\VatValidationInterface
      */
     public function save(VatValidationInterface $vatValidation): VatValidationInterface;
 
@@ -23,14 +23,14 @@ interface VatValidationRepositoryInterface
      * Retrieve a VAT validation by ID.
      *
      * @param int $id
-     * @return VatValidationInterface
+     * @return \AlpineCommerce\EuVat\Api\Data\VatValidationInterface
      */
     public function getById(int $id): VatValidationInterface;
 
     /**
      * Retrieve a list of VAT validations matching search criteria.
      *
-     * @param SearchCriteriaInterface $searchCriteria
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      * @return \AlpineCommerce\EuVat\Api\Data\VatValidationSearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria): \AlpineCommerce\EuVat\Api\Data\VatValidationSearchResultsInterface;
@@ -38,7 +38,7 @@ interface VatValidationRepositoryInterface
     /**
      * Delete a VAT validation record.
      *
-     * @param VatValidationInterface $vatValidation
+     * @param \AlpineCommerce\EuVat\Api\Data\VatValidationInterface $vatValidation
      * @return bool
      */
     public function delete(VatValidationInterface $vatValidation): bool;

@@ -1,0 +1,15 @@
+<?php
+/** @var \AlpineCommerce\LoyaltyProgram\Block\Customer\Balance $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$balance = (int) $block->getBalance();
+?>
+<section class="card max-w-xl">
+    <p class="text-sm font-medium uppercase tracking-wide text-fg-secondary"><?= $escaper->escapeHtml(__('Loyalty points')) ?></p>
+    <p class="mt-2 flex items-baseline gap-2">
+        <span class="text-5xl font-semibold text-primary"><?= $escaper->escapeHtml($balance) ?></span>
+        <span class="text-lg text-fg-secondary"><?= $escaper->escapeHtml(__('points')) ?></span>
+    </p>
+    <p class="mt-4 text-fg-secondary">
+        <?= $escaper->escapeHtml(__('You earn points on every paid order and can use them as a discount at checkout.')) ?>
+    </p>
+</section>

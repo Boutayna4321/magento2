@@ -5,7 +5,11 @@
     <body>
         <referenceContainer name="content">
             <block class="Magento\Backend\Block\Template" template="AlpineCommerce_Hreflang::settings/info.phtml"
-                   name="hreflang_settings_info"/>
+                   name="hreflang_settings_info">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">AlpineCommerce\Hreflang\ViewModel\SettingsInfo</argument>
+                </arguments>
+            </block>
         </referenceContainer>
     </body>
 </page>

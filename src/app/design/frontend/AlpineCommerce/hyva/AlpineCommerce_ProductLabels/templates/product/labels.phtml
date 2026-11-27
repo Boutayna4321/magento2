@@ -1,0 +1,11 @@
+<?php
+/**
+ * Product labels for Hyvä: shown as badges above the gallery (the module's position
+ * classes have no CSS in Hyvä). Styles: web/tailwind/alpinecommerce.css.
+ */
+/** @var \AlpineCommerce\ProductLabels\Block\Product\Labels $block */
+$product = $block->getProduct();
+?>
+<?php if ($product): ?>
+    <?= /* @noEscape (escaped in Labels::getLabelsHtml) */ $block->getLabelsHtml($product) ?>
+<?php endif; ?>

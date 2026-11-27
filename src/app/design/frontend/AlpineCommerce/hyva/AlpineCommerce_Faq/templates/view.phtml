@@ -1,0 +1,15 @@
+<?php
+/** @var \AlpineCommerce\Faq\Block\Detail $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$faq = $block->getFaq();
+?>
+<article class="max-w-3xl py-6">
+    <a class="mb-6 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+       href="<?= $escaper->escapeUrl($block->getUrl('faq')) ?>">
+        <span aria-hidden="true">&larr;</span> <?= $escaper->escapeHtml(__('Back to FAQ list')) ?>
+    </a>
+    <div class="card">
+        <h2 class="mb-4 text-2xl font-semibold text-fg"><?= $escaper->escapeHtml($faq->getTitle()) ?></h2>
+        <div class="leading-relaxed text-fg-secondary"><?= /* @noEscape */ nl2br($escaper->escapeHtml($faq->getContent())) ?></div>
+    </div>
+</article>

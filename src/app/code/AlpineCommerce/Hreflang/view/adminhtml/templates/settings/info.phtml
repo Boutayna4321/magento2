@@ -1,12 +1,7 @@
 <?php
-/** @var \Magento\Framework\View\Element\Template $block */
-/** @var \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig */
-/** @var \Magento\Store\Model\StoreManagerInterface $storeManager */
-$scopeConfig = $block->getLayout()->createBlock(\Magento\Framework\View\Element\Context::class)->getScopeConfig();
-$storeManager = $block->getLayout()->createBlock(\Magento\Framework\View\Element\Context::class)->getStoreManager();
-
-$enabledPath = 'alphacommerce_hreflang/general/enabled';
-$xDefaultPath = 'alphacommerce_hreflang/general/x_default';
+/** @var \Magento\Backend\Block\Template $block */
+/** @var \AlpineCommerce\Hreflang\ViewModel\SettingsInfo $viewModel */
+$viewModel = $block->getData('view_model');
 ?>
 <div class="admin__scope-old">
     <div class="page-actions">
@@ -71,16 +66,7 @@ $xDefaultPath = 'alphacommerce_hreflang/general/x_default';
                 <span><?= $block->escapeHtml(__('Active Stores')) ?></span>
             </label>
             <div class="admin__field-control">
-                <?php
-                $stores = $storeManager->getStores();
-                $activeStores = [];
-                foreach ($stores as $store) {
-                    if ($store->getIsActive()) {
-                        $activeStores[] = $store->getName() . ' (' . $store->getCode() . ')';
-                    }
-                }
-                echo $block->escapeHtml(implode(', ', $activeStores));
-                ?>
+                <?= $block->escapeHtml(implode(', ', $viewModel->getActiveStoreLabels())) ?>
             </div>
         </div>
 

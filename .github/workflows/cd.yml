@@ -38,7 +38,9 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          # The Dockerfile copies php.ini, opcache.ini, entrypoint.sh and
+          # zz-magento-pool.conf from php/, so php/ is the build context.
+          context: ./php
           file: ./php/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}

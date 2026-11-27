@@ -1,0 +1,22 @@
+<?php
+/** @var \AlpineCommerce\LegalPages\Block\Listing $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$pages = $block->getPages();
+?>
+<section class="max-w-3xl py-6">
+    <?php if ($pages): ?>
+        <ul class="grid gap-4 sm:grid-cols-2">
+            <?php foreach ($pages as $page): ?>
+                <li class="card card-interactive">
+                    <a class="after:absolute after:inset-0 text-lg font-semibold text-fg"
+                       href="<?= $escaper->escapeUrl($block->getPageUrl($page)) ?>">
+                        <?= $escaper->escapeHtml($page->getTitle()) ?>
+                    </a>
+                    <p class="mt-1 text-sm uppercase tracking-wide text-fg-secondary"><?= $escaper->escapeHtml($page->getType()) ?></p>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p class="card text-fg-secondary"><?= $escaper->escapeHtml(__('No legal pages yet.')) ?></p>
+    <?php endif; ?>
+</section>

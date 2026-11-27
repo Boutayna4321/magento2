@@ -23,7 +23,7 @@ interface ReviewImageInterface
 
     /**
      * @param int $reviewId
-     * @return ReviewImageInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewImageInterface
      */
     public function setReviewId(int $reviewId): ReviewImageInterface;
 
@@ -34,7 +34,7 @@ interface ReviewImageInterface
 
     /**
      * @param string $imagePath
-     * @return ReviewImageInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewImageInterface
      */
     public function setImagePath(string $imagePath): ReviewImageInterface;
 
@@ -45,7 +45,7 @@ interface ReviewImageInterface
 
     /**
      * @param int $status
-     * @return ReviewImageInterface
+     * @return \AlpineCommerce\ProductReviews\Api\Data\ReviewImageInterface
      */
     public function setStatus(int $status): ReviewImageInterface;
 

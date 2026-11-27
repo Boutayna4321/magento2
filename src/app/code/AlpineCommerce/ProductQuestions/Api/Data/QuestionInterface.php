@@ -29,7 +29,7 @@ interface QuestionInterface
 
     /**
      * @param int $productId
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function setProductId(int $productId): QuestionInterface;
 
@@ -40,7 +40,7 @@ interface QuestionInterface
 
     /**
      * @param int|null $customerId
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function setCustomerId(?int $customerId): QuestionInterface;
 
@@ -51,7 +51,7 @@ interface QuestionInterface
 
     /**
      * @param string|null $customerName
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function setCustomerName(?string $customerName): QuestionInterface;
 
@@ -62,7 +62,7 @@ interface QuestionInterface
 
     /**
      * @param string|null $customerEmail
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function setCustomerEmail(?string $customerEmail): QuestionInterface;
 
@@ -73,7 +73,7 @@ interface QuestionInterface
 
     /**
      * @param string $question
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function setQuestion(string $question): QuestionInterface;
 
@@ -84,7 +84,7 @@ interface QuestionInterface
 
     /**
      * @param int $status
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function setStatus(int $status): QuestionInterface;
 
@@ -95,7 +95,7 @@ interface QuestionInterface
 
     /**
      * @param bool $isVerifiedPurchase
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function setIsVerifiedPurchase(bool $isVerifiedPurchase): QuestionInterface;
 
@@ -106,7 +106,7 @@ interface QuestionInterface
 
     /**
      * @param int $helpfulCount
-     * @return QuestionInterface
+     * @return \AlpineCommerce\ProductQuestions\Api\Data\QuestionInterface
      */
     public function setHelpfulCount(int $helpfulCount): QuestionInterface;
 

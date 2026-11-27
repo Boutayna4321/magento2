@@ -25,13 +25,9 @@ interface InvoiceAutomationInterface
      * Get the auto-invoice configuration for a given store.
      *
      * @param int $storeId
-     * @return array{
-     *     enabled: bool,
-     *     payment_methods: array<string>,
-     *     capture_mode: string
-     * }
+     * @return \AlpineCommerce\AutoInvoice\Api\Data\AutoInvoiceConfigInterface
      */
-    public function getConfig(int $storeId): array;
+    public function getConfig(int $storeId): \AlpineCommerce\AutoInvoice\Api\Data\AutoInvoiceConfigInterface;
 
     /**
      * Determine whether the order is eligible for auto-invoicing.

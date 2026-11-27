@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\StorePickup\Model\Checkout;
 
+use AlpineCommerce\StorePickup\Api\Data\PickupStoreInterface;
+use AlpineCommerce\StorePickup\Api\Data\PickupStoreInterfaceFactory;
 use AlpineCommerce\StorePickup\Api\StoreAvailabilityInterface;
 use AlpineCommerce\StorePickup\Api\StoreInfoRepositoryInterface;
 use AlpineCommerce\StorePickup\Api\StorePickupCartManagementInterface;
@@ -15,7 +17,8 @@ class StorePickupCartManagement implements StorePickupCartManagementInterface
     public function __construct(
         private readonly CartRepositoryInterface $cartRepository,
         private readonly StoreInfoRepositoryInterface $storeInfoRepository,
-        private readonly StoreAvailabilityInterface $storeAvailability
+        private readonly StoreAvailabilityInterface $storeAvailability,
+        private readonly PickupStoreInterfaceFactory $pickupStoreFactory
     ) {
     }
 
@@ -43,6 +46,10 @@ class StorePickupCartManagement implements StorePickupCartManagementInterface
         foreach ($quote->getAllVisibleItems() as $item) {
             $items[$item->getSku()] = ($items[$item->getSku()] ?? 0) + (float)$item->getQty();
         }
-        return $this->storeAvailability->getAvailableStores($items);
+
+        return array_map(
+            fn (array $store): PickupStoreInterface => $this->pickupStoreFactory->create(['data' => $store]),
+            $this->storeAvailability->getAvailableStores($items)
+        );
     }
 }

@@ -16,26 +16,26 @@ interface BlogRestInterface
     /**
      * @param int $page
      * @param int $pageSize
-     * @return BlogPostSearchResultsInterface
+     * @return \AlpineCommerce\Blog\Api\Data\BlogPostSearchResultsInterface
      */
     public function getPosts(int $page = 1, int $pageSize = 20): BlogPostSearchResultsInterface;
 
     /**
      * @param int $postId
-     * @return BlogPostInterface
+     * @return \AlpineCommerce\Blog\Api\Data\BlogPostInterface
      */
     public function getPost(int $postId): BlogPostInterface;
 
     /**
      * @param int $page
      * @param int $pageSize
-     * @return BlogCategorySearchResultsInterface
+     * @return \AlpineCommerce\Blog\Api\Data\BlogCategorySearchResultsInterface
      */
     public function getCategories(int $page = 1, int $pageSize = 20): BlogCategorySearchResultsInterface;
 
     /**
      * @param int $categoryId
-     * @return BlogCategoryInterface
+     * @return \AlpineCommerce\Blog\Api\Data\BlogCategoryInterface
      */
     public function getCategory(int $categoryId): BlogCategoryInterface;
 }

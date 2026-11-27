@@ -4,6 +4,7 @@
     <preference for="AlpineCommerce\StorePickup\Api\StoreInfoRepositoryInterface" type="AlpineCommerce\StorePickup\Model\StoreInfoRepository"/>
     <preference for="AlpineCommerce\StorePickup\Api\StoreAvailabilityInterface" type="AlpineCommerce\StorePickup\Model\StoreAvailability"/>
     <preference for="AlpineCommerce\StorePickup\Api\StorePickupCartManagementInterface" type="AlpineCommerce\StorePickup\Model\Checkout\StorePickupCartManagement"/>
+    <preference for="AlpineCommerce\StorePickup\Api\Data\PickupStoreInterface" type="AlpineCommerce\StorePickup\Model\Data\PickupStore"/>
 
     <type name="Magento\OfflineShipping\Model\Carrier\Flatrate">
         <plugin name="alpinecommerce_filter_flatrate"

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlpineCommerce — Magento 2 Learning Path</title>
+  <meta name="description" content="A 5-phase, blog-style learning path for junior Magento 2 developers. From zero to building modules, APIs, and admin UI components.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/articles.json"></script>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    [x-cloak] { display: none !important; }
+    body { font-family: 'Inter Tight', system-ui, sans-serif; }
+    code { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="font-sans bg-off-white text-charcoal">
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="site-logo">
+        <svg viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="#D4551A" stroke-width="2" fill="none"/>
+          <polygon points="20,8 32,15 32,25 20,32 8,25 8,15" stroke="#F1BC1B" stroke-width="1.5" fill="none"/>
+          <polygon points="20,14 26,18 26,22 20,26 14,22 14,18" fill="#D4551A"/>
+        </svg>
+        <span>AlpineCommerce Dev Docs</span>
+      </a>
+      <nav>
+        <a href="index.html" class="text-sm font-medium text-charcoal hover:text-orange">Learning Path</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <h1 class="hero-title">Magento 2 — Quick-Start Learning Path</h1>
+      <p class="hero-subtitle">A 5-phase, blog-style journey for junior developers — from Magento basics to building modules, APIs, and admin features. Each article links to the full reference docs when you need deeper detail.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="value">18</div>
+          <div class="label">Articles</div>
+        </div>
+        <div class="hero-stat">
+          <div class="value">5</div>
+          <div class="label">Phases</div>
+        </div>
+        <div class="hero-stat">
+          <div class="value">~2h</div>
+          <div class="label">Reading time</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Jump Nav -->
+  <nav class="section-nav">
+    <div class="section-nav-container">
+      <ul class="nav-list">
+        <li><a href="#phase1" class="nav-item active">Phase 1: Core</a></li>
+        <li><a href="#phase2" class="nav-item">Phase 2: Frontend</a></li>
+        <li><a href="#phase3" class="nav-item">Phase 3: Extensions</a></li>
+        <li><a href="#phase4" class="nav-item">Phase 4: APIs & Admin</a></li>
+        <li><a href="#phasedesc" class="nav-item">At a glance</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="max-width px-4 sm:px-6 lg:px-8 py-12">
+
+    <!-- Phase 1 -->
+    <section id="phase1" class="mb-16">
+      <div class="flex items-center gap-4 mb-4">
+        <svg class="phase-icon" viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="#D4551A" stroke-width="2" fill="none"/>
+          <polygon points="20,8 32,15 32,25 20,32 8,25 8,15" stroke="#F1BC1B" stroke-width="1.5" fill="none"/>
+          <polygon points="20,14 26,18 26,22 20,26 14,22 14,18" fill="#D4551A"/>
+        </svg>
+        <h2 class="text-3xl font-bold text-charcoal">Phase 1 — Core Concepts</h2>
+      </div>
+      <p class="text-lg text-charcoal-300 max-w-3xl mb-8">Prerequisite: PHP OOP. Understand what Magento is, how modules are structured, how requests flow, and how the dependency-injection container works.</p>
+
+      <div class="cards-grid cards-grid-3">
+        <a href="articles/01-what-is-magento.html" class="phase-card phase-card--orange">
+          <span class="phase-badge phase-badge--orange">1</span>
+          <h3 class="phase-title">What Even Is Magento?</h3>
+          <p class="phase-desc">Magento vs Laravel/Symfony, the four areas, request lifecycle, EAV vs flat.</p>
+          <div class="article-meta">~5 min</div>
+        </a>
+        <a href="articles/02-module-anatomy.html" class="phase-card phase-card--orange">
+          <span class="phase-badge phase-badge--orange">2</span>
+          <h3 class="phase-title">Inside a Magento Module</h3>
+          <p class="phase-desc">Folder structure, registration.php, module.xml, routes, db_schema, webapi.</p>
+          <div class="article-meta">~8 min</div>
+        </a>
+        <a href="articles/03-request-lifecycle.html" class="phase-card phase-card--orange">
+          <span class="phase-badge phase-badge--orange">3</span>
+          <h3 class="phase-title">The Request Lifecycle</h3>
+          <p class="phase-desc">Browser → Nginx → index.php → Router → Controller → Repository → Block → Template.</p>
+          <div class="article-meta">~8 min</div>
+        </a>
+        <a href="articles/04-dependency-injection.html" class="phase-card phase-card--orange">
+          <span class="phase-badge phase-badge--orange">4</span>
+          <h3 class="phase-title">Dependency Injection</h3>
+          <p class="phase-desc">Object Manager, di.xml, service contracts, interfaces vs implementations.</p>
+          <div class="article-meta">~8 min</div>
+        </a>
+        <a href="articles/05-database-model.html" class="phase-card phase-card--orange">
+          <span class="phase-badge phase-badge--orange">5</span>
+          <h3 class="phase-title">The Database Model</h3>
+          <p class="phase-desc">EAV vs Flat: why Magento's data model looks the way it does.</p>
+          <div class="article-meta">~8 min</div>
+        </a>
+      </div>
+      <div class="mt-6">
+        <a href="articles/01-what-is-magento.html" class="inline-flex items-center gap-1 text-sm font-semibold text-orange no-underline">Start Phase 1 →</a>
+      </div>
+    </section>
+
+    <!-- Phase 2 -->
+    <section id="phase2" class="mb-16">
+      <div class="flex items-center gap-4 mb-4">
+        <svg class="phase-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="12,2 22,8 22,16 12,22 2,16 2,8" stroke="#F1BC1B" stroke-width="2" fill="none"/>
+        </svg>
+        <h2 class="text-3xl font-bold text-charcoal">Phase 2 — The Frontend Trinity</h2>
+      </div>
+      <p class="text-lg text-charcoal-300 max-w-3xl mb-8">HTML, CSS, and JavaScript in Magento — and why there are two frontend stacks (Luma + Hyvä).</p>
+
+      <div class="md-grid md-grid-2 gap-8">
+        <div>
+          <h3 class="text-lg font-semibold text-charcoal mb-3">HTML</h3>
+          <div class="space-y-3">
+            <a href="articles/06-layout-xml.html" class="block article-list-item">
+              <span class="article-number">1</span>
+              <span class="article-list-link">Layout XML — containers, blocks, referenceContainer</span>
+              <span class="article-meta">~8 min</span>
+            </a>
+            <a href="articles/07-phtml-templates.html" class="block article-list-item">
+              <span class="article-number">2</span>
+              <span class="article-list-link">PHTML Templates — $block, escaping, security</span>
+              <span class="article-meta">~8 min</span>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-charcoal mb-3">CSS</h3>
+          <div class="space-y-3">
+            <a href="articles/08-themes-and-less.html" class="block article-list-item">
+              <span class="article-number">1</span>
+              <span class="article-list-link">Themes and LESS — fallback chain, _extend.less</span>
+              <span class="article-meta">~10 min</span>
+            </a>
+            <a href="articles/09-luma-vs-hyva.html" class="block article-list-item">
+              <span class="article-number">2</span>
+              <span class="article-list-link">Luma vs Hyvä — why AlpineCommerce uses both</span>
+              <span class="article-meta">~8 min</span>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-charcoal mb-3">JS</h3>
+          <div class="space-y-3">
+            <a href="articles/10-requirejs.html" class="block article-list-item">
+              <span class="article-number">1</span>
+              <span class="article-list-link">RequireJS — define(), require(), aliases</span>
+              <span class="article-meta">~8 min</span>
+            </a>
+            <a href="articles/11-knockoutjs.html" class="block article-list-item">
+              <span class="article-number">2</span>
+              <span class="article-list-link">KnockoutJS — observables, data-bind, components</span>
+              <span class="article-meta">~10 min</span>
+            </a>
+            <a href="articles/12-magento-js-libs.html" class="block article-list-item">
+              <span class="article-number">3</span>
+              <span class="article-list-link">Magento JS Libraries — mage/storage, mage/translate</span>
+              <span class="article-meta">~8 min</span>
+            </a>
+            <a href="articles/13-integrating-js.html" class="block article-list-item">
+              <span class="article-number">4</span>
+              <span class="article-list-link">Integrating JS — data-mage-init, x-magento-init</span>
+              <span class="article-meta">~10 min</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 3 -->
+    <section id="phase3" class="mb-16">
+      <div class="flex items-center gap-4 mb-4">
+        <svg class="phase-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2l4 6H8l4-6z" stroke="#D4551A" stroke-width="2" fill="none"/>
+          <path d="M4 8l8 8v6l-8-8zM12 16l8-6v8l-8 6z" stroke="#D4551A" stroke-width="2" fill="none"/>
+        </svg>
+        <h2 class="text-3xl font-bold text-charcoal">Phase 3 — Extension Points</h2>
+      </div>
+      <p class="text-lg text-charcoal-300 max-w-3xl mb-8">How to change Magento <strong>without touching core code</strong> — events, observers, plugins, and preferences.</p>
+
+      <div class="cards-grid cards-grid-3">
+        <a href="articles/14-events-observers.html" class="phase-card phase-card--orange">
+          <span class="phase-badge phase-badge--orange">1</span>
+          <h3 class="phase-title">Events and Observers</h3>
+          <p class="phase-desc">Dispatch events, listen with observers in events.xml.</p>
+          <div class="article-meta">~8 min</div>
+        </a>
+        <a href="articles/15-plugins.html" class="phase-card phase-card--orange">
+          <span class="phase-badge phase-badge--orange">2</span>
+          <h3 class="phase-title">Plugins</h3>
+          <p class="phase-desc">Before/after/around — modify method behavior without replacement.</p>
+          <div class="article-meta">~10 min</div>
+        </a>
+        <a href="articles/16-preferences.html" class="phase-card phase-card--orange">
+          <span class="phase-badge phase-badge--orange">3</span>
+          <h3 class="phase-title">Preferences</h3>
+          <p class="phase-desc">Swap an interface for a different implementation in di.xml.</p>
+          <div class="article-meta">~8 min</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Phase 4 -->
+    <section id="phase4" class="mb-16">
+      <div class="flex items-center gap-4 mb-4">
+        <svg class="phase-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2l8 6v8l-8 6-8-6V8z" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+        </svg>
+        <h2 class="text-3xl font-bold text-charcoal">Phase 4 — APIs & Admin</h2>
+      </div>
+      <p class="text-lg text-charcoal-300 max-w-3xl mb-8">REST & GraphQL endpoints, and the admin's UI Component rendering pipeline (XML → JavaScript → HTML).</p>
+
+      <div class="cards-grid cards-grid-3">
+        <a href="articles/17-rest-graphql.html" class="phase-card phase-card--charcoal">
+          <span class="phase-badge phase-badge--charcoal">1</span>
+          <h3 class="phase-title">REST and GraphQL</h3>
+          <p class="phase-desc">webapi.xml, service contracts as APIs, GraphQL resolvers.</p>
+          <div class="article-meta">~10 min</div>
+        </a>
+        <a href="articles/18-ui-components.html" class="phase-card phase-card--charcoal">
+          <span class="phase-badge phase-badge--charcoal">2</span>
+          <h3 class="phase-title">Admin UI Components</h3>
+          <p class="phase-desc">Admin grids and forms: XML → JS → HTML.</p>
+          <div class="article-meta">~10 min</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- At a glance -->
+    <section id="phasedesc" class="mb-16">
+      <div class="flex items-center gap-4 mb-4">
+        <svg class="phase-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+          <path d="M12 7v5l3 3" stroke="#D4551A" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+        <h2 class="text-3xl font-bold text-charcoal">At a Glance</h2>
+      </div>
+      <pre class="bg-charcoal-900 text-charcoal-100 p-6 rounded-lg overflow-x-auto"><code class="text-sm">Phase 1: Core        →  articles/01-05
+                       │
+Phase 2: Frontend     →  articles/06-13  (HTML, CSS, JS)
+                       │
+Phase 3: Extensions   →  articles/14-16  (events, plugins, preferences)
+                       │
+Phase 4: APIs & Admin →  articles/17-18
+                       │
+Phase 5: Deep dives   →  docs/magento2/*.md  (full reference docs)</code></pre>
+    </section>
+
+  </main>
+
+  <!-- Back to top -->
+  <button id="backToTopBtn" class="back-to-top" aria-label="Back to top">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="square" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </button>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-top">
+        <a href="index.html" class="footer-logo">
+          <svg viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="#F1BC1B" stroke-width="2" fill="none"/>
+            <polygon points="20,8 32,15 32,25 20,32 8,25 8,15" stroke="#F1BC1B" stroke-width="1.5" fill="none"/>
+            <polygon points="20,14 26,18 26,22 20,26 14,22 14,18" fill="#D4551A"/>
+          </svg>
+          <span>AlpineCommerce Dev Docs</span>
+        </a>
+        <span class="text-sm text-charcoal-200">5 Phases • 18 Articles • ~2h read</span>
+      </div>
+      <p class="text-sm text-charcoal-200">All documentation open-source. <a href="https://github.com/Kilo-Org/kilocode" class="text-orange hover:text-orange-600">Report an issue</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

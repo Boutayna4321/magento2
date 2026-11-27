@@ -4,13 +4,17 @@ declare(strict_types=1);
 namespace AlpineCommerce\Rma\Block\Adminhtml;
 
 use Magento\Backend\Block\Template;
+use Magento\Backend\Block\Template\Context;
 use AlpineCommerce\Rma\Model\ResourceModel\Rma\CollectionFactory as RmaCollectionFactory;
 
 class Index extends Template
 {
     public function __construct(
-        private readonly RmaCollectionFactory $rmaCollectionFactory
+        Context $context,
+        private readonly RmaCollectionFactory $rmaCollectionFactory,
+        array $data = []
     ) {
+        parent::__construct($context, $data);
     }
 
     public function getRmas()

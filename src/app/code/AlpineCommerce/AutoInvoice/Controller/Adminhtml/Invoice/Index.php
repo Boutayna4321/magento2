@@ -5,6 +5,7 @@ namespace AlpineCommerce\AutoInvoice\Controller\Adminhtml\Invoice;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 
 class Index extends Action
@@ -18,7 +19,7 @@ class Index extends Action
         parent::__construct($context);
     }
 
-    public function execute(): \Magento\Framework\View\Result\Page
+    public function execute(): Page
     {
         $page = $this->pageFactory->create();
         $page->getConfig()->getTitle()->prepend(__('Auto Invoice'));

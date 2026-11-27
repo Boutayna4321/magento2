@@ -1,0 +1,16 @@
+<?php
+/** @var \AlpineCommerce\Blog\Block\Detail $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$post = $block->getPost();
+?>
+<article class="max-w-3xl py-6">
+    <a class="mb-6 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+       href="<?= $escaper->escapeUrl($block->getUrl('blog')) ?>">
+        <span aria-hidden="true">&larr;</span> <?= $escaper->escapeHtml(__('Back to blog')) ?>
+    </a>
+    <h2 class="mb-2 text-3xl font-semibold text-fg"><?= $escaper->escapeHtml($post->getTitle()) ?></h2>
+    <?php if ($post->getAuthor()): ?>
+        <p class="mb-8 text-fg-secondary"><?= $escaper->escapeHtml(__('By %1', $post->getAuthor())) ?></p>
+    <?php endif; ?>
+    <div class="space-y-4 text-lg leading-relaxed text-fg"><?= /* @noEscape */ nl2br($escaper->escapeHtml($post->getContent())) ?></div>
+</article>

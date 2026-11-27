@@ -1,0 +1,54 @@
+<?php
+/**
+ * AlpineCommerce Hyvä child theme: home page hero.
+ *
+ * Same markup and CSS classes as the Hyvä demo hero, so no Tailwind build is needed.
+ * Optional image: add the "image" layout argument (path relative to the theme web/ directory,
+ * e.g. images/hero.jpg) to render it in a card next to the text. Without it, nothing is rendered there.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+$categoryId = (int) $block->getData('category_id');
+$image = (string) $block->getData('image');
+?>
+<section id="alpine-hero" class="prose mb-24 lg:mt-6" aria-labelledby="alpine-hero-title">
+    <div class="pt-6 pb-12 sm:p-16 xl:py-32">
+        <hgroup class="my-0 text-primary-darker text-xl md:text-2xl">
+            <h1 id="alpine-hero-title" class="mt-0 xl:text-6xl">
+                <?= $escaper->escapeHtml(__('Gear up for every adventure')) ?>
+            </h1>
+            <p class="my-0 uppercase">
+                <?= $escaper->escapeHtml(__('Watches, bags and fitness gear selected for quality and comfort.')) ?>
+            </p>
+        </hgroup>
+        <?php if ($categoryId > 0): ?>
+            <p class="mt-8 mb-0 inline-flex flex-wrap gap-4">
+                <a class="btn btn-secondary"
+                   href="<?= $escaper->escapeUrl($block->getUrl('catalog/category/view', ['id' => $categoryId])) ?>">
+                    <?= $escaper->escapeHtml(__('Shop Gear')) ?>
+                    <?= $lucideIcons->chevronsRightHtml('', 20, 20, ['aria-hidden' => 'true']) ?>
+                </a>
+            </p>
+        <?php endif; ?>
+    </div>
+    <?php if ($image !== ''): ?>
+        <div class="card p-8 xl:p-12 shadow-md flow-root">
+            <img src="<?= $escaper->escapeUrl($block->getViewFileUrl($image)) ?>"
+                 alt=""
+                 loading="eager"
+                 class="w-full h-auto rounded object-cover">
+        </div>
+    <?php endif; ?>
+</section>

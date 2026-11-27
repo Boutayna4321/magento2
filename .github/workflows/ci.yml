@@ -54,9 +54,28 @@ jobs:
         with:
           php-version: '8.2'
       - run: composer validate --no-check-publish --no-check-lock --no-interaction --working-dir=src
-      - name: Composer security audit
+      - name: Composer security audit (informational: reports advisories in Magento dependencies)
         run: composer audit --locked --no-interaction --working-dir=src
         continue-on-error: true
+
+  coding-standard:
+    name: Coding Standard (PHPCS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+      # The Magento coding standard is on Packagist: no Marketplace keys needed.
+      - name: Install the Magento coding standard
+        working-directory: ${{ runner.temp }}
+        run: |
+          mkdir mcs && cd mcs && echo '{}' > composer.json
+          composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer require --no-interaction --no-progress "magento/magento-coding-standard:^40"
+      - name: PHPCS (Magento2 standard, errors only)
+        run: ${{ runner.temp }}/mcs/vendor/bin/phpcs --standard=Magento2 --warning-severity=0 src/app/code/AlpineCommerce
 
   unit-tests:
     name: Unit Tests (PHPUnit)
@@ -68,14 +87,18 @@ jobs:
         with:
           php-version: '8.2'
           extensions: intl,gd,zip,xsl,bcmath,pcntl,dom,xml
-          coverage: xdebug
+          coverage: none
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
           path: ~/.composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('src/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
+      # Installing Magento needs Marketplace keys (repo.magento.com). Without the
+      # MAGENTO_PUBLIC_KEY / MAGENTO_PRIVATE_KEY secrets the job is skipped and says so;
+      # with them, every following step must pass.
       - name: Configure Magento Composer credentials
+        id: creds
         env:
           MAGENTO_PUBLIC_KEY: ${{ secrets.MAGENTO_PUBLIC_KEY }}
           MAGENTO_PRIVATE_KEY: ${{ secrets.MAGENTO_PRIVATE_KEY }}
@@ -83,30 +106,31 @@ jobs:
           if [ -n "$MAGENTO_PUBLIC_KEY" ] && [ -n "$MAGENTO_PRIVATE_KEY" ]; then
             printf '{"http-basic":{"repo.magento.com":{"username":"%s","password":"%s"}}}\n' \
               "$MAGENTO_PUBLIC_KEY" "$MAGENTO_PRIVATE_KEY" > src/auth.json
-          fi
-          if [ ! -f src/auth.json ]; then
-            echo "::warning::MAGENTO_PUBLIC_KEY/MAGENTO_PRIVATE_KEY secrets not configured. Skipping unit tests."
-            exit 0
+            echo "has_keys=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::MAGENTO_PUBLIC_KEY / MAGENTO_PRIVATE_KEY secrets are not set: unit tests skipped."
+            echo "has_keys=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Install dependencies
+        if: steps.creds.outputs.has_keys == 'true'
         working-directory: src
-        run: composer install --no-interaction --prefer-dist --no-progress --no-scripts --no-audit
-        continue-on-error: true
+        run: composer install --no-interaction --prefer-dist --no-progress --no-scripts
       - name: Run unit tests
+        if: steps.creds.outputs.has_keys == 'true'
         working-directory: src/dev/tests/unit
         run: |
-          ../../../vendor/bin/phpunit -c phpunit.xml.dist ../../../app/code/AlpineCommerce --coverage-clover build/coverage.xml --log-junit build/junit.xml
-        continue-on-error: true
-      - name: Static analysis (PHPStan)
+          dirs=$(find ../../../app/code/AlpineCommerce -type d -path '*/Test/Unit')
+          ../../../vendor/bin/phpunit -c phpunit.xml.dist --log-junit build/junit.xml $dirs
+      # Informational only: phpstan.neon is kept out of the repository and the
+      # bitexpert/phpstan-magento extension is not installed yet, so most findings are
+      # false positives (factories, __() phrases, AbstractModel types).
+      - name: Static analysis (PHPStan, informational)
+        if: steps.creds.outputs.has_keys == 'true'
         working-directory: src
-        run: vendor/bin/phpstan analyse app/code/AlpineCommerce --level=5 --no-progress --memory-limit=1G --configuration=phpstan.neon
-        continue-on-error: true
-      - name: Coding standards (PHPCS, errors only)
-        working-directory: src
-        run: vendor/bin/phpcs --standard=Magento2 app/code/AlpineCommerce --warning-severity=0
+        run: vendor/bin/phpstan analyse app/code/AlpineCommerce --level=5 --no-progress --memory-limit=1G
         continue-on-error: true
       - name: Upload test results
-        if: always()
+        if: always() && steps.creds.outputs.has_keys == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: phpunit-results

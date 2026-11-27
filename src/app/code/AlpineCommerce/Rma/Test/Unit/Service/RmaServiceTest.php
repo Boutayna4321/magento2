@@ -12,6 +12,8 @@ use AlpineCommerce\Rma\Service\ReturnWindow;
 use AlpineCommerce\Rma\Service\RmaService;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\DB\Select;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
@@ -59,26 +61,29 @@ class RmaServiceTest extends TestCase
             $this->returnWindow,
             $this->rmaResource,
             $this->rmaItemResource,
-            $this->searchCriteriaBuilder,
             $this->rmaFactory,
             $this->createMock(\AlpineCommerce\Rma\Model\RmaItemFactory::class),
             $this->scopeConfig,
+            $this->searchCriteriaBuilder,
             $this->logger
         );
     }
 
+    private function connection(): AdapterInterface&MockObject
+    {
+        $select = $this->createMock(Select::class);
+        $select->method('from')->willReturnSelf();
+        $select->method('where')->willReturnSelf();
+        $select->method('group')->willReturnSelf();
+        $connection = $this->createMock(AdapterInterface::class);
+        $connection->method('select')->willReturn($select);
+
+        return $connection;
+    }
+
     public function testGetByOrderReturnsEmptyArrayWhenNoRmas(): void
     {
-        $connection = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
-        $connection->expects($this->once())
-            ->method('select')
-            ->willReturnSelf();
-        $connection->expects($this->once())
-            ->method('from')
-            ->willReturnSelf();
-        $connection->expects($this->once())
-            ->method('where')
-            ->willReturnSelf();
+        $connection = $this->connection();
         $connection->expects($this->once())
             ->method('fetchCol')
             ->willReturn([]);
@@ -119,10 +124,7 @@ class RmaServiceTest extends TestCase
 
     public function testGetStatsReturnsCorrectStructure(): void
     {
-        $connection = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
-        $connection->method('select')->willReturnSelf();
-        $connection->method('from')->willReturnSelf();
-        $connection->method('group')->willReturnSelf();
+        $connection = $this->connection();
         $connection->method('fetchPairs')->willReturn([
             RmaInterface::STATUS_PENDING => 5,
             RmaInterface::STATUS_APPROVED => 3,

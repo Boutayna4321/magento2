@@ -1,0 +1,28 @@
+{
+  "articles": [
+    {"file": "core/01-what-is-magento.md", "html": "articles/01-what-is-magento.html", "phase": 1, "title": "What Even Is Magento?", "time": "5 min"},
+    {"file": "core/02-module-anatomy.md", "html": "articles/02-module-anatomy.html", "phase": 1, "title": "Inside a Magento Module", "time": "8 min"},
+    {"file": "core/03-request-lifecycle.md", "html": "articles/03-request-lifecycle.html", "phase": 1, "title": "The Request Lifecycle", "time": "8 min"},
+    {"file": "core/04-dependency-injection.md", "html": "articles/04-dependency-injection.html", "phase": 1, "title": "Dependency Injection", "time": "8 min"},
+    {"file": "core/05-database-model.md", "html": "articles/05-database-model.html", "phase": 1, "title": "The Database Model", "time": "8 min"},
+    {"file": "html/01-layout-xml.md", "html": "articles/06-layout-xml.html", "phase": 2, "title": "Layout XML", "time": "8 min"},
+    {"file": "html/02-phtml-templates.md", "html": "articles/07-phtml-templates.html", "phase": 2, "title": "PHTML Templates", "time": "8 min"},
+    {"file": "css/01-themes-and-less.md", "html": "articles/08-themes-and-less.html", "phase": 2, "title": "Themes and LESS", "time": "10 min"},
+    {"file": "css/02-luma-vs-hyva.md", "html": "articles/09-luma-vs-hyva.html", "phase": 2, "title": "Luma vs Hyvä", "time": "8 min"},
+    {"file": "js/01-requirejs.md", "html": "articles/10-requirejs.html", "phase": 2, "title": "RequireJS Modules", "time": "8 min"},
+    {"file": "js/02-knockoutjs.md", "html": "articles/11-knockoutjs.html", "phase": 2, "title": "KnockoutJS in Magento", "time": "10 min"},
+    {"file": "js/03-magento-js-libs.md", "html": "articles/12-magento-js-libs.html", "phase": 2, "title": "Magento JS Libraries", "time": "8 min"},
+    {"file": "js/04-integrating-js.md", "html": "articles/13-integrating-js.html", "phase": 2, "title": "Integrating JavaScript", "time": "10 min"},
+    {"file": "core/06-events-observers.md", "html": "articles/14-events-observers.html", "phase": 3, "title": "Events and Observers", "time": "8 min"},
+    {"file": "core/07-plugins.md", "html": "articles/15-plugins.html", "phase": 3, "title": "Plugins", "time": "10 min"},
+    {"file": "core/08-preferences.md", "html": "articles/16-preferences.html", "phase": 3, "title": "Preferences", "time": "8 min"},
+    {"file": "core/09-rest-graphql.md", "html": "articles/17-rest-graphql.html", "phase": 4, "title": "REST and GraphQL", "time": "10 min"},
+    {"file": "core/10-ui-components.md", "html": "articles/18-ui-components.html", "phase": 4, "title": "Admin UI Components", "time": "10 min"}
+  ],
+  "phases": {
+    "1": {"name": "Core Concepts", "color": "orange", "icon": "hexagon"},
+    "2": {"name": "Frontend Trinity", "color": "yellow", "icon": "cube"},
+    "3": {"name": "Extension Points", "color": "orange", "icon": "puzzle"},
+    "4": {"name": "APIs & Admin", "color": "charcoal", "icon": "cog"}
+  }
+}

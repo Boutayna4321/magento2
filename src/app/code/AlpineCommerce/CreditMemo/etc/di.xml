@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="AlpineCommerce\CreditMemo\Api\CreditMemoAutomationInterface"
+                type="AlpineCommerce\CreditMemo\Service\CreditMemoService"/>
+    <preference for="AlpineCommerce\CreditMemo\Api\Data\CreditMemoConfigInterface"
+                type="AlpineCommerce\CreditMemo\Model\Data\CreditMemoConfig"/>
     <type name="Magento\Sales\Model\Order">
         <plugin name="autocreditmemo_order_cancel" type="AlpineCommerce\CreditMemo\Plugin\OrderCancelPlugin" sortOrder="10"/>
     </type>

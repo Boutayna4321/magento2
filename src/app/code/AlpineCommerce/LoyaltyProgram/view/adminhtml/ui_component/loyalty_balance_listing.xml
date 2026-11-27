@@ -33,29 +33,6 @@
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
         <filters name="listing_filters"/>
-        <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
-            <settings>
-                <indexField>entity_id</indexField>
-            </settings>
-            <action name="select_all">
-                <settings>
-                    <type>select_all</type>
-                    <label translate="true">Select All</label>
-                </settings>
-            </action>
-            <action name="select_visible">
-                <settings>
-                    <type>select_visible</type>
-                    <label translate="true">Select Visible</label>
-                </settings>
-            </action>
-            <action name="deselect_all">
-                <settings>
-                    <type>deselect_all</type>
-                    <label translate="true">Deselect All</label>
-                </settings>
-            </action>
-        </massaction>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="loyalty_balance_columns">

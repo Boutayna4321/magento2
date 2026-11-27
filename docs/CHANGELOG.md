@@ -16,6 +16,114 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en-US/).
 
 ---
 
+## [1.7.1] - 2026-09-29
+
+Audit and repair pass driven by runtime verification (ObjectManager resolution, live REST calls
+and container health) rather than by reading the code.
+
+### Fixed
+
+- **Wrong result page factory in 21 admin controllers** (the most serious defect found)
+  - Controllers extended `Magento\Backend\App\Action` but injected
+    `Magento\Framework\View\Result\PageFactory` (the frontend factory) and then called
+    `setActiveMenu()` / `addBreadcrumb()`, which only exist on
+    `Magento\Backend\Model\View\Result\Page`. Every one of those admin screens raised
+    `Call to undefined method ... setActiveMenu()` on load.
+  - Switched to `Magento\Backend\Model\View\Result\PageFactory`, matching the two controllers that
+    already did it right (`Hreflang`, `EuVat\Validation\Validate`).
+  - Affected: AutoInvoice, Blog (post + category), CreditMemo, EuVat, Faq, Gdpr, LegalPages,
+    LoyaltyProgram, PartialInvoice, ProductLabels, ProductQuestions, ProductReviews, Rma,
+    StoreLocator, StorePickup — 36 files, all admin controllers and their abstract bases.
+  - Also aligned the `execute(): Page` return types (Blog ×2, LegalPages, AutoInvoice) on the
+    Backend page. Verified: all 65 admin controllers now resolve through the ObjectManager.
+
+- **Rma: 7 REST endpoints returned HTTP 500**
+  - `RmaServiceInterface` and `RmaItemRepositoryInterface` had no `<preference>` in `etc/di.xml`,
+    so the ObjectManager could not instantiate them. `webapi.xml` routes resolve the service class
+    as a constructor dependency, so every RMA endpoint failed at dispatch.
+  - Added the missing preferences. Removed the `AlpineCommerceRmaSearchResults` virtualType: it
+    pointed at `AlpineCommerceRmaSearchResultsFactory`, which is never generated, and its target
+    `RmaSearchResults` is an empty subclass referenced nowhere. All 17 web API service classes
+    across the project now instantiate.
+
+- **`docker-compose.yml`: the nginx healthcheck could never pass**
+  - It polled `http://127.0.0.1:8080/V1/alpinecommerce/health`. Two independent mistakes: nginx
+    listens on port 80 *inside* the container (8080 is only the published host port), and the REST
+    route is `/rest/V1/...` (a bare `/V1/...` is a 404).
+  - The container had been reporting `unhealthy` since it was created, silently, because
+    `continue-on-error` and non-blocking healthchecks hid it.
+  - Now `curl -sf http://127.0.0.1/rest/V1/alpinecommerce/health`. Container reports `healthy`.
+
+- **HealthCheck: queue depth was wrong and one metric never existed**
+  - `AutoInvoice` publishes to `alpinecommerce.autoinvoice.process` while CreditMemo, CustomerCare
+    and PartialInvoice use `alpincommerce.*` (missing "e"). The `LIKE 'alpincommerce.%'` filter
+    matched 3 of the 4 project queues, so a full queue could report as empty. Both prefixes are
+    now matched — the typo is a data migration (already-enqueued messages keep the old name), so
+    it is documented rather than renamed here.
+  - `alpinecommerce_queue_pending_messages` had a `# HELP`/`# TYPE` header but no sample was ever
+    emitted: the query result was fetched and discarded. It now emits one sample per queue.
+  - `alpinecommerce_health_status` had a `alpinecommerce_` header and an `alpincommerce_` sample
+    name, so Prometheus collected it as untyped. Both now use the correct spelling.
+  - `getMetrics()` also ran the five checks a second time; it now reuses one queue snapshot.
+
+- **HealthCheck: information disclosure on an anonymous endpoint**
+  - `GET /rest/V1/alpinecommerce/health` is granted to `anonymous` (the orchestrator and the
+    container healthcheck need it), and returned raw `$e->getMessage()` on failure — which for the
+    database check means host, schema and sometimes the query. Failures now return a fixed
+    `Check failed, see var/log/system.log`; the cause goes to the injected logger, which was
+    declared but never used. The JSON contract is unchanged.
+  - Added the missing `etc/acl.xml` and moved `/V1/alpinecommerce/metrics` off the blanket `admin`
+    resource onto `AlpineCommerce_HealthCheck::metrics`, so a monitoring role can be granted it
+    without full admin (inherited by admins through `Magento_Backend::all`).
+
+- **Rma: unit test contradicted the implemented state machine**
+  - `StateTest::testCanTransitionFromApproved` asserted `approved → rejected` is allowed. The
+    implementation allows `approved → returned | received` and treats an approved RMA as accepted.
+    Corrected the test and added coverage for `returned`, which the test file never exercised.
+
+- **LoyaltyProgram: 5 broken unit tests, none of which had ever passed**
+  - `ViewTest` (block) mocked `Magento\Framework\View\Element\Template\Context` for a block that
+    requires the *Backend* context, and constrained `getParam()` with one argument where the code
+    passes two.
+  - `ListingTest` passed a `RequestInterface` mock where the constructor requires `array $meta`.
+  - `IndexTest` / controller `ViewTest` mocked the frontend page (no `setActiveMenu`), left
+    `getConfig()->getTitle()` returning null, and instantiated `LoyaltyBalance` without the
+    constructor arguments `AbstractModel` requires.
+  - Rewritten against the real types; added negative cases (`expects(never())` on the repository).
+
+- **Blog: last pre-2.4 grid fragment removed**
+  - `blog_post_listing.xml` still carried a 2.0/2.1 `<templates><filters><select customScope=…>`
+    block. It has had no effect since 2.4 and every column already declares its own `<filter>`.
+    Replaced by `<filters name="listing_filters"/>`, as in the other listings.
+
+### Added
+
+- `AlpineCommerce_HealthCheck`: 6 unit tests covering the message sanitisation, the queue prefix
+  matching, the per-queue metric sample and the metric-name/header consistency. 8 tests total.
+- `Rma`: `StateTest::testCanTransitionFromReturned`.
+
+### Documented
+
+- `docs/BACKLOG.md` B-01 is **closed as obsolete**: no `<primaryDataSource>` remains anywhere, every
+  `<dataSource>` has a child `<dataProvider class=…>`, and Magento's own UI component reader parses
+  all listings without error. The entry described a state the repository is no longer in.
+- `docs/CHANGELOG.md`: this entry.
+
+### Known issues left open (deliberately)
+
+- `AlpineCommerce/Test/` is not a Magento module (no `module.xml`, `registration.php` or
+  `composer.json`), is not in `app/etc/config.php`, is untracked by git and is referenced by no
+  PHPUnit configuration. Its two files contain only `markTestSkipped` placeholders, so they never
+  ran. Left in place rather than deleted: the files are untracked and therefore unrecoverable.
+  They belong in `dev/tests/integration/testsuite/` and `dev/tests/performance/`.
+- `.github/workflows/ci.yml` runs unit tests, PHPStan and PHPCS with `continue-on-error: true` and
+  disables the markdown lint with `if: false`. This is why all of the above accumulated unnoticed.
+  Turning them into blocking gates is a pipeline policy decision, not a code fix.
+- `php -l`, XML schema validation, the 256 AlpineCommerce unit tests, PHPStan and PHPCS all pass
+  on the files touched here.
+
+---
+
 ## [1.7.0] - 2026-09-07
 
 ### Added (LoyaltyProgram Admin UI)

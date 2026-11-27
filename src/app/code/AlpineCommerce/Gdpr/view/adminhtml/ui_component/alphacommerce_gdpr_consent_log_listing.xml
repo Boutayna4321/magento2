@@ -39,17 +39,6 @@
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
         <filters name="listing_filters"/>
-        <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
-            <action name="delete">
-                <settings>
-                    <url path="mui/massAction"/>
-                                        <confirm>
-                        <message translate="true">Delete selected items?</message>
-                        <title translate="true">Delete items</title>
-                    </confirm>
-                </settings>
-            </action>
-        </massaction>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="alphacommerce_gdpr_consent_log_columns">
@@ -65,11 +54,6 @@
                 </param>
             </childDefaults>
         </settings>
-        <selectionsColumn name="ids" sortOrder="0">
-            <settings>
-                <indexField>entity_id</indexField>
-            </settings>
-        </selectionsColumn>
         <column name="entity_id" sortOrder="10">
             <settings>
                 <filter>textRange</filter>

@@ -40,18 +40,10 @@
         </settings>
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
-        <filters name="listing_filters">
-            <settings>
-                <templates>
-                    <filters>
-                        <select>
-                            <param xsi:type="string" name="customScope">blog_post_columns</param>
-                            <param xsi:type="string" name="template">ui/grid/filters/elements/ui-select</param>
-                        </select>
-                    </filters>
-                </templates>
-            </settings>
-        </filters>
+        <!-- Filters are derived from the <filter> setting of each column below. The legacy
+             2.0/2.1 filters template block was removed: it has no effect since 2.4 and the other
+             AlpineCommerce listings no longer carry it. -->
+        <filters name="listing_filters"/>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="blog_post_columns">

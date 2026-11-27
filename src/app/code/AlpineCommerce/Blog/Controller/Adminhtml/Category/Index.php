@@ -5,7 +5,7 @@ namespace AlpineCommerce\Blog\Controller\Adminhtml\Category;
 
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Registry;
-use Magento\Framework\View\Result\Page;
+use Magento\Backend\Model\View\Result\Page;
 
 class Index extends AbstractAction
 {

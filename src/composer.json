@@ -18,6 +18,10 @@
     },
     "version": "2.4.8",
     "require": {
+        "community-engineering/language-de_de": "0.0.69",
+        "community-engineering/language-es_es": "0.0.151",
+        "community-engineering/language-fr_fr": "0.0.62",
+        "community-engineering/language-it_it": "0.0.26",
         "hyva-themes/magento2-default-theme": "^1.5",
         "hyva-themes/magento2-luma-checkout": "^1.1",
         "magento/composer-dependency-version-audit-plugin": "~0.1",

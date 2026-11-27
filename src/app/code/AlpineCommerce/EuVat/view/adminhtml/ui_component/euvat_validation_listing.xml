@@ -6,7 +6,7 @@
             <item name="provider" xsi:type="string">euvat_validation_listing.euvat_validation_listing_data_source</item>
             <item name="deps" xsi:type="string">euvat_validation_listing.euvat_validation_listing_data_source</item>
         </item>
-        <item name="spinner" xsi:type="string">spinner</item>
+        <item name="spinner" xsi:type="string">landing_data</item>
         <item name="buttons" xsi:type="array">
             <item name="validate" xsi:type="array">
                 <item name="name" xsi:type="string">validate</item>
@@ -17,14 +17,6 @@
         </item>
     </argument>
     <dataSource name="euvat_validation_listing_data_source" component="Magento_Ui/js/grid/provider">
-        <argument name="data" xsi:type="array">
-            <item name="config" xsi:type="array">
-                <item name="update_url" xsi:type="url" path="mui/index/render"/>
-                <item name="storageConfig" xsi:type="array">
-                    <item name="indexField" xsi:type="string">entity_id</item>
-                </item>
-            </item>
-        </argument>
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">AlpineCommerce\EuVat\Ui\DataProvider\ValidationDataProvider</argument>
             <argument name="name" xsi:type="string">euvat_validation_listing_data_source</argument>
@@ -32,7 +24,10 @@
             <argument name="requestFieldName" xsi:type="string">entity_id</argument>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="spinner" xsi:type="string">spinner</item>
+                    <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="indexField" xsi:type="string">entity_id</item>
+                    </item>
                 </item>
             </argument>
         </argument>

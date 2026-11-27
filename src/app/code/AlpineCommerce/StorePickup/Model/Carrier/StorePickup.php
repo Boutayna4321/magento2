@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AlpineCommerce\StorePickup\Model\Carrier;
 
+use AlpineCommerce\StorePickup\Api\StoreAvailabilityInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Quote\Model\Quote\Address\RateRequest;
 use Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory;
@@ -25,6 +26,7 @@ class StorePickup extends AbstractCarrier implements CarrierInterface
         LoggerInterface $logger,
         private readonly ResultFactory $rateResultFactory,
         private readonly MethodFactory $rateMethodFactory,
+        private readonly StoreAvailabilityInterface $storeAvailability,
         array $data = []
     ) {
         parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);
@@ -41,6 +43,12 @@ class StorePickup extends AbstractCarrier implements CarrierInterface
             return false;
         }
 
+        // Only offer pickup when at least one store can serve the whole cart; the
+        // checkout lists the same stores (StorePickupConfigProvider).
+        if (!$this->storeAvailability->getAvailableStores($this->cartQuantities($request))) {
+            return false;
+        }
+
         $result = $this->rateResultFactory->create();
         $method = $this->rateMethodFactory->create();
 
@@ -54,5 +62,25 @@ class StorePickup extends AbstractCarrier implements CarrierInterface
         $result->append($method);
 
         return $result;
+    }
+
+    /**
+     * SKU => quantity of the cart, counting a configurable product once (its child
+     * items carry the same SKU on the parent line).
+     *
+     * @return array<string, float>
+     */
+    private function cartQuantities(RateRequest $request): array
+    {
+        $quantities = [];
+        foreach ((array) $request->getAllItems() as $item) {
+            if ($item->getParentItem()) {
+                continue;
+            }
+            $sku = (string) $item->getSku();
+            $quantities[$sku] = ($quantities[$sku] ?? 0.0) + (float) $item->getQty();
+        }
+
+        return $quantities;
     }
 }

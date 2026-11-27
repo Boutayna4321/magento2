@@ -12,7 +12,7 @@ interface VatValidationInterface
      *
      * @param string $countryId Two-letter ISO country code (e.g. "FR").
      * @param string $vatNumber VAT number without the country prefix.
-     * @return VatValidationDataInterface
+     * @return \AlpineCommerce\EuVat\Api\Data\VatValidationInterface
      */
     public function validate(string $countryId, string $vatNumber): VatValidationDataInterface;
 
@@ -21,7 +21,7 @@ interface VatValidationInterface
      *
      * @param string $countryId Two-letter ISO country code (e.g. "FR").
      * @param string $vatNumber VAT number without the country prefix.
-     * @return VatValidationDataInterface|null
+     * @return \AlpineCommerce\EuVat\Api\Data\VatValidationInterface|null
      */
     public function getByCountryAndNumber(string $countryId, string $vatNumber): ?VatValidationDataInterface;
 }

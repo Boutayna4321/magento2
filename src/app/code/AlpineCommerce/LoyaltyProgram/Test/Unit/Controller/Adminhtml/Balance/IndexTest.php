@@ -8,7 +8,7 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Result\Page;
+use Magento\Backend\Model\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -48,6 +48,11 @@ class IndexTest extends TestCase
         $this->resultPage->method('setActiveMenu')->with(Index::ADMIN_RESOURCE)->willReturnSelf();
 
         $config = $this->createMock(\Magento\Framework\View\Page\Config::class);
+        // getConfig()->getTitle()->prepend(...) is called by the controller: both hops must return
+        // an object, otherwise prepend() runs on null.
+        $title = $this->createMock(\Magento\Framework\View\Page\Title::class);
+        $title->method('prepend')->willReturnSelf();
+        $config->method('getTitle')->willReturn($title);
         $this->resultPage->method('getConfig')->willReturn($config);
 
         $result = $this->controller->execute();

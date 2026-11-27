@@ -20,10 +20,21 @@ class StateTest extends TestCase
 
     public function testCanTransitionFromApproved(): void
     {
+        $this->assertTrue(State::canTransition(RmaInterface::STATUS_APPROVED, RmaInterface::STATUS_RETURNED));
         $this->assertTrue(State::canTransition(RmaInterface::STATUS_APPROVED, RmaInterface::STATUS_RECEIVED));
-        $this->assertTrue(State::canTransition(RmaInterface::STATUS_APPROVED, RmaInterface::STATUS_REJECTED));
+        // An approved RMA has been accepted, so it cannot be rejected afterwards.
+        $this->assertFalse(State::canTransition(RmaInterface::STATUS_APPROVED, RmaInterface::STATUS_REJECTED));
         $this->assertFalse(State::canTransition(RmaInterface::STATUS_APPROVED, RmaInterface::STATUS_REFUNDED));
         $this->assertFalse(State::canTransition(RmaInterface::STATUS_APPROVED, RmaInterface::STATUS_CLOSED));
+    }
+
+    public function testCanTransitionFromReturned(): void
+    {
+        $this->assertTrue(State::canTransition(RmaInterface::STATUS_RETURNED, RmaInterface::STATUS_RECEIVED));
+        $this->assertTrue(State::canTransition(RmaInterface::STATUS_RETURNED, RmaInterface::STATUS_REJECTED));
+        $this->assertFalse(State::canTransition(RmaInterface::STATUS_RETURNED, RmaInterface::STATUS_APPROVED));
+        $this->assertFalse(State::canTransition(RmaInterface::STATUS_RETURNED, RmaInterface::STATUS_REFUNDED));
+        $this->assertFalse(State::canTransition(RmaInterface::STATUS_RETURNED, RmaInterface::STATUS_CLOSED));
     }
 
     public function testCanTransitionFromReceived(): void
@@ -48,7 +59,7 @@ class StateTest extends TestCase
 
     public function testGetAvailableTransitions(): void
     {
-        $transitions = State::getAvailableTransitions(RmaInterface::STATUS_PENDING);
+        $transitions = State::getAllowedTargets(RmaInterface::STATUS_PENDING);
         $this->assertContains(RmaInterface::STATUS_APPROVED, $transitions);
         $this->assertContains(RmaInterface::STATUS_REJECTED, $transitions);
         $this->assertNotContains(RmaInterface::STATUS_REFUNDED, $transitions);
