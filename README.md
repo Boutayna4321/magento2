@@ -112,11 +112,11 @@ The full documentation index is in [`docs/README.md`](docs/README.md).
 | [Roadmap](docs/ROADMAP.md) · [Changelog](docs/CHANGELOG.md) · [Backlog](docs/BACKLOG.md) | Planning, history, technical debt |
 | [`docs/magento2/`](docs/magento2/) | Magento 2 reference guides (CLI, layout, JS, themes & styles, REST/GraphQL, security, testing…) |
 | [`docs/modules/`](docs/modules/) | One document per AlpineCommerce module |
-| [`docs/prerequisites/`](docs/prerequisites/) | Beginner guides: Docker, PHP OOP, Git/GitHub, CI/CD |
+| [`docs/prerequisites/`](docs/prerequisites/) | Beginner guides: Docker, PHP OOP, JavaScript in Magento, Git/GitHub, CI/CD |
 | [`docs/troubleshooting/`](docs/troubleshooting/) | Known issues and fixes |
 
 **New to the project?** Read in this order: [Docker](docs/prerequisites/docker.md) →
-[PHP OOP](docs/prerequisites/php-oop.md) → [Git/GitHub](docs/prerequisites/git-github.md) →
+[PHP OOP](docs/prerequisites/php-oop.md) → [JavaScript in Magento](docs/prerequisites/javascript-magento.md) → [Git/GitHub](docs/prerequisites/git-github.md) →
 [Project charter](docs/PROJECT_CHARTER.md) → [Architecture](docs/ARCHITECTURE.md) →
 [FAQ module](docs/modules/FAQ.md) (canonical module example).
 

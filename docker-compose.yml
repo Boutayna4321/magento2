@@ -42,7 +42,12 @@ services:
       php:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:8080/V1/alpinecommerce/health || exit 1"]
+      # Two things are easy to get wrong here:
+      #  - the port: nginx listens on 80 *inside* the container; 8080 is only the published
+      #    host port, so curling 127.0.0.1:8080 from in here is refused.
+      #  - the REST prefix: /rest/V1/... is served by index.php, a bare /V1/... returns 404.
+      # Either mistake leaves the container permanently "unhealthy" with no other symptom.
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1/rest/V1/alpinecommerce/health || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 5
