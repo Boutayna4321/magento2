@@ -1,0 +1,39 @@
+<?php
+/**
+ * Blog list for Hyvä: responsive grid of post cards.
+ */
+/** @var \AlpineCommerce\Blog\Block\Listing $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$posts = $block->getPosts();
+?>
+<section class="py-6">
+    <?php if ($posts): ?>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <?php foreach ($posts as $post): ?>
+                <?php
+                $excerpt = trim((string) $block->stripTags((string) $post->getContent()));
+                if (mb_strlen($excerpt) > 180) {
+                    $excerpt = rtrim(mb_substr($excerpt, 0, 180)) . '…';
+                }
+                $url = $block->getPostUrl($post);
+                ?>
+                <article class="card card-interactive flex flex-col">
+                    <h2 class="mb-2 text-xl font-semibold text-fg">
+                        <a class="after:absolute after:inset-0" href="<?= $escaper->escapeUrl($url) ?>">
+                            <?= $escaper->escapeHtml($post->getTitle()) ?>
+                        </a>
+                    </h2>
+                    <?php if ($post->getAuthor()): ?>
+                        <p class="mb-3 text-sm text-fg-secondary">
+                            <?= $escaper->escapeHtml(__('By %1', $post->getAuthor())) ?>
+                        </p>
+                    <?php endif; ?>
+                    <p class="mb-4 grow leading-relaxed text-fg-secondary"><?= $escaper->escapeHtml($excerpt) ?></p>
+                    <span class="text-sm font-medium text-primary"><?= $escaper->escapeHtml(__('Read the article')) ?> &rarr;</span>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="card text-fg-secondary"><?= $escaper->escapeHtml(__('No blog posts yet.')) ?></p>
+    <?php endif; ?>
+</section>

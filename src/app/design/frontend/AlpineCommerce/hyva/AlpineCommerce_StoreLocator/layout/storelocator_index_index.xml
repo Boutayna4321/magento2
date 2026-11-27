@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--
+  Hyvä: the module puts the store list in main.content before the page title and
+  adds its own <h1>. Here it goes into "content", under the page title.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Find a Store</title>
+    </head>
+    <body>
+        <move element="store.locator" destination="content"/>
+    </body>
+</page>

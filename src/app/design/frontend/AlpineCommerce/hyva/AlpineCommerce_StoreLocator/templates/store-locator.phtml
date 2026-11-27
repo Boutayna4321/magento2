@@ -1,0 +1,90 @@
+<?php
+/**
+ * Store locator for Hyvä: search by name or city (Alpine.js, CSP-compatible).
+ * The module template relies on RequireJS (data-mage-init), which Hyvä does not load.
+ */
+/** @var \AlpineCommerce\StoreLocator\Block\StoreLocator $block */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Hyva\Theme\ViewModel\HyvaCsp $hyvaCsp */
+$stores = $block->getStores();
+?>
+<section class="py-6">
+    <p class="mb-6 text-lg text-fg-secondary">
+        <?= $escaper->escapeHtml(__('Visit us in one of our stores and discover our products.')) ?>
+    </p>
+    <?php if (count($stores)): ?>
+        <script>
+            function initStoreLocator() {
+                return {
+                    query: '',
+                    shown: <?= (int) count($stores) ?>,
+                    filter() {
+                        const q = this.query.trim().toLowerCase();
+                        let shown = 0;
+                        this.$root.querySelectorAll('[data-store-search]').forEach((card) => {
+                            const match = q === '' || card.dataset.storeSearch.includes(q);
+                            card.hidden = !match;
+                            if (match) shown++;
+                        });
+                        this.shown = shown;
+                    },
+                    hasNoResult() {
+                        return this.shown === 0;
+                    }
+                }
+            }
+            window.addEventListener('alpine:init', () => Alpine.data('initStoreLocator', initStoreLocator), {once: true})
+        </script>
+        <?php $hyvaCsp->registerInlineScript() ?>
+        <div x-data="initStoreLocator">
+            <div class="mb-8 max-w-md">
+                <label class="mb-2 block font-medium text-fg" for="store-locator-search">
+                    <?= $escaper->escapeHtml(__('Search by store name or city')) ?>
+                </label>
+                <input id="store-locator-search" class="form-input w-full" type="search" autocomplete="off"
+                       placeholder="<?= $escaper->escapeHtmlAttr(__('e.g. Casablanca')) ?>"
+                       x-model="query" @input="filter">
+            </div>
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <?php foreach ($stores as $store): ?>
+                    <?php
+                    $searchText = implode(' ', array_filter([
+                        $store->getName(), $store->getStreet(), $store->getCity(),
+                        $store->getRegion(), $store->getPostcode(), $store->getCountryId(),
+                    ]));
+                    ?>
+                    <article class="card flex flex-col gap-3" data-store-search="<?= $escaper->escapeHtmlAttr(mb_strtolower($searchText)) ?>">
+                        <h2 class="text-xl font-semibold text-fg"><?= $escaper->escapeHtml($store->getName()) ?></h2>
+                        <address class="not-italic leading-relaxed text-fg-secondary">
+                            <?= $escaper->escapeHtml($store->getStreet()) ?><br>
+                            <?= $escaper->escapeHtml(trim($store->getPostcode() . ' ' . $store->getCity())) ?><br>
+                            <?= $escaper->escapeHtml(trim($store->getRegion() . ', ' . $store->getCountryId(), ', ')) ?>
+                        </address>
+                        <?php if ($store->getPhone()): ?>
+                            <a class="font-medium text-primary hover:underline" href="tel:<?= $escaper->escapeHtmlAttr($store->getPhone()) ?>">
+                                <?= $escaper->escapeHtml($store->getPhone()) ?>
+                            </a>
+                        <?php endif; ?>
+                        <?php if ($store->getOpeningHours()): ?>
+                            <div class="text-sm text-fg-secondary">
+                                <p class="font-medium text-fg"><?= $escaper->escapeHtml(__('Opening hours')) ?></p>
+                                <p><?= /* @noEscape */ nl2br($escaper->escapeHtml($store->getOpeningHours())) ?></p>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($store->getLatitude() !== null && $store->getLongitude() !== null): ?>
+                            <?php $mapUrl = 'https://www.google.com/maps?q=' . rawurlencode($store->getLatitude() . ',' . $store->getLongitude()); ?>
+                            <a class="btn btn-primary mt-auto self-start" href="<?= $escaper->escapeUrl($mapUrl) ?>" target="_blank" rel="noopener noreferrer">
+                                <?= $escaper->escapeHtml(__('View on map')) ?>
+                            </a>
+                        <?php endif; ?>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+            <p class="card mt-6 text-fg-secondary" x-show="hasNoResult" x-cloak>
+                <?= $escaper->escapeHtml(__('No stores match your search.')) ?>
+            </p>
+        </div>
+    <?php else: ?>
+        <p class="card text-fg-secondary"><?= $escaper->escapeHtml(__('No stores available at the moment.')) ?></p>
+    <?php endif; ?>
+</section>

@@ -1,0 +1,15 @@
+<?php
+/** @var \AlpineCommerce\LegalPages\Block\Detail $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$page = $block->getPage();
+?>
+<article class="max-w-3xl py-6">
+    <a class="mb-6 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+       href="<?= $escaper->escapeUrl($block->getUrl('legal')) ?>">
+        <span aria-hidden="true">&larr;</span> <?= $escaper->escapeHtml(__('Back to legal pages')) ?>
+    </a>
+    <div class="card">
+        <h2 class="mb-6 text-2xl font-semibold text-fg"><?= $escaper->escapeHtml($page->getTitle()) ?></h2>
+        <div class="space-y-4 leading-relaxed text-fg-secondary"><?= /* @noEscape */ nl2br($escaper->escapeHtml($page->getContent())) ?></div>
+    </div>
+</article>

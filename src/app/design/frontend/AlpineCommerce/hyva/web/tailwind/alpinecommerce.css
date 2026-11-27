@@ -1,0 +1,20 @@
+/* AlpineCommerce module components that are rendered by PHP (no Tailwind classes). */
+
+.product-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: --spacing(2);
+    margin-bottom: --spacing(3);
+}
+
+.product-label {
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--radius-full);
+    padding-inline: --spacing(3);
+    padding-block: --spacing(1);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}

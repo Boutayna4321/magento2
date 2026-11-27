@@ -66,3 +66,6 @@ docs/magento2-html/
 # Stray runtime artifacts (never commit)
 src/Magento/
 src/pub/probe_which_tree.txt
+
+# Node dependencies of Hyvä Tailwind builds
+node_modules/

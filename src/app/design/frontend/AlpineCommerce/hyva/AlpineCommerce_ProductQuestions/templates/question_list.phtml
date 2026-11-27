@@ -1,0 +1,140 @@
+<?php
+/**
+ * Product questions for Hyvä: list, "helpful" votes and the ask form, in Alpine.js.
+ * The module template used RequireJS (not loaded by Hyvä) and showed the moderation
+ * status ("Approved") to customers; the question form template is folded in here so
+ * the login prompt appears once. The product page is full-page cached, so whether the
+ * customer is signed in comes from Hyvä private content, not from PHP.
+ */
+/** @var \AlpineCommerce\ProductQuestions\Block\Frontend\QuestionList $block */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Hyva\Theme\ViewModel\HyvaCsp $hyvaCsp */
+$questions = $block->getQuestions();
+$productId = (int) $block->getProductId();
+?>
+<script>
+    function initProductQuestions() {
+        const endpoint = () => window.location.origin + '/rest/' + CURRENT_STORE_CODE + '/V1/alphacommerce/product-questions';
+        return {
+            question: '',
+            loggedIn: false,
+            sending: false,
+            message: '',
+            voted: {},
+            async vote(event) {
+                const id = event.currentTarget.dataset.questionId;
+                if (this.voted[id]) return;
+                const counter = event.currentTarget.querySelector('[data-count]');
+                const response = await fetch(endpoint() + '/' + id + '/vote', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+                    body: JSON.stringify({helpful: 1})
+                });
+                if (response.ok) {
+                    this.voted[id] = true;
+                    counter.textContent = String(parseInt(counter.textContent, 10) + 1);
+                }
+            },
+            async ask() {
+                if (this.question.trim() === '' || this.sending) return;
+                this.sending = true;
+                this.message = '';
+                const response = await fetch(endpoint(), {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+                    body: JSON.stringify({productId: <?= (int) $productId ?>, question: this.question.trim()})
+                });
+                this.sending = false;
+                if (response.ok) {
+                    this.question = '';
+                    this.message = '<?= $escaper->escapeJs(__('Thank you! Your question will appear once it has been answered.')) ?>';
+                } else {
+                    this.message = '<?= $escaper->escapeJs(__('Sorry, the question could not be sent. Please try again.')) ?>';
+                }
+            },
+            init() {
+                // Section data may already be loaded before this component starts.
+                try {
+                    const stored = JSON.parse(hyva.getBrowserStorage().getItem('mage-cache-storage') || '{}');
+                    this.setCustomer(stored.customer);
+                } catch (e) {}
+            },
+            receiveCustomerData(event) {
+                this.setCustomer(event.detail.data.customer);
+            },
+            setCustomer(customer) {
+                this.loggedIn = !!(customer && customer.fullname);
+            },
+            isLoggedIn() {
+                return this.loggedIn;
+            },
+            isGuest() {
+                return !this.loggedIn;
+            },
+            isDisabled() {
+                return this.sending || this.question.trim() === '';
+            }
+        }
+    }
+    window.addEventListener('alpine:init', () => Alpine.data('initProductQuestions', initProductQuestions), {once: true})
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+<section class="my-12 max-w-4xl" x-data="initProductQuestions" id="product-questions"
+         @private-content-loaded.window="receiveCustomerData">
+    <div class="mb-6 flex items-baseline justify-between gap-4">
+        <h2 class="text-2xl font-semibold text-fg"><?= $escaper->escapeHtml(__('Customer Questions')) ?></h2>
+        <?php if ($questions): ?>
+            <span class="text-sm text-fg-secondary"><?= $escaper->escapeHtml(__('%1 question(s)', count($questions))) ?></span>
+        <?php endif; ?>
+    </div>
+
+    <?php if ($questions): ?>
+        <ul class="mb-8 space-y-4">
+            <?php foreach ($questions as $question): ?>
+                <?php $answers = $block->getAnswersForQuestion((int) $question->getId()); ?>
+                <li class="card">
+                    <p class="text-lg font-medium text-fg"><?= $escaper->escapeHtml($question->getQuestion()) ?></p>
+                    <p class="mt-1 text-sm text-fg-secondary">
+                        <?= $escaper->escapeHtml($question->getCustomerName() ?: __('Customer')) ?>
+                        &middot; <?= $escaper->escapeHtml($block->formatDate($question->getCreatedAt(), \IntlDateFormatter::MEDIUM)) ?>
+                        <?php if ($question->getIsVerifiedPurchase()): ?>
+                            &middot; <span class="font-medium text-secondary"><?= $escaper->escapeHtml(__('Verified purchase')) ?></span>
+                        <?php endif; ?>
+                    </p>
+                    <?php foreach ($answers as $answer): ?>
+                        <div class="mt-4 rounded-lg bg-bg p-4">
+                            <?php if ($answer->getIsOfficial()): ?>
+                                <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-primary"><?= $escaper->escapeHtml(__('Answer from the store')) ?></p>
+                            <?php endif; ?>
+                            <p class="text-fg"><?= $escaper->escapeHtml($answer->getAnswer()) ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php if (!$answers): ?>
+                        <p class="mt-3 text-sm italic text-fg-secondary"><?= $escaper->escapeHtml(__('Not answered yet.')) ?></p>
+                    <?php endif; ?>
+                    <button type="button" class="btn btn-size-sm mt-4"
+                            data-question-id="<?= (int) $question->getId() ?>" @click="vote">
+                        <?= $escaper->escapeHtml(__('Helpful')) ?>
+                        (<span data-count><?= (int) $question->getHelpfulCount() ?></span>)
+                    </button>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p class="card mb-8 text-fg-secondary"><?= $escaper->escapeHtml(__('No questions yet. Be the first to ask!')) ?></p>
+    <?php endif; ?>
+
+    <form class="card" @submit.prevent="ask" x-show="isLoggedIn" x-cloak>
+        <label class="mb-2 block font-medium text-fg" for="question-text"><?= $escaper->escapeHtml(__('Ask a question about this product')) ?></label>
+        <textarea id="question-text" class="form-input w-full" rows="3" required x-model="question"></textarea>
+        <div class="mt-4 flex flex-wrap items-center gap-4">
+            <button type="submit" class="btn btn-primary" :disabled="isDisabled"><?= $escaper->escapeHtml(__('Send my question')) ?></button>
+            <p class="text-sm text-fg-secondary" x-text="message" aria-live="polite"></p>
+        </div>
+    </form>
+    <p class="text-fg-secondary" x-show="isGuest">
+        <a class="font-medium text-primary hover:underline" href="<?= $escaper->escapeUrl($block->getUrl('customer/account/login')) ?>">
+            <?= $escaper->escapeHtml(__('Sign in')) ?></a>
+        <?= $escaper->escapeHtml(__('to ask a question about this product.')) ?>
+    </p>
+</section>

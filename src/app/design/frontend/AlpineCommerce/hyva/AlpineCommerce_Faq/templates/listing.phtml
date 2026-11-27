@@ -1,0 +1,34 @@
+<?php
+/**
+ * FAQ list for Hyvä: one accordion item per question (native <details>, no JS).
+ */
+/** @var \AlpineCommerce\Faq\Block\Listing $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$faqs = $block->getFaqs();
+?>
+<section class="max-w-3xl py-6">
+    <p class="mb-8 text-lg text-fg-secondary">
+        <?= $escaper->escapeHtml(__('Answers to the questions our customers ask most often.')) ?>
+    </p>
+    <?php if ($faqs): ?>
+        <div class="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-surface">
+            <?php foreach ($faqs as $faq): ?>
+                <details class="group px-6 py-5 [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold text-fg">
+                        <span><?= $escaper->escapeHtml($faq->getTitle()) ?></span>
+                        <span class="shrink-0 text-2xl leading-none text-primary transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                    </summary>
+                    <div class="mt-3 leading-relaxed text-fg-secondary">
+                        <?= /* @noEscape */ nl2br($escaper->escapeHtml($faq->getContent())) ?>
+                    </div>
+                    <a class="mt-3 inline-block text-sm font-medium text-primary hover:underline"
+                       href="<?= $escaper->escapeUrl($block->getFaqUrl($faq)) ?>">
+                        <?= $escaper->escapeHtml(__('Open this answer')) ?>
+                    </a>
+                </details>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="card text-fg-secondary"><?= $escaper->escapeHtml(__('No FAQ entries yet.')) ?></p>
+    <?php endif; ?>
+</section>
